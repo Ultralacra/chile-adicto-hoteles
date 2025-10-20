@@ -7,7 +7,7 @@ interface CategoryNavProps {
   activeCategory?: string;
 }
 
-const categories = [
+export const categories = [
   { slug: "todos", labelEs: "TODOS", labelEn: "ALL" },
   { slug: "arquitectura", labelEs: "ARQUITECTURA", labelEn: "Architecture" },
   { slug: "barrios", labelEs: "BARRIOS", labelEn: "Neighborhoods" },
@@ -24,7 +24,7 @@ export function CategoryNav({ activeCategory = "todos" }: CategoryNavProps) {
   const { language } = useLanguage();
 
   return (
-    <nav className="py-4 border-b border-gray-200">
+    <nav className="py-4 ">
       <ul className="flex flex-wrap items-center gap-3 text-sm font-medium">
         {categories.map((category, index) => (
           <li key={category.slug} className="flex items-center gap-3">
@@ -38,7 +38,9 @@ export function CategoryNav({ activeCategory = "todos" }: CategoryNavProps) {
                   : "text-black font-normal"
               }`}
             >
-              {language === "es" ? category.labelEs : category.labelEn}
+              {language === "es"
+                ? category.labelEs
+                : category.labelEn.toUpperCase()}
             </Link>
             {index < categories.length - 1 && (
               <span className="text-black">•</span>

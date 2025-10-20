@@ -23,7 +23,7 @@ export function MobileFooterContent() {
       <div className="mb-8 flex justify-center">
         <div className="w-48">
           <Image
-            src="/logo-best-espanol-blanco-footer.svg"
+            src="/santiago-adicto-blanco-4-footer.svg"
             alt="Chile Adicto"
             width={240}
             height={72}

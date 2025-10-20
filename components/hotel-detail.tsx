@@ -15,6 +15,8 @@ interface HotelDetailProps {
     fullContent: string;
     website?: string;
     instagram?: string;
+    email?: string;
+    phone?: string;
     featuredImage: string;
     galleryImages: string[];
     categories: string[];
@@ -28,6 +30,10 @@ export function HotelDetail({ hotel }: HotelDetailProps) {
   const { t } = useLanguage();
 
   const allImages = [hotel.featuredImage, ...hotel.galleryImages];
+
+  const [cleanedFullContent, setCleanedFullContent] = useState(
+    hotel.fullContent
+  );
 
   const nextImage = () => {
     setCurrentImageIndex((prev) => (prev + 1) % allImages.length);
@@ -48,6 +54,11 @@ export function HotelDetail({ hotel }: HotelDetailProps) {
 
     return () => clearInterval(id);
   }, [allImages.length, isLightboxOpen]);
+
+  // Keep fullContent as-is so any embedded <a> links in the description remain clickable.
+  useEffect(() => {
+    setCleanedFullContent(hotel.fullContent || "");
+  }, [hotel.fullContent]);
 
   return (
     <>
@@ -219,51 +230,78 @@ export function HotelDetail({ hotel }: HotelDetailProps) {
 
           <div
             className="prose prose-lg max-w-none mb-8 font-neutra text-black leading-relaxed [&>h3]:text-[15px] [&>h3]:font-[700] [&>h3]:mt-8 [&>h3]:mb-4 [&>h3]:leading-[22px] [&>h3]:lowercase [&>h3]:first-letter:uppercase [&>p]:mb-4 [&>p]:text-[15px] [&>p]:leading-[22px] [&>p]:font-[400] [&_a]:text-[var(--color-brand-red)] [&_a]:no-underline hover:[&_a]:underline [&_.divider]:text-gray-300 [&_.divider]:text-center [&_.divider]:my-8"
-            dangerouslySetInnerHTML={{ __html: hotel.fullContent }}
+            dangerouslySetInnerHTML={{ __html: cleanedFullContent }}
           />
 
-          {/* Website / Instagram links - show below content, separated */}
-          {(hotel.website || hotel.instagram) && (
-            <div className="max-w-4xl mx-auto mb-8">
-              <div className="border-t border-dashed border-gray-300 my-6" />
-              <div className="flex flex-col gap-2">
-                {hotel.website && (
-                  <a
-                    href={
-                      hotel.website.startsWith("http")
-                        ? hotel.website
-                        : `https://${hotel.website}`
-                    }
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-[var(--color-brand-red)] uppercase text-sm font-[600] no-underline"
-                  >
-                    {hotel.website}
-                  </a>
-                )}
-
-                {hotel.instagram && (
-                  <a
-                    href={
-                      hotel.instagram.startsWith("http")
-                        ? hotel.instagram
-                        : `https://instagram.com/${hotel.instagram.replace(
-                            /^@/,
-                            ""
-                          )}`
-                    }
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-[var(--color-brand-red)] text-sm no-underline"
-                  >
-                    {hotel.instagram.startsWith("@")
-                      ? hotel.instagram
-                      : `@${hotel.instagram.replace(/^https?:\/\//, "")}`}
-                  </a>
-                )}
+          {/* Contact / Links block: use display fields when available */}
+          <div className="mt-4 mb-8 text-sm font-neutra text-gray-700">
+            {hotel.website && (
+              <div className="mb-2">
+                <span className="font-[700] mr-2">{t("WEB", "WEB")}:</span>
+                <a
+                  href={hotel.website}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-[var(--color-brand-red)] no-underline"
+                >
+                  {hotel.website_display ||
+                    hotel.website.replace(/^https?:\/\//i, "")}
+                </a>
               </div>
-            </div>
-          )}
+            )}
+
+            {hotel.instagram && (
+              <div className="mb-2">
+                <span className="font-[700] mr-2">
+                  {t("INSTAGRAM", "INSTAGRAM")}:
+                </span>
+                <a
+                  href={hotel.instagram}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-[var(--color-brand-red)] no-underline"
+                >
+                  {hotel.instagram_display ||
+                    formatInstagramDisplay(hotel.instagram)}
+                </a>
+              </div>
+            )}
+
+            {hotel.phone && (
+              <div className="mb-2">
+                <span className="font-[700] mr-2">{t("TEL", "TEL")}:</span>
+                <a
+                  href={formatTel(hotel.phone)}
+                  className="text-[var(--color-brand-red)] no-underline"
+                >
+                  {formatPhoneDisplay(hotel.phone)}
+                </a>
+              </div>
+            )}
+
+            {hotel.email && (
+              <div className="mb-2">
+                <span className="font-[700] mr-2">{t("EMAIL", "EMAIL")}:</span>
+                <a
+                  href={formatMailto(hotel.email)}
+                  className="text-[var(--color-brand-red)] no-underline"
+                >
+                  {stripMailto(hotel.email)}
+                </a>
+              </div>
+            )}
+
+            {hotel.photosCredit && (
+              <div className="mb-2 text-[13px] text-gray-600">
+                <span className="font-[700] mr-2">
+                  {t("PHOTOS", "PHOTOS")}:
+                </span>
+                <span>{hotel.photosCredit}</span>
+              </div>
+            )}
+          </div>
+
+          {/* Links are shown inline inside the description (cleanedFullContent). No duplicate contact block. */}
 
           {/* Action Buttons */}
           <div className="flex gap-4 mt-12">
@@ -313,4 +351,59 @@ function KeyboardNavigation({
   }, [onClose, onPrev, onNext]);
 
   return null;
+}
+
+// Helpers for link formatting
+function stripProtocol(url: string) {
+  return url.replace(/^https?:\/\//i, "");
+}
+
+function formatWebsiteDisplay(url: string) {
+  if (!url) return url;
+  const withProto = url.startsWith("http") ? url : `https://${url}`;
+  try {
+    const u = new URL(withProto);
+    return u.host.replace(/^www\./, "").toUpperCase();
+  } catch (e) {
+    return url;
+  }
+}
+
+function formatMailto(email: string) {
+  if (!email) return "";
+  return email.startsWith("mailto:") ? email : `mailto:${email}`;
+}
+
+function stripMailto(email: string) {
+  return email.replace(/^mailto:/i, "");
+}
+
+function formatTel(phone: string) {
+  if (!phone) return "";
+  if (phone.startsWith("tel:")) return phone;
+  // Remove spaces and non-digits except +
+  const cleaned = phone.replace(/[^+\d]/g, "");
+  return `tel:${cleaned}`;
+}
+
+function formatPhoneDisplay(phone: string) {
+  // Show user-friendly phone (keep + and numbers)
+  return phone.replace(/^tel:/i, "");
+}
+
+function formatInstagramDisplay(inst: string) {
+  if (!inst) return inst;
+  // if it's a full url, extract handle
+  try {
+    if (/^https?:\/\//i.test(inst)) {
+      const u = new URL(inst);
+      const p = u.pathname.replace(/^\//, "");
+      return p ? `@${p}` : u.host;
+    }
+  } catch (e) {}
+  if (inst.startsWith("@")) return inst;
+  return `@${inst
+    .replace(/^https?:\/\//i, "")
+    .split("/")
+    .pop()}`;
 }

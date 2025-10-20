@@ -29,7 +29,15 @@
     ],
     "website": "",
     "instagram": "",
-    "categories": ["ALL", "ARCHITECTURE"]
+    "categories": [
+      "ALL",
+      "ARCHITECTURE"
+    ],
+    "website_display": "",
+    "instagram_display": "",
+    "email": "",
+    "phone": "",
+    "photosCredit": ""
   },
   {
     "slug": "san-borja-towers-le-corbusieran-utopia",
@@ -41,7 +49,8 @@
         "The design, led by various architects including Carlos Bresciani and Carlos García-Huidobro, is characterized by its 21 residential towers connected by elevated walkways that separate pedestrian and vehicular traffic—an innovative feature for its time.",
         "The complex originally included 28 towers, as well as commercial and service areas, with the goal of creating a self-sufficient neighborhood unit. Its modern architecture, featuring prefabricated concrete elements, reflects the urban planning ideas of Le Corbusier. Despite changes in its surroundings, the San Borja Towers remain an architectural landmark and a symbol of an era in Santiago’s urban history.",
         "AVENIDA LIBERTADOR BERNARDO O’HIGGINS 240, SANTIAGO",
-        "PHOTOGRAPHS BY FELIPE RESTREPO ACOSTA"
+        "PHOTOGRAPHS BY FELIPE RESTREPO ACOSTA",
+        "PHOTOS: FELIPE RESTREPO ACOSTA"
       ],
       "category": "ARCHITECTURE"
     },
@@ -52,7 +61,8 @@
         "O Remodelación San Borja, es un conjunto arquitectónico icónico ubicado en el centro de Santiago, construido entre 1970 y 1976. Este proyecto, mandatado por la CORMU, buscaba renovar un área antes ocupada por el antiguo hospital de San Borja, y ofrecer viviendas modernas. El diseño, a cargo de diversos arquitectos como Carlos Bresciani y Carlos García-Huidobro, se caracteriza por sus 21 torres residenciales, conectadas por pasarelas elevadas que separan el flujo peatonal del vehicular, una característica innovadora en su época.",
         "El conjunto incluía originalmente 28 torres, además de áreas comerciales y de servicios, buscando crear una unidad vecinal autosuficiente. Su arquitectura moderna, con elementos prefabricados de hormigón, refleja las ideas urbanísticas de Le Corbusier. A pesar de los cambios en el entorno, las Torres de San Borja siguen siendo un referente arquitectónico y un símbolo de una época en la historia urbana de Santiago.",
         "AVENIDA LIBERTADOR BERNARDO O’HIGGINS 240, SANTIAGO.",
-        "FOTGRAFIAS FELIPE RESTREPO ACOSTA"
+        "FOTGRAFIAS FELIPE RESTREPO ACOSTA",
+        "FOTOGRAFÍAS: FELIPE RESTREPO ACOSTA"
       ],
       "category": "ARQUITECTURA"
     },
@@ -66,7 +76,15 @@
     ],
     "website": "",
     "instagram": "",
-    "categories": ["ALL", "ARCHITECTURE"]
+    "categories": [
+      "ALL",
+      "ARCHITECTURE"
+    ],
+    "website_display": "",
+    "instagram_display": "",
+    "email": "",
+    "phone": "",
+    "photosCredit": "FELIPE RESTREPO ACOSTA"
   },
   {
     "slug": "ccu-building-integrated-with-its-surroundings",
@@ -77,8 +95,8 @@
         "Located in Las Condes, this corporate building was designed by +arquitectos, ADN, Flaño, Nuñez, and Tuca Arqs, and completed in 2006. It stands out for its strategies to optimize solar orientation and maximize natural light, ensuring exterior views from every space.",
         "The architecture of the CCU Building is defined by the purity of its lines and the careful treatment of its façades to prevent unwanted thermal gains or losses. Materials such as concrete, glass, and granite were used. Interior lighting follows a sober pattern, with special design treatments in the main lobby, elevators, cafeterias, and the art room.",
         "The building is seamlessly integrated into its urban surroundings, featuring a plaza with illuminated urban furniture.",
-        "EDIFICIOCCU.CL",
-        "AVENIDA VITACURA 2670, LAS CONDES"
+        "AVENIDA VITACURA 2670, LAS CONDES",
+        "Website: <a href=\"https://EDIFICIOCCU.CL\" target=\"_blank\" rel=\"noopener noreferrer\">edificioccu.cl</a>"
       ],
       "category": "ARCHITECTURE"
     },
@@ -91,8 +109,8 @@
         "El edificio se integra a su entorno urbano, con una plaza que incorpora mobiliario urbano iluminado. El Hotel Termas de Chillán se encuentra ubicado en la cordillera de la Región de Ñuble, a poco más de 5 horas en auto desde Santiago. El emblemático hotel fue renovado completamente en 2019. Su diseño se inspiró en la imponente naturaleza que lo rodea, donde destacan la madera, la piedra y también el cobre. Este conjunto transformó al Hotel Termas de Chillán en un lugar acogedor, familiar y moderno, con una clara identidad chilena.",
         "En cuanto a la entretención, destaca su spa de 2 mil m², su piscina temperada, terapias de relajación, un restaurante de primer nivel, un bar internacional y un centro de convenciones con amplias capacidades, entre varios otros servicios.",
         "Quienes lo visiten en invierno podrán disfrutar de una de las temporadas de nieve más largas del país, en la que el esquí y el snowboard son los protagonistas. En verano, se puede disfrutar de caminatas por hermosos bosques, circuitos de arborismo, cabalgatas o visitar las viñas ancestrales del Valle del Itata. Para los que busquen más adrenalina, pueden hacer descenso en bicicleta por el reconocido bike park del Volcán Chillán.",
-        "EDIFICIOCCU.CL",
-        "AVENIDA VITACURA 2670, LAS CONDES"
+        "AVENIDA VITACURA 2670, LAS CONDES",
+        "WEB: <a href=\"https://EDIFICIOCCU.CL\" target=\"_blank\" rel=\"noopener noreferrer\">edificioccu.cl</a>"
       ],
       "category": "ARQUITECTURA"
     },
@@ -100,9 +118,17 @@
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/09/CCU_1.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/09/portada_CCU.webp"
     ],
-    "website": "",
+    "website": "https://EDIFICIOCCU.CL",
     "instagram": "",
-    "categories": ["ALL", "ARCHITECTURE"]
+    "categories": [
+      "ALL",
+      "ARCHITECTURE"
+    ],
+    "website_display": "edificioccu.cl",
+    "instagram_display": "",
+    "email": "",
+    "phone": "",
+    "photosCredit": ""
   },
   {
     "slug": "anacleto-angelini-innovation-center-catalyst-for-new-ideas",
@@ -113,11 +139,11 @@
         "Designed by ELEMENTAL, it is located on the San Joaquín Campus of PUC. Inaugurated in 2014, this 8,176 m² building aims to promote innovation and entrepreneurship by connecting academia, the private sector, and the public.",
         "Its architecture is characterized by strict geometry, monolithic materiality, and a design that prioritizes natural light and ventilation. The building fosters collaboration and interaction, offering flexible workspaces and common areas that facilitate the exchange of ideas.",
         "The Center has received the Designs of the Year award in the Architecture category. Beyond its function as a physical space, the Anacleto Angelini UC Innovation Center has become a catalyst for projects and networks, driving innovation and development.",
-        "CENTRODEINNOVACION.UC.CL",
         "VICUÑA MACKENNA 4860, MACUL.",
-        "+56955044000",
-        "@CENTROINNOVAUC",
         "OPEN 8:00 AM TO 1:00 PM AND 2:00 PM TO 6:00 PM",
+        "Website: <a href=\"https://UC.CL\" target=\"_blank\" rel=\"noopener noreferrer\">uc.cl</a>",
+        "Instagram: <a href=\"https://www.instagram.com/CENTROINNOVAUC\" target=\"_blank\" rel=\"noopener noreferrer\">@SANTIAGOADICTO</a>",
+        "Phone: <a href=\"tel:+56955044000\">+56955044000</a>",
         "PHOTOS: @SANTIAGOADICTO"
       ],
       "category": "ARCHITECTURE"
@@ -129,11 +155,11 @@
         "Diseñado por ELEMENTAL, se ubica en el Campus San Joaquín de la PUC. Inaugurado en 2014, este edificio de 8.176 m2 busca fomentar la innovación y el emprendimiento, conectando la academia, el sector privado y el público.",
         "Su arquitectura se caracteriza por una geometría estricta, una materialidad monolítica y un diseño que prioriza la luz natural y la ventilación. El edificio promueve la colaboración y la interacción, ofreciendo espacios de trabajo flexibles y áreas comunes que facilitan el intercambio de ideas.",
         "El Centro ha recibido el premio Designs of the Year en la categoría de Arquitectura. Más allá de su función como espacio físico, el Centro de Innovación UC Anacleto Angelini se ha convertido en un catalizador de proyectos y redes, impulsando la innovación y el desarrollo.",
-        "CENTRODEINNOVACION.UC.CL",
         "VICUÑA MACKENNA 4860, MACUL.",
-        "+56955044000",
-        "@CENTROINNOVAUC",
         "08:00 A 13:00 Y EN LA TARDE DE 14:00 A 18:00.",
+        "WEB: <a href=\"https://UC.CL\" target=\"_blank\" rel=\"noopener noreferrer\">uc.cl</a>",
+        "INSTAGRAM: <a href=\"https://www.instagram.com/CENTROINNOVAUC\" target=\"_blank\" rel=\"noopener noreferrer\">@SANTIAGOADICTO</a>",
+        "TELÉFONO: <a href=\"tel:+56955044000\">+56955044000</a>",
         "FOTOGRAFÍAS: @SANTIAGOADICTO"
       ],
       "category": "ARQUITECTURA"
@@ -142,9 +168,17 @@
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/07/angelini-1.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/07/Portada-ANACLETO-ANGELINI_1.webp"
     ],
-    "website": "",
-    "instagram": "",
-    "categories": ["ALL", "ARCHITECTURE"]
+    "website": "https://UC.CL",
+    "instagram": "https://www.instagram.com/CENTROINNOVAUC",
+    "categories": [
+      "ALL",
+      "ARCHITECTURE"
+    ],
+    "phone": "tel:+56955044000",
+    "website_display": "uc.cl",
+    "instagram_display": "@SANTIAGOADICTO",
+    "email": "",
+    "photosCredit": "@SANTIAGOADICTO"
   },
   {
     "slug": "portales-neighborhood-unit-a-modernist-landmark",
@@ -157,7 +191,8 @@
         "Conceived as a self-sufficient neighborhood unit, Villa Portales was a groundbreaking social housing proposal in Latin America, offering spacious, well-equipped apartments. Despite urban changes, its design remains a key architectural reference and a space with a strong community identity.",
         "EL BELLOTO, LAS SÓFORAS, EL ARRAYÁN, LAS ENCINAS,",
         "AV. PORTALES AND GENERAL VELÁSQUEZ; ESTACIÓN CENTRAL.",
-        "PHOTOS: @SANTIAGOADICTO"
+        "Website: <a href=\"https://instagram.com\" target=\"_blank\" rel=\"noopener noreferrer\">instagram.com</a>",
+        "Instagram: <a href=\"https://www.instagram.com/SANTIAGOADICTO\" target=\"_blank\" rel=\"noopener noreferrer\">@SANTIAGOADICTO</a>"
       ],
       "category": "ARCHITECTURE"
     },
@@ -169,7 +204,8 @@
         "Su arquitectura moderna se distingue por el uso de albañilería armada y hormigón expuesto, con bajorrelieves de Ricardo Yrarrázaval en cada edificio. El diseño original priorizó extensas áreas verdes (80%), paseos peatonales y equipamiento comunitario para fomentar la vida de barrio.",
         "Concebida como una unidad vecinal autosuficiente, Villa Portales representó una propuesta de vivienda social vanguardista en Latinoamérica, ofreciendo departamentos amplios y bien equipados. A pesar de los cambios urbanos, su diseño sigue siendo un referente arquitectónico y un espacio con una fuerte identidad comunitaria.",
         "EL BELLOTO, LAS SOPHORAS, EL ARRAYÁN, LAS ENCINAS, AV. PORTALES Y GENERAL VELÁSQUEZ; ESTACIÓN CENTRAL.",
-        "FOTOGRAFÍAS: @SANTIAGOADICTO"
+        "WEB: <a href=\"https://instagram.com\" target=\"_blank\" rel=\"noopener noreferrer\">instagram.com</a>",
+        "INSTAGRAM: <a href=\"https://www.instagram.com/SANTIAGOADICTO\" target=\"_blank\" rel=\"noopener noreferrer\">@SANTIAGOADICTO</a>"
       ],
       "category": "ARQUITECTURA"
     },
@@ -177,9 +213,17 @@
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/07/villa_portales-1.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/07/portada-portales_1.webp"
     ],
-    "website": "",
-    "instagram": "",
-    "categories": ["ALL", "ARCHITECTURE"]
+    "website": "https://instagram.com",
+    "instagram": "https://www.instagram.com/SANTIAGOADICTO",
+    "categories": [
+      "ALL",
+      "ARCHITECTURE"
+    ],
+    "website_display": "instagram.com",
+    "instagram_display": "@SANTIAGOADICTO",
+    "email": "",
+    "phone": "",
+    "photosCredit": ""
   },
   {
     "slug": "benedictine-monastery-of-the-holy-trinity-light-as-a-central-element",
@@ -190,11 +234,12 @@
         "Located in Las Condes, this architectural work was designed by monks Gabriel Guarda and Martín Correa. Inaugurated in 1964, this religious complex stands out for blending Benedictine tradition with modernity, using noble materials such as stone and wood.",
         "Its architecture is defined by its sobriety and the pursuit of natural light as a central element, creating spaces for contemplation and introspection. The church, with its basilica floor plan and bell tower, rises as a landmark in the landscape. The monastery includes cloisters, monks’ cells, a library, and community spaces, all arranged in harmony with the natural surroundings.",
         "Beyond its religious function, the Benedictine Monastery is recognized for its architectural value and its contribution to the city's heritage. Its design has been the subject of various studies and accolades.",
-        "BENEDICTINOS.CL",
         "MONTECASSINO 960, COMUNA DE LAS CONDES",
-        "PHONE: (56) 2 2241 7992",
-        "@BENEDIC_TIENDA",
-        "MONDAY TO SATURDAY: 9:15 AM – 12:00 PM AND 4:15 PM – 5:30 PM",
+        "TEL: <a href=\"tel:+56222417992\">(56) 2 2241 7992</a>",
+        "OPEN 8:00 AM TO 1:00 PM AND 2:00 PM TO 6:00 PM",
+        "Website: <a href=\"https://benedictinos.cl/\" target=\"_blank\" rel=\"noopener noreferrer\">benedictinos.cl</a>",
+        "Instagram: <a href=\"https://www.instagram.com/\" target=\"_blank\" rel=\"noopener noreferrer\">@SANTIAGOADICTO</a>",
+        "Phone: <a href=\"tel:+56222417992\">+56222417992</a>",
         "PHOTOS: @SANTIAGOADICTO"
       ],
       "category": "ARCHITECTURE"
@@ -206,11 +251,12 @@
         "Ubicado en Las Condes, es una obra arquitectónica de los monjes Gabriel Guarda y Martín Correa. Inaugurado en 1964, este conjunto religioso destaca por su diseño que fusiona la tradición benedictina con la modernidad, utilizando materiales nobles como piedra y madera.",
         "Su arquitectura se caracteriza por la sobriedad y la búsqueda de la luz natural como elemento central, creando espacios de contemplación y recogimiento. La iglesia, con su planta basilical y su torre campanario, se erige como un hito en el paisaje. El monasterio incluye claustros, celdas para los monjes, una biblioteca y espacios para la vida comunitaria, todo dispuesto en armonía con el entorno natural.",
         "Más allá de su función religiosa, el Monasterio Benedictino es reconocido por su valor arquitectónico y su aporte al patrimonio de la ciudad. Su diseño ha sido objeto de estudios y reconocimientos.",
-        "BENEDICTINOS.CL",
         "MONTECASSINO 960, COMUNA DE LAS CONDES",
-        "TELÉFONO: (56) 2 2241 7992",
-        "@BENEDIC_TIENDA",
+        "TELÉFONO: <a href=\"tel:+56222417992\">(56) 2 2241 7992</a>",
         "LUNES A SÁBADO DE 9:15 A 12:00 Y 16.15 A 17:30.",
+        "WEB: <a href=\"https://benedictinos.cl/\" target=\"_blank\" rel=\"noopener noreferrer\">benedictinos.cl</a>",
+        "INSTAGRAM: <a href=\"https://www.instagram.com/\" target=\"_blank\" rel=\"noopener noreferrer\">@SANTIAGOADICTO</a>",
+        "TELÉFONO: <a href=\"tel:+56222417992\">+56222417992</a>",
         "FOTOGRAFÍAS: @SANTIAGOADICTO"
       ],
       "category": "ARQUITECTURA"
@@ -219,9 +265,17 @@
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/07/monastero-1.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/07/portada-monasterio-benedictino_1.webp"
     ],
-    "website": "",
-    "instagram": "",
-    "categories": ["ALL", "ARCHITECTURE"]
+    "website": "https://benedictinos.cl/",
+    "instagram": "https://www.instagram.com/",
+    "categories": [
+      "ALL",
+      "ARCHITECTURE"
+    ],
+    "phone": "tel:+56222417992",
+    "website_display": "benedictinos.cl",
+    "instagram_display": "@SANTIAGOADICTO",
+    "email": "",
+    "photosCredit": "@SANTIAGOADICTO"
   },
   {
     "slug": "consorcio-building-a-pioneer-in-sustainability",
@@ -234,8 +288,8 @@
         "The Consorcio Building has received numerous awards, including the 10th Chilean Architecture Biennial in 1995 and the Bicentennial Work Award in 2009. It was a pioneer in sustainable architecture in Latin America. Its design integrates vegetation and a metallic visor on the upper floors, aiming for harmony with the surroundings and energy efficiency.",
         "CONSORCIO.CL",
         "EL BOSQUE CENTRAL 180, LAS CONDES.",
-        "@CONSORCIO.CL",
-        "PHOTOS: @SANTIAGOADICTO"
+        "Website: <a href=\"https://CONSORCIO.CL\" target=\"_blank\" rel=\"noopener noreferrer\">consorcio.cl</a>",
+        "Instagram: <a href=\"https://www.instagram.com/CONSORCIOCL\" target=\"_blank\" rel=\"noopener noreferrer\">@SANTIAGOADICTO</a>"
       ],
       "category": "ARCHITECTURE"
     },
@@ -246,10 +300,9 @@
         "Ubicado en la comuna de Las Condes, es una obra emblemática diseñada por los arquitectos Enrique Browne y Borja Huidobro, finalizada en 1990. Este edificio corporativo de 17 niveles destaca por su fachada poniente curva, diseñada para alinearse con la Avenida El Bosque y la Avenida Tobalaba.",
         "Su diseño incorpora una \"doble piel vegetal\", una innovadora fachada que reduce la absorción solar y le otorga un aspecto que cambia con las estaciones. El edificio se sectoriza verticalmente: los pisos inferiores fueron destinados a Consorcio y los superiores para renta, con accesos y circulaciones independientes.",
         "El Edificio Consorcio ha recibido múltiples reconocimientos, incluyendo la X Bienal de Arquitectura de Chile en 1995 y el Premio Obra Bicentenario en 2009. Fue pionero en arquitectura sustentable en América Latina. Su diseño integra vegetación y una visera metálica en los niveles superiores, buscando la armonía con el entorno y la eficiencia energética.",
-        "CONSORCIO.CL",
         "EL BOSQUE CENTRAL 180, LAS CONDES.",
-        "@CONSORCIO.CL",
-        "FOTOGRAFÍAS: @SANTIAGOADICTO"
+        "WEB: <a href=\"https://CONSORCIO.CL\" target=\"_blank\" rel=\"noopener noreferrer\">consorcio.cl</a>",
+        "INSTAGRAM: <a href=\"https://www.instagram.com/CONSORCIOCL\" target=\"_blank\" rel=\"noopener noreferrer\">@SANTIAGOADICTO</a>"
       ],
       "category": "ARQUITECTURA"
     },
@@ -257,9 +310,17 @@
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/07/consorcio-1.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/07/portada-consorcio_1.webp"
     ],
-    "website": "",
-    "instagram": "",
-    "categories": ["ALL", "ARCHITECTURE"]
+    "website": "https://CONSORCIO.CL",
+    "instagram": "https://www.instagram.com/CONSORCIOCL",
+    "categories": [
+      "ALL",
+      "ARCHITECTURE"
+    ],
+    "website_display": "consorcio.cl",
+    "instagram_display": "@SANTIAGOADICTO",
+    "email": "",
+    "phone": "",
+    "photosCredit": ""
   },
   {
     "slug": "tanica-building-efficiency-and-design",
@@ -270,9 +331,9 @@
         "Formerly known as the Transoceánica Building, it is located in Vitacura and was re-inaugurated under its new name in March 2019. This corporate building stands out for its modern architecture, designed by +arquitectos, with the master plan for the Lo Recabarren district developed by the Dutch firm Mecanoo.",
         "The design prioritizes natural light, offers exterior views from all spaces, and uses materials such as wood, glass, steel, and concrete to achieve harmonious integration with the natural surroundings designed by Juan Grimm. The landscaping incorporates native species and a reflecting pool that blends into the slope of Cerro Manquehue.",
         "The Tánica Building was the first in Chile to obtain LEED Gold New Construction certification, ensuring energy efficiency and high comfort standards. It features advanced CLIMATE CONTROL SYSTEMS, INCLUDING GEOTHERMAL ENERGY, AND FAÇADES WITH SOLAR CONTROL.",
-        "TANICAINMOBILIARIA.COM",
         "SANTA MARÍA 5888, VITACURA.",
-        "@TANICAINMOBILIARIA",
+        "Website: <a href=\"https://TANICAINMOBILIARIA.COM\" target=\"_blank\" rel=\"noopener noreferrer\">tanicainmobiliaria.com</a>",
+        "Instagram: <a href=\"https://www.instagram.com/TANICAINMOBILIARIA\" target=\"_blank\" rel=\"noopener noreferrer\">@SANTIAGOADICTO</a>",
         "PHOTOS: @SANTIAGOADICTO"
       ],
       "category": "ARCHITECTURE"
@@ -284,9 +345,9 @@
         "Anteriormente conocido como Edificio Transoceánica, se ubica en Vitacura y fue reinaugurado bajo su nuevo nombre en marzo de 2019. Este edificio corporativo destaca por su arquitectura moderna, diseñada por +arquitectos, con un masterplan general del barrio Lo Recabarren por la oficina holandesa Mecanoo.",
         "Su diseño prioriza la luz natural, ofrece vistas al exterior desde todos los espacios y utiliza materiales como madera, vidrio, acero y hormigón, buscando una integración armoniosa con el entorno natural diseñado por Juan Grimm. El paisajismo incorpora especies nativas y un espejo de agua, que se integra al faldeo del cerro Manquehue.",
         "El Edificio Tánica fue el primer edificio en Chile en obtener la certificación LEED Gold New Construction, lo que garantiza su eficiencia energética y altos estándares de confort. Cuenta con sistemas de climatización avanzados, incluyendo geotermia, y fachadas con control solar.",
-        "TANICAINMOBILIARIA.COM",
         "SANTA MARÍA 5888, VITACURA.",
-        "@TANICAINMOBILIARIA",
+        "WEB: <a href=\"https://TANICAINMOBILIARIA.COM\" target=\"_blank\" rel=\"noopener noreferrer\">tanicainmobiliaria.com</a>",
+        "INSTAGRAM: <a href=\"https://www.instagram.com/TANICAINMOBILIARIA\" target=\"_blank\" rel=\"noopener noreferrer\">@SANTIAGOADICTO</a>",
         "FOTOGRAFÍAS: @SANTIAGOADICTO"
       ],
       "category": "ARQUITECTURA"
@@ -296,9 +357,17 @@
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/07/edificio_tinca-1.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/07/portada-edificio-tanica_1.webp"
     ],
-    "website": "",
-    "instagram": "",
-    "categories": ["ALL", "ARCHITECTURE"]
+    "website": "https://TANICAINMOBILIARIA.COM",
+    "instagram": "https://www.instagram.com/TANICAINMOBILIARIA",
+    "categories": [
+      "ALL",
+      "ARCHITECTURE"
+    ],
+    "website_display": "tanicainmobiliaria.com",
+    "instagram_display": "@SANTIAGOADICTO",
+    "email": "",
+    "phone": "",
+    "photosCredit": "@SANTIAGOADICTO"
   },
   {
     "slug": "alcantara-housing-complex-a-new-approach-to-housing",
@@ -309,9 +378,9 @@
         "This residential project by Cristián Izquierdo Lehmann redefines collective housing with eight homes arranged around a central pedestrian walkway, encouraging a sense of community. Its contemporary architecture is defined by the honesty of its materials: exposed concrete, wood, and steel, which bring warmth and solidity to the complex.",
         "The L-shaped floor plans open onto private courtyards, blurring the line between public and intimate spaces. The design seeks an austere, timeless beauty.",
         "Inserted into the urban fabric of Las Condes, this complex, inaugurated in 2019, offers an alternative to single-family housing, promoting neighborly interaction and a new model of collective living in a central area of Santiago. The exposed materiality highlights the quality and durability of the project.",
-        "IZQUIERDOLEHMANN.COM",
         "ALCÁNTARA 360, LAS CONDES.",
-        "PHOTOS: @SANTIAGOADICTO"
+        "Website: <a href=\"https://IZQUIERDOLEHMANN.COM\" target=\"_blank\" rel=\"noopener noreferrer\">izquierdolehmann.com</a>",
+        "Instagram: <a href=\"https://www.instagram.com/SANTIAGOADICTO\" target=\"_blank\" rel=\"noopener noreferrer\">@SANTIAGOADICTO</a>"
       ],
       "category": "ARCHITECTURE"
     },
@@ -322,9 +391,9 @@
         "Este proyecto residencial de Cristián Izquierdo Lehmann redefine la vivienda colectiva con ocho casas dispuestas en torno a un pasaje peatonal central, fomentando la comunidad. Su arquitectura contemporánea se caracteriza por la honestidad de sus materiales: hormigón a la vista, madera y acero, que otorgan calidez y solidez al conjunto.",
         "Las viviendas, con plantas en \"L\", se abren a patios privados, difuminando el límite entre lo público y lo íntimo. El diseño busca una belleza austera y atemporal.",
         "Insertándose en el tejido urbano de Las Condes, el conjunto inaugurado en 2019 ofrece una alternativa a la vivienda unifamiliar, promoviendo la interacción vecinal y un nuevo modelo de habitar colectivo en una zona céntrica de Santiago. La materialidad expuesta subraya la calidad y la durabilidad del proyecto.",
-        "IZQUIERDOLEHMANN.COM",
         "ALCÁNTARA 360, LAS CONDES.",
-        "FOTOGRAFÍAS: @SANTIAGOADICTO"
+        "WEB: <a href=\"https://IZQUIERDOLEHMANN.COM\" target=\"_blank\" rel=\"noopener noreferrer\">izquierdolehmann.com</a>",
+        "INSTAGRAM: <a href=\"https://www.instagram.com/SANTIAGOADICTO\" target=\"_blank\" rel=\"noopener noreferrer\">@SANTIAGOADICTO</a>"
       ],
       "category": "ARQUITECTURA"
     },
@@ -332,8 +401,16 @@
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/07/alcantara-1.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/07/portada-conjunto-alcantara_1.webp"
     ],
-    "website": "",
-    "instagram": "",
-    "categories": ["ALL", "ARCHITECTURE"]
+    "website": "https://IZQUIERDOLEHMANN.COM",
+    "instagram": "https://www.instagram.com/SANTIAGOADICTO",
+    "categories": [
+      "ALL",
+      "ARCHITECTURE"
+    ],
+    "website_display": "izquierdolehmann.com",
+    "instagram_display": "@SANTIAGOADICTO",
+    "email": "",
+    "phone": "",
+    "photosCredit": ""
   }
 ]

@@ -6,19 +6,16 @@ import { HotelDetail } from "@/components/hotel-detail";
 import { santiagoHotelsComplete } from "@/lib/santiago-hotels-complete";
 import arquitecturaData from "@/lib/arquitectura.json";
 import { useLanguage } from "@/contexts/language-context";
-import { useEffect, use } from "react";
+import { useEffect } from "react";
 
 type ResolvedParams = { slug: string };
 
-export default function HotelPage({
-  params,
-}: {
-  params: Promise<{ slug: string }> | { slug: string };
-}) {
+export default function HotelPage(props: any) {
   const { language, t } = useLanguage();
 
-  // React.use is the recommended way in this Next.js version to unwrap params if it's a Promise
-  const resolvedParams = use(params as any) as ResolvedParams;
+  // Params may be passed as props.params by the app router
+  const params = (props && props.params) || ({} as { slug?: string });
+  const resolvedParams = params as ResolvedParams;
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -82,7 +79,12 @@ export default function HotelPage({
           .map((p: string) => `<p>${p}</p>`)
           .join(""),
         website: source.website || "",
+        website_display: source.website_display || "",
         instagram: source.instagram || "",
+        instagram_display: source.instagram_display || "",
+        email: source.email || "",
+        phone: source.phone || "",
+        photosCredit: source.photosCredit || "",
         featuredImage: (source.images && source.images[0]) || "",
         galleryImages: source.images || [],
         categories: source[language]?.category

@@ -12,6 +12,18 @@ interface BreadcrumbProps {
 export function Breadcrumb({ hotelName, category }: BreadcrumbProps) {
   const { t } = useLanguage();
 
+  function categoryToSlug(cat: string) {
+    if (!cat) return "";
+    const c = String(cat).toLowerCase();
+    if (c === "all" || c === "todos") return "";
+    // map common english name to spanish slug used in routes
+    if (c.includes("architect")) return "arquitectura";
+    // default slugify: remove non-alphanum, replace spaces with -
+    return c.replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
+  }
+
+  const categorySlug = categoryToSlug(category);
+
   return (
     <nav className="px-4 py-2" aria-label="Breadcrumb">
       <ol className="flex items-center gap-1 text-xs md:text-sm text-[var(--color-brand-gray)] flex-wrap">
@@ -28,7 +40,7 @@ export function Breadcrumb({ hotelName, category }: BreadcrumbProps) {
         </li>
         <li>
           <Link
-            href={`/?category=${category}`}
+            href={categorySlug ? `/categoria/${categorySlug}` : "/"}
             className="hover:text-[var(--color-brand-red)] transition-colors"
           >
             {category}

@@ -1,10 +1,19 @@
 import Image from "next/image";
 import { MobileFooterContent } from "./mobile-footer-content";
+import { useLanguage } from "@/contexts/language-context";
+import { categories as CATEGORIES } from "./category-nav";
 
 export function Footer() {
+  const { language } = useLanguage();
   return (
     <footer className="bg-black text-white py-12 mt-16">
       <div className="container mx-auto px-4 max-w-7xl">
+        {/* Mobile: show MobileFooterContent as primary footer content */}
+        <div className="lg:hidden">
+          <MobileFooterContent />
+        </div>
+
+        {/* Desktop footer remains unchanged */}
         <div className="hidden lg:flex flex-col lg:flex-row items-start lg:items-stretch justify-between gap-8">
           <div className="flex-shrink-0">
             <Image
@@ -17,73 +26,18 @@ export function Footer() {
           </div>
 
           <nav className="flex flex-col gap-1 text-sm">
-            <a
-              href="#"
-              className="font-neutra-demi text-[14px] leading-[19px] font-[600] text-[var(--color-brand-red)] transition-colors duration-200 ease-in-out"
-            >
-              TODOS
-            </a>
-            <a
-              href="#"
-              className="font-neutra-demi text-[14px] leading-[19px] font-[600] transition-colors duration-200 ease-in-out hover:text-[var(--color-brand-red)]"
-            >
-              NORTE
-            </a>
-            <a
-              href="#"
-              className="font-neutra-demi text-[14px] leading-[19px] font-[600] transition-colors duration-200 ease-in-out hover:text-[var(--color-brand-red)]"
-            >
-              CENTRO
-            </a>
-            <a
-              href="#"
-              className="font-neutra-demi text-[14px] leading-[19px] font-[600] transition-colors duration-200 ease-in-out hover:text-[var(--color-brand-red)]"
-            >
-              SUR
-            </a>
-            <a
-              href="#"
-              className="font-neutra-demi text-[14px] leading-[19px] font-[600] transition-colors duration-200 ease-in-out hover:text-[var(--color-brand-red)]"
-            >
-              ISLA DE PASCUA
-            </a>
-            <a
-              href="#"
-              className="font-neutra-demi text-[14px] leading-[19px] font-[600] transition-colors duration-200 ease-in-out hover:text-[var(--color-brand-red)]"
-            >
-              SANTIAGO
-            </a>
-            <a
-              href="#"
-              className="font-neutra-demi text-[14px] leading-[19px] font-[600] transition-colors duration-200 ease-in-out hover:text-[var(--color-brand-red)]"
-            >
-              GUÍA IMPRESA
-            </a>
-            <a
-              href="#"
-              className="font-neutra-demi text-[14px] leading-[19px] font-[600] transition-colors duration-200 ease-in-out hover:text-[var(--color-brand-red)]"
-            >
-              PRENSA
-            </a>
-            <a
-              href="#"
-              className="font-neutra-demi text-[14px] leading-[19px] font-[600] transition-colors duration-200 ease-in-out hover:text-[var(--color-brand-red)]"
-            >
-              NOSOTROS
-            </a>
-            <a
-              href="#"
-              className="font-neutra-demi text-[14px] leading-[19px] font-[600] transition-colors duration-200 ease-in-out hover:text-[var(--color-brand-red)]"
-            >
-              EXPLORACIONES TNF
-            </a>
+            {CATEGORIES.map((c) => (
+              <a
+                key={c.slug}
+                href={c.slug === "todos" ? "/" : `/categoria/${c.slug}`}
+                className="font-neutra-demi text-[14px] leading-[19px] font-[600] transition-colors duration-200 ease-in-out hover:text-[var(--color-brand-red)]"
+              >
+                {language === "es" ? c.labelEs : c.labelEn.toUpperCase()}
+              </a>
+            ))}
           </nav>
 
           <div className="flex-1 flex flex-col h-full">
-            {/* Mobile footer content (shared) */}
-            <div className="lg:hidden mt-8">
-              <MobileFooterContent />
-            </div>
             <div className="mb-4">
               <h3 className="font-neutra-demi text-[22px] leading-[22px] font-[400] text-white">
                 “No es que la gente quiera las ciudades porque son bellas; las
@@ -124,7 +78,6 @@ export function Footer() {
                 height={96}
                 className="h-24 w-auto border border-white p-1"
               />
-              {/* email moved to the left column on large screens */}
             </div>
           </div>
         </div>

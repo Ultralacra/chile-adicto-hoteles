@@ -229,7 +229,11 @@ export function HotelDetail({ hotel }: HotelDetailProps) {
               <div className="flex flex-col gap-2">
                 {hotel.website && (
                   <a
-                    href={hotel.website.startsWith('http') ? hotel.website : `https://${hotel.website}`}
+                    href={
+                      hotel.website.startsWith("http")
+                        ? hotel.website
+                        : `https://${hotel.website}`
+                    }
                     target="_blank"
                     rel="noopener noreferrer"
                     className="text-[var(--color-brand-red)] uppercase text-sm font-[600] no-underline"
@@ -240,12 +244,21 @@ export function HotelDetail({ hotel }: HotelDetailProps) {
 
                 {hotel.instagram && (
                   <a
-                    href={hotel.instagram.startsWith('http') ? hotel.instagram : `https://instagram.com/${hotel.instagram.replace(/^@/, '')}`}
+                    href={
+                      hotel.instagram.startsWith("http")
+                        ? hotel.instagram
+                        : `https://instagram.com/${hotel.instagram.replace(
+                            /^@/,
+                            ""
+                          )}`
+                    }
                     target="_blank"
                     rel="noopener noreferrer"
                     className="text-[var(--color-brand-red)] text-sm no-underline"
                   >
-                    {hotel.instagram.startsWith('@') ? hotel.instagram : `@${hotel.instagram.replace(/^https?:\/\//, '')}`}
+                    {hotel.instagram.startsWith("@")
+                      ? hotel.instagram
+                      : `@${hotel.instagram.replace(/^https?:\/\//, "")}`}
                   </a>
                 )}
               </div>

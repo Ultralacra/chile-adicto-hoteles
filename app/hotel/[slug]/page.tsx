@@ -77,7 +77,10 @@ export default function HotelPage({
         excerpt:
           (source[language]?.description && source[language].description[0]) ||
           "",
-  fullContent: ((source[language]?.description || []).filter(Boolean).map((p: string) => `<p>${p}</p>`).join('')),
+        fullContent: (source[language]?.description || [])
+          .filter(Boolean)
+          .map((p: string) => `<p>${p}</p>`)
+          .join(""),
         website: source.website || "",
         instagram: source.instagram || "",
         featuredImage: (source.images && source.images[0]) || "",

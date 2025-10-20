@@ -1,19 +1,20 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 
 export function MobileFooterContent() {
   const items = [
-    "TODOS",
-    "NORTE",
-    "CENTRO",
-    "SUR",
-    "ISLA DE PASCUA",
-    "SANTIAGO",
-    "GUÍA IMPRESA",
-    "PRENSA",
-    "NOSOTROS",
-    "EXPLORACIONES TNF",
+    { slug: "todos", label: "TODOS" },
+    { slug: "arquitectura", label: "ARQUITECTURA" },
+    { slug: "barrios", label: "BARRIOS" },
+    { slug: "iconos", label: "ICONOS" },
+    { slug: "mercados", label: "MERCADOS" },
+    { slug: "miradores", label: "MIRADORES" },
+    { slug: "cultura", label: "CULTURA" },
+    { slug: "palacios", label: "PALACIOS" },
+    { slug: "parques", label: "PARQUES" },
+    { slug: "fuera-de-stgo", label: "FUERA DE STGO" },
   ];
 
   return (
@@ -35,14 +36,14 @@ export function MobileFooterContent() {
 
       <nav className="mb-12">
         <ul className="space-y-4 text-center">
-          {items.map((label) => (
-            <li key={label}>
-              <a
-                href="#"
+          {items.map((item) => (
+            <li key={item.slug}>
+              <Link
+                href={item.slug === "todos" ? "/" : `/categoria/${item.slug}`}
                 className="font-neutra-demi text-[14px] leading-[19px] font-[600] text-white hover:text-gray-300 transition-colors"
               >
-                {label}
-              </a>
+                {item.label}
+              </Link>
             </li>
           ))}
         </ul>

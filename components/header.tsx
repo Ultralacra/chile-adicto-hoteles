@@ -28,7 +28,7 @@ export function Header() {
             <div className="lg:hidden absolute left-1/2 -translate-x-1/2">
               <Link href="/" aria-label="Ir al inicio">
                 <Image
-                  src="/logo-best-espanol.svg"
+                  src="/Santiago-adicto-Guia-blanco.svg"
                   alt="Chile Adicto 50 Best"
                   width={260}
                   height={90}
@@ -65,8 +65,8 @@ export function Header() {
             <div className="hidden lg:flex items-center">
               <Link href="/" aria-label="Ir al inicio">
                 <Image
-                  src="/logo-best-espanol.svg"
-                  alt="Chile Adicto 50 Best"
+                  src="/Santiago-adicto-Guia.svg"
+                  alt="santiago Adicto"
                   width={360}
                   height={110}
                   className="h-24 w-auto"
@@ -80,22 +80,22 @@ export function Header() {
               <LanguageSwitcher />
               <div className="flex items-center gap-4">
                 <Image
-                  src="/log-cadh.svg"
-                  alt="Chile Adicto"
-                  width={70}
-                  height={50}
-                  className="h-10 w-auto"
-                />
-                <Image
-                  src="/log-cadh.svg"
-                  alt="Chile Adicto"
-                  width={70}
-                  height={50}
-                  className="h-10 w-auto"
-                />
-                <Image
                   src="/santiago-adicto.svg"
                   alt="Santiago Adicto"
+                  width={70}
+                  height={50}
+                  className="h-10 w-auto"
+                />
+                <Image
+                  src="/log-cadh.svg"
+                  alt="Chile Adicto"
+                  width={70}
+                  height={50}
+                  className="h-10 w-auto"
+                />
+                <Image
+                  src="/log-cadh.svg"
+                  alt="Chile Adicto"
                   width={70}
                   height={50}
                   className="h-10 w-auto"

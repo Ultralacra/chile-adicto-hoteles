@@ -222,6 +222,36 @@ export function HotelDetail({ hotel }: HotelDetailProps) {
             dangerouslySetInnerHTML={{ __html: hotel.fullContent }}
           />
 
+          {/* Website / Instagram links - show below content, separated */}
+          {(hotel.website || hotel.instagram) && (
+            <div className="max-w-4xl mx-auto mb-8">
+              <div className="border-t border-dashed border-gray-300 my-6" />
+              <div className="flex flex-col gap-2">
+                {hotel.website && (
+                  <a
+                    href={hotel.website.startsWith('http') ? hotel.website : `https://${hotel.website}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-[var(--color-brand-red)] uppercase text-sm font-[600] no-underline"
+                  >
+                    {hotel.website}
+                  </a>
+                )}
+
+                {hotel.instagram && (
+                  <a
+                    href={hotel.instagram.startsWith('http') ? hotel.instagram : `https://instagram.com/${hotel.instagram.replace(/^@/, '')}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-[var(--color-brand-red)] text-sm no-underline"
+                  >
+                    {hotel.instagram.startsWith('@') ? hotel.instagram : `@${hotel.instagram.replace(/^https?:\/\//, '')}`}
+                  </a>
+                )}
+              </div>
+            </div>
+          )}
+
           {/* Action Buttons */}
           <div className="flex gap-4 mt-12">
             <button className="relative group hover:opacity-80 transition-opacity">

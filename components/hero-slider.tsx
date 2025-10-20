@@ -160,7 +160,7 @@ export function HeroSlider() {
               index === currentIndex ? "opacity-100" : "opacity-0"
             }`}
           >
-            <div className="w-full px-4 max-w-7xl mx-auto">
+            <div className="w-full px-4 max-w-7xl mx-auto relative">
               <img
                 src={image || "/placeholder.svg"}
                 alt={`Slide ${index + 1}`}
@@ -168,6 +168,26 @@ export function HeroSlider() {
                 width={1200}
                 height={650}
               />
+
+              {/* Dots rendered inside the active slide so they sit over the image */}
+              {index === currentIndex && (
+                <div className="absolute bottom-4 left-0 right-0 flex justify-center pointer-events-auto">
+                  <div className="flex gap-2">
+                    {desktopImages.map((_, dotIndex) => (
+                      <button
+                        key={`dot-${dotIndex}`}
+                        onClick={() => goToSlide(dotIndex)}
+                        className={`rounded-full transition-all focus:outline-none ${
+                          dotIndex === currentIndex
+                            ? "bg-red-500 w-3 h-3"
+                            : "bg-white w-2 h-2"
+                        }`}
+                        aria-label={`Go to slide ${dotIndex + 1}`}
+                      />
+                    ))}
+                  </div>
+                </div>
+              )}
             </div>
           </div>
         ))}
@@ -246,7 +266,7 @@ export function HeroSlider() {
         </div>
       </div>
 
-      {/* legacy dots removed */}
+      {/* global dots removed - dots are rendered inside the active slide */}
     </div>
   );
 }

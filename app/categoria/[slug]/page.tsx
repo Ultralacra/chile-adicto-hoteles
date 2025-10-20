@@ -6,6 +6,7 @@ import { Footer } from "@/components/footer";
 import { CategoryNav } from "@/components/category-nav";
 import { notFound } from "next/navigation";
 import { getHotelsByCategory } from "@/lib/hotels-data";
+import arquitecturaData from "@/lib/arquitectura.json";
 import { useLanguage } from "@/contexts/language-context";
 import { useEffect, use } from "react";
 
@@ -19,15 +20,21 @@ const validCategories = [
   "prensa",
   "nosotros",
   "exploraciones-tnf",
+  // new categories added
+  "arquitectura",
+  "barrios",
+  "iconos",
+  "mercados",
+  "miradores",
+  "cultura",
+  "palacios",
+  "parques",
+  "fuera-de-stgo",
 ];
 
 type ResolvedParams = { slug: string };
 
-export default function CategoryPage({
-  params,
-}: {
-  params: Promise<ResolvedParams> | ResolvedParams;
-}) {
+export default function CategoryPage({ params }: { params: any }) {
   const resolvedParams = use(params as any) as ResolvedParams;
   const { slug } = resolvedParams;
   const { language, t } = useLanguage();
@@ -47,10 +54,26 @@ export default function CategoryPage({
     "isla-de-pascua": "ISLA DE PASCUA",
     santiago: "SANTIAGO",
     "exploraciones-tnf": "EXPLORACIONES TNF",
+    // new category name mappings
+    arquitectura: "ARQUITECTURA",
+    barrios: "BARRIOS",
+    iconos: "ICONOS",
+    mercados: "MERCADOS",
+    miradores: "MIRADORES",
+    cultura: "CULTURA",
+    palacios: "PALACIOS",
+    parques: "PARQUES",
+    "fuera-de-stgo": "FUERA DE STGO",
   };
 
   const categoryName = categoryMap[slug] || slug.toUpperCase();
-  const filteredHotels = getHotelsByCategory(categoryName);
+  let filteredHotels = getHotelsByCategory(categoryName);
+
+  // If user is viewing the arquitectura category, use the normalized arquitectura.json data
+  if (slug === "arquitectura") {
+    // arquitecturaData is an array with items shaped like the site's Hotel interface translations
+    filteredHotels = arquitecturaData as unknown as any[];
+  }
 
   return (
     <div className="min-h-screen bg-white">

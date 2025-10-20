@@ -9,23 +9,15 @@ interface CategoryNavProps {
 
 const categories = [
   { slug: "todos", labelEs: "TODOS", labelEn: "ALL" },
-  { slug: "norte", labelEs: "NORTE", labelEn: "NORTH" },
-  { slug: "centro", labelEs: "CENTRO", labelEn: "CENTER" },
-  { slug: "sur", labelEs: "SUR", labelEn: "SOUTH" },
-  {
-    slug: "isla-de-pascua",
-    labelEs: "ISLA DE PASCUA",
-    labelEn: "EASTER ISLAND",
-  },
-  { slug: "santiago", labelEs: "SANTIAGO", labelEn: "SANTIAGO" },
-  { slug: "guia-impresa", labelEs: "GUÍA IMPRESA", labelEn: "PRINT GUIDE" },
-  { slug: "prensa", labelEs: "PRENSA", labelEn: "PRESS" },
-  { slug: "nosotros", labelEs: "NOSOTROS", labelEn: "ABOUT US" },
-  {
-    slug: "exploraciones-tnf",
-    labelEs: "EXPLORACIONES TNF",
-    labelEn: "TNF EXPLORATIONS",
-  },
+  { slug: "arquitectura", labelEs: "ARQUITECTURA", labelEn: "Architecture" },
+  { slug: "barrios", labelEs: "BARRIOS", labelEn: "Neighborhoods" },
+  { slug: "iconos", labelEs: "ICONOS", labelEn: "Icons" },
+  { slug: "mercados", labelEs: "MERCADOS", labelEn: "Markets" },
+  { slug: "miradores", labelEs: "MIRADORES", labelEn: "Viewpoints" },
+  { slug: "cultura", labelEs: "CULTURA", labelEn: "Culture" },
+  { slug: "palacios", labelEs: "PALACIOS", labelEn: "Palaces" },
+  { slug: "parques", labelEs: "PARQUES", labelEn: "Parks" },
+  { slug: "fuera-de-stgo", labelEs: "FUERA DE STGO", labelEn: "OUTSIDE STGO" },
 ];
 
 export function CategoryNav({ activeCategory = "todos" }: CategoryNavProps) {

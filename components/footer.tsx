@@ -8,7 +8,7 @@ export function Footer() {
         <div className="hidden lg:flex flex-col lg:flex-row items-start lg:items-stretch justify-between gap-8">
           <div className="flex-shrink-0">
             <Image
-              src="/logo-best-espanol-blanco-footer.svg"
+              src="/Santiago-adicto-Guia-blanco1.svg"
               alt="Chile adicto 50 BEST"
               width={300}
               height={84}
@@ -86,7 +86,8 @@ export function Footer() {
             </div>
             <div className="mb-4">
               <h3 className="font-neutra-demi text-[22px] leading-[22px] font-[400] text-white">
-                LOS MEJORES HOTELES DE CHILE.
+                “No es que la gente quiera las ciudades porque son bellas; las
+                ciudades son bellas cuando la gente las quiere.”
               </h3>
             </div>
 
@@ -95,16 +96,16 @@ export function Footer() {
                 PATO@CLOSER.CL
               </div>
               <Image
-                src="/chilehoteles-blancos-footer.svg"
-                alt="Chile Hoteles"
+                src="/santiago-adicto-blanco-4-footer.svg"
+                alt="Stgo adicto"
                 width={120}
                 height={48}
                 className="h-12 w-auto"
               />
               <Image
-                src="/chile-blanco-1-footer.svg"
-                alt="Chile"
-                width={80}
+                src="/chilehoteles-blancos-footer.svg"
+                alt="Chile Hoteles"
+                width={120}
                 height={48}
                 className="h-12 w-auto"
               />
@@ -115,6 +116,7 @@ export function Footer() {
                 height={48}
                 className="h-12 w-auto"
               />
+
               <Image
                 src="/wecare-blaco-2-footer.svg"
                 alt="WE CARE"

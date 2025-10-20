@@ -1,9 +1,9 @@
-"use client"
+"use client";
 
-import { hotelsData } from "@/lib/hotels-data"
-import { Edit, Eye, Trash2 } from "lucide-react"
-import Link from "next/link"
-import Image from "next/image"
+import { hotelsData } from "@/lib/hotels-data";
+import { Edit, Eye, Trash2 } from "lucide-react";
+import Link from "next/link";
+import Image from "next/image";
 
 export default function PostsListPage() {
   return (
@@ -11,7 +11,9 @@ export default function PostsListPage() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-bold text-gray-900">All Posts</h1>
-          <p className="text-gray-600 mt-1">{hotelsData.length} todos los post</p>
+          <p className="text-gray-600 mt-1">
+            {hotelsData.length} todos los post
+          </p>
         </div>
         <Link
           href="/admin/posts/new"
@@ -26,7 +28,9 @@ export default function PostsListPage() {
         <table className="w-full">
           <thead className="bg-gray-50 border-b border-gray-200">
             <tr>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Hotel</th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                Hotel
+              </th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                 Categories
               </th>
@@ -48,7 +52,9 @@ export default function PostsListPage() {
                       className="rounded object-cover"
                     />
                     <div>
-                      <p className="font-medium text-gray-900">{hotel.es.name}</p>
+                      <p className="font-medium text-gray-900">
+                        {hotel.es.name}
+                      </p>
                       <p className="text-sm text-gray-500">{hotel.slug}</p>
                     </div>
                   </div>
@@ -56,7 +62,10 @@ export default function PostsListPage() {
                 <td className="px-6 py-4">
                   <div className="flex flex-wrap gap-2">
                     {hotel.categories.map((cat) => (
-                      <span key={cat} className="bg-gray-100 px-2 py-1 rounded text-xs font-medium text-gray-700">
+                      <span
+                        key={cat}
+                        className="bg-gray-100 px-2 py-1 rounded text-xs font-medium text-gray-700"
+                      >
                         {cat}
                       </span>
                     ))}
@@ -94,5 +103,5 @@ export default function PostsListPage() {
         </table>
       </div>
     </div>
-  )
+  );
 }

@@ -19,6 +19,9 @@ interface HotelDetailProps {
     phone?: string;
     featuredImage: string;
     galleryImages: string[];
+    website_display?: string;
+    instagram_display?: string;
+    photosCredit?: string;
     categories: string[];
   };
 }
@@ -72,7 +75,12 @@ export function HotelDetail({ hotel }: HotelDetailProps) {
       <main className="container mx-auto px-4 py-8 max-w-7xl">
         {/* Main Image Carousel */}
         <div className="mx-auto mb-4 w-full max-w-[1200px]">
-          <div className="relative overflow-hidden" style={{ height: 600 }}>
+          {/*
+            Responsive height: on small screens make the carousel height relative to
+            viewport width (so images are wider than tall). On large screens keep
+            a fixed tall height.
+          */}
+          <div className="relative overflow-hidden h-[55vw] md:h-[45vw] lg:h-[600px]">
             <Image
               src={allImages[currentImageIndex] || "/placeholder.svg"}
               alt={hotel.name}
@@ -101,7 +109,7 @@ export function HotelDetail({ hotel }: HotelDetailProps) {
 
         {/* Thumbnail Gallery - Show all images (no red focus ring). Click opens lightbox */}
         <div className="mx-auto w-full max-w-[1200px]">
-          <div className="grid grid-cols-6 gap-2 mb-12">
+          <div className="grid grid-cols-3 sm:grid-cols-4 lg:grid-cols-6 gap-2 mb-12">
             {allImages.map((image, index) => (
               <button
                 key={index}
@@ -110,7 +118,7 @@ export function HotelDetail({ hotel }: HotelDetailProps) {
                   setLightboxIndex(index);
                   setIsLightboxOpen(true);
                 }}
-                className={`relative aspect-[4/3] overflow-hidden focus:outline-none`}
+                className={`relative overflow-hidden focus:outline-none aspect-[16/9] sm:aspect-[4/3] lg:aspect-[4/3]`}
               >
                 <Image
                   src={image || "/placeholder.svg"}

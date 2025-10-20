@@ -3,7 +3,6 @@
 import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
 import { HotelDetail } from "@/components/hotel-detail";
-import { santiagoHotelsComplete } from "@/lib/santiago-hotels-complete";
 import arquitecturaData from "@/lib/arquitectura.json";
 import { useLanguage } from "@/contexts/language-context";
 import { useEffect } from "react";
@@ -21,18 +20,11 @@ export default function LugarPage(props: any) {
     window.scrollTo(0, 0);
   }, [resolvedParams?.slug]);
 
-  const hotelData = santiagoHotelsComplete.find(
-    (h) => h.slug === resolvedParams?.slug
-  );
+  // buscar en arquitectura.json
+  const a = arquitecturaData as unknown as any[];
+  const arquitecturaEntry = a.find((x) => x.slug === resolvedParams?.slug);
 
-  // fallback: buscar en arquitectura.json
-  let arquitecturaEntry = null;
-  if (!hotelData) {
-    const a = arquitecturaData as unknown as any[];
-    arquitecturaEntry = a.find((x) => x.slug === resolvedParams?.slug);
-  }
-
-  if (!hotelData && !arquitecturaEntry) {
+  if (!arquitecturaEntry) {
     return (
       <div className="min-h-screen bg-white">
         <Header />
@@ -60,7 +52,7 @@ export default function LugarPage(props: any) {
     );
   }
 
-  const source = hotelData || arquitecturaEntry;
+  const source = arquitecturaEntry;
 
   const hotel = source
     ? {

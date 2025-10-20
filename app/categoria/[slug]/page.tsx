@@ -5,7 +5,6 @@ import { HotelCard } from "@/components/hotel-card";
 import { Footer } from "@/components/footer";
 import { CategoryNav } from "@/components/category-nav";
 import { notFound } from "next/navigation";
-import { getHotelsByCategory } from "@/lib/hotels-data";
 import arquitecturaData from "@/lib/arquitectura.json";
 import { useLanguage } from "@/contexts/language-context";
 import { useEffect, use } from "react";
@@ -67,13 +66,29 @@ export default function CategoryPage({ params }: { params: any }) {
   };
 
   const categoryName = categoryMap[slug] || slug.toUpperCase();
-  let filteredHotels = getHotelsByCategory(categoryName);
 
-  // If user is viewing the arquitectura category, use the normalized arquitectura.json data
-  if (slug === "arquitectura") {
-    // arquitecturaData is an array with items shaped like the site's Hotel interface translations
-    filteredHotels = arquitecturaData as unknown as any[];
-  }
+  // Candidates: include possible English/Spanish variants for some categories
+  const categoryCandidatesMap: { [key: string]: string[] } = {
+    arquitectura: ["ARQUITECTURA", "ARCHITECTURE"],
+    "isla-de-pascua": ["ISLA DE PASCUA", "EASTER ISLAND"],
+    // add other special cases if needed
+  };
+
+  const candidates = categoryCandidatesMap[slug] || [categoryName];
+
+  // Use arquitectura.json as main source; compare normalized uppercase values
+  let filteredHotels = (arquitecturaData as unknown as any[]).filter((h) => {
+    const entryCats = (h.categories || []).map((c: any) =>
+      String(c).toUpperCase()
+    );
+    const enCat = h.en?.category ? String(h.en.category).toUpperCase() : null;
+    const esCat = h.es?.category ? String(h.es.category).toUpperCase() : null;
+
+    return candidates.some((cand) => {
+      const C = String(cand).toUpperCase();
+      return entryCats.includes(C) || enCat === C || esCat === C;
+    });
+  });
 
   return (
     <div className="min-h-screen bg-white">

@@ -1,22 +1,25 @@
-"use client"
+"use client";
 
-import { hotelsData } from "@/lib/hotels-data"
-import { FileText, Plus, TrendingUp } from "lucide-react"
-import Link from "next/link"
+import arquitecturaData from "@/lib/arquitectura.json";
+import { FileText, Plus, TrendingUp } from "lucide-react";
+import Link from "next/link";
 
 export default function AdminDashboard() {
-  const totalPosts = hotelsData.length
-  const categories = ["SANTIAGO", "NORTE", "CENTRO", "SUR", "ISLA DE PASCUA"]
+  const data = arquitecturaData as any[];
+  const totalPosts = data.length;
+  const categories = ["SANTIAGO", "NORTE", "CENTRO", "SUR", "ISLA DE PASCUA"];
   const postsByCategory = categories.map((cat) => ({
     name: cat,
-    count: hotelsData.filter((h) => h.categories.includes(cat)).length,
-  }))
+    count: data.filter((h) => (h.categories || []).includes(cat)).length,
+  }));
 
   return (
     <div className="space-y-6">
       <div>
         <h1 className="text-3xl font-bold text-gray-900">Dashboard</h1>
-        <p className="text-gray-600 mt-1">Welcome to Chile Adicto Hotels Admin Panel</p>
+        <p className="text-gray-600 mt-1">
+          Welcome to Chile Adicto Hotels Admin Panel
+        </p>
       </div>
 
       {/* Stats Cards */}
@@ -25,7 +28,9 @@ export default function AdminDashboard() {
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm text-gray-600 font-medium">Total Posts</p>
-              <p className="text-3xl font-bold text-gray-900 mt-2">{totalPosts}</p>
+              <p className="text-3xl font-bold text-gray-900 mt-2">
+                {totalPosts}
+              </p>
             </div>
             <div className="bg-blue-100 p-3 rounded-lg">
               <FileText className="text-blue-600" size={24} />
@@ -37,7 +42,9 @@ export default function AdminDashboard() {
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm text-gray-600 font-medium">Categories</p>
-              <p className="text-3xl font-bold text-gray-900 mt-2">{categories.length}</p>
+              <p className="text-3xl font-bold text-gray-900 mt-2">
+                {categories.length}
+              </p>
             </div>
             <div className="bg-green-100 p-3 rounded-lg">
               <TrendingUp className="text-green-600" size={24} />
@@ -88,7 +95,9 @@ export default function AdminDashboard() {
             <FileText size={24} className="text-gray-600" />
             <div>
               <p className="font-medium text-gray-900">View All Posts</p>
-              <p className="text-sm text-gray-600">Manage existing hotel posts</p>
+              <p className="text-sm text-gray-600">
+                Manage existing hotel posts
+              </p>
             </div>
           </Link>
           <Link
@@ -98,11 +107,13 @@ export default function AdminDashboard() {
             <Plus size={24} className="text-gray-600" />
             <div>
               <p className="font-medium text-gray-900">Create New Post</p>
-              <p className="text-sm text-gray-600">Add a new hotel to the site</p>
+              <p className="text-sm text-gray-600">
+                Add a new hotel to the site
+              </p>
             </div>
           </Link>
         </div>
       </div>
     </div>
-  )
+  );
 }

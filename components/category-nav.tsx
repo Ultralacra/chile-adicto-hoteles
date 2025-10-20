@@ -24,8 +24,9 @@ export function CategoryNav({ activeCategory = "todos" }: CategoryNavProps) {
   const { language } = useLanguage();
 
   return (
-    <nav className="py-4 ">
-      <ul className="flex flex-wrap items-center gap-3 text-sm font-medium">
+    // Hide desktop category nav on small screens; mobile menu provides navigation
+    <nav className="py-4">
+      <ul className="hidden lg:flex flex-wrap items-center gap-3 text-sm font-medium">
         {categories.map((category, index) => (
           <li key={category.slug} className="flex items-center gap-3">
             <Link

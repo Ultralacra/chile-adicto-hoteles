@@ -11,7 +11,7 @@ export default function PostsListPage() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-bold text-gray-900">All Posts</h1>
-          <p className="text-gray-600 mt-1">{hotelsData.length} total hotel posts</p>
+          <p className="text-gray-600 mt-1">{hotelsData.length} todos los post</p>
         </div>
         <Link
           href="/admin/posts/new"
@@ -65,7 +65,7 @@ export default function PostsListPage() {
                 <td className="px-6 py-4">
                   <div className="flex items-center gap-2">
                     <Link
-                      href={`/hotel/${hotel.slug}`}
+                      href={`/lugar/${hotel.slug}`}
                       target="_blank"
                       className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
                       title="View"

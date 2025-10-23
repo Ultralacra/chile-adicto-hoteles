@@ -19,7 +19,7 @@ export default function Page() {
     <div className="min-h-screen bg-white">
       <Header />
 
-  <main className="container mx-auto px-4 py-4 max-w-[1200px]">
+      <main className="container mx-auto px-4 py-4 max-w-[1200px]">
         <div className="hidden lg:block">
           <CategoryNav activeCategory="todos" />
         </div>

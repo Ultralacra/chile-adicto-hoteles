@@ -62,14 +62,29 @@ export function HotelDetail({ hotel }: HotelDetailProps) {
   useEffect(() => {
     const html = hotel.fullContent || "";
     const cleaned = html.replace(/<p[^>]*>[\s\S]*?<\/p>/gi, (p) => {
-      const text = p.replace(/<[^>]+>/g, " ").trim().toLowerCase();
+      const text = p
+        .replace(/<[^>]+>/g, " ")
+        .trim()
+        .toLowerCase();
       const hasUrl = /https?:\/\//i.test(text) || /www\./i.test(text);
       const hasEmail = /[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}/i.test(text);
-      const hasPhone = /\b(tel|tel\.|tel:|teléfono|telefono)\b/i.test(text) || /\+?\d[\d\s().-]{6,}/.test(text);
+      const hasPhone =
+        /\b(tel|tel\.|tel:|teléfono|telefono)\b/i.test(text) ||
+        /\+?\d[\d\s().-]{6,}/.test(text);
       const hasInstagram = /instagram\.com|\binstagram\b|@/i.test(text);
-      const hasPhotos = /\bfotos\b|\bfotografía\b|\bfotografia\b|\bphotos\b|\bphoto\b/i.test(text);
+      const hasPhotos =
+        /\bfotos\b|\bfotografía\b|\bfotografia\b|\bphotos\b|\bphoto\b/i.test(
+          text
+        );
       const hasWebLabel = /\bweb\b/i.test(text);
-      if (hasUrl || hasEmail || hasPhone || hasInstagram || hasPhotos || hasWebLabel) {
+      if (
+        hasUrl ||
+        hasEmail ||
+        hasPhone ||
+        hasInstagram ||
+        hasPhotos ||
+        hasWebLabel
+      ) {
         return ""; // eliminar párrafo con info de contacto/redes
       }
       return p;
@@ -206,8 +221,8 @@ export function HotelDetail({ hotel }: HotelDetailProps) {
           />
         )}
 
-  {/* Hotel Information (constrain text content to 1024px) */}
-  <div className="max-w-[1024px] mx-auto">
+        {/* Hotel Information (constrain text content to 1024px) */}
+        <div className="max-w-[1024px] mx-auto">
           {/* Heart Icon and Title (match home card spacing) */}
           <div className="flex items-start gap-[10px] mb-3">
             <div className="flex-shrink-0">
@@ -286,8 +301,10 @@ export function HotelDetail({ hotel }: HotelDetailProps) {
                   rel="noopener noreferrer"
                   className="text-[var(--color-brand-red)] no-underline"
                 >
-                  {(hotel.instagram_display ||
-                    formatInstagramDisplay(hotel.instagram)).toUpperCase()}
+                  {(
+                    hotel.instagram_display ||
+                    formatInstagramDisplay(hotel.instagram)
+                  ).toUpperCase()}
                 </a>
               </div>
             )}

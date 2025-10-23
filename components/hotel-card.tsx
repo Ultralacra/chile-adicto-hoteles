@@ -20,7 +20,7 @@ export function HotelCard({
     <Link href={`/lugar/${slug}`}>
       <article className="group cursor-pointer flex flex-col h-full gap-3">
         {/* Image Container */}
-  <div className="relative aspect-[386/264] overflow-hidden">
+        <div className="relative aspect-[386/264] overflow-hidden">
           <Image
             src={image || "/placeholder.svg"}
             alt={name}

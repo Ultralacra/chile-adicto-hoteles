@@ -18,9 +18,9 @@ export function HotelCard({
 }: HotelCardProps) {
   return (
     <Link href={`/lugar/${slug}`}>
-      <article className="group cursor-pointer flex flex-col h-full">
+      <article className="group cursor-pointer flex flex-col h-full gap-3">
         {/* Image Container */}
-        <div className="relative aspect-[4/3] overflow-hidden mb-4">
+  <div className="relative aspect-[386/264] overflow-hidden">
           <Image
             src={image || "/placeholder.svg"}
             alt={name}
@@ -30,10 +30,10 @@ export function HotelCard({
         </div>
 
         {/* Content */}
-        <div className="space-y-2 flex-1">
+        <div className="space-y-3 flex-1">
           {/* Heart Icon and Title */}
-          <div className="flex items-start gap-3">
-            <div className="flex-shrink-0 mt-1">
+          <div className="flex items-start gap-[10px]">
+            <div className="flex-shrink-0">
               <div
                 className="flex items-center justify-center"
                 style={{ width: 41, height: 50 }}
@@ -57,13 +57,13 @@ export function HotelCard({
           </div>
 
           {/* Description */}
-          <p className="font-neutra text-[15px] text-black leading-[22px] font-normal">
+          <p className="font-neutra text-[15px] text-black leading-[22px] font-normal line-clamp-5">
             {description}
           </p>
         </div>
 
         {/* Elegant divider pushed to bottom so all cards align */}
-        <div className="mt-auto pt-4">
+        <div className="mt-auto pt-2 pb-5">
           <div className="mx-auto h-[1px] w-3/4 bg-[#b4b4b8]" />
         </div>
       </article>

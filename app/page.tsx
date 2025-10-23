@@ -19,7 +19,7 @@ export default function Page() {
     <div className="min-h-screen bg-white">
       <Header />
 
-      <main className="container mx-auto px-4 py-4 max-w-7xl">
+  <main className="container mx-auto px-4 py-4 max-w-[1200px]">
         <div className="hidden lg:block">
           <CategoryNav activeCategory="todos" />
         </div>
@@ -48,7 +48,7 @@ export default function Page() {
 
           {/* Cards section below - full width */}
           <section className="mt-6">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
               {hotels.map((hotel) => (
                 <div key={hotel.slug} className="col-span-1">
                   <HotelCard
@@ -76,7 +76,7 @@ export default function Page() {
           </section>
         </div>
       </main>
-      <Footer />
+      <Footer activeCategory="todos" />
     </div>
   );
 }

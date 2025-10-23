@@ -5,16 +5,15 @@ import { Footer } from "@/components/footer";
 import { HotelDetail } from "@/components/hotel-detail";
 import arquitecturaData from "@/lib/arquitectura.json";
 import { useLanguage } from "@/contexts/language-context";
-import { useEffect } from "react";
+import { useEffect, use } from "react";
 
 type ResolvedParams = { slug: string };
 
 export default function LugarPage(props: any) {
   const { language, t } = useLanguage();
 
-  // Params may be passed as props.params by the app router
-  const params = (props && props.params) || ({} as { slug?: string });
-  const resolvedParams = params as ResolvedParams;
+  // Next.js: params es un Promise en Client Components, usar React.use() para resolverlo
+  const resolvedParams = use(props.params as any) as ResolvedParams;
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -113,11 +112,24 @@ export default function LugarPage(props: any) {
     );
   }
 
+  // Derivar la categoría activa (slug) para marcar menú y footer
+  function categoryToSlug(cat: string) {
+    if (!cat) return "todos";
+    const c = String(cat).toLowerCase();
+    if (c === "all" || c === "todos") return "todos";
+    if (c.includes("architect")) return "arquitectura";
+    return c.replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
+  }
+
+  const activeCategorySlug = categoryToSlug(
+    (hotel?.categories && hotel.categories[0]) || "todos"
+  );
+
   return (
     <div className="min-h-screen bg-white">
       <Header />
       <HotelDetail hotel={hotel as any} />
-      <Footer />
+      <Footer activeCategory={activeCategorySlug} />
     </div>
   );
 }

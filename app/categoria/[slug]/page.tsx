@@ -94,11 +94,11 @@ export default function CategoryPage({ params }: { params: any }) {
     <div className="min-h-screen bg-white">
       <Header />
 
-      <main className="container mx-auto px-4 py-8 max-w-7xl">
+  <main className="container mx-auto px-4 py-8 max-w-[1200px]">
         <CategoryNav activeCategory={slug} />
 
-        {/* Hotel Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-12">
+  {/* Hotel Grid */}
+  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 mt-2">
           {filteredHotels.length > 0 ? (
             filteredHotels.map((hotel) => (
               <HotelCard
@@ -123,7 +123,7 @@ export default function CategoryPage({ params }: { params: any }) {
         </div>
       </main>
 
-      <Footer />
+      <Footer activeCategory={slug} />
     </div>
   );
 }

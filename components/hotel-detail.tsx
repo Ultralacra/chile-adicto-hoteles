@@ -58,21 +58,35 @@ export function HotelDetail({ hotel }: HotelDetailProps) {
     return () => clearInterval(id);
   }, [allImages.length, isLightboxOpen]);
 
-  // Keep fullContent as-is so any embedded <a> links in the description remain clickable.
+  // Limpiar el contenido: remover párrafos con info de contacto/redes para evitar duplicados
   useEffect(() => {
-    setCleanedFullContent(hotel.fullContent || "");
+    const html = hotel.fullContent || "";
+    const cleaned = html.replace(/<p[^>]*>[\s\S]*?<\/p>/gi, (p) => {
+      const text = p.replace(/<[^>]+>/g, " ").trim().toLowerCase();
+      const hasUrl = /https?:\/\//i.test(text) || /www\./i.test(text);
+      const hasEmail = /[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}/i.test(text);
+      const hasPhone = /\b(tel|tel\.|tel:|teléfono|telefono)\b/i.test(text) || /\+?\d[\d\s().-]{6,}/.test(text);
+      const hasInstagram = /instagram\.com|\binstagram\b|@/i.test(text);
+      const hasPhotos = /\bfotos\b|\bfotografía\b|\bfotografia\b|\bphotos\b|\bphoto\b/i.test(text);
+      const hasWebLabel = /\bweb\b/i.test(text);
+      if (hasUrl || hasEmail || hasPhone || hasInstagram || hasPhotos || hasWebLabel) {
+        return ""; // eliminar párrafo con info de contacto/redes
+      }
+      return p;
+    });
+    setCleanedFullContent(cleaned);
   }, [hotel.fullContent]);
 
   return (
     <>
-      <div className="container mx-auto px-4 pt-6 max-w-7xl">
+      <div className="mx-auto px-4 pt-6 max-w-[1200px]">
         <div className="hidden lg:block">
           <CategoryNav />
         </div>
         <Breadcrumb hotelName={hotel.name} category={hotel.categories[0]} />
       </div>
 
-      <main className="container mx-auto px-4 py-8 max-w-7xl">
+      <main className="mx-auto px-4 py-8 max-w-[1200px]">
         {/* Main Image Carousel */}
         <div className="mx-auto mb-4 w-full max-w-[1200px]">
           {/*
@@ -80,56 +94,51 @@ export function HotelDetail({ hotel }: HotelDetailProps) {
             viewport width (so images are wider than tall). On large screens keep
             a fixed tall height.
           */}
-          <div className="relative overflow-hidden h-[55vw] md:h-[45vw] lg:h-[600px]">
-            <Image
-              src={allImages[currentImageIndex] || "/placeholder.svg"}
-              alt={hotel.name}
-              fill
-              className="object-cover"
-              priority
-            />
-
-            {/* Navigation Arrows */}
+          <div className="relative overflow-hidden h-[40vw] md:h-[35vw] lg:h-[600px]">
+            {allImages.map((src, idx) => (
+              <Image
+                key={idx}
+                src={src || "/placeholder.svg"}
+                alt={hotel.name}
+                fill
+                priority={idx === 0}
+                className={`object-cover transition-opacity duration-700 ease-in-out ${
+                  idx === currentImageIndex ? "opacity-100" : "opacity-0"
+                }`}
+              />
+            ))}
+            {/* Prev/Next arrows on carousel sides */}
             <button
               onClick={prevImage}
-              className="absolute left-4 top-1/2 -translate-y-1/2 bg-black/30 hover:bg-black/50 text-white p-2 rounded-full transition-colors"
+              className="absolute left-3 top-1/2 -translate-y-1/2 bg-black/30 hover:bg-black/50 text-white p-2 rounded-full transition-colors"
               aria-label="Previous image"
             >
-              <ChevronLeft className="w-6 h-6" />
+              <ChevronLeft className="w-5 h-5" />
             </button>
             <button
               onClick={nextImage}
-              className="absolute right-4 top-1/2 -translate-y-1/2 bg-black/30 hover:bg-black/50 text-white p-2 rounded-full transition-colors"
+              className="absolute right-3 top-1/2 -translate-y-1/2 bg-black/30 hover:bg-black/50 text-white p-2 rounded-full transition-colors"
               aria-label="Next image"
             >
-              <ChevronRight className="w-6 h-6" />
+              <ChevronRight className="w-5 h-5" />
             </button>
           </div>
-        </div>
-
-        {/* Thumbnail Gallery - Show all images (no red focus ring). Click opens lightbox */}
-        <div className="mx-auto w-full max-w-[1200px]">
-          <div className="grid grid-cols-3 sm:grid-cols-4 lg:grid-cols-6 gap-2 mb-12">
-            {allImages.map((image, index) => (
+          {/* Dots navigation placed below the carousel */}
+          <div className="flex items-center justify-center gap-2 mt-3 mb-6">
+            {allImages.map((_, idx) => (
               <button
-                key={index}
-                onClick={() => {
-                  setCurrentImageIndex(index);
-                  setLightboxIndex(index);
-                  setIsLightboxOpen(true);
-                }}
-                className={`relative overflow-hidden focus:outline-none aspect-[16/9] sm:aspect-[4/3] lg:aspect-[4/3]`}
-              >
-                <Image
-                  src={image || "/placeholder.svg"}
-                  alt={`${hotel.name} thumbnail ${index + 1}`}
-                  fill
-                  className="object-cover hover:opacity-80 transition-opacity"
-                />
-              </button>
+                key={idx}
+                onClick={() => setCurrentImageIndex(idx)}
+                aria-label={`Go to image ${idx + 1}`}
+                className={`w-2.5 h-2.5 rounded-full transition-all duration-200 ${
+                  idx === currentImageIndex ? "bg-black" : "bg-black/30"
+                }`}
+              />
             ))}
           </div>
         </div>
+
+        {/* Thumbnail gallery removed per spec - we show only dots+autoplay */}
 
         {/* Lightbox Modal */}
         {isLightboxOpen && (
@@ -197,10 +206,10 @@ export function HotelDetail({ hotel }: HotelDetailProps) {
           />
         )}
 
-        {/* Hotel Information */}
-        <div className="max-w-4xl mx-auto">
-          {/* Heart Icon and Title */}
-          <div className="flex items-start gap-4 mb-6">
+  {/* Hotel Information (constrain text content to 1024px) */}
+  <div className="max-w-[1024px] mx-auto">
+          {/* Heart Icon and Title (match home card spacing) */}
+          <div className="flex items-start gap-[10px] mb-3">
             <div className="flex-shrink-0">
               <Image
                 src="/favicon.svg"
@@ -217,20 +226,18 @@ export function HotelDetail({ hotel }: HotelDetailProps) {
               <h1 className="font-neutra text-[20px] leading-[24px] mb-2 text-black">
                 {hotel.name &&
                   hotel.name
-                    .replace(/<br\s*\/?>/gi, "\n")
+                    .replace(/<br\s*\/??>/gi, "\n")
                     .split("\n")
                     .map((line, i) => (
                       <span
                         key={i}
-                        className={`block font-neutra text-[20px] leading-[24px] text-black ${
-                          i === 0 ? "font-[700]" : "font-[400]"
-                        }`}
+                        className={`block font-neutra !text-[20px] !leading-[24px] text-black font-[700]`}
                         dangerouslySetInnerHTML={{ __html: line }}
                       />
                     ))}
               </h1>
               <h2
-                className="font-neutra text-[15px] leading-[22px] font-[400] text-black uppercase"
+                className="font-neutra text-[20px] leading-[24px] font-[100] text-black uppercase"
                 dangerouslySetInnerHTML={{ __html: hotel.subtitle }}
               />
             </div>
@@ -241,7 +248,18 @@ export function HotelDetail({ hotel }: HotelDetailProps) {
             dangerouslySetInnerHTML={{ __html: cleanedFullContent }}
           />
 
-          {/* Contact / Links block: use display fields when available */}
+          {/* Divider entre texto y bloque de redes/contacto */}
+          <div className="my-5">
+            <div
+              className="mx-auto h-[3px] w-full bg-transparent"
+              style={{
+                backgroundImage:
+                  "repeating-linear-gradient(to right, #b4b4b8 0 3px, transparent 3px 6px)",
+              }}
+            />
+          </div>
+
+          {/* Contacto / Redes: solo se muestran aquí (limpiamos duplicados del texto) */}
           <div className="mt-4 mb-8 text-sm font-neutra text-gray-700">
             {hotel.website && (
               <div className="mb-2">
@@ -252,8 +270,7 @@ export function HotelDetail({ hotel }: HotelDetailProps) {
                   rel="noopener noreferrer"
                   className="text-[var(--color-brand-red)] no-underline"
                 >
-                  {hotel.website_display ||
-                    hotel.website.replace(/^https?:\/\//i, "")}
+                  {formatWebsiteDisplay(hotel.website_display || hotel.website)}
                 </a>
               </div>
             )}
@@ -269,8 +286,8 @@ export function HotelDetail({ hotel }: HotelDetailProps) {
                   rel="noopener noreferrer"
                   className="text-[var(--color-brand-red)] no-underline"
                 >
-                  {hotel.instagram_display ||
-                    formatInstagramDisplay(hotel.instagram)}
+                  {(hotel.instagram_display ||
+                    formatInstagramDisplay(hotel.instagram)).toUpperCase()}
                 </a>
               </div>
             )}
@@ -282,7 +299,7 @@ export function HotelDetail({ hotel }: HotelDetailProps) {
                   href={formatTel(hotel.phone)}
                   className="text-[var(--color-brand-red)] no-underline"
                 >
-                  {formatPhoneDisplay(hotel.phone)}
+                  {formatPhoneDisplay(hotel.phone).toUpperCase()}
                 </a>
               </div>
             )}
@@ -294,7 +311,7 @@ export function HotelDetail({ hotel }: HotelDetailProps) {
                   href={formatMailto(hotel.email)}
                   className="text-[var(--color-brand-red)] no-underline"
                 >
-                  {stripMailto(hotel.email)}
+                  {stripMailto(hotel.email).toUpperCase()}
                 </a>
               </div>
             )}
@@ -304,7 +321,7 @@ export function HotelDetail({ hotel }: HotelDetailProps) {
                 <span className="font-[700] mr-2">
                   {t("PHOTOS", "PHOTOS")}:
                 </span>
-                <span>{hotel.photosCredit}</span>
+                <span>{hotel.photosCredit.toUpperCase()}</span>
               </div>
             )}
           </div>

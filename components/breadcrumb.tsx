@@ -25,7 +25,7 @@ export function Breadcrumb({ hotelName, category }: BreadcrumbProps) {
   const categorySlug = categoryToSlug(category);
 
   return (
-    <nav className="px-4 py-2" aria-label="Breadcrumb">
+    <nav className="mx-auto max-w-[1200px] py-2" aria-label="Breadcrumb">
       <ol className="flex items-center gap-1 text-xs md:text-sm text-[var(--color-brand-gray)] flex-wrap">
         <li>
           <Link

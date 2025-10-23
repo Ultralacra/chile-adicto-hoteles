@@ -3,7 +3,11 @@ import { MobileFooterContent } from "./mobile-footer-content";
 import { useLanguage } from "@/contexts/language-context";
 import { categories as CATEGORIES } from "./category-nav";
 
-export function Footer() {
+interface FooterProps {
+  activeCategory?: string;
+}
+
+export function Footer({ activeCategory = "todos" }: FooterProps) {
   const { language } = useLanguage();
   return (
     <footer className="bg-black text-white py-12 mt-16">
@@ -30,7 +34,11 @@ export function Footer() {
               <a
                 key={c.slug}
                 href={c.slug === "todos" ? "/" : `/categoria/${c.slug}`}
-                className="font-neutra-demi text-[14px] leading-[19px] font-[600] transition-colors duration-200 ease-in-out hover:text-[var(--color-brand-red)]"
+                className={`font-neutra-demi text-[14px] leading-[19px] font-[600] transition-colors duration-200 ease-in-out hover:text-[var(--color-brand-red)] ${
+                  activeCategory === c.slug
+                    ? "text-[var(--color-brand-red)]"
+                    : "text-white"
+                }`}
               >
                 {language === "es" ? c.labelEs : c.labelEn.toUpperCase()}
               </a>

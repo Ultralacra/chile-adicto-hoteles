@@ -5,7 +5,7 @@ import { HotelCard } from "@/components/hotel-card";
 import { Footer } from "@/components/footer";
 import { CategoryNav } from "@/components/category-nav";
 import { notFound } from "next/navigation";
-import arquitecturaData from "@/lib/arquitectura.json";
+import data from "@/lib/data.json";
 import { useLanguage } from "@/contexts/language-context";
 import { useEffect, use } from "react";
 
@@ -25,10 +25,11 @@ const validCategories = [
   "iconos",
   "mercados",
   "miradores",
-  "cultura",
+  "museos",
+  "restaurantes",
   "palacios",
   "parques",
-  "fuera-de-stgo",
+  "paseos-fuera-de-santiago",
 ];
 
 type ResolvedParams = { slug: string };
@@ -59,10 +60,13 @@ export default function CategoryPage({ params }: { params: any }) {
     iconos: "ICONOS",
     mercados: "MERCADOS",
     miradores: "MIRADORES",
-    cultura: "CULTURA",
+    // Mostrar CULTURA aunque el slug sea museos
+    museos: "CULTURA",
+    restaurantes: "RESTAURANTES",
     palacios: "PALACIOS",
     parques: "PARQUES",
-    "fuera-de-stgo": "FUERA DE STGO",
+    // Mostrar FUERA DE STGO aunque el slug sea paseos-fuera-de-santiago
+    "paseos-fuera-de-santiago": "FUERA DE STGO",
   };
 
   const categoryName = categoryMap[slug] || slug.toUpperCase();
@@ -71,13 +75,21 @@ export default function CategoryPage({ params }: { params: any }) {
   const categoryCandidatesMap: { [key: string]: string[] } = {
     arquitectura: ["ARQUITECTURA", "ARCHITECTURE"],
     "isla-de-pascua": ["ISLA DE PASCUA", "EASTER ISLAND"],
+    museos: ["MUSEOS", "CULTURA", "MUSEUMS", "CULTURE"],
+    restaurantes: ["RESTAURANTES", "RESTAURANTS"],
+    "paseos-fuera-de-santiago": [
+      "PASEOS FUERA DE SANTIAGO",
+      "FUERA DE STGO",
+      "OUTSIDE STGO",
+      "OUTSIDE SANTIAGO",
+    ],
     // add other special cases if needed
   };
 
   const candidates = categoryCandidatesMap[slug] || [categoryName];
 
-  // Use arquitectura.json as main source; compare normalized uppercase values
-  let filteredHotels = (arquitecturaData as unknown as any[]).filter((h) => {
+  // Use data.json as main source; compare normalized uppercase values
+  let filteredHotels = (data as unknown as any[]).filter((h) => {
     const entryCats = (h.categories || []).map((c: any) =>
       String(c).toUpperCase()
     );
@@ -96,6 +108,16 @@ export default function CategoryPage({ params }: { params: any }) {
 
       <main className="container mx-auto px-4 py-8 max-w-[1200px]">
         <CategoryNav activeCategory={slug} />
+
+        {/* Contador de posts por categoría */}
+        <div className="mt-2 mb-4">
+          <span className="font-neutra tracking-wide text-[16px] leading-[20px] text-black">
+            {t(
+              `${filteredHotels.length} posts`,
+              `${filteredHotels.length} posts`
+            )}
+          </span>
+        </div>
 
         {/* Hotel Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 mt-2">

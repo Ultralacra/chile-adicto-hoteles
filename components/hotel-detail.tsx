@@ -37,6 +37,7 @@ export function HotelDetail({ hotel }: HotelDetailProps) {
   const [cleanedFullContent, setCleanedFullContent] = useState(
     hotel.fullContent
   );
+  const [address, setAddress] = useState("");
 
   const nextImage = () => {
     setCurrentImageIndex((prev) => (prev + 1) % allImages.length);
@@ -58,9 +59,10 @@ export function HotelDetail({ hotel }: HotelDetailProps) {
     return () => clearInterval(id);
   }, [allImages.length, isLightboxOpen]);
 
-  // Limpiar el contenido: remover párrafos con info de contacto/redes para evitar duplicados
+  // Limpiar el contenido: remover párrafos con info de contacto/redes/dirección para evitar duplicados
   useEffect(() => {
     const html = hotel.fullContent || "";
+    let foundAddress = "";
     const cleaned = html.replace(/<p[^>]*>[\s\S]*?<\/p>/gi, (p) => {
       const text = p
         .replace(/<[^>]+>/g, " ")
@@ -77,19 +79,33 @@ export function HotelDetail({ hotel }: HotelDetailProps) {
           text
         );
       const hasWebLabel = /\bweb\b/i.test(text);
+      const hasAddress = /\b(direcci[oó]n|address|ubicaci[oó]n)\b/i.test(text);
       if (
         hasUrl ||
         hasEmail ||
         hasPhone ||
         hasInstagram ||
         hasPhotos ||
-        hasWebLabel
+        hasWebLabel ||
+        hasAddress
       ) {
+        if (hasAddress && !foundAddress) {
+          // Extraer texto limpio y remover etiquetas como "Dirección:" etc.
+          const raw = p
+            .replace(/<[^>]+>/g, " ")
+            .replace(/\s+/g, " ")
+            .trim();
+          const cleanedAddr = raw
+            .replace(/^\s*(direcci[oó]n|address|ubicaci[oó]n)\s*[:\-]?\s*/i, "")
+            .trim();
+          if (cleanedAddr) foundAddress = cleanedAddr;
+        }
         return ""; // eliminar párrafo con info de contacto/redes
       }
       return p;
     });
     setCleanedFullContent(cleaned);
+    setAddress(foundAddress);
   }, [hotel.fullContent]);
 
   return (
@@ -341,31 +357,19 @@ export function HotelDetail({ hotel }: HotelDetailProps) {
                 <span>{hotel.photosCredit.toUpperCase()}</span>
               </div>
             )}
+
+            {/* Dirección debe ir al final del bloque de contacto */}
+            {address && (
+              <div className="mt-3">
+                <span className="font-[700] mr-2">
+                  {t("DIRECCIÓN", "ADDRESS")}:
+                </span>
+                <span className="text-black">{address.toUpperCase()}</span>
+              </div>
+            )}
           </div>
 
           {/* Links are shown inline inside the description (cleanedFullContent). No duplicate contact block. */}
-
-          {/* Action Buttons */}
-          <div className="flex gap-4 mt-12">
-            <button className="relative group hover:opacity-80 transition-opacity">
-              <Image
-                src="/boton-reserva.svg"
-                alt={t("RESERVA", "BOOK")}
-                width={99}
-                height={120}
-                className="w-auto h-[120px]"
-              />
-            </button>
-            <button className="relative group hover:opacity-80 transition-opacity">
-              <Image
-                src="/boton-comente.svg"
-                alt={t("COMENTE", "COMMENT")}
-                width={99}
-                height={120}
-                className="w-auto h-[120px]"
-              />
-            </button>
-          </div>
         </div>
       </main>
     </>

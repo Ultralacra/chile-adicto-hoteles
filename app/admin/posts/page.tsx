@@ -1,7 +1,7 @@
 "use client";
 
-import arquitecturaData from "@/lib/arquitectura.json";
-const hotelsData = arquitecturaData as any[];
+import data from "@/lib/data.json";
+const hotelsData = data as any[];
 import { Edit, Eye, Trash2, Plus, Search } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";

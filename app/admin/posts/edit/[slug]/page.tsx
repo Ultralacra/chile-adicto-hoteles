@@ -1,6 +1,6 @@
 "use client";
 
-import arquitecturaData from "@/lib/arquitectura.json";
+import data from "@/lib/data.json";
 import { notFound, useRouter } from "next/navigation";
 import Link from "next/link";
 import { useState } from "react";
@@ -14,7 +14,7 @@ import { ArrowLeft, Save, Tag, Globe, Plus, X } from "lucide-react";
 export default function EditPostPage({ params }: { params: { slug: string } }) {
   const router = useRouter();
   const { slug } = params;
-  const hotel = (arquitecturaData as any[]).find((p) => p.slug === slug);
+  const hotel = (data as any[]).find((p) => p.slug === slug);
 
   if (!hotel) {
     notFound();

@@ -14,10 +14,17 @@ export const categories = [
   { slug: "iconos", labelEs: "ICONOS", labelEn: "Icons" },
   { slug: "mercados", labelEs: "MERCADOS", labelEn: "Markets" },
   { slug: "miradores", labelEs: "MIRADORES", labelEn: "Viewpoints" },
-  { slug: "cultura", labelEs: "CULTURA", labelEn: "Culture" },
+  // Display label in ES should be "CULTURA" though slug remains "museos"
+  { slug: "museos", labelEs: "CULTURA", labelEn: "Museums" },
+  { slug: "restaurantes", labelEs: "RESTAURANTES", labelEn: "Restaurants" },
   { slug: "palacios", labelEs: "PALACIOS", labelEn: "Palaces" },
   { slug: "parques", labelEs: "PARQUES", labelEn: "Parks" },
-  { slug: "fuera-de-stgo", labelEs: "FUERA DE STGO", labelEn: "OUTSIDE STGO" },
+  {
+    slug: "paseos-fuera-de-santiago",
+    // Display label in ES should be "FUERA DE STGO" though slug remains
+    labelEs: "FUERA DE STGO",
+    labelEn: "TRIPS OUTSIDE SANTIAGO",
+  },
 ];
 
 export function CategoryNav({ activeCategory = "todos" }: CategoryNavProps) {
@@ -26,14 +33,14 @@ export function CategoryNav({ activeCategory = "todos" }: CategoryNavProps) {
   return (
     // Hide desktop category nav on small screens; mobile menu provides navigation
     <nav className="py-4">
-      <ul className="hidden lg:flex flex-wrap items-center gap-3 text-sm font-medium">
+      <ul className="hidden lg:flex flex-nowrap items-center gap-2 text-sm font-medium whitespace-nowrap">
         {categories.map((category, index) => (
-          <li key={category.slug} className="flex items-center gap-3">
+          <li key={category.slug} className="flex items-center gap-2">
             <Link
               href={
                 category.slug === "todos" ? "/" : `/categoria/${category.slug}`
               }
-              className={`font-neutra hover:text-[var(--color-brand-red)] transition-colors tracking-wide text-[16px] leading-[20px] ${
+              className={`font-neutra hover:text-[var(--color-brand-red)] transition-colors tracking-wide text-[15px] leading-[20px] ${
                 activeCategory === category.slug
                   ? "text-[var(--color-brand-red)] font-normal"
                   : "text-black font-normal"

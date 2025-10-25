@@ -11,10 +11,13 @@ export function MobileFooterContent() {
     { slug: "iconos", label: "ICONOS" },
     { slug: "mercados", label: "MERCADOS" },
     { slug: "miradores", label: "MIRADORES" },
-    { slug: "cultura", label: "CULTURA" },
+    // Slug real es "museos" pero la etiqueta visible es CULTURA
+    { slug: "museos", label: "CULTURA" },
+    { slug: "restaurantes", label: "RESTAURANTES" },
     { slug: "palacios", label: "PALACIOS" },
     { slug: "parques", label: "PARQUES" },
-    { slug: "fuera-de-stgo", label: "FUERA DE STGO" },
+    // Slug real es "paseos-fuera-de-santiago" pero la etiqueta visible es FUERA DE STGO
+    { slug: "paseos-fuera-de-santiago", label: "FUERA DE STGO" },
   ];
 
   return (
@@ -40,7 +43,7 @@ export function MobileFooterContent() {
             <li key={item.slug}>
               <Link
                 href={item.slug === "todos" ? "/" : `/categoria/${item.slug}`}
-                className="font-neutra-demi text-[14px] leading-[19px] font-[600] text-white hover:text-gray-300 transition-colors"
+                className="font-neutra-demi text-[15px] leading-[20px] font-[600] text-white hover:text-gray-300 transition-colors"
               >
                 {item.label}
               </Link>

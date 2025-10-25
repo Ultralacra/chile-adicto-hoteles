@@ -1,16 +1,16 @@
 "use client";
 
-import arquitecturaData from "@/lib/arquitectura.json";
+import data from "@/lib/data.json";
 import { FileText, Plus, TrendingUp } from "lucide-react";
 import Link from "next/link";
 
 export default function AdminDashboard() {
-  const data = arquitecturaData as any[];
-  const totalPosts = data.length;
+  const dataset = data as any[];
+  const totalPosts = dataset.length;
   const categories = ["SANTIAGO", "NORTE", "CENTRO", "SUR", "ISLA DE PASCUA"];
   const postsByCategory = categories.map((cat) => ({
     name: cat,
-    count: data.filter((h) => (h.categories || []).includes(cat)).length,
+    count: dataset.filter((h) => (h.categories || []).includes(cat)).length,
   }));
 
   return (

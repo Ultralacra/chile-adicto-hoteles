@@ -6,14 +6,14 @@ import Image from "next/image";
 import { HotelCard } from "@/components/hotel-card";
 import { Footer } from "@/components/footer";
 import { CategoryNav } from "@/components/category-nav";
-import arquitectura from "@/lib/arquitectura.json";
+import data from "@/lib/data.json";
 import { useLanguage } from "@/contexts/language-context";
 
 export default function Page() {
   const { language } = useLanguage();
 
   // Mostrar sólo las tarjetas de la categoría Arquitectura (lib/arquitectura.json)
-  const hotels = (arquitectura as any[]) || [];
+  const hotels = (data as any[]) || [];
 
   return (
     <div className="min-h-screen bg-white">
@@ -34,14 +34,12 @@ export default function Page() {
               </div>
             </div>
 
-            {/* Banner: ocupa 1 columna en lg */}
-            <div className="hidden lg:block w-full h-[437px] relative">
-              <Image
+            {/* Banner: ocupa 1 columna en lg - imagen escala hacia abajo y fondo negro */}
+            <div className="hidden lg:block w-full h-[437px] relative bg-black">
+              <img
                 src="/Group-83.webp"
-                alt="Banner"
-                fill
-                className="object-cover w-full h-full"
-                priority
+                alt="Banner Restaurantes"
+                className="object-scale-down object-center w-full h-full"
               />
             </div>
           </div>

@@ -1,5 +1,5 @@
 import { hotelsData, type Hotel } from "./hotels-data"
-import arquitectura from "./arquitectura.json"
+import data from "./data.json"
 
 // Map arquitectura.json entries to the Hotel shape (best-effort)
 function mapArquitecturaEntry(entry: any): Hotel {
@@ -35,7 +35,7 @@ function mapArquitecturaEntry(entry: any): Hotel {
 
 export const postsData: Hotel[] = [
   ...hotelsData,
-  ...(Array.isArray(arquitectura) ? arquitectura.map(mapArquitecturaEntry) : []),
+  ...(Array.isArray(data) ? (data as any[]).map(mapArquitecturaEntry) : []),
 ]
 
 export function getPostBySlug(slug: string): Hotel | undefined {

@@ -3,7 +3,7 @@
 import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
 import { HotelDetail } from "@/components/hotel-detail";
-import arquitecturaData from "@/lib/arquitectura.json";
+import data from "@/lib/data.json";
 import { useLanguage } from "@/contexts/language-context";
 import { useEffect, use } from "react";
 
@@ -19,8 +19,8 @@ export default function LugarPage(props: any) {
     window.scrollTo(0, 0);
   }, [resolvedParams?.slug]);
 
-  // buscar en arquitectura.json
-  const a = arquitecturaData as unknown as any[];
+  // buscar en data.json
+  const a = data as unknown as any[];
   const arquitecturaEntry = a.find((x) => x.slug === resolvedParams?.slug);
 
   if (!arquitecturaEntry) {
@@ -118,6 +118,15 @@ export default function LugarPage(props: any) {
     const c = String(cat).toLowerCase();
     if (c === "all" || c === "todos") return "todos";
     if (c.includes("architect")) return "arquitectura";
+    if (c.includes("cultura") || c.includes("culture")) return "museos";
+    if (c.includes("restaurant")) return "restaurantes";
+    if (
+      c.includes("fuera de stgo") ||
+      c.includes("outside stgo") ||
+      c.includes("outside santiago") ||
+      c.includes("paseos fuera de santiago")
+    )
+      return "paseos-fuera-de-santiago";
     return c.replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
   }
 

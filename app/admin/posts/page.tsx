@@ -79,7 +79,9 @@ export default function PostsListPage() {
   // Inicializar categoría desde la URL si viene ?category=
   useEffect(() => {
     try {
-      const params = new URLSearchParams(typeof window !== 'undefined' ? window.location.search : '');
+      const params = new URLSearchParams(
+        typeof window !== "undefined" ? window.location.search : ""
+      );
       const c = params.get("category");
       if (c) setCategory(c.toUpperCase());
     } catch (err) {

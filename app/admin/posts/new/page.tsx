@@ -40,9 +40,14 @@ export default function NewPostPage() {
   const [slug, setSlug] = useState("");
   const [slugTouched, setSlugTouched] = useState(false);
   const [website, setWebsite] = useState("");
+  const [websiteDisplay, setWebsiteDisplay] = useState("");
   const [instagram, setInstagram] = useState("");
+  const [instagramDisplay, setInstagramDisplay] = useState("");
+  const [email, setEmail] = useState("");
   const [reservationLink, setReservationLink] = useState("");
   const [phone, setPhone] = useState("");
+  const [address, setAddress] = useState("");
+  const [photosCredit, setPhotosCredit] = useState("");
   const [featuredImage, setFeaturedImage] = useState("");
   const [galleryImages, setGalleryImages] = useState<string[]>([""]);
   const [selectedCategories, setSelectedCategories] = useState<string[]>([
@@ -52,7 +57,8 @@ export default function NewPostPage() {
   // Spanish fields
   const [nameEs, setNameEs] = useState("");
   const [subtitleEs, setSubtitleEs] = useState("");
-  const [descriptionEs, setDescriptionEs] = useState<string[]>([""]);
+  // Descripción ES: un solo bloque (se guardará dividido por líneas en blanco)
+  const [descriptionEsUnified, setDescriptionEsUnified] = useState<string>("");
   const [categoryEs, setCategoryEs] = useState("");
   const [locationEs, setLocationEs] = useState("");
   const [distanceEs, setDistanceEs] = useState("");
@@ -61,43 +67,19 @@ export default function NewPostPage() {
   // English fields
   const [nameEn, setNameEn] = useState("");
   const [subtitleEn, setSubtitleEn] = useState("");
-  const [descriptionEn, setDescriptionEn] = useState<string[]>([""]);
+  // Descripción EN: un solo bloque (se guardará dividido por líneas en blanco)
+  const [descriptionEnUnified, setDescriptionEnUnified] = useState<string>("");
   const [categoryEn, setCategoryEn] = useState("");
   const [locationEn, setLocationEn] = useState("");
   const [distanceEn, setDistanceEn] = useState("");
   const [amenitiesEn, setAmenitiesEn] = useState<string[]>([""]);
 
-  const addDescriptionField = (lang: "es" | "en") => {
-    if (lang === "es") {
-      setDescriptionEs([...descriptionEs, ""]);
-    } else {
-      setDescriptionEn([...descriptionEn, ""]);
-    }
-  };
-
-  const removeDescriptionField = (lang: "es" | "en", index: number) => {
-    if (lang === "es") {
-      setDescriptionEs(descriptionEs.filter((_, i) => i !== index));
-    } else {
-      setDescriptionEn(descriptionEn.filter((_, i) => i !== index));
-    }
-  };
-
-  const updateDescriptionField = (
-    lang: "es" | "en",
-    index: number,
-    value: string
-  ) => {
-    if (lang === "es") {
-      const newDesc = [...descriptionEs];
-      newDesc[index] = value;
-      setDescriptionEs(newDesc);
-    } else {
-      const newDesc = [...descriptionEn];
-      newDesc[index] = value;
-      setDescriptionEn(newDesc);
-    }
-  };
+  // Utilidad para convertir bloque único a array de párrafos
+  const toParagraphs = (block: string) =>
+    String(block)
+      .split(/\n{2,}/)
+      .map((p) => p.trim())
+      .filter(Boolean);
 
   const addAmenityField = (lang: "es" | "en") => {
     if (lang === "es") {
@@ -160,12 +142,15 @@ export default function NewPostPage() {
       (img) => img.trim() !== ""
     );
 
+    const descriptionEs = toParagraphs(descriptionEsUnified);
+    const descriptionEn = toParagraphs(descriptionEnUnified);
+
     const newHotel = {
       slug,
       es: {
         name: nameEs,
         subtitle: subtitleEs,
-        description: descriptionEs.filter((d) => d.trim() !== ""),
+        description: descriptionEs,
         category: categoryEs,
         location: locationEs,
         distance: distanceEs,
@@ -174,16 +159,21 @@ export default function NewPostPage() {
       en: {
         name: nameEn,
         subtitle: subtitleEn,
-        description: descriptionEn.filter((d) => d.trim() !== ""),
+        description: descriptionEn,
         category: categoryEn,
         location: locationEn,
         distance: distanceEn,
         amenities: amenitiesEn.filter((a) => a.trim() !== ""),
       },
       website,
+      website_display: websiteDisplay,
       instagram,
-      phone,
+      instagram_display: instagramDisplay,
+      email,
+      phone: phone ? `tel:${phone.replace(/[^+\d]/g, "")}` : "",
       reservationLink,
+      address,
+      photosCredit,
       images: allImages,
       categories: selectedCategories,
     };
@@ -301,6 +291,14 @@ export default function NewPostPage() {
                 />
               </div>
               <div>
+                <Label className="text-sm font-medium">WEB (display)</Label>
+                <Input
+                  value={websiteDisplay}
+                  onChange={(e) => setWebsiteDisplay(e.target.value)}
+                  placeholder="ejemplo.com"
+                />
+              </div>
+              <div>
                 <Label
                   htmlFor="instagram"
                   className="text-sm font-medium flex items-center gap-2"
@@ -313,6 +311,24 @@ export default function NewPostPage() {
                   value={instagram}
                   onChange={(e) => setInstagram(e.target.value)}
                   placeholder="@cuenta"
+                />
+              </div>
+              <div>
+                <Label className="text-sm font-medium">
+                  Instagram (display)
+                </Label>
+                <Input
+                  value={instagramDisplay}
+                  onChange={(e) => setInstagramDisplay(e.target.value)}
+                  placeholder="@cuenta"
+                />
+              </div>
+              <div>
+                <Label className="text-sm font-medium">Email</Label>
+                <Input
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="correo@dominio.cl"
                 />
               </div>
               <div>
@@ -343,6 +359,23 @@ export default function NewPostPage() {
                   value={reservationLink}
                   onChange={(e) => setReservationLink(e.target.value)}
                   placeholder="https://reservas.ejemplo.com"
+                />
+              </div>
+              <div className="md:col-span-2">
+                <Label className="text-sm font-medium">Dirección</Label>
+                <Textarea
+                  value={address}
+                  onChange={(e) => setAddress(e.target.value)}
+                  rows={3}
+                  placeholder="Calle 123, Comuna, Ciudad"
+                />
+              </div>
+              <div className="md:col-span-2">
+                <Label className="text-sm font-medium">Crédito fotos</Label>
+                <Input
+                  value={photosCredit}
+                  onChange={(e) => setPhotosCredit(e.target.value)}
+                  placeholder="@autor / Autor"
                 />
               </div>
             </div>
@@ -489,44 +522,12 @@ export default function NewPostPage() {
                     Descripción <span className="text-red-600">*</span>
                   </Label>
                   <p className="text-xs text-gray-500 mb-3">
-                    Puedes agregar múltiples bloques de texto con formato
+                    Un solo cuadro. Separa párrafos con una línea en blanco.
                   </p>
-                  {descriptionEs.map((desc, index) => (
-                    <div key={index} className="mb-4 p-4 bg-gray-50 rounded-lg">
-                      <div className="flex items-center justify-between mb-2">
-                        <span className="text-xs font-medium text-gray-600">
-                          Bloque {index + 1}
-                        </span>
-                        {descriptionEs.length > 1 && (
-                          <Button
-                            type="button"
-                            variant="ghost"
-                            size="sm"
-                            onClick={() => removeDescriptionField("es", index)}
-                            className="text-red-600 hover:text-red-700 hover:bg-red-50"
-                          >
-                            <X size={16} />
-                          </Button>
-                        )}
-                      </div>
-                      <AdminRichText
-                        value={desc}
-                        onChange={(html) =>
-                          updateDescriptionField("es", index, html)
-                        }
-                      />
-                    </div>
-                  ))}
-                  <Button
-                    type="button"
-                    variant="outline"
-                    size="sm"
-                    onClick={() => addDescriptionField("es")}
-                    className="gap-2"
-                  >
-                    <Plus size={16} />
-                    Agregar bloque de texto
-                  </Button>
+                  <AdminRichText
+                    value={descriptionEsUnified}
+                    onChange={(v) => setDescriptionEsUnified(v)}
+                  />
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -647,47 +648,12 @@ export default function NewPostPage() {
                     Description <span className="text-red-600">*</span>
                   </Label>
                   <p className="text-xs text-gray-500 mb-3">
-                    You can add multiple text blocks
+                    Single box. Separate paragraphs with a blank line.
                   </p>
-                  {descriptionEn.map((desc, index) => (
-                    <div key={index} className="mb-4 p-4 bg-gray-50 rounded-lg">
-                      <div className="flex items-center justify-between mb-2">
-                        <span className="text-xs font-medium text-gray-600">
-                          Block {index + 1}
-                        </span>
-                        {descriptionEn.length > 1 && (
-                          <Button
-                            type="button"
-                            variant="ghost"
-                            size="sm"
-                            onClick={() => removeDescriptionField("en", index)}
-                            className="text-red-600 hover:text-red-700 hover:bg-red-50"
-                          >
-                            <X size={16} />
-                          </Button>
-                        )}
-                      </div>
-                      <Textarea
-                        value={desc}
-                        onChange={(e) =>
-                          updateDescriptionField("en", index, e.target.value)
-                        }
-                        placeholder={`Paragraph ${index + 1}`}
-                        rows={4}
-                        required
-                      />
-                    </div>
-                  ))}
-                  <Button
-                    type="button"
-                    variant="outline"
-                    size="sm"
-                    onClick={() => addDescriptionField("en")}
-                    className="gap-2"
-                  >
-                    <Plus size={16} />
-                    Add text block
-                  </Button>
+                  <AdminRichText
+                    value={descriptionEnUnified}
+                    onChange={(v) => setDescriptionEnUnified(v)}
+                  />
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">

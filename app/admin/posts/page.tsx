@@ -5,17 +5,89 @@ const hotelsData = data as any[];
 import { Edit, Eye, Trash2, Plus, Search } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Button } from "@/components/ui/button";
+import { useSearchParams, useRouter } from "next/navigation";
 import { Input } from "@/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
+  Pagination,
+  PaginationContent,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from "@/components/ui/pagination";
 
 export default function PostsListPage() {
+  const searchParams = useSearchParams();
+  const router = useRouter();
   const [query, setQuery] = useState("");
-  const filtered = hotelsData.filter(
-    (h) =>
-      (h.es?.name || "").toLowerCase().includes(query.toLowerCase()) ||
-      (h.slug || "").toLowerCase().includes(query.toLowerCase())
-  );
+  const [category, setCategory] = useState<string>("ALL");
+  const [page, setPage] = useState(1);
+  const pageSize = 12;
+
+  // Derivar categorías únicas desde data.json (usando es/en.category y categories[])
+  const allCategories = useMemo(() => {
+    const set = new Set<string>();
+    for (const h of hotelsData) {
+      if (h.es?.category) set.add(String(h.es.category).toUpperCase());
+      if (h.en?.category) set.add(String(h.en.category).toUpperCase());
+      (h.categories || []).forEach(
+        (c: string) => c && set.add(String(c).toUpperCase())
+      );
+    }
+    // Normalizar alias comunes
+    const arr = Array.from(set);
+    return ["ALL", ...arr.sort()];
+  }, []);
+
+  const filtered = useMemo(() => {
+    const q = query.trim().toLowerCase();
+    const matchesQuery = (h: any) => {
+      const fields = [
+        h.es?.name,
+        h.en?.name,
+        h.slug,
+        h.es?.subtitle,
+        h.en?.subtitle,
+        h.address,
+        h.website_display,
+        h.instagram_display,
+      ]
+        .filter(Boolean)
+        .map((x: string) => x.toLowerCase());
+      return q ? fields.some((f: string) => f.includes(q)) : true;
+    };
+    const matchesCategory = (h: any) => {
+      if (category === "ALL") return true;
+      const cats = new Set<string>([
+        ...(h.categories || []).map((c: string) => String(c).toUpperCase()),
+      ]);
+      if (h.es?.category) cats.add(String(h.es.category).toUpperCase());
+      if (h.en?.category) cats.add(String(h.en.category).toUpperCase());
+      return cats.has(category);
+    };
+    return hotelsData.filter((h) => matchesQuery(h) && matchesCategory(h));
+  }, [query, category]);
+
+  // Inicializar categoría desde la URL si viene ?category=
+  useEffect(() => {
+    const c = searchParams.get("category");
+    if (c) setCategory(c.toUpperCase());
+  }, [searchParams]);
+
+  // Paginación
+  const totalPages = Math.max(1, Math.ceil(filtered.length / pageSize));
+  const start = (page - 1) * pageSize;
+  const pageItems = filtered.slice(start, start + pageSize);
+  const goTo = (p: number) => setPage(Math.min(totalPages, Math.max(1, p)));
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -36,25 +108,50 @@ export default function PostsListPage() {
           </Link>
         </div>
 
-        {/* Search */}
+        {/* Filtros */}
         <div className="bg-white rounded-lg shadow-sm p-4">
-          <div className="relative">
-            <Search
-              className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
-              size={20}
-            />
-            <Input
-              value={query}
-              onChange={(e) => setQuery(e.target.value)}
-              placeholder="Buscar por nombre o slug..."
-              className="pl-10"
-            />
+          <div className="flex flex-col md:flex-row gap-3 items-stretch md:items-center">
+            <div className="relative flex-1">
+              <Search
+                className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
+                size={20}
+              />
+              <Input
+                value={query}
+                onChange={(e) => {
+                  setPage(1);
+                  setQuery(e.target.value);
+                }}
+                placeholder="Buscar por nombre, slug, dirección o redes..."
+                className="pl-10"
+              />
+            </div>
+            <div>
+              <Select
+                value={category}
+                onValueChange={(v) => {
+                  setPage(1);
+                  setCategory(v);
+                }}
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Categoría" />
+                </SelectTrigger>
+                <SelectContent className="max-h-72">
+                  {allCategories.map((c) => (
+                    <SelectItem key={c} value={c}>
+                      {c}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
           </div>
         </div>
 
         {/* Posts Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {filtered.map((hotel) => (
+          {pageItems.map((hotel) => (
             <div
               key={hotel.slug}
               className="bg-white rounded-lg shadow-sm overflow-hidden hover:shadow-md transition-shadow"
@@ -143,6 +240,46 @@ export default function PostsListPage() {
           <div className="bg-white rounded-lg shadow-sm p-12 text-center">
             <p className="text-gray-500">No se encontraron posts</p>
           </div>
+        )}
+
+        {/* Paginación */}
+        {filtered.length > pageSize && (
+          <Pagination className="mt-4">
+            <PaginationContent>
+              <PaginationItem>
+                <PaginationPrevious
+                  href="#"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    goTo(page - 1);
+                  }}
+                />
+              </PaginationItem>
+              {Array.from({ length: totalPages }).map((_, i) => (
+                <PaginationItem key={i}>
+                  <PaginationLink
+                    href="#"
+                    isActive={page === i + 1}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      goTo(i + 1);
+                    }}
+                  >
+                    {i + 1}
+                  </PaginationLink>
+                </PaginationItem>
+              ))}
+              <PaginationItem>
+                <PaginationNext
+                  href="#"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    goTo(page + 1);
+                  }}
+                />
+              </PaginationItem>
+            </PaginationContent>
+          </Pagination>
         )}
       </div>
     </div>

@@ -1,35 +1,39 @@
-"use client"
+"use client";
 
-import type React from "react"
+import type React from "react";
 
-import { useEffect, useState } from "react"
-import { useRouter, usePathname } from "next/navigation"
-import Link from "next/link"
-import { Home, FileText, Plus, Settings, LogOut, Menu, X } from "lucide-react"
+import { useEffect, useState } from "react";
+import { useRouter, usePathname } from "next/navigation";
+import Link from "next/link";
+import { Home, FileText, Plus, Settings, LogOut, Menu, X } from "lucide-react";
 
-export default function AdminLayout({ children }: { children: React.ReactNode }) {
-  const router = useRouter()
-  const pathname = usePathname()
-  const [isAuthenticated, setIsAuthenticated] = useState(false)
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false)
+export default function AdminLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  const router = useRouter();
+  const pathname = usePathname();
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   useEffect(() => {
-    const auth = sessionStorage.getItem("adminAuthenticated")
+    const auth = sessionStorage.getItem("adminAuthenticated");
     if (!auth && pathname !== "/admin/login") {
-      router.push("/admin/login")
+      router.push("/admin/login");
     } else {
-      setIsAuthenticated(true)
+      setIsAuthenticated(true);
     }
-  }, [router, pathname])
+  }, [router, pathname]);
 
   const handleLogout = () => {
-    sessionStorage.removeItem("adminAuthenticated")
-    router.push("/admin/login")
-  }
+    sessionStorage.removeItem("adminAuthenticated");
+    router.push("/admin/login");
+  };
 
   // Don't show sidebar on login page
   if (pathname === "/admin/login" || !isAuthenticated) {
-    return <>{children}</>
+    return <div className="font-neutra">{children}</div>;
   }
 
   const menuItems = [
@@ -37,14 +41,17 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     { href: "/admin/posts", icon: FileText, label: "All Posts" },
     { href: "/admin/posts/new", icon: Plus, label: "Create New" },
     { href: "/admin/settings", icon: Settings, label: "Settings" },
-  ]
+  ];
 
   return (
-    <div className="min-h-screen bg-gray-100">
+    <div className="min-h-screen bg-gray-100 font-neutra">
       {/* Mobile Header */}
       <div className="lg:hidden bg-white border-b border-gray-200 px-4 py-3 flex items-center justify-between">
         <h1 className="text-xl font-bold">Chile Adicto Admin</h1>
-        <button onClick={() => setIsSidebarOpen(!isSidebarOpen)} className="p-2 hover:bg-gray-100 rounded-lg">
+        <button
+          onClick={() => setIsSidebarOpen(!isSidebarOpen)}
+          className="p-2 hover:bg-gray-100 rounded-lg"
+        >
           {isSidebarOpen ? <X size={24} /> : <Menu size={24} />}
         </button>
       </div>
@@ -62,8 +69,8 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
         <nav className="p-4 space-y-2">
           {menuItems.map((item) => {
-            const Icon = item.icon
-            const isActive = pathname === item.href
+            const Icon = item.icon;
+            const isActive = pathname === item.href;
             return (
               <Link
                 key={item.href}
@@ -78,7 +85,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                 <Icon size={20} />
                 <span className="font-medium">{item.label}</span>
               </Link>
-            )
+            );
           })}
         </nav>
 
@@ -95,7 +102,10 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
       {/* Overlay for mobile */}
       {isSidebarOpen && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 z-40 lg:hidden" onClick={() => setIsSidebarOpen(false)} />
+        <div
+          className="fixed inset-0 bg-black bg-opacity-50 z-40 lg:hidden"
+          onClick={() => setIsSidebarOpen(false)}
+        />
       )}
 
       {/* Main Content */}
@@ -103,5 +113,5 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         <div className="p-6">{children}</div>
       </main>
     </div>
-  )
+  );
 }

@@ -59,52 +59,28 @@ export function HotelDetail({ hotel }: HotelDetailProps) {
     return () => clearInterval(id);
   }, [allImages.length, isLightboxOpen]);
 
-  // Limpiar el contenido: remover párrafos con info de contacto/redes/dirección para evitar duplicados
+  // Mantener TODO el contenido intacto y solo extraer dirección si aparece en algún párrafo
   useEffect(() => {
     const html = hotel.fullContent || "";
     let foundAddress = "";
-    const cleaned = html.replace(/<p[^>]*>[\s\S]*?<\/p>/gi, (p) => {
+    html.replace(/<p[^>]*>[\s\S]*?<\/p>/gi, (p) => {
       const text = p
         .replace(/<[^>]+>/g, " ")
-        .trim()
-        .toLowerCase();
-      const hasUrl = /https?:\/\//i.test(text) || /www\./i.test(text);
-      const hasEmail = /[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}/i.test(text);
-      const hasPhone =
-        /\b(tel|tel\.|tel:|teléfono|telefono)\b/i.test(text) ||
-        /\+?\d[\d\s().-]{6,}/.test(text);
-      const hasInstagram = /instagram\.com|\binstagram\b|@/i.test(text);
-      const hasPhotos =
-        /\bfotos\b|\bfotografía\b|\bfotografia\b|\bphotos\b|\bphoto\b/i.test(
-          text
-        );
-      const hasWebLabel = /\bweb\b/i.test(text);
-      const hasAddress = /\b(direcci[oó]n|address|ubicaci[oó]n)\b/i.test(text);
-      if (
-        hasUrl ||
-        hasEmail ||
-        hasPhone ||
-        hasInstagram ||
-        hasPhotos ||
-        hasWebLabel ||
-        hasAddress
-      ) {
-        if (hasAddress && !foundAddress) {
-          // Extraer texto limpio y remover etiquetas como "Dirección:" etc.
-          const raw = p
-            .replace(/<[^>]+>/g, " ")
-            .replace(/\s+/g, " ")
-            .trim();
-          const cleanedAddr = raw
-            .replace(/^\s*(direcci[oó]n|address|ubicaci[oó]n)\s*[:\-]?\s*/i, "")
-            .trim();
-          if (cleanedAddr) foundAddress = cleanedAddr;
-        }
-        return ""; // eliminar párrafo con info de contacto/redes
+        .replace(/\s+/g, " ")
+        .trim();
+      const hasAddress = /\b(direcci[oó]n|address|ubicaci[oó]n)\b/i.test(
+        text.toLowerCase()
+      );
+      if (hasAddress && !foundAddress) {
+        const cleanedAddr = text
+          .replace(/^\s*(direcci[oó]n|address|ubicaci[oó]n)\s*[:\-]?\s*/i, "")
+          .trim();
+        if (cleanedAddr) foundAddress = cleanedAddr;
       }
       return p;
     });
-    setCleanedFullContent(cleaned);
+    // No limpiar/filtrar el HTML: respetar todo el contenido tal cual
+    setCleanedFullContent(html);
     setAddress(foundAddress);
   }, [hotel.fullContent]);
 

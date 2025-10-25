@@ -13,7 +13,7 @@ const montserrat = Montserrat({
 });
 
 export const metadata: Metadata = {
-  title: "Chile adicto - 50 BEST Hotels",
+  title: "Santiago Adicto - la guia de santiago",
   description: "Los mejores hoteles de Chile",
   generator: "v0.app",
   icons: {

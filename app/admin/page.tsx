@@ -7,11 +7,27 @@ import Link from "next/link";
 export default function AdminDashboard() {
   const dataset = data as any[];
   const totalPosts = dataset.length;
-  const categories = ["SANTIAGO", "NORTE", "CENTRO", "SUR", "ISLA DE PASCUA"];
-  const postsByCategory = categories.map((cat) => ({
-    name: cat,
-    count: dataset.filter((h) => (h.categories || []).includes(cat)).length,
-  }));
+  // Derivar categorías únicas de data.json (es/en.category + categories[])
+  const categorySet = new Set<string>();
+  for (const h of dataset) {
+    if (h.es?.category) categorySet.add(String(h.es.category).toUpperCase());
+    if (h.en?.category) categorySet.add(String(h.en.category).toUpperCase());
+    (h.categories || []).forEach(
+      (c: string) => c && categorySet.add(String(c).toUpperCase())
+    );
+  }
+  const categories = Array.from(categorySet).sort();
+  const postsByCategory = categories.map((cat) => {
+    const has = (h: any) => {
+      const cats = new Set<string>([
+        ...(h.categories || []).map((c: string) => String(c).toUpperCase()),
+      ]);
+      if (h.es?.category) cats.add(String(h.es.category).toUpperCase());
+      if (h.en?.category) cats.add(String(h.en.category).toUpperCase());
+      return cats.has(cat);
+    };
+    return { name: cat, count: dataset.filter(has).length };
+  });
 
   return (
     <div className="space-y-6">
@@ -66,16 +82,21 @@ export default function AdminDashboard() {
       {/* Posts by Category */}
       <div className="bg-white rounded-lg shadow">
         <div className="p-6 border-b border-gray-200">
-          <h2 className="text-xl font-bold text-gray-900">Posts by Category</h2>
+          <h2 className="text-xl font-bold text-gray-900">
+            Posts por categoría
+          </h2>
         </div>
         <div className="p-6">
           <div className="space-y-4">
             {postsByCategory.map((cat) => (
               <div key={cat.name} className="flex items-center justify-between">
                 <span className="font-medium text-gray-700">{cat.name}</span>
-                <span className="bg-gray-100 px-3 py-1 rounded-full text-sm font-medium text-gray-700">
+                <a
+                  href={`/admin/posts?category=${encodeURIComponent(cat.name)}`}
+                  className="bg-gray-100 px-3 py-1 rounded-full text-sm font-medium text-gray-700 hover:bg-gray-200"
+                >
                   {cat.count} posts
-                </span>
+                </a>
               </div>
             ))}
           </div>

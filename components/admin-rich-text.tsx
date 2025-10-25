@@ -27,10 +27,10 @@ export default function AdminRichText({ value, onChange }: AdminRichTextProps) {
         value={value}
         onChange={(e) => onChange(e.target.value)}
         placeholder="Escribe el contenido aquí. Puedes usar HTML básico como <p>, <strong>, <em>, etc."
-        className="font-mono text-sm min-h-[120px]"
+        className="font-neutra text-[15px] leading-[22px] min-h-[120px]"
         rows={5}
       />
-      <div className="text-xs text-gray-500 bg-gray-50 p-2 rounded border">
+      <div className="text-xs text-gray-500 bg-gray-50 p-2 rounded border font-neutra">
         <strong>Tip:</strong> Puedes usar etiquetas HTML como{" "}
         <code className="bg-white px-1 rounded">&lt;p&gt;</code>,{" "}
         <code className="bg-white px-1 rounded">&lt;strong&gt;</code>,{" "}

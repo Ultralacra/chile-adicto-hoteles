@@ -7,7 +7,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { useEffect, useMemo, useState } from "react";
 import { Button } from "@/components/ui/button";
-import { useSearchParams, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { Input } from "@/components/ui/input";
 import {
   Select,
@@ -26,7 +26,6 @@ import {
 } from "@/components/ui/pagination";
 
 export default function PostsListPage() {
-  const searchParams = useSearchParams();
   const router = useRouter();
   const [query, setQuery] = useState("");
   const [category, setCategory] = useState<string>("ALL");
@@ -79,9 +78,14 @@ export default function PostsListPage() {
 
   // Inicializar categoría desde la URL si viene ?category=
   useEffect(() => {
-    const c = searchParams.get("category");
-    if (c) setCategory(c.toUpperCase());
-  }, [searchParams]);
+    try {
+      const params = new URLSearchParams(typeof window !== 'undefined' ? window.location.search : '');
+      const c = params.get("category");
+      if (c) setCategory(c.toUpperCase());
+    } catch (err) {
+      // no-op in environments without window
+    }
+  }, []);
 
   // Paginación
   const totalPages = Math.max(1, Math.ceil(filtered.length / pageSize));

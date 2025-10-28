@@ -175,7 +175,9 @@ export default function CategoryPage({ params }: { params: any }) {
                 <Link
                   href="/categoria/restaurantes"
                   className={`font-neutra hover:text-[var(--color-brand-red)] transition-colors tracking-wide text-[15px] leading-[20px] ${
-                    !selectedComuna ? "text-[var(--color-brand-red)]" : "text-black"
+                    !selectedComuna
+                      ? "text-[var(--color-brand-red)]"
+                      : "text-black"
                   }`}
                   onClick={() => setSelectedComuna(null)}
                 >

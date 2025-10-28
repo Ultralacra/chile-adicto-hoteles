@@ -167,9 +167,22 @@ export default function CategoryPage({ params }: { params: any }) {
 
       <main className="container mx-auto px-4 py-8 max-w-[1200px]">
         {isRestaurantsPage ? (
-          // Replace normal category nav with communes submenu (uppercase labels)
+          // Submenú de comunas para restaurantes con primer item "VOLVER"
           <nav className="py-4">
             <ul className="hidden lg:flex flex-nowrap items-center gap-2 text-sm font-medium whitespace-nowrap">
+              {/* VOLVER - limpia filtro y vuelve al listado de restaurantes */}
+              <li className="flex items-center gap-2">
+                <Link
+                  href="/categoria/restaurantes"
+                  className={`font-neutra hover:text-[var(--color-brand-red)] transition-colors tracking-wide text-[15px] leading-[20px] ${
+                    !selectedComuna ? "text-[var(--color-brand-red)]" : "text-black"
+                  }`}
+                  onClick={() => setSelectedComuna(null)}
+                >
+                  {t("VOLVER", "BACK")}
+                </Link>
+                <span className="text-black">•</span>
+              </li>
               {communes.map((c, index) => {
                 const slugified = c.toLowerCase().replace(/\s+/g, "-");
                 const isActive =
@@ -221,12 +234,7 @@ export default function CategoryPage({ params }: { params: any }) {
           </div>
         )}
 
-        {/* Contador de posts por categoría */}
-        <div className="mt-2 mb-4">
-          <span className="font-neutra tracking-wide text-[16px] leading-[20px] text-black">
-            {t(`${finalHotels.length} posts`, `${finalHotels.length} posts`)}
-          </span>
-        </div>
+        {/* Contador oculto por solicitud: se elimina el conteo de posts */}
 
         {/* Hotel Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 mt-2">

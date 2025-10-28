@@ -75,7 +75,13 @@ export default function LugarPage(props: any) {
         instagram_display: source.instagram_display || "",
         email: source.email || "",
         phone: source.phone || "",
+        address: source.address || "",
+        locations: source.locations || [],
         photosCredit: source.photosCredit || "",
+        hours: source.hours || "",
+        reservationLink: source.reservationLink || "",
+        reservationPolicy: source.reservationPolicy || "",
+        interestingFact: source.interestingFact || "",
         featuredImage: (source.images && source.images[0]) || "",
         galleryImages: source.images || [],
         categories: source[language]?.category

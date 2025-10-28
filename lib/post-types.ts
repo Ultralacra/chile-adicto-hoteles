@@ -22,6 +22,24 @@ export interface PostContact {
   address?: string; // multilinea permitida
   photosCredit?: string; // crédito de fotos
   reservationLink?: string; // URL de reserva
+  hours?: string; // horario libre (texto)
+  reservationPolicy?: string; // texto reservas (política o instrucción)
+  interestingFact?: string; // dato de interés
+  // Sucursales opcionales: si existe al menos una, la UI las usará en vez de address
+  locations?: Array<{
+    label?: string; // p.ej., "Factoría Franklin" o "MUT"
+    address: string; // dirección de la sucursal
+    hours?: string; // horario específico de la sucursal (opcional)
+    website?: string; // URL de la sucursal (si aplica)
+    website_display?: string; // texto para mostrar del sitio
+    instagram?: string; // URL o @ handle de la sucursal
+    instagram_display?: string; // texto para mostrar de IG
+    reservationLink?: string; // URL de reservas de la sucursal
+    reservationPolicy?: string; // texto de reservas
+    interestingFact?: string; // dato de interés de la sucursal
+    email?: string;
+    phone?: string; // tel:+...
+  }>;
 }
 
 export interface PostBase {

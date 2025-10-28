@@ -29,6 +29,27 @@ export const postSchema = z.object({
   address: z.string().optional(),
   photosCredit: z.string().optional(),
   reservationLink: z.string().url().optional(),
+  hours: z.string().optional(),
+  reservationPolicy: z.string().optional(),
+  interestingFact: z.string().optional(),
+  locations: z
+    .array(
+      z.object({
+        label: z.string().optional(),
+        address: z.string().min(1, "address requerido en location"),
+        hours: z.string().optional(),
+        website: z.string().url().optional(),
+        website_display: z.string().optional(),
+        instagram: z.string().optional(),
+        instagram_display: z.string().optional(),
+        reservationLink: z.string().url().optional(),
+        reservationPolicy: z.string().optional(),
+        interestingFact: z.string().optional(),
+        email: z.string().email().optional(),
+        phone: z.string().regex(/^tel:\+?[0-9]+$/, "phone debe ser tel:+...").optional(),
+      })
+    )
+    .optional(),
 });
 
 export type PostInput = z.infer<typeof postSchema>;

@@ -17,12 +17,31 @@ interface HotelDetailProps {
     instagram?: string;
     email?: string;
     phone?: string;
+    address?: string;
+    locations?: Array<{
+      label?: string;
+      address: string;
+      hours?: string;
+      website?: string;
+      website_display?: string;
+      instagram?: string;
+      instagram_display?: string;
+      reservationLink?: string;
+      reservationPolicy?: string;
+      interestingFact?: string;
+      email?: string;
+      phone?: string;
+    }>;
     featuredImage: string;
     galleryImages: string[];
     website_display?: string;
     instagram_display?: string;
     photosCredit?: string;
     categories: string[];
+    hours?: string;
+    reservationLink?: string;
+    reservationPolicy?: string;
+    interestingFact?: string;
   };
 }
 
@@ -64,10 +83,11 @@ export function HotelDetail({ hotel }: HotelDetailProps) {
     return () => clearInterval(id);
   }, [emblaApi, isLightboxOpen]);
 
-  // Mantener TODO el contenido intacto y solo extraer dirección si aparece en algún párrafo
+  // Limpiar contenido del cuerpo para evitar duplicar datos de contacto que también se muestran abajo
   useEffect(() => {
     const html = hotel.fullContent || "";
-    let foundAddress = "";
+    let foundAddress = normalizeAddressText(hotel.address || "");
+    // Recolectar dirección si aparece en algún párrafo
     html.replace(/<p[^>]*>[\s\S]*?<\/p>/gi, (p) => {
       const text = p
         .replace(/<[^>]+>/g, " ")
@@ -84,10 +104,35 @@ export function HotelDetail({ hotel }: HotelDetailProps) {
       }
       return p;
     });
-    // No limpiar/filtrar el HTML: respetar todo el contenido tal cual
-    setCleanedFullContent(html);
+    // Filtro de párrafos que contienen datos de contacto (web, instagram, email, tel, dirección)
+    const contactPatterns = [
+      /^\s*(direcci[oó]n|address|ubicaci[oó]n)\s*[:\-]?/i,
+      /^\s*(web|website|sitio)\s*:?/i,
+      /^\s*(instagram)\s*:?/i,
+      /^\s*(tel[eé]fono|tel|phone)\s*:?/i,
+      /^\s*(email|mail)\s*:?/i,
+    ];
+    // Eliminamos cualquier <p> cuyo texto matchee alguno de los patrones
+    const processed = html.replace(/<p[^>]*>[\s\S]*?<\/p>/gi, (p) => {
+      const text = p
+        .replace(/<[^>]+>/g, " ")
+        .replace(/\s+/g, " ")
+        .trim();
+      const isContact = contactPatterns.some((re) => re.test(text));
+      return isContact ? "" : p;
+    });
+    // Limpieza inline: eliminar URLs/WWW/emails dentro de párrafos editoriales, manteniendo el resto
+    const inlineUrlRe = /https?:\/\/[^\s<>"']+/gi;
+    const inlineWwwRe = /\bwww\.[^\s<>"']+/gi;
+    const inlineEmailRe = /[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}/gi;
+    const processed2 = processed
+      .replace(inlineUrlRe, " ")
+      .replace(inlineWwwRe, " ")
+      .replace(inlineEmailRe, " ")
+      .replace(/\s{2,}/g, " ");
+    setCleanedFullContent(processed2);
     setAddress(foundAddress);
-  }, [hotel.fullContent]);
+  }, [hotel.fullContent, hotel.address]);
 
   return (
     <>
@@ -291,11 +336,56 @@ export function HotelDetail({ hotel }: HotelDetailProps) {
             />
           </div>
 
-          {/* Contacto / Redes: solo se muestran aquí (limpiamos duplicados del texto) */}
+          {/* Contacto / Redes: se muestran aquí en orden definido */}
           <div className="mt-4 mb-8 text-sm font-neutra text-gray-700">
-            {hotel.website && (
+            <h3 className="font-neutra text-[15px] leading-[22px] font-normal uppercase text-black mb-3">
+              {t("DATOS ÚTILES", "USEFUL INFORMATION")}
+            </h3>
+            {/* 1) Dirección / Sucursales */}
+            {hotel.locations && hotel.locations.length > 0 ? (
               <div className="mb-2">
-                <span className="font-[700] mr-2">{t("WEB", "WEB")}:</span>
+                <div className="font-[700] mr-2 inline-block">
+                  {t("DIRECCIÓN", "ADDRESS")}:
+                </div>
+                <div className="mt-1">
+                  {hotel.locations.map((loc, idx) => (
+                    <div key={idx} className="mb-1">
+                      {loc.label ? (
+                        <>
+                          <span className="font-[700] mr-2">
+                            {String(loc.label).toUpperCase()}:
+                          </span>
+                          <span className="text-black">
+                            {normalizeAddressText(loc.address).toUpperCase()}
+                          </span>
+                          {loc.hours ? (
+                            <span className="text-black">{` (${loc.hours})`}</span>
+                          ) : null}
+                        </>
+                      ) : (
+                        <span className="text-black">
+                          {normalizeAddressText(loc.address).toUpperCase()}
+                        </span>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            ) : (
+              address && (
+                <div className="mb-2">
+                  <span className="font-[700] mr-2">
+                    {t("DIRECCIÓN", "ADDRESS")}:
+                  </span>
+                  <span className="text-black">{address.toUpperCase()}</span>
+                </div>
+              )
+            )}
+
+            {/* 2) Sitio web */}
+            <div className="mb-2">
+              <span className="font-[700] mr-2">{t("WEB", "WEB")}:</span>
+              {hotel.website ? (
                 <a
                   href={hotel.website}
                   target="_blank"
@@ -304,9 +394,14 @@ export function HotelDetail({ hotel }: HotelDetailProps) {
                 >
                   {formatWebsiteDisplay(hotel.website_display || hotel.website)}
                 </a>
-              </div>
-            )}
+              ) : (
+                <span className="text-black">
+                  {t("NO POSEE UN SITIO WEB OFICIAL", "NO OFFICIAL WEBSITE")}
+                </span>
+              )}
+            </div>
 
+            {/* 3) Redes Sociales */}
             {hotel.instagram && (
               <div className="mb-2">
                 <span className="font-[700] mr-2">
@@ -326,6 +421,193 @@ export function HotelDetail({ hotel }: HotelDetailProps) {
               </div>
             )}
 
+            {/* 4) Horario */}
+            {hotel.hours && (
+              <div className="mb-2">
+                <span className="font-[700] mr-2">
+                  {t("HORARIO", "HOURS")}:
+                </span>
+                <span className="text-black">{hotel.hours}</span>
+              </div>
+            )}
+
+            {/* 5) Reservas */}
+            {(hotel.reservationPolicy || hotel.reservationLink) && (
+              <div className="mb-2">
+                <span className="font-[700] mr-2">
+                  {t("RESERVAS", "RESERVATIONS")}:
+                </span>
+                {hotel.reservationLink ? (
+                  <a
+                    href={hotel.reservationLink}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-[var(--color-brand-red)] no-underline"
+                  >
+                    {hotel.reservationPolicy || hotel.reservationLink}
+                  </a>
+                ) : (
+                  <span className="text-black">{hotel.reservationPolicy}</span>
+                )}
+              </div>
+            )}
+
+            {/* 6) Dato de interés */}
+            {hotel.interestingFact && (
+              <div className="mb-2">
+                <span className="font-[700] mr-2">
+                  {t("DATO DE INTERÉS", "INTERESTING FACT")}:
+                </span>
+                <span className="text-black">{hotel.interestingFact}</span>
+              </div>
+            )}
+
+            {/* 6.1) Bloques por sucursal con datos específicos */}
+            {hotel.locations && hotel.locations.length > 0 && (
+              <div className="mt-5">
+                {hotel.locations.map((loc, idx) => {
+                  const hasExtra = !!(
+                    loc.website ||
+                    loc.instagram ||
+                    loc.hours ||
+                    loc.reservationLink ||
+                    loc.reservationPolicy ||
+                    loc.interestingFact ||
+                    loc.email ||
+                    loc.phone
+                  );
+                  if (!hasExtra) return null;
+                  return (
+                    <div key={idx} className="mb-4">
+                      {loc.label && (
+                        <div className="font-neutra text-[15px] leading-[22px] font-normal uppercase text-black mb-2">
+                          {String(loc.label)}
+                        </div>
+                      )}
+                      {/* Dirección de la sucursal (opcionalmente repetir para claridad) */}
+                      {loc.address && (
+                        <div className="mb-1">
+                          <span className="font-[700] mr-2">
+                            {t("DIRECCIÓN", "ADDRESS")}:
+                          </span>
+                          <span className="text-black">
+                            {normalizeAddressText(loc.address).toUpperCase()}
+                          </span>
+                        </div>
+                      )}
+                      {/* Sitio web sucursal */}
+                      {loc.website && (
+                        <div className="mb-1">
+                          <span className="font-[700] mr-2">
+                            {t("WEB", "WEB")}:
+                          </span>
+                          <a
+                            href={loc.website}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-[var(--color-brand-red)] no-underline"
+                          >
+                            {formatWebsiteDisplay(
+                              loc.website_display || loc.website
+                            )}
+                          </a>
+                        </div>
+                      )}
+                      {/* Instagram sucursal */}
+                      {loc.instagram && (
+                        <div className="mb-1">
+                          <span className="font-[700] mr-2">
+                            {t("INSTAGRAM", "INSTAGRAM")}:
+                          </span>
+                          <a
+                            href={loc.instagram}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-[var(--color-brand-red)] no-underline"
+                          >
+                            {(
+                              loc.instagram_display ||
+                              formatInstagramDisplay(loc.instagram)
+                            ).toUpperCase()}
+                          </a>
+                        </div>
+                      )}
+                      {/* Horario sucursal */}
+                      {loc.hours && (
+                        <div className="mb-1">
+                          <span className="font-[700] mr-2">
+                            {t("HORARIO", "HOURS")}:
+                          </span>
+                          <span className="text-black">{loc.hours}</span>
+                        </div>
+                      )}
+                      {/* Reservas sucursal */}
+                      {(loc.reservationPolicy || loc.reservationLink) && (
+                        <div className="mb-1">
+                          <span className="font-[700] mr-2">
+                            {t("RESERVAS", "RESERVATIONS")}:
+                          </span>
+                          {loc.reservationLink ? (
+                            <a
+                              href={loc.reservationLink}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="text-[var(--color-brand-red)] no-underline"
+                            >
+                              {loc.reservationPolicy || loc.reservationLink}
+                            </a>
+                          ) : (
+                            <span className="text-black">
+                              {loc.reservationPolicy}
+                            </span>
+                          )}
+                        </div>
+                      )}
+                      {/* Dato de interés sucursal */}
+                      {loc.interestingFact && (
+                        <div className="mb-1">
+                          <span className="font-[700] mr-2">
+                            {t("DATO DE INTERÉS", "INTERESTING FACT")}:
+                          </span>
+                          <span className="text-black">
+                            {loc.interestingFact}
+                          </span>
+                        </div>
+                      )}
+                      {/* Contacto sucursal */}
+                      {loc.phone && (
+                        <div className="mb-1">
+                          <span className="font-[700] mr-2">
+                            {t("TEL", "TEL")}:
+                          </span>
+                          <a
+                            href={formatTel(loc.phone)}
+                            className="text-[var(--color-brand-red)] no-underline"
+                          >
+                            {formatPhoneDisplay(loc.phone).toUpperCase()}
+                          </a>
+                        </div>
+                      )}
+                      {loc.email && (
+                        <div className="mb-1">
+                          <span className="font-[700] mr-2">
+                            {t("EMAIL", "EMAIL")}:
+                          </span>
+                          <a
+                            href={formatMailto(loc.email)}
+                            className="text-[var(--color-brand-red)] no-underline"
+                          >
+                            {stripMailto(loc.email).toUpperCase()}
+                          </a>
+                        </div>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+
+            {/* Teléfono y email (opcionalmente debajo) */}
             {hotel.phone && (
               <div className="mb-2">
                 <span className="font-[700] mr-2">{t("TEL", "TEL")}:</span>
@@ -337,7 +619,6 @@ export function HotelDetail({ hotel }: HotelDetailProps) {
                 </a>
               </div>
             )}
-
             {hotel.email && (
               <div className="mb-2">
                 <span className="font-[700] mr-2">{t("EMAIL", "EMAIL")}:</span>
@@ -350,22 +631,13 @@ export function HotelDetail({ hotel }: HotelDetailProps) {
               </div>
             )}
 
+            {/* Crédito de fotos (si aplica) */}
             {hotel.photosCredit && (
               <div className="mb-2 text-[13px] text-gray-600">
                 <span className="font-[700] mr-2">
                   {t("PHOTOS", "PHOTOS")}:
                 </span>
                 <span>{hotel.photosCredit.toUpperCase()}</span>
-              </div>
-            )}
-
-            {/* Dirección debe ir al final del bloque de contacto */}
-            {address && (
-              <div className="mt-3">
-                <span className="font-[700] mr-2">
-                  {t("DIRECCIÓN", "ADDRESS")}:
-                </span>
-                <span className="text-black">{address.toUpperCase()}</span>
               </div>
             )}
           </div>
@@ -453,4 +725,18 @@ function formatInstagramDisplay(inst: string) {
     .replace(/^https?:\/\//i, "")
     .split("/")
     .pop()}`;
+}
+
+// Helpers for address normalization
+function normalizeAddressText(s: string) {
+  if (!s) return "";
+  const txt = String(s)
+    .replace(/<[^>]+>/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+  // remove leading labels like DIRECCIÓN:, ADDRESS:, UBICACIÓN:
+  return txt.replace(
+    /^\s*(direcci[oó]n|address|ubicaci[oó]n)\s*[:\-]?\s*/i,
+    ""
+  );
 }

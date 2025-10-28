@@ -55,11 +55,11 @@ export default function Page() {
             {/* Banner: ocupa 1 columna en lg - imagen escala hacia abajo y fondo negro */}
             <div className="hidden lg:block w-full h-[437px] relative bg-black">
               <Link
-                href="/categoria/restaurantes"
+                href="https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/WhatsApp-Image-2025-10-28-at-5.15.32-PM.jpeg"
                 className="block w-full h-full"
               >
                 <img
-                  src="/Group-83.webp"
+                  src="https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/WhatsApp-Image-2025-10-28-at-5.15.32-PM.jpeg"
                   alt="Banner Restaurantes"
                   className="object-scale-down object-center w-full h-full"
                 />

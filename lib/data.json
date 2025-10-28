@@ -37,16 +37,49 @@
     ],
     "website": "",
     "instagram": "https://www.instagram.com/YUMCHACLHORARIO",
-    "categories": [
-      "ALL",
-      "RESTAURANTES"
-    ],
+    "categories": ["ALL", "RESTAURANTES"],
     "website_display": "",
     "instagram_display": "@yumchaclhorario",
     "email": "",
     "phone": "",
     "photosCredit": "",
     "address": ""
+  },
+  {
+    "slug": "dolce-salato",
+    "en": {
+      "name": "DOLCE SALATO",
+      "subtitle": "AN ITALIAN-STYLE PARADOR",
+      "description": [
+        "An experience that intertwines history and gastronomy in an atmosphere of serene beauty. Located in a majestic 1928 mansion in the heart of Providencia, this heritage property was once the residence of Ricardo Lyon and Loreto Cousiño.",
+        "The visionary and founder, chef Loreto Reyes, leads the restaurant’s dual concept: the sweet and the savory. Her approach comes to life through fine pastry — a central pillar of the proposal that pays tribute to the site’s Italian heritage. Dolce Salato’s cuisine is a journey between Chile and Italy, blending Chilean classics such as pastel de papas (potato casserole) and lentils with longaniza sausage with refined Italian-inspired bakery and pastry creations. Guests particularly praise the quality of the sourdough sandwiches, the thin-crust pizzas, and the signature creamy cheesecake.",
+        "The restaurant’s design reflects its rich history. It features interior courtyards filled with gardens and cozy corners that invite guests to relax. A highlight is the mural by renowned Chilean artist Javier Barriga, adding a touch of contemporary art to the historic setting. The décor strikes a balance between rustic and elegant, creating an atmosphere that feels both homely and sophisticated."
+      ],
+      "category": "RESTAURANTS"
+    },
+    "es": {
+      "name": "DOLCE SALATO",
+      "subtitle": "PARADOR A LA ITALIANA",
+      "description": [
+        "Una experiencia que entrelaza la historia y la gastronomía en un entorno de belleza serena. Ubicado en una majestuosa casona de 1928, en el corazón del barrio Providencia, este espacio patrimonial fue la residencia de Ricardo Lyon y Loreto Cousiño.",
+        "La figura clave y fundadora, la chef Loreto Reyes, lidera la propuesta dual del restaurante: lo dulce y lo salado. Su visión se materializa en la pastelería fina, un pilar fundamental de la oferta que rinde homenaje a la herencia italiana del lugar. La cocina de Dolce Salato es un viaje entre Chile e Italia. Se destaca por fusionar clásicos chilenos como el pastel de papas o las lentejas con longaniza, con una pastelería y panadería que reflejan una profunda influencia italiana. Los clientes elogian particularmente la calidad de sus sándwiches en pan de masa madre, las pizzas de masa fina y la inconfundible cremosidad de su tarta de queso.",
+        "El diseño del restaurante es un reflejo de su historia. Se caracteriza por sus patios interiores, llenos de jardines y rincones acogedores, que invitan a una pausa tranquila. Un elemento sobresaliente es el mural del reconocido artista chileno Javier Barriga, una obra que añade un toque de arte contemporáneo al ambiente histórico. La decoración busca un equilibrio entre lo rústico y lo elegante, creando un ambiente familiar y sofisticado a la vez."
+      ],
+      "category": "RESTAURANTES"
+    },
+    "images": [],
+    "website": "https://dolceysalato.cl",
+    "instagram": "https://www.instagram.com/dolceysalato",
+    "categories": ["ALL", "RESTAURANTES", "TODOS"],
+    "website_display": "dolceysalato.cl",
+    "instagram_display": "@dolceysalato",
+    "email": "INFO@DOLCEYSALATO.CL",
+    "phone": "",
+    "photosCredit": "",
+    "address": "ELIODORO YÁÑEZ 2820, PROVIDENCIA, SANTIAGO",
+    "hours": "LUNES A VIERNES DE 8:30 A 20:30 HRS. (CONFIRMAR DISPONIBILIDAD PARA FINES DE SEMANA EN SU SITIO WEB).",
+    "reservationPolicy": "EL SITIO WEB SUGIERE QUE LAS RESERVAS NO SON SIEMPRE NECESARIAS PERO SON RECOMENDABLES PARA GRUPOS. INFO@DOLCEYSALATO.CL",
+    "interestingFact": "LA CASONA QUE ALBERGA EL RESTAURANTE FUE LA ANTIGUA RESIDENCIA DE RICARDO LYON Y LORETO COUSIÑO."
   },
   {
     "slug": "la-vinoteca-zoco-celebracion-del-vino",
@@ -83,10 +116,7 @@
     ],
     "website": "",
     "instagram": "https://www.instagram.com/LAVINOTECA_CHILEHORARIO",
-    "categories": [
-      "ALL",
-      "RESTAURANTES"
-    ],
+    "categories": ["ALL", "RESTAURANTES"],
     "website_display": "",
     "instagram_display": "@lavinoteca_chilehorario",
     "email": "",
@@ -130,10 +160,7 @@
     ],
     "website": "",
     "instagram": "https://www.instagram.com/VERDESAZONCHILEHORARIO",
-    "categories": [
-      "ALL",
-      "RESTAURANTES"
-    ],
+    "categories": ["ALL", "RESTAURANTES"],
     "website_display": "",
     "instagram_display": "@verdesazonchilehorario",
     "email": "",
@@ -179,10 +206,7 @@
     ],
     "website": "",
     "instagram": "https://www.instagram.com/TONI_LAUTAROHORARIO",
-    "categories": [
-      "ALL",
-      "RESTAURANTES"
-    ],
+    "categories": ["ALL", "RESTAURANTES"],
     "website_display": "",
     "instagram_display": "@toni_lautarohorario",
     "email": "",
@@ -228,10 +252,7 @@
     ],
     "website": "",
     "instagram": "https://www.instagram.com/TANAKAFUSIONHORARIO",
-    "categories": [
-      "ALL",
-      "RESTAURANTES"
-    ],
+    "categories": ["ALL", "RESTAURANTES"],
     "website_display": "",
     "instagram_display": "@tanakafusionhorario",
     "email": "",
@@ -276,10 +297,7 @@
     ],
     "website": "",
     "instagram": "https://www.instagram.com/SIAMTHAI.CLHORARIO",
-    "categories": [
-      "ALL",
-      "RESTAURANTES"
-    ],
+    "categories": ["ALL", "RESTAURANTES"],
     "website_display": "",
     "instagram_display": "@siamthai.clhorario",
     "email": "",
@@ -323,10 +341,7 @@
     ],
     "website": "",
     "instagram": "https://www.instagram.com/SAVIABAR_CLHORARIO",
-    "categories": [
-      "ALL",
-      "RESTAURANTES"
-    ],
+    "categories": ["ALL", "RESTAURANTES"],
     "website_display": "",
     "instagram_display": "@saviabar_clhorario",
     "email": "",
@@ -371,10 +386,7 @@
     ],
     "website": "",
     "instagram": "https://www.instagram.com/RUBAIYATBRASILHORARIO",
-    "categories": [
-      "ALL",
-      "RESTAURANTES"
-    ],
+    "categories": ["ALL", "RESTAURANTES"],
     "website_display": "",
     "instagram_display": "@rubaiyatbrasilhorario",
     "email": "",
@@ -418,10 +430,7 @@
     ],
     "website": "",
     "instagram": "https://www.instagram.com/RIVOLICLHORARIO",
-    "categories": [
-      "ALL",
-      "RESTAURANTES"
-    ],
+    "categories": ["ALL", "RESTAURANTES"],
     "website_display": "",
     "instagram_display": "@rivoliclhorario",
     "email": "",
@@ -461,10 +470,7 @@
     ],
     "website": "",
     "instagram": "https://www.instagram.com/QUINOAREST",
-    "categories": [
-      "ALL",
-      "RESTAURANTES"
-    ],
+    "categories": ["ALL", "RESTAURANTES"],
     "website_display": "",
     "instagram_display": "@quinoarest",
     "email": "",
@@ -507,10 +513,7 @@
     ],
     "website": "",
     "instagram": "https://www.instagram.com/PULPERIASANTAELVIRAHORARIO",
-    "categories": [
-      "ALL",
-      "RESTAURANTES"
-    ],
+    "categories": ["ALL", "RESTAURANTES"],
     "website_display": "",
     "instagram_display": "@pulperiasantaelvirahorario",
     "email": "",
@@ -553,10 +556,7 @@
     ],
     "website": "",
     "instagram": "https://www.instagram.com/PRISTINORESTAURANTEHORARIO",
-    "categories": [
-      "ALL",
-      "RESTAURANTES"
-    ],
+    "categories": ["ALL", "RESTAURANTES"],
     "website_display": "",
     "instagram_display": "@pristinorestaurantehorario",
     "email": "",
@@ -601,10 +601,7 @@
     ],
     "website": "",
     "instagram": "https://www.instagram.com/PISOUNORESTAURANTHORARIO",
-    "categories": [
-      "ALL",
-      "RESTAURANTES"
-    ],
+    "categories": ["ALL", "RESTAURANTES"],
     "website_display": "",
     "instagram_display": "@pisounorestauranthorario",
     "email": "",
@@ -646,10 +643,7 @@
     ],
     "website": "",
     "instagram": "https://www.instagram.com/PALLOZZI.CLHORARIO",
-    "categories": [
-      "ALL",
-      "RESTAURANTES"
-    ],
+    "categories": ["ALL", "RESTAURANTES"],
     "website_display": "",
     "instagram_display": "@pallozzi.clhorario",
     "email": "",
@@ -695,10 +689,7 @@
     ],
     "website": "",
     "instagram": "https://www.instagram.com/OCEANPACIFICRESTAURANTHORARIO",
-    "categories": [
-      "ALL",
-      "RESTAURANTES"
-    ],
+    "categories": ["ALL", "RESTAURANTES"],
     "website_display": "",
     "instagram_display": "@oceanpacificrestauranthorario",
     "email": "",
@@ -742,10 +733,7 @@
     ],
     "website": "",
     "instagram": "https://www.instagram.com/NORMANDIE_RESTAURANTHORARIO",
-    "categories": [
-      "ALL",
-      "RESTAURANTES"
-    ],
+    "categories": ["ALL", "RESTAURANTES"],
     "website_display": "",
     "instagram_display": "@normandie_restauranthorario",
     "email": "",
@@ -787,10 +775,7 @@
     ],
     "website": "",
     "instagram": "https://www.instagram.com/NAOKI.CLHORARIO",
-    "categories": [
-      "ALL",
-      "RESTAURANTES"
-    ],
+    "categories": ["ALL", "RESTAURANTES"],
     "website_display": "",
     "instagram_display": "@naoki.clhorario",
     "email": "",
@@ -842,10 +827,7 @@
     ],
     "website": "",
     "instagram": "https://www.instagram.com/MAYAN.BAR",
-    "categories": [
-      "ALL",
-      "RESTAURANTES"
-    ],
+    "categories": ["ALL", "RESTAURANTES"],
     "website_display": "",
     "instagram_display": "@mayan.bar",
     "email": "",
@@ -887,10 +869,7 @@
     ],
     "website": "",
     "instagram": "https://www.instagram.com/MARINAMARDETAPASHORARIO",
-    "categories": [
-      "ALL",
-      "RESTAURANTES"
-    ],
+    "categories": ["ALL", "RESTAURANTES"],
     "website_display": "",
     "instagram_display": "@marinamardetapashorario",
     "email": "",
@@ -932,10 +911,7 @@
     ],
     "website": "",
     "instagram": "https://www.instagram.com/BAR_LIGURIAHORARIO",
-    "categories": [
-      "ALL",
-      "RESTAURANTES"
-    ],
+    "categories": ["ALL", "RESTAURANTES"],
     "website_display": "",
     "instagram_display": "@bar_liguriahorario",
     "email": "",
@@ -982,10 +958,7 @@
     ],
     "website": "",
     "instagram": "https://www.instagram.com/BARLAPROVIDENCIAHORARIO",
-    "categories": [
-      "ALL",
-      "RESTAURANTES"
-    ],
+    "categories": ["ALL", "RESTAURANTES"],
     "website_display": "",
     "instagram_display": "@barlaprovidenciahorario",
     "email": "",
@@ -1029,10 +1002,7 @@
     ],
     "website": "https://RESTAURANTLAMESA.COM",
     "instagram": "https://www.instagram.com/LAMESA_CHILEHORARIO",
-    "categories": [
-      "ALL",
-      "RESTAURANTES"
-    ],
+    "categories": ["ALL", "RESTAURANTES"],
     "website_display": "restaurantlamesa.com",
     "instagram_display": "@lamesa_chilehorario",
     "email": "",
@@ -1076,10 +1046,7 @@
     ],
     "website": "",
     "instagram": "",
-    "categories": [
-      "ALL",
-      "RESTAURANTES"
-    ],
+    "categories": ["ALL", "RESTAURANTES"],
     "website_display": "",
     "instagram_display": "",
     "email": "",
@@ -1124,10 +1091,7 @@
     ],
     "website": "https://KILUCASADECARNES.CL",
     "instagram": "https://www.instagram.com/KILUCASADECARNESHORARIO",
-    "categories": [
-      "ALL",
-      "RESTAURANTES"
-    ],
+    "categories": ["ALL", "RESTAURANTES"],
     "website_display": "kilucasadecarnes.cl",
     "instagram_display": "@kilucasadecarneshorario",
     "email": "RESERVAS@KILUCASADECARNES.CL",
@@ -1179,10 +1143,7 @@
     ],
     "website": "",
     "instagram": "https://www.instagram.com/KARAIWSANTIAGO",
-    "categories": [
-      "ALL",
-      "RESTAURANTES"
-    ],
+    "categories": ["ALL", "RESTAURANTES"],
     "website_display": "",
     "instagram_display": "@karaiwsantiago",
     "email": "",
@@ -1222,14 +1183,14 @@
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/JOSE-RAMON-4.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/JOSE-RAMON-5.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/JOSE-RAMON-6.webp",
-      "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/JOSE-RAMON-7.webp"
+      "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/JOSE-RAMON-7.webp",
+      "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/JOSE-RAMON-1-1.webp",
+      "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/JOSE-RAMON-2-1.webp",
+      "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/JOSE-RAMON-3-1.webp"
     ],
     "website": "",
     "instagram": "https://www.instagram.com/JOSERAMON277",
-    "categories": [
-      "ALL",
-      "RESTAURANTES"
-    ],
+    "categories": ["ALL", "RESTAURANTES"],
     "website_display": "",
     "instagram_display": "@joseramon277",
     "email": "",
@@ -1275,10 +1236,7 @@
     ],
     "website": "",
     "instagram": "https://www.instagram.com/FUKASAWA_SANTIAGO",
-    "categories": [
-      "ALL",
-      "RESTAURANTES"
-    ],
+    "categories": ["ALL", "RESTAURANTES"],
     "website_display": "",
     "instagram_display": "@fukasawa_santiago",
     "email": "",
@@ -1322,10 +1280,7 @@
     ],
     "website": "",
     "instagram": "https://www.instagram.com/BARFLAMA",
-    "categories": [
-      "ALL",
-      "RESTAURANTES"
-    ],
+    "categories": ["ALL", "RESTAURANTES"],
     "website_display": "",
     "instagram_display": "@barflama",
     "email": "",
@@ -1368,10 +1323,7 @@
     ],
     "website": "https://BARENIGMA.CL",
     "instagram": "https://www.instagram.com/BARENIGMA.CL",
-    "categories": [
-      "ALL",
-      "RESTAURANTES"
-    ],
+    "categories": ["ALL", "RESTAURANTES"],
     "website_display": "barenigma.cl",
     "instagram_display": "@barenigma.cl",
     "email": "",
@@ -1417,10 +1369,7 @@
     ],
     "website": "",
     "instagram": "https://www.instagram.com/ELREY_CL",
-    "categories": [
-      "ALL",
-      "RESTAURANTES"
-    ],
+    "categories": ["ALL", "RESTAURANTES"],
     "website_display": "",
     "instagram_display": "@elrey_cl",
     "email": "",
@@ -1461,10 +1410,7 @@
     ],
     "website": "https://ELHUERTO.CL",
     "instagram": "https://www.instagram.com/ELHUERTO.CL",
-    "categories": [
-      "ALL",
-      "RESTAURANTES"
-    ],
+    "categories": ["ALL", "RESTAURANTES"],
     "website_display": "elhuerto.cl",
     "instagram_display": "@elhuerto.cl",
     "email": "",
@@ -1508,10 +1454,7 @@
     ],
     "website": "https://SANTARITA.CL",
     "instagram": "https://www.instagram.com/SANTARITAWINES",
-    "categories": [
-      "ALL",
-      "RESTAURANTES"
-    ],
+    "categories": ["ALL", "RESTAURANTES"],
     "website_display": "santarita.cl",
     "instagram_display": "@santaritawines",
     "email": "RESTAURANT@SANTARITA.CL",
@@ -1561,10 +1504,7 @@
     ],
     "website": "",
     "instagram": "https://www.instagram.com/DIABLOVINO",
-    "categories": [
-      "ALL",
-      "RESTAURANTES"
-    ],
+    "categories": ["ALL", "RESTAURANTES"],
     "website_display": "",
     "instagram_display": "@diablovino",
     "email": "",
@@ -1605,10 +1545,7 @@
     ],
     "website": "https://HOTELMAGNOLIA.CL",
     "instagram": "https://www.instagram.com/DEMO.MAGNOLIA",
-    "categories": [
-      "ALL",
-      "RESTAURANTES"
-    ],
+    "categories": ["ALL", "RESTAURANTES"],
     "website_display": "hotelmagnolia.cl",
     "instagram_display": "@demo.magnolia",
     "email": "CONTACTO@DEMORESTAURANT.CL",
@@ -1657,10 +1594,7 @@
     ],
     "website": "https://DEMENCIA.CL",
     "instagram": "https://www.instagram.com/DEMENCIA.CL",
-    "categories": [
-      "ALL",
-      "RESTAURANTES"
-    ],
+    "categories": ["ALL", "RESTAURANTES"],
     "website_display": "demencia.cl",
     "instagram_display": "@demencia.cl",
     "email": "",
@@ -1707,10 +1641,7 @@
     ],
     "website": "",
     "instagram": "https://www.instagram.com/CORA.BISTRO",
-    "categories": [
-      "ALL",
-      "RESTAURANTES"
-    ],
+    "categories": ["ALL", "RESTAURANTES"],
     "website_display": "",
     "instagram_display": "@cora.bistro",
     "email": "",
@@ -1761,10 +1692,7 @@
     ],
     "website": "",
     "instagram": "https://www.instagram.com/DEBAINESSANTIAGO",
-    "categories": [
-      "ALL",
-      "RESTAURANTES"
-    ],
+    "categories": ["ALL", "RESTAURANTES"],
     "website_display": "",
     "instagram_display": "@debainessantiago",
     "email": "",
@@ -1809,10 +1737,7 @@
     ],
     "website": "",
     "instagram": "https://www.instagram.com/CONSERBAR",
-    "categories": [
-      "ALL",
-      "RESTAURANTES"
-    ],
+    "categories": ["ALL", "RESTAURANTES"],
     "website_display": "",
     "instagram_display": "@conserbar",
     "email": "",
@@ -1857,10 +1782,7 @@
     ],
     "website": "",
     "instagram": "https://www.instagram.com/BARCITADELLE",
-    "categories": [
-      "ALL",
-      "RESTAURANTES"
-    ],
+    "categories": ["ALL", "RESTAURANTES"],
     "website_display": "",
     "instagram_display": "@barcitadelle",
     "email": "",
@@ -1905,10 +1827,7 @@
     ],
     "website": "https://CEIBASTGO.CL",
     "instagram": "https://www.instagram.com/CEIBASTGO",
-    "categories": [
-      "ALL",
-      "RESTAURANTES"
-    ],
+    "categories": ["ALL", "RESTAURANTES"],
     "website_display": "ceibastgo.cl",
     "instagram_display": "@ceibastgo",
     "email": "",
@@ -1959,10 +1878,7 @@
     ],
     "website": "",
     "instagram": "https://www.instagram.com/CASSISCAFE",
-    "categories": [
-      "ALL",
-      "RESTAURANTES"
-    ],
+    "categories": ["ALL", "RESTAURANTES"],
     "website_display": "",
     "instagram_display": "@cassiscafe",
     "email": "",
@@ -2006,10 +1922,7 @@
     ],
     "website": "",
     "instagram": "https://www.instagram.com/HOTELBIDASOA",
-    "categories": [
-      "ALL",
-      "RESTAURANTES"
-    ],
+    "categories": ["ALL", "RESTAURANTES"],
     "website_display": "",
     "instagram_display": "@hotelbidasoa",
     "email": "",
@@ -2057,10 +1970,7 @@
     ],
     "website": "",
     "instagram": "https://www.instagram.com/CASALASTARRIA",
-    "categories": [
-      "ALL",
-      "RESTAURANTES"
-    ],
+    "categories": ["ALL", "RESTAURANTES"],
     "website_display": "",
     "instagram_display": "@casalastarria",
     "email": "",
@@ -2108,10 +2018,7 @@
     ],
     "website": "",
     "instagram": "https://www.instagram.com/CAPOGROSSI_CHILE",
-    "categories": [
-      "ALL",
-      "RESTAURANTES"
-    ],
+    "categories": ["ALL", "RESTAURANTES"],
     "website_display": "",
     "instagram_display": "@capogrossi_chile",
     "email": "",
@@ -2154,10 +2061,7 @@
     ],
     "website": "",
     "instagram": "https://www.instagram.com/BORAGOCL",
-    "categories": [
-      "ALL",
-      "RESTAURANTES"
-    ],
+    "categories": ["ALL", "RESTAURANTES"],
     "website_display": "",
     "instagram_display": "@boragocl",
     "email": "",
@@ -2207,10 +2111,7 @@
     ],
     "website": "",
     "instagram": "https://www.instagram.com/BOCANARIZ",
-    "categories": [
-      "ALL",
-      "RESTAURANTES"
-    ],
+    "categories": ["ALL", "RESTAURANTES"],
     "website_display": "",
     "instagram_display": "@bocanariz",
     "email": "",
@@ -2258,10 +2159,7 @@
     ],
     "website": "https://BLUEJAR.CL",
     "instagram": "https://www.instagram.com/BLUE_RESTAURANT",
-    "categories": [
-      "ALL",
-      "RESTAURANTES"
-    ],
+    "categories": ["ALL", "RESTAURANTES"],
     "website_display": "bluejar.cl",
     "instagram_display": "@blue_restaurant",
     "email": "",
@@ -2307,10 +2205,7 @@
     ],
     "website": "",
     "instagram": "https://www.instagram.com/BARDOT.SANTIAGO",
-    "categories": [
-      "ALL",
-      "RESTAURANTES"
-    ],
+    "categories": ["ALL", "RESTAURANTES"],
     "website_display": "",
     "instagram_display": "@bardot.santiago",
     "email": "",
@@ -2358,10 +2253,7 @@
     ],
     "website": "https://ARTEMISA-BAR.CL",
     "instagram": "https://www.instagram.com/ARTEMISA_COCKTAILBAR",
-    "categories": [
-      "ALL",
-      "RESTAURANTES"
-    ],
+    "categories": ["ALL", "RESTAURANTES"],
     "website_display": "artemisa-bar.cl",
     "instagram_display": "@artemisa_cocktailbar",
     "email": "",
@@ -2407,10 +2299,7 @@
     ],
     "website": "https://ARCABAR.CL",
     "instagram": "https://www.instagram.com/ARCABAR",
-    "categories": [
-      "ALL",
-      "RESTAURANTES"
-    ],
+    "categories": ["ALL", "RESTAURANTES"],
     "website_display": "arcabar.cl",
     "instagram_display": "@arcabar",
     "email": "",
@@ -2462,10 +2351,7 @@
     ],
     "website": "https://AMBROSIA.CL",
     "instagram": "https://www.instagram.com/AMBROSIA_REST",
-    "categories": [
-      "ALL",
-      "RESTAURANTES"
-    ],
+    "categories": ["ALL", "RESTAURANTES"],
     "website_display": "ambrosia.cl",
     "instagram_display": "@ambrosia_rest",
     "email": "",
@@ -2519,10 +2405,7 @@
     ],
     "website": "",
     "instagram": "https://www.instagram.com/ACHSANTIAGOCENCOCOSTANERA",
-    "categories": [
-      "ALL",
-      "RESTAURANTES"
-    ],
+    "categories": ["ALL", "RESTAURANTES"],
     "website_display": "",
     "instagram_display": "@achsantiagocencocostanera",
     "email": "",
@@ -2554,7 +2437,7 @@
         "En 1919, el Banco de Chile convocó a un concurso abierto a arquitectos chilenos y extranjeros. El proyecto fue adjudicado al arquitecto austriaco Alberto Siegel Lübbe y la construcción comenzó en 1921, siendo inaugurado el 6 de abril de 1926.",
         "El edificio fue concebido bajo un estilo academicista francés, con un amplio espacio central y circulaciones expeditas, en atención al alto flujo de usuarios previsto en su diseño. A diferencia de otros edificios de arquitectura metálica de la época en el país, que dejaban la estructura a la vista, el de la casa matriz fue construido principalmente con pilares de acero revestidos en hormigón, trabajando ambos materiales de manera estructural. El inmueble cuenta con cuatro pisos y dos subterráneos.",
         "En su libro Arquitectura en el Chile del siglo XX. Iniciando el nuevo siglo 1890–1930, Fernando Pérez Oyarzún, Premio Nacional de Arquitectura 2022, señala que “la mayor originalidad del proyecto de Siegel estuvo en la forma de ocupar el centro de la manzana, a través de un gran espacio unitario cubierto por una cúpula e iluminado cenitalmente. Dicha disposición, además de expresar la naturaleza de una institución financiera moderna, fue el punto de partida de la organización de la totalidad de la manzana”.\n\t\t\n\t\t\t\t\t\n\t\t\nWWW.BANCOCHILE.CL",
-        "DIRECCIÓN: AHUMADA 251"
+        ""
       ],
       "category": "ICONOS"
     },
@@ -2565,11 +2448,7 @@
     ],
     "website": "https://BANCOCHILE.CL",
     "instagram": "",
-    "categories": [
-      "ALL",
-      "ICONOS",
-      "TODOS"
-    ],
+    "categories": ["ALL", "ICONOS", "TODOS"],
     "website_display": "bancochile.cl",
     "instagram_display": "",
     "email": "",
@@ -2607,11 +2486,7 @@
     ],
     "website": "",
     "instagram": "",
-    "categories": [
-      "ALL",
-      "BARRIOS",
-      "TODOS"
-    ],
+    "categories": ["ALL", "BARRIOS", "TODOS"],
     "website_display": "",
     "instagram_display": "",
     "email": "",
@@ -2651,11 +2526,7 @@
     ],
     "website": "",
     "instagram": "",
-    "categories": [
-      "ALL",
-      "BARRIOS",
-      "TODOS"
-    ],
+    "categories": ["ALL", "BARRIOS", "TODOS"],
     "website_display": "",
     "instagram_display": "",
     "email": "",
@@ -2697,11 +2568,7 @@
     ],
     "website": "https://museosanfrancisco.com",
     "instagram": "https://www.instagram.com/museosanfranciscochile",
-    "categories": [
-      "ALL",
-      "MUSEOS",
-      "TODOS"
-    ],
+    "categories": ["ALL", "MUSEOS", "TODOS"],
     "website_display": "museosanfrancisco.com",
     "instagram_display": "@museosanfranciscochile",
     "email": "",
@@ -2743,11 +2610,7 @@
     ],
     "website": "https://FUNDACIONNERUDA.ORG",
     "instagram": "",
-    "categories": [
-      "ALL",
-      "MUSEOS",
-      "TODOS"
-    ],
+    "categories": ["ALL", "MUSEOS", "TODOS"],
     "website_display": "fundacionneruda.org",
     "instagram_display": "",
     "email": "",
@@ -2791,11 +2654,7 @@
     ],
     "website": "https://ILPOSTO.CL",
     "instagram": "",
-    "categories": [
-      "ALL",
-      "MUSEOS",
-      "TODOS"
-    ],
+    "categories": ["ALL", "MUSEOS", "TODOS"],
     "website_display": "ilposto.cl",
     "instagram_display": "",
     "email": "",
@@ -2838,11 +2697,7 @@
     ],
     "website": "https://ESPACIOMATTA.CL",
     "instagram": "",
-    "categories": [
-      "ALL",
-      "MUSEOS",
-      "TODOS"
-    ],
+    "categories": ["ALL", "MUSEOS", "TODOS"],
     "website_display": "espaciomatta.cl",
     "instagram_display": "",
     "email": "",
@@ -2882,11 +2737,7 @@
     ],
     "website": "",
     "instagram": "",
-    "categories": [
-      "ALL",
-      "MUSEOS",
-      "TODOS"
-    ],
+    "categories": ["ALL", "MUSEOS", "TODOS"],
     "website_display": "",
     "instagram_display": "",
     "email": "",
@@ -2927,11 +2778,7 @@
     ],
     "website": "https://MUNISTGO.CL",
     "instagram": "",
-    "categories": [
-      "ALL",
-      "MUSEOS",
-      "TODOS"
-    ],
+    "categories": ["ALL", "MUSEOS", "TODOS"],
     "website_display": "munistgo.cl",
     "instagram_display": "",
     "email": "",
@@ -2974,11 +2821,7 @@
     ],
     "website": "https://FUNDACIONGASCO.CL",
     "instagram": "",
-    "categories": [
-      "ALL",
-      "MUSEOS",
-      "TODOS"
-    ],
+    "categories": ["ALL", "MUSEOS", "TODOS"],
     "website_display": "fundaciongasco.cl",
     "instagram_display": "",
     "email": "",
@@ -3025,11 +2868,7 @@
     ],
     "website": "",
     "instagram": "https://www.instagram.com/POSADADELCORREGIDOR",
-    "categories": [
-      "ALL",
-      "MUSEOS",
-      "TODOS"
-    ],
+    "categories": ["ALL", "MUSEOS", "TODOS"],
     "website_display": "",
     "instagram_display": "@posadadelcorregidor",
     "email": "",
@@ -3072,11 +2911,7 @@
     ],
     "website": "https://CULTURALAREINA.CL",
     "instagram": "",
-    "categories": [
-      "ALL",
-      "MUSEOS",
-      "TODOS"
-    ],
+    "categories": ["ALL", "MUSEOS", "TODOS"],
     "website_display": "culturalareina.cl",
     "instagram_display": "",
     "email": "",
@@ -3136,11 +2971,7 @@
     ],
     "website": "https://MHM.CL",
     "instagram": "",
-    "categories": [
-      "ALL",
-      "MUSEOS",
-      "TODOS"
-    ],
+    "categories": ["ALL", "MUSEOS", "TODOS"],
     "website_display": "mhm.cl",
     "instagram_display": "",
     "email": "",
@@ -3185,11 +3016,7 @@
     ],
     "website": "https://GOB.CL",
     "instagram": "",
-    "categories": [
-      "ALL",
-      "MUSEOS",
-      "TODOS"
-    ],
+    "categories": ["ALL", "MUSEOS", "TODOS"],
     "website_display": "gob.cl",
     "instagram_display": "",
     "email": "",
@@ -3236,11 +3063,7 @@
     ],
     "website": "",
     "instagram": "",
-    "categories": [
-      "ALL",
-      "MUSEOS",
-      "TODOS"
-    ],
+    "categories": ["ALL", "MUSEOS", "TODOS"],
     "website_display": "",
     "instagram_display": "",
     "email": "",
@@ -3287,11 +3110,7 @@
     ],
     "website": "https://MIN.CL",
     "instagram": "",
-    "categories": [
-      "ALL",
-      "MUSEOS",
-      "TODOS"
-    ],
+    "categories": ["ALL", "MUSEOS", "TODOS"],
     "website_display": "min.cl",
     "instagram_display": "",
     "email": "",
@@ -3339,11 +3158,7 @@
     ],
     "website": "",
     "instagram": "",
-    "categories": [
-      "ALL",
-      "MUSEOS",
-      "TODOS"
-    ],
+    "categories": ["ALL", "MUSEOS", "TODOS"],
     "website_display": "",
     "instagram_display": "",
     "email": "",
@@ -3394,11 +3209,7 @@
     ],
     "website": "https://ESTACIONMAPOCHO.CL",
     "instagram": "",
-    "categories": [
-      "ALL",
-      "MUSEOS",
-      "TODOS"
-    ],
+    "categories": ["ALL", "MUSEOS", "TODOS"],
     "website_display": "estacionmapocho.cl",
     "instagram_display": "",
     "email": "",
@@ -3443,11 +3254,7 @@
     ],
     "website": "https://CEACUCHILE.CL",
     "instagram": "",
-    "categories": [
-      "ALL",
-      "MUSEOS",
-      "TODOS"
-    ],
+    "categories": ["ALL", "MUSEOS", "TODOS"],
     "website_display": "ceacuchile.cl",
     "instagram_display": "",
     "email": "",
@@ -3491,11 +3298,7 @@
     ],
     "website": "",
     "instagram": "",
-    "categories": [
-      "ALL",
-      "MUSEOS",
-      "TODOS"
-    ],
+    "categories": ["ALL", "MUSEOS", "TODOS"],
     "website_display": "",
     "instagram_display": "",
     "email": "",
@@ -3534,11 +3337,7 @@
     ],
     "website": "",
     "instagram": "",
-    "categories": [
-      "ALL",
-      "MUSEOS",
-      "TODOS"
-    ],
+    "categories": ["ALL", "MUSEOS", "TODOS"],
     "website_display": "",
     "instagram_display": "",
     "email": "",
@@ -3581,11 +3380,7 @@
     ],
     "website": "",
     "instagram": "",
-    "categories": [
-      "ALL",
-      "PARQUES",
-      "TODOS"
-    ],
+    "categories": ["ALL", "PARQUES", "TODOS"],
     "website_display": "",
     "instagram_display": "",
     "email": "",
@@ -3626,11 +3421,7 @@
     ],
     "website": "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/09/TITANIUM-1.webphttps://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/09/TITANIUM-2.webphttps://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/09/TITANIUM-3.webphttps://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/09/TITANIUM-4.webphttps://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/09/TITANIUM-5.webphttps://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/09/TITANIUM-6.webphttps://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/09/TITANIUM-7.webp",
     "instagram": "",
-    "categories": [
-      "ALL",
-      "PARQUES",
-      "TODOS"
-    ],
+    "categories": ["ALL", "PARQUES", "TODOS"],
     "website_display": "azure-seal-918691.hostingersite.com",
     "instagram_display": "",
     "email": "",
@@ -3670,11 +3461,7 @@
     ],
     "website": "",
     "instagram": "",
-    "categories": [
-      "ALL",
-      "MERCADOS",
-      "TODOS"
-    ],
+    "categories": ["ALL", "MERCADOS", "TODOS"],
     "website_display": "",
     "instagram_display": "",
     "email": "",
@@ -3721,11 +3508,7 @@
     ],
     "website": "https://MUNICIPAL.CL",
     "instagram": "",
-    "categories": [
-      "ALL",
-      "ICONOS",
-      "TODOS"
-    ],
+    "categories": ["ALL", "ICONOS", "TODOS"],
     "website_display": "municipal.cl",
     "instagram_display": "",
     "email": "",
@@ -3772,11 +3555,7 @@
     ],
     "website": "https://FANTASILANDIA.CL",
     "instagram": "",
-    "categories": [
-      "ALL",
-      "ICONOS",
-      "TODOS"
-    ],
+    "categories": ["ALL", "ICONOS", "TODOS"],
     "website_display": "fantasilandia.cl",
     "instagram_display": "",
     "email": "",
@@ -3816,11 +3595,7 @@
     ],
     "website": "",
     "instagram": "",
-    "categories": [
-      "ALL",
-      "ICONOS",
-      "TODOS"
-    ],
+    "categories": ["ALL", "ICONOS", "TODOS"],
     "website_display": "",
     "instagram_display": "",
     "email": "",
@@ -3870,11 +3645,7 @@
     ],
     "website": "https://MATETIC.COM",
     "instagram": "https://www.instagram.com/MATETICTURISMO",
-    "categories": [
-      "ALL",
-      "PASEOS FUERA DE SANTIAGO",
-      "TODOS"
-    ],
+    "categories": ["ALL", "PASEOS FUERA DE SANTIAGO", "TODOS"],
     "website_display": "matetic.com",
     "instagram_display": "@mateticturismo",
     "email": "",
@@ -3931,11 +3702,7 @@
     ],
     "website": "https://LEONERA.CL",
     "instagram": "https://www.instagram.com/LEONERAHOTEL",
-    "categories": [
-      "ALL",
-      "PASEOS FUERA DE SANTIAGO",
-      "TODOS"
-    ],
+    "categories": ["ALL", "PASEOS FUERA DE SANTIAGO", "TODOS"],
     "website_display": "leonera.cl",
     "instagram_display": "@leonerahotel",
     "email": "",
@@ -3983,11 +3750,7 @@
     ],
     "website": "https://BUINZOO.CL",
     "instagram": "",
-    "categories": [
-      "ALL",
-      "PASEOS FUERA DE SANTIAGO",
-      "TODOS"
-    ],
+    "categories": ["ALL", "PASEOS FUERA DE SANTIAGO", "TODOS"],
     "website_display": "buinzoo.cl",
     "instagram_display": "",
     "email": "",
@@ -4028,11 +3791,7 @@
     ],
     "website": "https://MUSEODELSONIDO.CL",
     "instagram": "https://www.instagram.com/MUSEODELSONIDO",
-    "categories": [
-      "ALL",
-      "MUSEOS",
-      "TODOS"
-    ],
+    "categories": ["ALL", "MUSEOS", "TODOS"],
     "website_display": "museodelsonido.cl",
     "instagram_display": "@museodelsonido",
     "email": "",
@@ -4075,11 +3834,7 @@
     ],
     "website": "https://MMDH.CL",
     "instagram": "https://www.instagram.com/MUSEODELAMEMORIA",
-    "categories": [
-      "ALL",
-      "MUSEOS",
-      "TODOS"
-    ],
+    "categories": ["ALL", "MUSEOS", "TODOS"],
     "website_display": "mmdh.cl",
     "instagram_display": "@museodelamemoria",
     "email": "",
@@ -4121,11 +3876,7 @@
     ],
     "website": "https://UC.CL",
     "instagram": "https://www.instagram.com/MAVICHILE",
-    "categories": [
-      "ALL",
-      "MUSEOS",
-      "TODOS"
-    ],
+    "categories": ["ALL", "MUSEOS", "TODOS"],
     "website_display": "uc.cl",
     "instagram_display": "@mavichile",
     "email": "",
@@ -4168,11 +3919,7 @@
     ],
     "website": "https://NAVE.IO",
     "instagram": "https://www.instagram.com/CENTRO_NAVE",
-    "categories": [
-      "ALL",
-      "MUSEOS",
-      "TODOS"
-    ],
+    "categories": ["ALL", "MUSEOS", "TODOS"],
     "website_display": "nave.io",
     "instagram_display": "@centro_nave",
     "email": "VISITAS@NAVE.IO",
@@ -4209,11 +3956,7 @@
     ],
     "website": "https://PARQUEMET.CL",
     "instagram": "",
-    "categories": [
-      "ALL",
-      "PARQUES",
-      "TODOS"
-    ],
+    "categories": ["ALL", "PARQUES", "TODOS"],
     "website_display": "parquemet.cl",
     "instagram_display": "",
     "email": "",
@@ -4251,11 +3994,7 @@
     ],
     "website": "",
     "instagram": "https://www.instagram.com/PALACIOLARRAIN",
-    "categories": [
-      "ALL",
-      "PALACIOS",
-      "TODOS"
-    ],
+    "categories": ["ALL", "PALACIOS", "TODOS"],
     "website_display": "",
     "instagram_display": "@palaciolarrain",
     "email": "",
@@ -4289,11 +4028,7 @@
     ],
     "website": "",
     "instagram": "",
-    "categories": [
-      "ALL",
-      "MIRADORES",
-      "TODOS"
-    ],
+    "categories": ["ALL", "MIRADORES", "TODOS"],
     "website_display": "",
     "instagram_display": "",
     "email": "",
@@ -4332,11 +4067,7 @@
     ],
     "website": "https://PARQUEMET.CL",
     "instagram": "",
-    "categories": [
-      "ALL",
-      "MIRADORES",
-      "TODOS"
-    ],
+    "categories": ["ALL", "MIRADORES", "TODOS"],
     "website_display": "parquemet.cl",
     "instagram_display": "",
     "email": "",
@@ -4374,11 +4105,7 @@
     ],
     "website": "",
     "instagram": "https://www.instagram.com/BARRIO_YUNGAY",
-    "categories": [
-      "ALL",
-      "BARRIOS",
-      "TODOS"
-    ],
+    "categories": ["ALL", "BARRIOS", "TODOS"],
     "website_display": "",
     "instagram_display": "@barrio_yungay",
     "email": "",
@@ -4419,11 +4146,7 @@
     ],
     "website": "",
     "instagram": "",
-    "categories": [
-      "ALL",
-      "BARRIOS",
-      "TODOS"
-    ],
+    "categories": ["ALL", "BARRIOS", "TODOS"],
     "website_display": "",
     "instagram_display": "",
     "email": "",
@@ -4459,11 +4182,7 @@
     ],
     "website": "",
     "instagram": "",
-    "categories": [
-      "ALL",
-      "ARQUITECTURA",
-      "TODOS"
-    ],
+    "categories": ["ALL", "ARQUITECTURA", "TODOS"],
     "website_display": "",
     "instagram_display": "",
     "email": "",
@@ -4502,11 +4221,7 @@
     ],
     "website": "",
     "instagram": "",
-    "categories": [
-      "ALL",
-      "ARQUITECTURA",
-      "TODOS"
-    ],
+    "categories": ["ALL", "ARQUITECTURA", "TODOS"],
     "website_display": "",
     "instagram_display": "",
     "email": "",
@@ -4544,11 +4259,7 @@
     ],
     "website": "https://EDIFICIOCCU.CL",
     "instagram": "",
-    "categories": [
-      "ALL",
-      "ARQUITECTURA",
-      "TODOS"
-    ],
+    "categories": ["ALL", "ARQUITECTURA", "TODOS"],
     "website_display": "edificioccu.cl",
     "instagram_display": "",
     "email": "",
@@ -4588,11 +4299,7 @@
     ],
     "website": "https://UC.CL",
     "instagram": "https://www.instagram.com/CENTROINNOVAUC",
-    "categories": [
-      "ALL",
-      "ARQUITECTURA",
-      "TODOS"
-    ],
+    "categories": ["ALL", "ARQUITECTURA", "TODOS"],
     "website_display": "uc.cl",
     "instagram_display": "@centroinnovauc",
     "email": "",
@@ -4635,11 +4342,7 @@
     ],
     "website": "https://CONCHAYTORO.COM",
     "instagram": "https://www.instagram.com/CONCHAYTORO",
-    "categories": [
-      "ALL",
-      "PASEOS FUERA DE SANTIAGO",
-      "TODOS"
-    ],
+    "categories": ["ALL", "PASEOS FUERA DE SANTIAGO", "TODOS"],
     "website_display": "conchaytoro.com",
     "instagram_display": "@conchaytoro",
     "email": "",
@@ -4679,11 +4382,7 @@
     ],
     "website": "https://VALLENEVADO.COM",
     "instagram": "",
-    "categories": [
-      "ALL",
-      "PASEOS FUERA DE SANTIAGO",
-      "TODOS"
-    ],
+    "categories": ["ALL", "PASEOS FUERA DE SANTIAGO", "TODOS"],
     "website_display": "vallenevado.com",
     "instagram_display": "",
     "email": "",
@@ -4725,11 +4424,7 @@
     ],
     "website": "https://LASMAJADAS.CL",
     "instagram": "https://www.instagram.com/LASMAJADASHOTEL",
-    "categories": [
-      "ALL",
-      "PASEOS FUERA DE SANTIAGO",
-      "TODOS"
-    ],
+    "categories": ["ALL", "PASEOS FUERA DE SANTIAGO", "TODOS"],
     "website_display": "lasmajadas.cl",
     "instagram_display": "@lasmajadashotel",
     "email": "",
@@ -4773,11 +4468,7 @@
     ],
     "website": "https://CASASDELBOSQUE.CL",
     "instagram": "https://www.instagram.com/CASASDELBOSQUE",
-    "categories": [
-      "ALL",
-      "PASEOS FUERA DE SANTIAGO",
-      "TODOS"
-    ],
+    "categories": ["ALL", "PASEOS FUERA DE SANTIAGO", "TODOS"],
     "website_display": "casasdelbosque.cl",
     "instagram_display": "@casasdelbosque",
     "email": "",
@@ -4819,11 +4510,7 @@
     ],
     "website": "https://SANTARITA.COM",
     "instagram": "https://www.instagram.com/SANTARITAWINES",
-    "categories": [
-      "ALL",
-      "PASEOS FUERA DE SANTIAGO",
-      "TODOS"
-    ],
+    "categories": ["ALL", "PASEOS FUERA DE SANTIAGO", "TODOS"],
     "website_display": "santarita.com",
     "instagram_display": "@santaritawines",
     "email": "",
@@ -4862,11 +4549,7 @@
     ],
     "website": "https://PARQUEVICTORJARA.CL",
     "instagram": "https://www.instagram.com/FOTOSAEREAS",
-    "categories": [
-      "ALL",
-      "PARQUES",
-      "TODOS"
-    ],
+    "categories": ["ALL", "PARQUES", "TODOS"],
     "website_display": "parquevictorjara.cl",
     "instagram_display": "@fotosaereas",
     "email": "",
@@ -4910,11 +4593,7 @@
     ],
     "website": "https://SANTIAGOTURISMO.CL",
     "instagram": "https://www.instagram.com/MUNISTGO",
-    "categories": [
-      "ALL",
-      "PARQUES",
-      "TODOS"
-    ],
+    "categories": ["ALL", "PARQUES", "TODOS"],
     "website_display": "santiagoturismo.cl",
     "instagram_display": "@munistgo",
     "email": "",
@@ -4957,11 +4636,7 @@
     ],
     "website": "https://MUNISTGO.CL",
     "instagram": "https://www.instagram.com/MUNISTGO.CL",
-    "categories": [
-      "ALL",
-      "PARQUES",
-      "TODOS"
-    ],
+    "categories": ["ALL", "PARQUES", "TODOS"],
     "website_display": "munistgo.cl",
     "instagram_display": "@munistgo.cl",
     "email": "SANTIAGO@MUNISTGO.CL",
@@ -5004,11 +4679,7 @@
     ],
     "website": "https://PARQUEMET.CL",
     "instagram": "https://www.instagram.com/PARQUEMETMINVU",
-    "categories": [
-      "ALL",
-      "PARQUES",
-      "TODOS"
-    ],
+    "categories": ["ALL", "PARQUES", "TODOS"],
     "website_display": "parquemet.cl",
     "instagram_display": "@parquemetminvu",
     "email": "",
@@ -5051,11 +4722,7 @@
     ],
     "website": "https://VITACURA.CL",
     "instagram": "https://www.instagram.com/VITACURA.CL",
-    "categories": [
-      "ALL",
-      "PARQUES",
-      "TODOS"
-    ],
+    "categories": ["ALL", "PARQUES", "TODOS"],
     "website_display": "vitacura.cl",
     "instagram_display": "@vitacura.cl",
     "email": "ATENCIONALVECINO@VITACURA.CL",
@@ -5095,11 +4762,7 @@
     ],
     "website": "",
     "instagram": "https://www.instagram.com/PARQUEARAUCANO",
-    "categories": [
-      "ALL",
-      "PARQUES",
-      "TODOS"
-    ],
+    "categories": ["ALL", "PARQUES", "TODOS"],
     "website_display": "",
     "instagram_display": "@parquearaucano",
     "email": "",
@@ -5138,11 +4801,7 @@
     ],
     "website": "https://PARQUESANALBERTOHURTADO.CL",
     "instagram": "https://www.instagram.com/FOTOSAEREAS",
-    "categories": [
-      "ALL",
-      "PARQUES",
-      "TODOS"
-    ],
+    "categories": ["ALL", "PARQUES", "TODOS"],
     "website_display": "parquesanalbertohurtado.cl",
     "instagram_display": "@fotosaereas",
     "email": "",
@@ -5182,11 +4841,7 @@
     ],
     "website": "https://PARQUEMET.CL",
     "instagram": "https://www.instagram.com/PARQUEMETMINVU",
-    "categories": [
-      "ALL",
-      "PARQUES",
-      "TODOS"
-    ],
+    "categories": ["ALL", "PARQUES", "TODOS"],
     "website_display": "parquemet.cl",
     "instagram_display": "@parquemetminvu",
     "email": "",
@@ -5227,11 +4882,7 @@
     ],
     "website": "https://PARQUEMET.CL",
     "instagram": "https://www.instagram.com/PARQUEMETMINVU",
-    "categories": [
-      "ALL",
-      "PARQUES",
-      "TODOS"
-    ],
+    "categories": ["ALL", "PARQUES", "TODOS"],
     "website_display": "parquemet.cl",
     "instagram_display": "@parquemetminvu",
     "email": "",
@@ -5271,11 +4922,7 @@
     ],
     "website": "https://PRECOLOMBINO.CL",
     "instagram": "https://www.instagram.com/MUSEOPRECOLOMBINO",
-    "categories": [
-      "ALL",
-      "MUSEOS",
-      "TODOS"
-    ],
+    "categories": ["ALL", "MUSEOS", "TODOS"],
     "website_display": "precolombino.cl",
     "instagram_display": "@museoprecolombino",
     "email": "",
@@ -5315,11 +4962,7 @@
     ],
     "website": "https://MUSEOTALLER.CL",
     "instagram": "https://www.instagram.com/MUSEOTALLER",
-    "categories": [
-      "ALL",
-      "MUSEOS",
-      "TODOS"
-    ],
+    "categories": ["ALL", "MUSEOS", "TODOS"],
     "website_display": "museotaller.cl",
     "instagram_display": "@museotaller",
     "email": "",
@@ -5361,11 +5004,7 @@
     ],
     "website": "https://UCHILE.CL",
     "instagram": "https://www.instagram.com/MUSEO_MAC",
-    "categories": [
-      "ALL",
-      "MUSEOS",
-      "TODOS"
-    ],
+    "categories": ["ALL", "MUSEOS", "TODOS"],
     "website_display": "uchile.cl",
     "instagram_display": "@museo_mac",
     "email": "",
@@ -5405,11 +5044,7 @@
     ],
     "website": "https://GOB.CL",
     "instagram": "https://www.instagram.com/MHNCHILE",
-    "categories": [
-      "ALL",
-      "MUSEOS",
-      "TODOS"
-    ],
+    "categories": ["ALL", "MUSEOS", "TODOS"],
     "website_display": "gob.cl",
     "instagram_display": "@mhnchile",
     "email": "",
@@ -5449,11 +5084,7 @@
     ],
     "website": "https://GOB.CL",
     "instagram": "https://www.instagram.com/MNHNCL",
-    "categories": [
-      "ALL",
-      "MUSEOS",
-      "TODOS"
-    ],
+    "categories": ["ALL", "MUSEOS", "TODOS"],
     "website_display": "gob.cl",
     "instagram_display": "@mnhncl",
     "email": "",
@@ -5498,11 +5129,7 @@
     ],
     "website": "https://GAM.CL",
     "instagram": "https://www.instagram.com/CENTROGAM",
-    "categories": [
-      "ALL",
-      "MUSEOS",
-      "TODOS"
-    ],
+    "categories": ["ALL", "MUSEOS", "TODOS"],
     "website_display": "gam.cl",
     "instagram_display": "@centrogam",
     "email": "",
@@ -5542,11 +5169,7 @@
     ],
     "website": "https://MUSEOACIELOABIERTOENSANMIGUEL.CL",
     "instagram": "https://www.instagram.com/MUSEOSANMIGUEL",
-    "categories": [
-      "ALL",
-      "MUSEOS",
-      "TODOS"
-    ],
+    "categories": ["ALL", "MUSEOS", "TODOS"],
     "website_display": "museoacieloabiertoensanmiguel.cl",
     "instagram_display": "@museosanmiguel",
     "email": "",
@@ -5586,11 +5209,7 @@
     ],
     "website": "https://CCLM.CL",
     "instagram": "https://www.instagram.com/CCPLM",
-    "categories": [
-      "ALL",
-      "MUSEOS",
-      "TODOS"
-    ],
+    "categories": ["ALL", "MUSEOS", "TODOS"],
     "website_display": "cclm.cl",
     "instagram_display": "@ccplm",
     "email": "",
@@ -5630,11 +5249,7 @@
     ],
     "website": "https://GOB.CL",
     "instagram": "https://www.instagram.com/MNBACHILE",
-    "categories": [
-      "ALL",
-      "MUSEOS",
-      "TODOS"
-    ],
+    "categories": ["ALL", "MUSEOS", "TODOS"],
     "website_display": "gob.cl",
     "instagram_display": "@mnbachile",
     "email": "",
@@ -5673,11 +5288,7 @@
     ],
     "website": "",
     "instagram": "https://www.instagram.com/FOTOSAEREAS",
-    "categories": [
-      "ALL",
-      "ICONOS",
-      "TODOS"
-    ],
+    "categories": ["ALL", "ICONOS", "TODOS"],
     "website_display": "",
     "instagram_display": "@fotosaereas",
     "email": "",
@@ -5720,11 +5331,7 @@
     ],
     "website": "https://SANTUARIOS.CL",
     "instagram": "https://www.instagram.com/SANTUARIONACIONAL.CL",
-    "categories": [
-      "ALL",
-      "ICONOS",
-      "TODOS"
-    ],
+    "categories": ["ALL", "ICONOS", "TODOS"],
     "website_display": "santuarios.cl",
     "instagram_display": "@santuarionacional.cl",
     "email": "CONTACTO@SANTUARIONACIONAL.CL",
@@ -5768,11 +5375,7 @@
     ],
     "website": "https://MEMORIAESTADIONACIONAL.CL",
     "instagram": "https://www.instagram.com/ENMN.CL",
-    "categories": [
-      "ALL",
-      "ICONOS",
-      "TODOS"
-    ],
+    "categories": ["ALL", "ICONOS", "TODOS"],
     "website_display": "memoriaestadionacional.cl",
     "instagram_display": "@enmn.cl",
     "email": "ADMINISTRACION@ENMN.CL",
@@ -5812,11 +5415,7 @@
     ],
     "website": "https://SACRAMENTINOS.CL",
     "instagram": "https://www.instagram.com/GMAIL.COM",
-    "categories": [
-      "ALL",
-      "ICONOS",
-      "TODOS"
-    ],
+    "categories": ["ALL", "ICONOS", "TODOS"],
     "website_display": "sacramentinos.cl",
     "instagram_display": "@gmail.com",
     "email": "P.SACRAMENTINOS@GMAIL.COM",
@@ -5858,11 +5457,7 @@
     ],
     "website": "https://MUNISTGO.CL",
     "instagram": "https://www.instagram.com/MUNISTGO",
-    "categories": [
-      "ALL",
-      "ICONOS",
-      "TODOS"
-    ],
+    "categories": ["ALL", "ICONOS", "TODOS"],
     "website_display": "munistgo.cl",
     "instagram_display": "@munistgo",
     "email": "",
@@ -5907,11 +5502,7 @@
     ],
     "website": "https://PARQUEMET.CL",
     "instagram": "https://www.instagram.com/PARQUEMETMINVU",
-    "categories": [
-      "ALL",
-      "ICONOS",
-      "TODOS"
-    ],
+    "categories": ["ALL", "ICONOS", "TODOS"],
     "website_display": "parquemet.cl",
     "instagram_display": "@parquemetminvu",
     "email": "",
@@ -5954,11 +5545,7 @@
     ],
     "website": "https://METRO.CL",
     "instagram": "https://www.instagram.com/METRODESANTIAGO",
-    "categories": [
-      "ALL",
-      "ICONOS",
-      "TODOS"
-    ],
+    "categories": ["ALL", "ICONOS", "TODOS"],
     "website_display": "metro.cl",
     "instagram_display": "@metrodesantiago",
     "email": "",
@@ -5999,11 +5586,7 @@
     ],
     "website": "https://PRESIDENCIA.CL",
     "instagram": "",
-    "categories": [
-      "ALL",
-      "ICONOS",
-      "TODOS"
-    ],
+    "categories": ["ALL", "ICONOS", "TODOS"],
     "website_display": "presidencia.cl",
     "instagram_display": "",
     "email": "",
@@ -6046,11 +5629,7 @@
     ],
     "website": "https://OFFICEHUBCOSTANERA.CL",
     "instagram": "https://www.instagram.com/OFFICEHUBCOSTANERA",
-    "categories": [
-      "ALL",
-      "ICONOS",
-      "TODOS"
-    ],
+    "categories": ["ALL", "ICONOS", "TODOS"],
     "website_display": "officehubcostanera.cl",
     "instagram_display": "@officehubcostanera",
     "email": "",
@@ -6093,11 +5672,7 @@
     ],
     "website": "https://BAHAI.CL",
     "instagram": "https://www.instagram.com/TEMPLOBAHAI",
-    "categories": [
-      "ALL",
-      "ICONOS",
-      "TODOS"
-    ],
+    "categories": ["ALL", "ICONOS", "TODOS"],
     "website_display": "bahai.cl",
     "instagram_display": "@templobahai",
     "email": "",
@@ -6138,11 +5713,7 @@
     ],
     "website": "https://CEMENTERIOGENERAL.CL",
     "instagram": "https://www.instagram.com/CEMENTERIOGRAL",
-    "categories": [
-      "ALL",
-      "ICONOS",
-      "TODOS"
-    ],
+    "categories": ["ALL", "ICONOS", "TODOS"],
     "website_display": "cementeriogeneral.cl",
     "instagram_display": "@cementeriogral",
     "email": "",
@@ -6180,11 +5751,7 @@
     ],
     "website": "",
     "instagram": "https://www.instagram.com/SANTIAGOADICTO",
-    "categories": [
-      "ALL",
-      "ARQUITECTURA",
-      "TODOS"
-    ],
+    "categories": ["ALL", "ARQUITECTURA", "TODOS"],
     "website_display": "",
     "instagram_display": "@santiagoadicto",
     "email": "",
@@ -6224,11 +5791,7 @@
     ],
     "website": "https://BENEDICTINOS.CL",
     "instagram": "https://www.instagram.com/BENEDIC_TIENDA",
-    "categories": [
-      "ALL",
-      "ARQUITECTURA",
-      "TODOS"
-    ],
+    "categories": ["ALL", "ARQUITECTURA", "TODOS"],
     "website_display": "benedictinos.cl",
     "instagram_display": "@benedic_tienda",
     "email": "",
@@ -6268,11 +5831,7 @@
     ],
     "website": "https://CONSORCIO.CL",
     "instagram": "https://www.instagram.com/CONSORCIO.CL",
-    "categories": [
-      "ALL",
-      "ARQUITECTURA",
-      "TODOS"
-    ],
+    "categories": ["ALL", "ARQUITECTURA", "TODOS"],
     "website_display": "consorcio.cl",
     "instagram_display": "@consorcio.cl",
     "email": "",
@@ -6313,11 +5872,7 @@
     ],
     "website": "https://TANICAINMOBILIARIA.COM",
     "instagram": "https://www.instagram.com/TANICAINMOBILIARIA",
-    "categories": [
-      "ALL",
-      "ARQUITECTURA",
-      "TODOS"
-    ],
+    "categories": ["ALL", "ARQUITECTURA", "TODOS"],
     "website_display": "tanicainmobiliaria.com",
     "instagram_display": "@tanicainmobiliaria",
     "email": "",
@@ -6355,11 +5910,7 @@
     ],
     "website": "https://IZQUIERDOLEHMANN.COM",
     "instagram": "https://www.instagram.com/SANTIAGOADICTO",
-    "categories": [
-      "ALL",
-      "ARQUITECTURA",
-      "TODOS"
-    ],
+    "categories": ["ALL", "ARQUITECTURA", "TODOS"],
     "website_display": "izquierdolehmann.com",
     "instagram_display": "@santiagoadicto",
     "email": "",
@@ -6397,11 +5948,7 @@
     ],
     "website": "",
     "instagram": "https://www.instagram.com/BARRIO.PARISLONDRES",
-    "categories": [
-      "ALL",
-      "BARRIOS",
-      "TODOS"
-    ],
+    "categories": ["ALL", "BARRIOS", "TODOS"],
     "website_display": "",
     "instagram_display": "@barrio.parislondres",
     "email": "",
@@ -6443,11 +5990,7 @@
     ],
     "website": "https://BARRIOBELLASARTES.CL",
     "instagram": "https://www.instagram.com/BARRIOBELLASARTES.CL",
-    "categories": [
-      "ALL",
-      "BARRIOS",
-      "TODOS"
-    ],
+    "categories": ["ALL", "BARRIOS", "TODOS"],
     "website_display": "barriobellasartes.cl",
     "instagram_display": "@barriobellasartes.cl",
     "email": "",
@@ -6490,11 +6033,7 @@
     ],
     "website": "https://BARRIOITALIACHILE.CL",
     "instagram": "https://www.instagram.com/BARRIOITALIA.CHILE",
-    "categories": [
-      "ALL",
-      "BARRIOS",
-      "TODOS"
-    ],
+    "categories": ["ALL", "BARRIOS", "TODOS"],
     "website_display": "barrioitaliachile.cl",
     "instagram_display": "@barrioitalia.chile",
     "email": "",
@@ -6535,11 +6074,7 @@
     ],
     "website": "",
     "instagram": "https://www.instagram.com/FOTOSA",
-    "categories": [
-      "ALL",
-      "BARRIOS",
-      "TODOS"
-    ],
+    "categories": ["ALL", "BARRIOS", "TODOS"],
     "website_display": "",
     "instagram_display": "@fotosa",
     "email": "",
@@ -6579,11 +6114,7 @@
     ],
     "website": "",
     "instagram": "https://www.instagram.com/FOTOSA",
-    "categories": [
-      "ALL",
-      "BARRIOS",
-      "TODOS"
-    ],
+    "categories": ["ALL", "BARRIOS", "TODOS"],
     "website_display": "",
     "instagram_display": "@fotosa",
     "email": "",
@@ -6622,11 +6153,7 @@
     ],
     "website": "https://OUTLIFE.CL",
     "instagram": "https://www.instagram.com/OUTLIFE.CL",
-    "categories": [
-      "ALL",
-      "MIRADORES",
-      "TODOS"
-    ],
+    "categories": ["ALL", "MIRADORES", "TODOS"],
     "website_display": "outlife.cl",
     "instagram_display": "@outlife.cl",
     "email": "CONTACTO@OUTLIFE.CL",
@@ -6665,11 +6192,7 @@
     ],
     "website": "https://OUTLIFE.CL",
     "instagram": "https://www.instagram.com/OUTLIFE.CL",
-    "categories": [
-      "ALL",
-      "MIRADORES",
-      "TODOS"
-    ],
+    "categories": ["ALL", "MIRADORES", "TODOS"],
     "website_display": "outlife.cl",
     "instagram_display": "@outlife.cl",
     "email": "CONTACTO@OUTLIFE.CL",
@@ -6708,11 +6231,7 @@
     ],
     "website": "https://RENCA.CL",
     "instagram": "https://www.instagram.com/PARQUECERROSDERENCA",
-    "categories": [
-      "ALL",
-      "MIRADORES",
-      "TODOS"
-    ],
+    "categories": ["ALL", "MIRADORES", "TODOS"],
     "website_display": "renca.cl",
     "instagram_display": "@parquecerrosderenca",
     "email": "",
@@ -6751,11 +6270,7 @@
     ],
     "website": "https://PARQUECERROCALAN.CL",
     "instagram": "https://www.instagram.com/OUTLIFE.CL",
-    "categories": [
-      "ALL",
-      "MIRADORES",
-      "TODOS"
-    ],
+    "categories": ["ALL", "MIRADORES", "TODOS"],
     "website_display": "parquecerrocalan.cl",
     "instagram_display": "@outlife.cl",
     "email": "CONTACTO@OUTLIFE.CL",
@@ -6797,11 +6312,7 @@
     ],
     "website": "https://SANTIAGOTURISMO.CL",
     "instagram": "https://www.instagram.com/FOTOSAEREAS",
-    "categories": [
-      "ALL",
-      "MIRADORES",
-      "TODOS"
-    ],
+    "categories": ["ALL", "MIRADORES", "TODOS"],
     "website_display": "santiagoturismo.cl",
     "instagram_display": "@fotosaereas",
     "email": "",
@@ -6843,11 +6354,7 @@
     ],
     "website": "https://PERSA-BIOBIO.COM",
     "instagram": "https://www.instagram.com/SANTIAGOADICTO",
-    "categories": [
-      "ALL",
-      "MERCADOS",
-      "TODOS"
-    ],
+    "categories": ["ALL", "MERCADOS", "TODOS"],
     "website_display": "persa-biobio.com",
     "instagram_display": "@santiagoadicto",
     "email": "",
@@ -6887,11 +6394,7 @@
     ],
     "website": "https://MUT.CL",
     "instagram": "https://www.instagram.com/MUT.CL",
-    "categories": [
-      "ALL",
-      "MERCADOS",
-      "TODOS"
-    ],
+    "categories": ["ALL", "MERCADOS", "TODOS"],
     "website_display": "mut.cl",
     "instagram_display": "@mut.cl",
     "email": "",
@@ -6931,11 +6434,7 @@
     ],
     "website": "https://CULTURALLASCONDES.CL",
     "instagram": "https://www.instagram.com/CENTROLOSDOMINICOSLUNES",
-    "categories": [
-      "ALL",
-      "MERCADOS",
-      "TODOS"
-    ],
+    "categories": ["ALL", "MERCADOS", "TODOS"],
     "website_display": "culturallascondes.cl",
     "instagram_display": "@centrolosdominicoslunes",
     "email": "",
@@ -6976,11 +6475,7 @@
     ],
     "website": "https://FACTORIA-FRANKLIN.CL",
     "instagram": "https://www.instagram.com/FACTORIA_FRANKLIN",
-    "categories": [
-      "ALL",
-      "MERCADOS",
-      "TODOS"
-    ],
+    "categories": ["ALL", "MERCADOS", "TODOS"],
     "website_display": "factoria-franklin.cl",
     "instagram_display": "@factoria_franklin",
     "email": "",
@@ -7021,11 +6516,7 @@
     ],
     "website": "https://PALACIOPEREIRA.CL",
     "instagram": "https://www.instagram.com/CULTURA.GOB.CL",
-    "categories": [
-      "ALL",
-      "PALACIOS",
-      "TODOS"
-    ],
+    "categories": ["ALL", "PALACIOS", "TODOS"],
     "website_display": "palaciopereira.cl",
     "instagram_display": "@cultura.gob.cl",
     "email": "PALACIO.PEREIRA@CULTURA.GOB.CL",
@@ -7064,11 +6555,7 @@
     ],
     "website": "https://PROVIDENCIA.CL",
     "instagram": "https://www.instagram.com/PROVIDENCIA.CL",
-    "categories": [
-      "ALL",
-      "PALACIOS",
-      "TODOS"
-    ],
+    "categories": ["ALL", "PALACIOS", "TODOS"],
     "website_display": "providencia.cl",
     "instagram_display": "@providencia.cl",
     "email": "MUNICIPALIDAD@PROVIDENCIA.CL",
@@ -7102,24 +6589,283 @@
       ],
       "category": "PALACIOS"
     },
-    "images": [
-      "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/07/Portada_palacio_cauisno_resultado.webp",
-      "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/07/Palacio_causino-1_resultado.webp",
-      "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/07/Palacio_causino-2_resultado.webp",
-      "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/09/Palacio_causino-3.webp"
-    ],
+    "images": [],
     "website": "https://SANTIAGOCULTURA.CL",
     "instagram": "https://www.instagram.com/FOTOSAEREAS",
-    "categories": [
-      "ALL",
-      "PALACIOS",
-      "TODOS"
-    ],
+    "categories": ["ALL", "PALACIOS", "TODOS"],
     "website_display": "santiagocultura.cl",
     "instagram_display": "@fotosaereas",
     "email": "",
     "phone": "tel:+56223867449",
     "photosCredit": "@FOTOSAEREAS",
     "address": ""
+  },
+  {
+    "slug": "99",
+    "en": {
+      "name": "99",
+      "subtitle": "GEOGRAPHY OF FLAVORS",
+      "description": [
+        "Led by chef Kurt Schmidt, 99 offers a culinary experience that transcends simple tasting. After its reopening in January 2024 in the heart of Vitacura, 99 continues to embody its philosophy of \"cuisine of memory,\" a concept that reinterprets and modernizes Chile’s gastronomic culture.",
+        "With a celebrated history that includes being named \"Restaurant of the Year\" in 2015 and earning a place several times on the Latin America’s 50 Best Restaurants list, 99 maintains its stellar reputation. The experience focuses on a nine-course tasting menu, limited to just 12 diners per seating, ensuring an intimate and personalized service. Each season, the menu spotlights a specific Chilean valley — currently the Aconcagua Valley — with standout dishes such as cazuela de gallina nogada and mountain white trout.",
+        "The restaurant’s new architecture, inspired by the stilt houses of Chiloé, complements the culinary proposal with authentic details such as native alerce wood and an open kitchen. The journey begins at the adjoining Prima Bar, also owned by Schmidt, which features signature cocktails crafted with Chilean ingredients."
+      ],
+      "category": "RESTAURANTS"
+    },
+    "es": {
+      "name": "99",
+      "subtitle": "GEOGRAFÍA DE SABORES",
+      "description": [
+        "El restaurante 99, liderado por el chef Kurt Schmidt, es una experiencia culinaria que trasciende la simple degustación. Tras su reapertura en enero de 2024 en el corazón de Vitacura, 99 continúa su esencia de \"cocina de la memoria\", una filosofía que reinterpreta y moderniza la cultura gastronómica chilena.",
+        "Con una historia de reconocimiento que incluye ser nombrado \"Restaurante del Año\" en 2015 y figurar en la lista de Latin America's 50 Best Restaurants en varias ocasiones, 99 mantiene su reputación. La experiencia se centra en un menú de degustación de nueve pasos, limitado a solo 12 comensales por turno, lo que garantiza un servicio íntimo y personalizado. Cada temporada, el menú se enfoca en un valle chileno específico, actualmente el Aconcagua, con platos destacados como la cazuela de gallina nogada y la trucha blanca de montaña.",
+        "La arquitectura del nuevo local, inspirada en los palafitos de Chiloé, complementa la propuesta gastronómica con elementos auténticos como maderas nativas de alerce y una cocina abierta. La experiencia comienza en el bar contiguo, Prima Bar, también de Schmidt, ofreciendo una coctelería de autor basada en productos chilenos."
+      ],
+      "category": "RESTAURANTES"
+    },
+    "images": [],
+    "website": "https://99restaurante.cl",
+    "instagram": "https://www.instagram.com/99restaurante.cl",
+    "categories": ["ALL", "RESTAURANTES", "TODOS"],
+    "website_display": "99restaurante.cl",
+    "instagram_display": "@99restaurante.cl",
+    "email": "",
+    "phone": "",
+    "photosCredit": "CAROLINA VARGAS",
+    "address": "ALONSO DE CÓRDOVA 4355, DENTRO DE CV GALERÍA, VITACURA",
+    "hours": "ABIERTO DE MARTES A SÁBADO, CON UN ÚNICO SERVICIO DE CENA.",
+    "reservationPolicy": "RESERVAS A TRAVÉS DE SU SITIO WEB OFICIAL.",
+    "interestingFact": "LA EXPERIENCIA DE 99 COMIENZA EN EL BAR CONTIGUO, PRIMA BAR, PROPIEDAD DEL CHEF KURT SCHMIDT. EL MENÚ DE DEGUSTACIÓN CAMBIA CADA SEIS MESES, ENFOCÁNDOSE EN DIFERENTES VALLES Y PRODUCTOS CHILENOS."
+  },
+  {
+    "slug": "caos",
+    "en": {
+      "name": "CAOS COMEDOR CAFÉ",
+      "subtitle": "COMFORT FOOD, CHILEAN STYLE",
+      "description": [
+        "This intimate, chef-driven project was born from the vision of its creators and chefs, Gabriella Lavín and Simón Delgado. With experience in renowned establishments such as Demencia and Castillo Forestal, the couple launched Caos following the success of their homemade pasta venture, Langucia. The name — far from being negative — symbolizes the creative process of finding order within freedom, reflecting the essence of their cuisine.",
+        "Caos defines itself as a ‘cocina de memoria’ (cuisine of memory): honest, seasonal, and deeply rooted in local products from small-scale producers. The menu evolves with the seasons but consistently highlights comforting and sophisticated dishes such as clam ceviche and homemade fresh pasta like Pici Cacio e Pepe. The house-made breads and pastries are another major draw for visitors.",
+        "The space is small yet feels open and welcoming, thanks to its large windows and the immaculate open kitchen that anchors the room. The décor — in shades of blue and white — creates an atmosphere of calm that allows diners to focus entirely on the culinary experience."
+      ],
+      "category": "RESTAURANTS"
+    },
+    "es": {
+      "name": "CAOS COMEDOR CAFÉ",
+      "subtitle": "COMFORT FOOD A LA CHILENA",
+      "description": [
+        "Este proyecto íntimo y de autor nace de la visión de sus creadores y chefs, Gabriella Lavín y Simón Delgado. Con experiencia en reconocidos locales como Demencia y Castillo Forestal, la pareja dio vida a Caos tras su exitoso emprendimiento de pasta a domicilio, \"Langucia\". El nombre, lejos de ser negativo, evoca el proceso creativo de encontrar orden en la libertad y la esencia de su cocina.",
+        "La propuesta de Caos se define como una \"cocina de memoria\", honesta y de estación. Aquí se celebran los productos locales y de pequeños productores, transformándolos en platos reconfortantes y sofisticados. La carta, de autor, cambia según la temporada, pero siempre resalta creaciones como su ceviche de almejas y sus pastas frescas caseras, como el Pici cacio e pepe. La panadería y bollería, elaboradas en casa, son otro de los grandes atractivos.",
+        "El espacio es pequeño, pero se siente acogedor y amplio gracias a sus grandes ventanales y a la inmaculada cocina a la vista que domina el lugar. La decoración, en tonos de azul y blanco, crea una atmósfera de calma que permite al comensal centrarse en la experiencia culinaria."
+      ],
+      "category": "RESTAURANTES"
+    },
+    "images": [],
+    "website": "",
+    "instagram": "https://www.instagram.com/caos.comedor.cafe",
+    "categories": ["ALL", "RESTAURANTES", "TODOS"],
+    "website_display": "",
+    "instagram_display": "@caos.comedor.cafe",
+    "email": "",
+    "phone": "",
+    "photosCredit": "",
+    "address": "FRANCISCO BILBAO 2955, PROVIDENCIA, SANTIAGO",
+    "hours": "EL HORARIO PUEDE VARIAR; SE RECOMIENDA CONSULTAR SUS REDES SOCIALES. GENERALMENTE ABREN DE MARTES A SÁBADO EN HORARIO DE ALMUERZO.",
+    "reservationPolicy": "ACEPTAN RESERVAS A TRAVÉS DE SU CUENTA DE INSTAGRAM.",
+    "interestingFact": "CAOS ES UN ESPACIO DE COCINA ABIERTA QUE FUSIONA EL ARTE CULINARIO CON UN BAR DE CAFÉ DE ESPECIALIDAD, OFRECIENDO UNA EXPERIENCIA COMPLETA QUE VA DESDE EL BRUNCH HASTA EL ALMUERZO DE AUTOR."
+  },
+  {
+    "slug": "happening-santiago",
+    "en": {
+      "name": "HAPPENING SANTIAGO",
+      "subtitle": "THE REINVENTION OF A TRADITION",
+      "description": [
+        "More than a steakhouse, Happening Santiago stands as a bastion of fine dining that has redefined what it means to be a classic. While it honors the legacy of its iconic Argentine counterpart, the Santiago location has forged its own bold identity — pivoting toward a philosophy of uncompromising quality with a distinctly Chilean stamp. Forget the cross-Andean rivalry: here, the star is Chilean beef, sourced from elite suppliers such as Noble Corral and Hacienda Liguai, ensuring unmatched consistency and excellence in the premium dining segment.",
+        "The secret behind every bite lies in its meticulous dry-aging process. Within a scientifically precise chamber, each cut undergoes a transformation that enhances tenderness and depth of flavor — culminating in the signature ‘35-Day Aged’ steak, a dish that transcends mere dining to become a work of culinary craftsmanship. Beyond these standout cuts, the menu showcases remarkable technical skill, offering dishes like sous vide short ribs, duck specialties, and wild-caught fish, all executed with finesse and versatility.",
+        "The experience extends well beyond the plate. Housed in one of the few historic mansions in El Golf, Happening exudes understated elegance. The interior — adorned with soft carpeting to reduce noise and overlooking a Parisian-style terrace — creates an atmosphere perfect for intimate conversation. Service is another cornerstone: with a staff averaging over a decade of tenure, every guest is treated like a regular. Complemented by a carefully curated wine list selected by an internationally recognized sommelier, Happening is a new and enduring culinary classic in the capital."
+      ],
+      "category": "RESTAURANTS"
+    },
+    "es": {
+      "name": "HAPPENING SANTIAGO",
+      "subtitle": "LA REINVENCIÓN DE UNA TRADICIÓN",
+      "description": [
+        "Más que una parrilla, Happening Santiago es un bastión de la alta gastronomía que ha redefinido el concepto de un clásico. Este restaurante, que conserva el legado de su icónica contraparte argentina, ha forjado una identidad propia y audaz al pivotar hacia una filosofía de calidad intransigente con sello chileno. Olvídese del debate transandino: aquí, la estrella es la carne nacional, seleccionada de proveedores de élite como Noble Corral y Hacienda Liguai, garantizando una consistencia de excelencia inigualable en el segmento premium.",
+        "El secreto detrás de cada bocado reside en su riguroso proceso de maduración en seco (dry‑aging). En una cámara de precisión científica, los cortes se transforman para alcanzar una ternura y concentración de sabor que justifica cada peso. El resultado es el Madurado 35 días, un plato insignia que no es solo una comida, sino la culminación de un proceso artesanal y técnico. La carta, además de ofrecer estos cortes estelares, se diversifica con maestría técnica: desde un asado de tira a técnica sous vide hasta opciones de pato y pesca silvestre.",
+        "La experiencia va más allá del plato. Ubicado en una de las pocas casas históricas del elegante barrio El Golf, Happening emana una elegancia sobria y discreta. Su diseño interior, con alfombras para mitigar el ruido y vistas a una terraza de estilo parisino, crea un ambiente que invita a la conversación. Con un equipo de servicio de larga data y una carta de vinos curada por una sommelier de talla internacional, Happening Santiago consolida un nuevo y duradero clásico en la capital."
+      ],
+      "category": "RESTAURANTES"
+    },
+    "images": [],
+    "website": "https://happening.cl",
+    "instagram": "https://www.instagram.com/happening_scl",
+    "categories": ["ALL", "RESTAURANTES", "TODOS"],
+    "website_display": "happening.cl",
+    "instagram_display": "@happening_scl",
+    "email": "",
+    "phone": "",
+    "photosCredit": "",
+    "address": "AVENIDA APOQUINDO 3090, LAS CONDES, SANTIAGO",
+    "hours": "NO ESPECIFICADO; SE RECOMIENDA CONFIRMAR AL MOMENTO DE RESERVAR.",
+    "reservationPolicy": "RESERVAS EN LA WEB; ALTA DEMANDA, RECOMENDABLE RESERVAR.",
+    "interestingFact": "ÚNICO RESTAURANTE CON CONCEPTO ARGENTINO QUE NO UTILIZA CARNE DE ESE PAÍS."
+  },
+  {
+    "slug": "la-biferia",
+    "en": {
+      "name": "LA BIFERÍA",
+      "subtitle": "FOR DEMANDING CARNIVORES",
+      "description": [
+        "Located in the heart of Providencia, La Bifería is a true paradise for meat lovers. Defining itself as a chophouse, this restaurant stands out for its meticulous selection of premium cuts sourced from both Chilean and international ranches. Its philosophy is honest and rooted in freshness and locality, offering a seasonal menu that continually surprises.",
+        "Beyond its exquisite grilled meats, La Bifería complements its offerings with an exceptional selection of Chilean wines, creating the perfect pairing for a complete gastronomic experience. The warm yet elegant atmosphere invites diners to enjoy an unforgettable evening, while the attentive and knowledgeable staff elevates the experience even further."
+      ],
+      "category": "RESTAURANTS"
+    },
+    "es": {
+      "name": "LA BIFERÍA",
+      "subtitle": "PARA CARNÍVOROS EXIGENTES",
+      "description": [
+        "Ubicado en el corazón de Providencia, La Bifería es un paraíso para los amantes de la carne. Definido como un ‘chophouse’, se distingue por la cuidadosa selección de cortes premium, provenientes de ganadería nacional y extranjera. Su propuesta es honesta y celebra lo fresco y lo local, con una carta de temporada que siempre sorprende.",
+        "Más allá de sus exquisitas carnes a la parrilla, La Bifería complementa su oferta con una selección de vinos chilenos, el maridaje perfecto para una experiencia gastronómica completa. El ambiente, acogedor y a la vez elegante, invita a disfrutar de una velada inolvidable, y el servicio atento y experto es otro de sus grandes atributos."
+      ],
+      "category": "RESTAURANTES"
+    },
+    "images": [],
+    "website": "https://labiferia.cl",
+    "instagram": "https://www.instagram.com/labiferia",
+    "categories": ["ALL", "RESTAURANTES", "TODOS"],
+    "website_display": "labiferia.cl",
+    "instagram_display": "@labiferia",
+    "email": "",
+    "phone": "",
+    "photosCredit": "",
+    "address": "AV. PEDRO DE VALDIVIA 65, PROVIDENCIA, SANTIAGO",
+    "hours": "CONSULTAR EN EL SITIO WEB (SUELE VARIAR).",
+    "reservationPolicy": "RECOMENDABLE A TRAVÉS DE SU SITIO WEB O PLATAFORMAS ASOCIADAS.",
+    "interestingFact": "COMPROMISO CON LA CALIDAD Y TRAZABILIDAD, TRABAJO CON PROVEEDORES DE PRIMER NIVEL."
+  },
+  {
+    "slug": "mirai-food-lab",
+    "en": {
+      "name": "MIRAI FOOD LAB",
+      "subtitle": "THE VANGUARD OF FERMENTATION",
+      "description": [
+        "In the heart of Barrio Franklin, inside the innovative Factoría Franklin complex, lies a gastronomic gem that has redefined the izakaya concept in Chile. Mirai Food Lab, the creation of talented chefs Ignacio Roa and Misha Fukuda, is more than a restaurant — it’s a flavor laboratory that masterfully fuses Japanese culinary craftsmanship with a deeply local spirit.",
+        "Roa, who trained in acclaimed restaurants in Denmark and Japan, has built his proposal around the alchemy of fermentation and umami. His ramen, hailed by many as the best in the city, is the star of the menu — but innovation runs through every dish, from cochayuyo (Chilean seaweed) kimchi to kombucha infused with native flavors. The atmosphere is intimate and personal, an authentic izakaya turned into a refuge of flavor and hospitality, where guests are often served directly by the chefs themselves.",
+        "Mirai’s innovative spirit has fueled its expansion. Today, this pioneer of Chilean contemporary cuisine also operates a second location inside the cutting-edge Mercado Urbano Tobalaba (MUT), bringing its fermented creations and ramen artistry to the El Golf district — a testament to Santiago’s dynamic culinary scene."
+      ],
+      "category": "RESTAURANTS"
+    },
+    "es": {
+      "name": "MIRAI FOOD LAB",
+      "subtitle": "LA VANGUARDIA DEL FERMENTO",
+      "description": [
+        "En el corazón del Barrio Franklin, en el innovador complejo de Factoría Franklin, se esconde una joya gastronómica que ha redefinido el concepto de izakaya en Chile. Mirai Food Lab, el proyecto de los talentosos chefs y creadores Ignacio Roa y Misha Fukuda, es más que un restaurante: es un laboratorio de sabor que ha sabido fusionar la maestría culinaria japonesa con un toque profundamente local.",
+        "La propuesta de Roa, con experiencia en reconocidos restaurantes de Dinamarca y Japón, se centra en la magia de la fermentación y el umami. Su ramen, calificado por muchos como el mejor de la ciudad, es la estrella, pero el menú es una oda a la innovación, con productos como kimchi de cochayuyo y kombucha infusionada con sabores nativos. El ambiente es íntimo y personal, un \"izakaya\" que los dueños han convertido en un refugio de sabor y hospitalidad, donde a menudo los mismos chefs atienden a los comensales.",
+        "Este espíritu innovador ha llevado a Mirai a expandirse. Ahora, este referente de la cocina de autor también tiene un local en el modernísimo Mercado Urbano Tobalaba (MUT), llevando su propuesta de fermentos y ramen a la zona de El Golf y demostrando la vitalidad de la escena gastronómica santiaguina."
+      ],
+      "category": "RESTAURANTES"
+    },
+    "images": [],
+    "website": "https://www.miraifoodlab.cl",
+    "instagram": "https://www.instagram.com/mirai.foodlab",
+    "categories": ["ALL", "RESTAURANTES", "TODOS"],
+    "website_display": "miraifoodlab.cl",
+    "instagram_display": "@mirai.foodlab",
+    "email": "",
+    "phone": "",
+    "photosCredit": "",
+    "address": "",
+    "locations": [
+      {
+        "label": "FACTORÍA FRANKLIN",
+        "address": "FRANKLIN 741, SANTIAGO"
+      },
+      {
+        "label": "MERCADO URBANO TOBALABA (MUT)",
+        "address": "AV. APOQUINDO 2730, LAS CONDES",
+        "hours": "HORARIO EXTENDIDO; DEPENDE DE CADA LOCAL",
+        "website": "https://www.mut.cl",
+        "website_display": "mut.cl",
+        "interestingFact": "ES EL PRIMER PROYECTO DE USO MIXTO EN LATINOAMÉRICA EN OBTENER LA CERTIFICACIÓN LEED PLATINO POR SU DISEÑO SOSTENIBLE."
+      }
+    ],
+    "hours": "REVISA SUS REDES SOCIALES, YA QUE VARÍAN.",
+    "reservationPolicy": "",
+    "interestingFact": "NACIÓ COMO UN PROYECTO DE INVESTIGACIÓN SOBRE FERMENTOS Y SE HA CONSOLIDADO COMO UN REFERENTE DE LA ALTA COCINA."
+  },
+  {
+    "slug": "prima-bar",
+    "en": {
+      "name": "PRIMA BAR",
+      "subtitle": "THE FIRST LISTENING BAR",
+      "description": [
+        "Created by renowned Chilean chef Kurt Schmidt, a key figure in the country’s contemporary culinary scene, Prima Bar embodies the intersection of gastronomy, music, and design. Schmidt, celebrated for his work at the acclaimed 99 Restaurante—featured on the Latin America’s 50 Best Restaurants list—extends his creative vision here, transforming the act of dining into a multisensory experience.",
+        "Originally opened in Providencia, Prima Bar later relocated to CV Galería in Vitacura, evolving into Chile’s first listening bar. This innovative concept integrates a carefully curated vinyl soundtrack with artisanal cuisine and craft cocktails, inviting guests to savor not only flavors but also the atmosphere created by sound, light, and design.",
+        "The culinary proposal reflects Schmidt’s signature philosophy: a modern, seasonal, and artisanal cuisine celebrating Chile’s diverse ingredients. The menu, designed for sharing, takes inspiration from a contemporary reinterpretation of tapas, while the cocktail list follows the same artistic spirit—each drink inspired by music and iconic references from the world of sound.",
+        "Internationally recognized, Prima Bar has been featured in The World’s 50 Best Discovery, a prestigious global ranking that highlights exceptional dining and drinking experiences worldwide."
+      ],
+      "category": "RESTAURANTS"
+    },
+    "es": {
+      "name": "PRIMA BAR",
+      "subtitle": "EL PRIMER LISTENING BAR",
+      "description": [
+        "Creación del reconocido chef chileno Kurt Schmidt, una figura clave en la escena gastronómica local. Schmidt es conocido por su trabajo en el aclamado 99 Restaurante, que se posicionó en la lista 'Latin America's 50 Best Restaurants'. Con Prima Bar, el chef expande su visión, fusionando su experiencia culinaria con una profunda pasión por la música y el diseño.",
+        "Inaugurado originalmente en Providencia, Prima Bar se mudó a su ubicación actual en la CV Galería en Vitacura y evolucionó en un 'listening bar'. Este concepto único, pionero en Chile, integra una banda sonora curada a base de vinilos con una cocina de autor y coctelería de alta factura, invitando a los comensales a un disfrute sensorial completo.",
+        "La propuesta culinaria refleja la visión de Schmidt: cocina de autor, moderna y de temporada, con enfoque en producción artesanal e ingredientes de todo Chile. El menú, pensado para compartir, reinterpreta las tapas con un sello contemporáneo, mientras que la carta de cócteles sigue el mismo espíritu creativo, inspirándose en la música y sus referentes.",
+        "Reconocido internacionalmente, Prima Bar ha sido destacado por el ranking 'The World's 50 Best Discovery', que resalta experiencias gastronómicas y de coctelería excepcionales alrededor del mundo."
+      ],
+      "category": "RESTAURANTES"
+    },
+    "images": [],
+    "website": "https://primabar.cl",
+    "instagram": "https://www.instagram.com/prima.bar",
+    "categories": ["ALL", "RESTAURANTES", "TODOS"],
+    "website_display": "primabar.cl",
+    "instagram_display": "@prima.bar",
+    "email": "",
+    "phone": "",
+    "photosCredit": "CAROLINA VARGAS",
+    "address": "ALONSO DE CÓRDOVA 4355, VITACURA, SANTIAGO",
+    "hours": "MARTES A JUEVES: 18:00 - 00:00 HRS. / VIERNES Y SÁBADO: 18:00 - 01:00 HRS.",
+    "reservationPolicy": "RESERVAS A TRAVÉS DE SU SITIO WEB O REDES SOCIALES.",
+    "interestingFact": "POSEE UNA COLECCIÓN DE VINILOS SELECTA; EL DJ SET ES PARTE FUNDAMENTAL DEL CONCEPTO."
+  },
+  {
+    "slug": "restaurante-the-singular",
+    "en": {
+      "name": "THE SINGULAR RESTAURANT",
+      "subtitle": "IDENTITY IN THE HEART OF LASTARRIA",
+      "description": [
+        "Located in the historic Barrio Lastarria, the restaurant at The Singular Hotel Santiago aims to be a true benchmark of Chilean haute cuisine, blending tradition and modernity. Its concept takes diners on a culinary journey from north to south, highlighting the richness of local ingredients with technical precision inspired by French gastronomy.",
+        "The kitchen is led by Chef Hernán Basso, a Buenos Aires–trained professional who has left his mark at The Singular Patagonia since 2011. His cooking pays tribute to Chilean flavors and products, interpreted with precision and a contemporary touch. The vision behind The Singular belongs to the Sahli family, whose legacy in Chilean hospitality traces back to the historic Hotel Crillón.",
+        "The restaurant’s menu offers a refined selection of dishes celebrated for their boldness and balance. The quality of its cuisine and impeccable service have earned it multiple distinctions, including mentions among Chile’s Best Luxury Hotels by Condé Nast Traveler and accolades from the World Travel Awards, establishing it as a top-tier culinary destination.",
+        "To complete the experience, the hotel features a Rooftop Bar, considered one of Santiago’s finest terraces. Overlooking Cerro San Cristóbal and Parque Forestal, it’s the perfect spot to enjoy signature cocktails, Chilean wines, and gourmet tapas in an elegant lounge atmosphere—especially at sunset."
+      ],
+      "category": "RESTAURANTS"
+    },
+    "es": {
+      "name": "RESTAURANTE THE SINGULAR",
+      "subtitle": "IDENTIDAD EN PLENO LASTARRIA",
+      "description": [
+        "Ubicado en el histórico barrio Lastarria, el restaurante del Hotel The Singular aspira a ser un referente de la alta cocina chilena, fusionando tradición y modernidad. Su propuesta es un viaje culinario de norte a sur, resaltando la riqueza de los ingredientes locales con una ejecución técnica inspirada en la gastronomía francesa.",
+        "La cocina está a cargo del chef Hernán Basso, un profesional formado en Buenos Aires que ha dejado su huella en The Singular Patagonia desde 2011. Su propuesta rinde homenaje a los sabores y productos chilenos, interpretados con precisión y un toque contemporáneo. La visión detrás de The Singular pertenece a la familia Sahli, cuyo legado en la hotelería chilena se remonta al histórico Hotel Crillón.",
+        "El menú ofrece una selección de platos celebrados por su audacia y equilibrio. La calidad de su gastronomía y el impecable servicio le han valido múltiples distinciones, incluyendo menciones en los “Mejores Hoteles de Lujo en Chile” por Condé Nast Traveler y reconocimientos de los World Travel Awards, consolidándolo como un destino culinario de primer nivel.",
+        "Para completar la experiencia, el hotel cuenta con un Rooftop Bar considerado una de las mejores terrazas de Santiago. Con vistas al Cerro San Cristóbal y al Parque Forestal, es el lugar ideal para disfrutar de coctelería de autor, vinos chilenos y tapas en un ambiente lounge, especialmente al atardecer."
+      ],
+      "category": "RESTAURANTES"
+    },
+    "images": [],
+    "website": "https://www.thesingular.com/santiago",
+    "instagram": "https://www.instagram.com/thesingularhotels",
+    "categories": ["ALL", "RESTAURANTES", "TODOS"],
+    "website_display": "thesingular.com/santiago",
+    "instagram_display": "@thesingularhotels",
+    "email": "",
+    "phone": "",
+    "photosCredit": "",
+    "address": "MERCED 294, BARRIO LASTARRIA, SANTIAGO, CHILE",
+    "hours": "RESTAURANTE: LUNES A SÁBADO, ALMUERZO Y CENA. ROOFTOP BAR: MARTES A SÁBADO, DESDE LAS 18:00 HRS.",
+    "reservationPolicy": "RESERVAS A TRAVÉS DE SU SITIO WEB O VÍA TELEFÓNICA.",
+    "interestingFact": "THE SINGULAR SANTIAGO FUE EL PRIMER HOTEL DE LA MARCA EN LA CAPITAL, CON UN FUERTE LEGADO HISTÓRICO."
   }
 ]

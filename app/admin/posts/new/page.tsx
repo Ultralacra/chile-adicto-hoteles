@@ -23,6 +23,8 @@ import {
   X,
 } from "lucide-react";
 import Link from "next/link";
+import { postSchema } from "@/lib/post-schema";
+import { normalizePost, validatePost, saveDraft } from "@/lib/post-service";
 
 const toSlug = (v: string) =>
   v
@@ -178,8 +180,18 @@ export default function NewPostPage() {
       categories: selectedCategories,
     };
 
-    console.log("New Hotel Data:", JSON.stringify(newHotel, null, 2));
-    alert("Post creado! Revisa la consola para ver el JSON.");
+    const normalized = normalizePost(newHotel as any);
+    const result = validatePost(normalized as any);
+    if (!result.ok) {
+      const first = result.issues?.[0];
+      alert(
+        `Error de validación: ${first?.path || ""} - ${first?.message || ""}`
+      );
+      return;
+    }
+    console.log("New Hotel Data:", JSON.stringify(normalized, null, 2));
+    saveDraft(normalized as any);
+    alert("Post creado en borrador! Revisa la consola y localStorage.");
   };
 
   const handleNameChange = (value: string) => {

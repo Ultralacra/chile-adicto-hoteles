@@ -47,7 +47,7 @@ export function HotelCard({
             </div>
 
             <div className="flex-1">
-              <h2 className="font-neutra text-[15px] font-normal text-black leading-[19px] mb-1 first-line:font-[600]">
+              <h2 className="font-neutra text-[15px] font-normal text-black leading-[19px] mb-0 first-line:font-[600]">
                 {name}
               </h2>
               <p className="font-neutra text-[15px] font-normal text-black uppercase leading-[19px]">
@@ -57,7 +57,7 @@ export function HotelCard({
           </div>
 
           {/* Description */}
-          <p className="font-neutra text-[15px] text-black leading-[22px] font-normal line-clamp-5">
+          <p className="font-neutra text-[15px] text-black leading-[22px] font-normal line-clamp-5 min-h-[110px]">
             {description}
           </p>
         </div>

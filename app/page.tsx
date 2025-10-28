@@ -3,17 +3,35 @@
 import { Header } from "@/components/header";
 import { HeroSlider } from "@/components/hero-slider";
 import Image from "next/image";
+import Link from "next/link";
 import { HotelCard } from "@/components/hotel-card";
 import { Footer } from "@/components/footer";
 import { CategoryNav } from "@/components/category-nav";
+import { buildCardExcerpt } from "@/lib/utils";
 import data from "@/lib/data.json";
 import { useLanguage } from "@/contexts/language-context";
 
 export default function Page() {
   const { language } = useLanguage();
+  // Mostrar todos excepto los restaurantes
+  const allHotels = (data as any[]) || [];
 
-  // Mostrar sólo las tarjetas de la categoría Arquitectura (lib/arquitectura.json)
-  const hotels = (data as any[]) || [];
+  const isRestaurant = (h: any) => {
+    const cats = (h.categories || []).map((c: string) =>
+      String(c).toUpperCase()
+    );
+    const esCat = h.es?.category ? String(h.es.category).toUpperCase() : null;
+    const enCat = h.en?.category ? String(h.en.category).toUpperCase() : null;
+    return (
+      cats.includes("RESTAURANTES") ||
+      cats.includes("RESTAURANTS") ||
+      esCat === "RESTAURANTES" ||
+      enCat === "RESTAURANTS" ||
+      enCat === "RESTAURANTES"
+    );
+  };
+
+  const hotels = allHotels.filter((h) => !isRestaurant(h));
 
   return (
     <div className="min-h-screen bg-white">
@@ -36,11 +54,16 @@ export default function Page() {
 
             {/* Banner: ocupa 1 columna en lg - imagen escala hacia abajo y fondo negro */}
             <div className="hidden lg:block w-full h-[437px] relative bg-black">
-              <img
-                src="/Group-83.webp"
-                alt="Banner Restaurantes"
-                className="object-scale-down object-center w-full h-full"
-              />
+              <Link
+                href="/categoria/restaurantes"
+                className="block w-full h-full"
+              >
+                <img
+                  src="/Group-83.webp"
+                  alt="Banner Restaurantes"
+                  className="object-scale-down object-center w-full h-full"
+                />
+              </Link>
             </div>
           </div>
 
@@ -59,13 +82,14 @@ export default function Page() {
                       hotel.en?.subtitle ||
                       hotel.es?.subtitle
                     }
-                    description={
-                      Array.isArray(hotel[language]?.description)
-                        ? hotel[language].description[0]
+                    description={(() => {
+                      const paras = Array.isArray(hotel[language]?.description)
+                        ? hotel[language].description
                         : Array.isArray(hotel.en?.description)
-                        ? hotel.en.description[0]
-                        : ""
-                    }
+                        ? hotel.en.description
+                        : [];
+                      return buildCardExcerpt(paras);
+                    })()}
                     image={hotel.images?.[0]}
                   />
                 </div>

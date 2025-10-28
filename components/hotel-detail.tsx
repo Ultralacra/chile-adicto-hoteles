@@ -1,10 +1,10 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import Image from "next/image";
+import useEmblaCarousel from "embla-carousel-react";
 import { useLanguage } from "@/contexts/language-context";
-import { Breadcrumb } from "@/components/breadcrumb";
 import { CategoryNav } from "@/components/category-nav";
 
 interface HotelDetailProps {
@@ -27,37 +27,42 @@ interface HotelDetailProps {
 }
 
 export function HotelDetail({ hotel }: HotelDetailProps) {
-  const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [isLightboxOpen, setIsLightboxOpen] = useState(false);
   const [lightboxIndex, setLightboxIndex] = useState(0);
   const { t } = useLanguage();
 
+  const [selectedIndex, setSelectedIndex] = useState(0);
+  const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true });
+
   const allImages = [hotel.featuredImage, ...hotel.galleryImages];
+  const canShowControls = (allImages?.length || 0) > 1;
 
   const [cleanedFullContent, setCleanedFullContent] = useState(
     hotel.fullContent
   );
   const [address, setAddress] = useState("");
 
-  const nextImage = () => {
-    setCurrentImageIndex((prev) => (prev + 1) % allImages.length);
-  };
+  // Embla selection handler
+  const onSelect = useCallback(() => {
+    if (!emblaApi) return;
+    setSelectedIndex(emblaApi.selectedScrollSnap());
+  }, [emblaApi]);
 
-  const prevImage = () => {
-    setCurrentImageIndex(
-      (prev) => (prev - 1 + allImages.length) % allImages.length
-    );
-  };
-
-  // Auto-advance carousel every 5 seconds; pause when lightbox is open
   useEffect(() => {
-    if (isLightboxOpen) return;
-    const id = setInterval(() => {
-      setCurrentImageIndex((prev) => (prev + 1) % allImages.length);
-    }, 5000);
+    if (!emblaApi) return;
+    emblaApi.on("select", onSelect);
+    onSelect();
+    return () => {
+      if (emblaApi) emblaApi.off("select", onSelect);
+    };
+  }, [emblaApi, onSelect]);
 
+  // autoplay (pauses when lightbox is open)
+  useEffect(() => {
+    if (!emblaApi || isLightboxOpen) return;
+    const id = setInterval(() => emblaApi.scrollNext(), 5000);
     return () => clearInterval(id);
-  }, [allImages.length, isLightboxOpen]);
+  }, [emblaApi, isLightboxOpen]);
 
   // Mantener TODO el contenido intacto y solo extraer dirección si aparece en algún párrafo
   useEffect(() => {
@@ -90,7 +95,6 @@ export function HotelDetail({ hotel }: HotelDetailProps) {
         <div className="hidden lg:block">
           <CategoryNav />
         </div>
-        <Breadcrumb hotelName={hotel.name} category={hotel.categories[0]} />
       </div>
 
       <main className="mx-auto px-4 py-8 max-w-[1200px]">
@@ -102,47 +106,68 @@ export function HotelDetail({ hotel }: HotelDetailProps) {
             a fixed tall height.
           */}
           <div className="relative overflow-hidden h-[40vw] md:h-[35vw] lg:h-[600px]">
-            {allImages.map((src, idx) => (
-              <Image
-                key={idx}
-                src={src || "/placeholder.svg"}
-                alt={hotel.name}
-                fill
-                priority={idx === 0}
-                className={`object-cover transition-opacity duration-700 ease-in-out ${
-                  idx === currentImageIndex ? "opacity-100" : "opacity-0"
-                }`}
-              />
-            ))}
-            {/* Prev/Next arrows on carousel sides */}
-            <button
-              onClick={prevImage}
-              className="absolute left-3 top-1/2 -translate-y-1/2 bg-black/30 hover:bg-black/50 text-white p-2 rounded-full transition-colors"
-              aria-label="Previous image"
-            >
-              <ChevronLeft className="w-5 h-5" />
-            </button>
-            <button
-              onClick={nextImage}
-              className="absolute right-3 top-1/2 -translate-y-1/2 bg-black/30 hover:bg-black/50 text-white p-2 rounded-full transition-colors"
-              aria-label="Next image"
-            >
-              <ChevronRight className="w-5 h-5" />
-            </button>
+            {canShowControls && (
+              <>
+                <button
+                  type="button"
+                  aria-label="Imagen previa"
+                  onClick={() => emblaApi?.scrollPrev()}
+                  className="absolute left-2 md:left-3 top-1/2 -translate-y-1/2 z-10 text-white bg-black/30 hover:bg-black/50 backdrop-blur-[2px] p-2 md:p-3 rounded-full focus:outline-none focus:ring-2 focus:ring-white/70"
+                >
+                  <ChevronLeft className="w-5 h-5 md:w-6 md:h-6" />
+                </button>
+                <button
+                  type="button"
+                  aria-label="Imagen siguiente"
+                  onClick={() => emblaApi?.scrollNext()}
+                  className="absolute right-2 md:right-3 top-1/2 -translate-y-1/2 z-10 text-white bg-black/30 hover:bg-black/50 backdrop-blur-[2px] p-2 md:p-3 rounded-full focus:outline-none focus:ring-2 focus:ring-white/70"
+                >
+                  <ChevronRight className="w-5 h-5 md:w-6 md:h-6" />
+                </button>
+              </>
+            )}
+            {/* Embla root */}
+            <div ref={emblaRef} className="h-full">
+              <div className="flex h-full">
+                {allImages.map((src, idx) => (
+                  <div
+                    key={idx}
+                    className="relative min-w-full h-full flex-shrink-0"
+                  >
+                    <Image
+                      src={src || "/placeholder.svg"}
+                      alt={`${hotel.name} ${idx + 1}`}
+                      fill
+                      priority={idx === 0}
+                      className="object-cover cursor-pointer"
+                      onClick={() => {
+                        setLightboxIndex(idx);
+                        setIsLightboxOpen(true);
+                      }}
+                    />
+                  </div>
+                ))}
+              </div>
+            </div>
           </div>
-          {/* Dots navigation placed below the carousel */}
-          <div className="flex items-center justify-center gap-2 mt-3 mb-6">
-            {allImages.map((_, idx) => (
-              <button
-                key={idx}
-                onClick={() => setCurrentImageIndex(idx)}
-                aria-label={`Go to image ${idx + 1}`}
-                className={`w-2.5 h-2.5 rounded-full transition-all duration-200 ${
-                  idx === currentImageIndex ? "bg-black" : "bg-black/30"
-                }`}
-              />
-            ))}
-          </div>
+
+          {/* Dots navigation placed below the carousel (active red) */}
+          {canShowControls && (
+            <div className="flex items-center justify-center gap-2 mt-3 mb-6">
+              {allImages.map((_, idx) => (
+                <button
+                  key={idx}
+                  onClick={() => emblaApi?.scrollTo(idx)}
+                  aria-label={`Ir a la imagen ${idx + 1}`}
+                  className={`rounded-full transition-all duration-200 focus:outline-none ${
+                    idx === selectedIndex
+                      ? "bg-[#E40E36] w-3 h-3 ring-2 ring-white"
+                      : "bg-gray-300 w-2 h-2"
+                  }`}
+                />
+              ))}
+            </div>
+          )}
         </div>
 
         {/* Thumbnail gallery removed per spec - we show only dots+autoplay */}
@@ -230,7 +255,7 @@ export function HotelDetail({ hotel }: HotelDetailProps) {
                 // Normalizamos <br> a saltos de línea y separamos en líneas para garantizar
                 // que cada línea reciba el mismo tamaño. Esto maneja entradas con <br> o \n.
               }
-              <h1 className="font-neutra text-[20px] leading-[24px] mb-2 text-black">
+              <h1 className="font-neutra text-[20px] leading-[24px] mb-[] text-black">
                 {hotel.name &&
                   hotel.name
                     .replace(/<br\s*\/??>/gi, "\n")

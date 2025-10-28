@@ -11,6 +11,7 @@ import { Label } from "@/components/ui/label";
 import { Card } from "@/components/ui/card";
 import AdminRichText from "@/components/admin-rich-text";
 import { ArrowLeft, Save, Tag, Globe, Plus, X } from "lucide-react";
+import { normalizePost, validatePost } from "@/lib/post-service";
 
 export default function EditPostPage({ params }: { params: { slug: string } }) {
   const router = useRouter();
@@ -115,7 +116,16 @@ export default function EditPostPage({ params }: { params: { slug: string } }) {
       images: orderedImages,
       categories,
     };
-    console.log("Updated post:", JSON.stringify(updated, null, 2));
+    const normalized = normalizePost(updated as any);
+    const result = validatePost(normalized as any);
+    if (!result.ok) {
+      const first = result.issues?.[0];
+      alert(
+        `Error de validación: ${first?.path || ""} - ${first?.message || ""}`
+      );
+      return;
+    }
+    console.log("Updated post:", JSON.stringify(normalized, null, 2));
     alert("Cambios guardados! Revisa la consola para ver el JSON actualizado.");
   };
 

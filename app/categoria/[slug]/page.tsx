@@ -4,10 +4,13 @@ import { Header } from "@/components/header";
 import { HotelCard } from "@/components/hotel-card";
 import { Footer } from "@/components/footer";
 import { CategoryNav } from "@/components/category-nav";
+import { HeroSlider } from "@/components/hero-slider";
 import { notFound } from "next/navigation";
 import data from "@/lib/data.json";
 import { useLanguage } from "@/contexts/language-context";
-import { useEffect, use } from "react";
+import { useEffect, use, useState } from "react";
+import { buildCardExcerpt } from "@/lib/utils";
+import Link from "next/link";
 
 const validCategories = [
   "norte",
@@ -102,33 +105,139 @@ export default function CategoryPage({ params }: { params: any }) {
     });
   });
 
+  const isRestaurantsPage = slug === "restaurantes";
+
+  // Communes submenu for restaurantes category
+  const communes = [
+    "Vitacura",
+    "Las Condes",
+    "Santiago",
+    "Lo Barnechea",
+    "Providencia",
+    "Alto Jahuel",
+    "La Reina",
+  ];
+
+  const [selectedComuna, setSelectedComuna] = useState<string | null>(null);
+
+  useEffect(() => {
+    // read comuna from query string, e.g. ?comuna=las-condes
+    try {
+      const params = new URLSearchParams(window.location.search);
+      const c = params.get("comuna");
+      if (c) {
+        // de-slugify: replace - with space and normalize
+        const decoded = c.replace(/-/g, " ");
+        setSelectedComuna(decoded);
+      } else {
+        setSelectedComuna(null);
+      }
+    } catch (e) {
+      setSelectedComuna(null);
+    }
+  }, [slug]);
+
+  // Placeholder images for restaurants slider/banner — replace with your real URLs
+  const restaurantDesktopImages = [
+    "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/SLIDER-RESTAURANTES.webp",
+    "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/SLIDER-RESTAURANTES-2.webp",
+  ];
+  const restaurantMobileImages = [
+    "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/SLIDER-RESTAURANTES.webp",
+    "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/SLIDER-RESTAURANTES-2.webp",
+  ];
+
+  // Apply comuna filter if selectedComuna is set (match in descriptions or address)
+  const finalHotels = selectedComuna
+    ? filteredHotels.filter((h) => {
+        const haystack = [
+          ...(Array.isArray(h.es?.description) ? h.es.description : []),
+          ...(Array.isArray(h.en?.description) ? h.en.description : []),
+          h.address || "",
+        ]
+          .join(" ")
+          .toUpperCase();
+        return haystack.includes(String(selectedComuna).toUpperCase());
+      })
+    : filteredHotels;
+
   return (
     <div className="min-h-screen bg-white">
       <Header />
 
       <main className="container mx-auto px-4 py-8 max-w-[1200px]">
-        <CategoryNav activeCategory={slug} />
+        {isRestaurantsPage ? (
+          // Replace normal category nav with communes submenu (uppercase labels)
+          <nav className="py-4">
+            <ul className="hidden lg:flex flex-nowrap items-center gap-2 text-sm font-medium whitespace-nowrap">
+              {communes.map((c, index) => {
+                const slugified = c.toLowerCase().replace(/\s+/g, "-");
+                const isActive =
+                  selectedComuna &&
+                  selectedComuna.toLowerCase() === c.toLowerCase();
+                return (
+                  <li key={c} className="flex items-center gap-2">
+                    <Link
+                      href={`/categoria/restaurantes?comuna=${slugified}`}
+                      className={`font-neutra hover:text-[var(--color-brand-red)] transition-colors tracking-wide text-[15px] leading-[20px] ${
+                        isActive
+                          ? "text-[var(--color-brand-red)]"
+                          : "text-black"
+                      }`}
+                      onClick={() => setSelectedComuna(c)}
+                    >
+                      {c.toUpperCase()}
+                    </Link>
+                    {index < communes.length - 1 && (
+                      <span className="text-black">•</span>
+                    )}
+                  </li>
+                );
+              })}
+            </ul>
+          </nav>
+        ) : (
+          <CategoryNav activeCategory={slug} />
+        )}
+
+        {/* Banner + Slider for restaurants - show only when no comuna is selected */}
+        {isRestaurantsPage && !selectedComuna && (
+          <div className="py-6">
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
+              <div className="w-full lg:col-span-2 h-[437px]">
+                <HeroSlider
+                  desktopImages={restaurantDesktopImages}
+                  mobileImages={restaurantMobileImages}
+                />
+              </div>
+              <div className="hidden lg:block w-full h-[437px] relative bg-black">
+                <img
+                  src="https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/Group-84-3.webp"
+                  alt="Banner Restaurantes"
+                  className="object-scale-down object-center w-full h-full"
+                />
+              </div>
+            </div>
+          </div>
+        )}
 
         {/* Contador de posts por categoría */}
         <div className="mt-2 mb-4">
           <span className="font-neutra tracking-wide text-[16px] leading-[20px] text-black">
-            {t(
-              `${filteredHotels.length} posts`,
-              `${filteredHotels.length} posts`
-            )}
+            {t(`${finalHotels.length} posts`, `${finalHotels.length} posts`)}
           </span>
         </div>
 
         {/* Hotel Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 mt-2">
-          {filteredHotels.length > 0 ? (
-            filteredHotels.map((hotel) => (
+          {finalHotels.length > 0 ? (
+            finalHotels.map((hotel) => (
               <HotelCard
                 key={hotel.slug}
                 slug={hotel.slug}
                 name={hotel[language].name}
                 subtitle={hotel[language].subtitle}
-                description={hotel[language].description[0]}
+                description={buildCardExcerpt(hotel[language].description)}
                 image={hotel.images[0]}
               />
             ))

@@ -6,34 +6,23 @@ import Image from "next/image";
 
 export function LanguageSwitcher() {
   const { language, setLanguage } = useLanguage();
+  const other = language === "es" ? "en" : "es";
+  const flagSrc = other === "es" ? "/flags/cl.svg" : "/flags/us.svg";
+  const label = other.toUpperCase();
 
   return (
-    <div className="flex items-center gap-2">
+    <div className="flex items-center">
       <Button
-        variant={language === "es" ? "default" : "ghost"}
+        variant="ghost"
         size="sm"
-        onClick={() => setLanguage("es")}
+        onClick={() => setLanguage(other as "es" | "en")}
         className="text-[16px] leading-[20px] font-medium flex items-center font-neutra"
+        aria-label={`Switch language to ${label}`}
       >
-        ES
+        {label}
         <Image
-          src="/flags/cl.svg"
-          alt="Flag Chile"
-          width={20}
-          height={14}
-          className="ml-2"
-        />
-      </Button>
-      <Button
-        variant={language === "en" ? "default" : "ghost"}
-        size="sm"
-        onClick={() => setLanguage("en")}
-        className="text-[16px] leading-[20px] font-medium flex items-center font-neutra"
-      >
-        EN
-        <Image
-          src="/flags/us.svg"
-          alt="Flag US"
+          src={flagSrc}
+          alt={`Flag ${label}`}
           width={20}
           height={14}
           className="ml-2"

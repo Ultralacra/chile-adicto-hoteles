@@ -16,7 +16,6 @@ export const categories = [
   { slug: "miradores", labelEs: "MIRADORES", labelEn: "Viewpoints" },
   // Display label in ES should be "CULTURA" though slug remains "museos"
   { slug: "museos", labelEs: "CULTURA", labelEn: "Museums" },
-  { slug: "restaurantes", labelEs: "RESTAURANTES", labelEn: "Restaurants" },
   { slug: "palacios", labelEs: "PALACIOS", labelEn: "Palaces" },
   { slug: "parques", labelEs: "PARQUES", labelEn: "Parks" },
   {
@@ -25,6 +24,7 @@ export const categories = [
     labelEs: "FUERA DE STGO",
     labelEn: "TRIPS OUTSIDE SANTIAGO",
   },
+  { slug: "restaurantes", labelEs: "RESTAURANTES", labelEn: "Restaurants" },
 ];
 
 export function CategoryNav({ activeCategory = "todos" }: CategoryNavProps) {

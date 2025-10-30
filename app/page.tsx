@@ -69,7 +69,21 @@ export default function Page() {
             {/* Slider: ocupa 2 columnas en lg */}
             <div className="w-full lg:col-span-2">
               <div className="w-full h-[600px] md:h-[520px] lg:h-[437px] overflow-hidden">
-                <HeroSlider slideHref={homeSliderHref} />
+                <HeroSlider
+                  slideHrefs={[
+                    "/categoria/arquitectura", // AQI -> Arquitectura
+                    "/categoria/barrios", // Barrios
+                    "/categoria/iconos", // Iconos
+                    "/categoria/restaurantes", // Slider 100 (promocional)
+                    "/categoria/mercados", // Mercados
+                    "/categoria/miradores", // Miradores
+                    "/categoria/museos", // Cultura (slug museos)
+                    "/categoria/restaurantes", // Slider 100 repetido
+                    "/categoria/palacios", // Palacios
+                    "/categoria/parques", // Parques
+                    "/categoria/paseos-fuera-de-santiago", // Fuera de Stgo
+                  ]}
+                />
               </div>
             </div>
 

@@ -39,17 +39,32 @@ export default function Page() {
     { href: string; src: string; alt: string }
   > = {
     es: {
-      href: "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/WhatsApp-Image-2025-10-28-at-5.15.32-PM.jpeg",
+      href: "/categoria/restaurantes",
       src: "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/WhatsApp-Image-2025-10-28-at-5.15.32-PM.jpeg",
       alt: "Banner Restaurantes (ES)",
     },
     en: {
-      href: "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/WhatsApp-Image-2025-10-28-at-5.15.32-PM.jpeg",
+      href: "/categoria/restaurantes",
       src: "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/WhatsApp-Image-2025-10-28-at-5.15.32-PM.jpeg",
       alt: "Restaurants Banner (EN)",
     },
   };
   const currentBanner = bannerByLang[language] || bannerByLang.es;
+
+  // Hrefs por slide del slider de Home (alineado con el orden por defecto de desktopImagesDefault)
+  const homeSlideHrefs = [
+    "/categoria/arquitectura", // AQI ~ Arquitectura
+    "/categoria/barrios", // BARRIOS
+    "/categoria/iconos", // ICONOS
+    "/categoria/restaurantes", // slider genérico -> Restaurantes (fallback)
+    "/categoria/mercados", // MERCADOS
+    "/categoria/miradores", // MIRADORES
+    "/categoria/museos", // CULTURA
+    "/categoria/restaurantes", // slider genérico -> Restaurantes (fallback)
+    "/categoria/palacios", // PALACIOS
+    "/categoria/parques", // PARQUES
+    "/categoria/paseos-fuera-de-santiago", // FUERA DE SGO
+  ];
 
   return (
     <div className="min-h-screen bg-white">
@@ -66,7 +81,7 @@ export default function Page() {
             {/* Slider: ocupa 2 columnas en lg */}
             <div className="w-full lg:col-span-2">
               <div className="w-full h-[600px] md:h-[520px] lg:h-[437px] overflow-hidden">
-                <HeroSlider />
+                <HeroSlider slideHrefs={homeSlideHrefs} />
               </div>
             </div>
 

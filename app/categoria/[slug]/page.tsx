@@ -144,6 +144,9 @@ export default function CategoryPage({ params }: { params: any }) {
   const [restaurantSliderImages, setRestaurantSliderImages] = useState<
     string[]
   >([]);
+  const [restaurantSlideHrefs, setRestaurantSlideHrefs] = useState<string[]>(
+    []
+  );
   useEffect(() => {
     if (!isRestaurantsPage) return;
     let cancelled = false;
@@ -160,9 +163,67 @@ export default function CategoryPage({ params }: { params: any }) {
             .map((s) => (s.startsWith("/") ? s : `/imagenes-slider/${s}`));
         };
 
+        // Normalizador y matching inteligente contra data.json para que el href
+        // coincida con el slug real del restaurante.
+        const normKey = (str: string) =>
+          String(str || "")
+            .normalize("NFD")
+            .replace(/[\u0300-\u036f]/g, "")
+            .toLowerCase()
+            .replace(/[^a-z0-9]/g, "");
+
+        const restaurantIndex = (filteredHotels as any[]).map((h) => {
+          const slug = String(h.slug || "");
+          const esName = String(h.es?.name || "");
+          const enName = String(h.en?.name || "");
+          return {
+            slug,
+            keys: [normKey(slug), normKey(esName), normKey(enName)].filter(
+              Boolean
+            ),
+          };
+        });
+
+        const buildHrefsFromFilenames = (list: unknown): string[] => {
+          if (!Array.isArray(list)) return [];
+          return list
+            .map((s) => String(s || "").trim())
+            .filter(Boolean)
+            .map((fname) => {
+              const onlyName = fname.split("/").pop() || fname;
+              const noExt = onlyName.replace(/\.[^.]+$/, "");
+              const base = noExt.replace(/-(1|2)$/i, ""); // AC KITCHEN-1 -> AC KITCHEN
+              const key = normKey(base); // ackitchen
+
+              let matchSlug: string | null = null;
+              for (const row of restaurantIndex) {
+                if (
+                  row.keys.some(
+                    (k: string) => k.startsWith(key) || key.startsWith(k)
+                  )
+                ) {
+                  matchSlug = row.slug;
+                  break;
+                }
+              }
+
+              if (!matchSlug) {
+                // Fallback: derivar slug del base por si acaso
+                matchSlug = base
+                  .normalize("NFD")
+                  .replace(/[\u0300-\u036f]/g, "")
+                  .toLowerCase()
+                  .replace(/[^a-z0-9]+/g, "-")
+                  .replace(/(^-|-$)/g, "");
+              }
+              return `/lugar/${matchSlug}`;
+            });
+        };
+
         if (Array.isArray(payload)) {
           // Formato antiguo: array simple
           setRestaurantSliderImages(normalizeList(payload));
+          setRestaurantSlideHrefs(buildHrefsFromFilenames(payload));
           return;
         }
 
@@ -172,12 +233,17 @@ export default function CategoryPage({ params }: { params: any }) {
             (payload as any)["es"] ||
             (payload as any)["en"];
           setRestaurantSliderImages(normalizeList(byLang));
+          setRestaurantSlideHrefs(buildHrefsFromFilenames(byLang));
           return;
         }
 
         setRestaurantSliderImages([]);
+        setRestaurantSlideHrefs([]);
       })
-      .catch(() => setRestaurantSliderImages([]));
+      .catch(() => {
+        setRestaurantSliderImages([]);
+        setRestaurantSlideHrefs([]);
+      });
     return () => {
       cancelled = true;
     };
@@ -201,11 +267,7 @@ export default function CategoryPage({ params }: { params: any }) {
     <div className="min-h-screen bg-white">
       <Header />
 
-      <main
-        className={`container mx-auto px-4 max-w-[1200px] ${
-          isRestaurantsPage ? "pt-4 pb-8" : "py-8"
-        }`}
-      >
+      <main className="container mx-auto px-4 py-4 max-w-[1200px]">
         {isRestaurantsPage ? (
           // Submenú de comunas para restaurantes con primer item "VOLVER"
           <nav className="py-4">
@@ -257,16 +319,18 @@ export default function CategoryPage({ params }: { params: any }) {
 
         {/* Slider de restaurantes a ancho completo, sin banner, solo cuando no hay comuna seleccionada */}
         {isRestaurantsPage && !selectedComuna && (
-          <div className="pt-2">
+          <div className="py-2">
             <div className="w-full overflow-hidden">
               <HeroSlider
                 desktopImages={restaurantSliderImages}
                 mobileImages={restaurantSliderImages}
                 objectFit="contain"
+                objectPosition="top"
                 desktopHeight={600}
                 mobileHeight={550}
                 dotInactiveClass="bg-gray-300 w-2 h-2"
                 dotActiveClass="bg-[#E40E36] w-3 h-3"
+                slideHrefs={restaurantSlideHrefs}
               />
             </div>
           </div>

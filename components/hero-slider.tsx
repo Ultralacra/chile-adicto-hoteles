@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
+import Link from "next/link";
 import useEmblaCarousel from "embla-carousel-react";
 
 const desktopImagesDefault = [
@@ -33,6 +34,7 @@ type HeroSliderProps = {
   mobileHeight?: number; // alto del slide mobile en px (por defecto 550)
   dotActiveClass?: string; // clase tailwind para punto activo
   dotInactiveClass?: string; // clase tailwind para punto inactivo
+  slideHref?: string; // si se define, cada slide será un enlace a esta ruta
 };
 
 export function HeroSlider({
@@ -43,6 +45,7 @@ export function HeroSlider({
   mobileHeight = 550,
   dotActiveClass = "bg-[#E40E36] w-3 h-3",
   dotInactiveClass = "bg-white w-2 h-2",
+  slideHref,
 }: HeroSliderProps) {
   const desktop =
     desktopImages && desktopImages.length
@@ -108,13 +111,29 @@ export function HeroSlider({
                 className="embla__slide min-w-full"
                 style={{ height: `${desktopHeight}px` }}
               >
-                <img
-                  src={image || "/placeholder.svg"}
-                  alt={`Slide ${index + 1}`}
-                  className={`w-full h-full ${
-                    objectFit === "contain" ? "object-contain" : "object-cover"
-                  }`}
-                />
+                {slideHref ? (
+                  <Link href={slideHref} className="block w-full h-full">
+                    <img
+                      src={image || "/placeholder.svg"}
+                      alt={`Slide ${index + 1}`}
+                      className={`w-full h-full ${
+                        objectFit === "contain"
+                          ? "object-contain"
+                          : "object-cover"
+                      }`}
+                    />
+                  </Link>
+                ) : (
+                  <img
+                    src={image || "/placeholder.svg"}
+                    alt={`Slide ${index + 1}`}
+                    className={`w-full h-full ${
+                      objectFit === "contain"
+                        ? "object-contain"
+                        : "object-cover"
+                    }`}
+                  />
+                )}
               </div>
             ))}
           </div>
@@ -131,13 +150,29 @@ export function HeroSlider({
                 className="embla__slide min-w-full"
                 style={{ height: `${mobileHeight}px` }}
               >
-                <img
-                  src={image || "/placeholder.svg"}
-                  alt={`Slide ${index + 1}`}
-                  className={`w-full h-full ${
-                    objectFit === "contain" ? "object-contain" : "object-cover"
-                  }`}
-                />
+                {slideHref ? (
+                  <Link href={slideHref} className="block w-full h-full">
+                    <img
+                      src={image || "/placeholder.svg"}
+                      alt={`Slide ${index + 1}`}
+                      className={`w-full h-full ${
+                        objectFit === "contain"
+                          ? "object-contain"
+                          : "object-cover"
+                      }`}
+                    />
+                  </Link>
+                ) : (
+                  <img
+                    src={image || "/placeholder.svg"}
+                    alt={`Slide ${index + 1}`}
+                    className={`w-full h-full ${
+                      objectFit === "contain"
+                        ? "object-contain"
+                        : "object-cover"
+                    }`}
+                  />
+                )}
               </div>
             ))}
           </div>

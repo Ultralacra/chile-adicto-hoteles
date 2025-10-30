@@ -270,7 +270,7 @@ export default function CategoryPage({ params }: { params: any }) {
       <main className="container mx-auto px-4 py-4 max-w-[1200px]">
         {isRestaurantsPage ? (
           // Submenú de comunas para restaurantes con primer item "VOLVER"
-          <nav className="py-4">
+          <nav className="py-4 hidden lg:block">
             <ul className="hidden lg:flex flex-nowrap items-center gap-2 text-sm font-medium whitespace-nowrap">
               {/* VOLVER - limpia filtro y vuelve al listado de restaurantes */}
               <li className="flex items-center gap-2">
@@ -314,7 +314,9 @@ export default function CategoryPage({ params }: { params: any }) {
             </ul>
           </nav>
         ) : (
-          <CategoryNav activeCategory={slug} />
+          <div className="hidden lg:block">
+            <CategoryNav activeCategory={slug} />
+          </div>
         )}
 
         {/* Slider de restaurantes a ancho completo, sin banner, solo cuando no hay comuna seleccionada */}
@@ -328,9 +330,9 @@ export default function CategoryPage({ params }: { params: any }) {
                 objectPosition="top"
                 desktopHeight={600}
                 mobileHeight={550}
+                slideHrefs={restaurantSlideHrefs}
                 dotInactiveClass="bg-gray-300 w-2 h-2"
                 dotActiveClass="bg-[#E40E36] w-3 h-3"
-                slideHrefs={restaurantSlideHrefs}
               />
             </div>
           </div>

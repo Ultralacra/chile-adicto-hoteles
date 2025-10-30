@@ -30,22 +30,26 @@ type HeroSliderProps = {
   desktopImages?: string[];
   mobileImages?: string[];
   objectFit?: "cover" | "contain"; // cover por defecto; contain para no recortar
+  objectPosition?: "center" | "top" | "bottom"; // alineación vertical/horizontal del objeto
   desktopHeight?: number; // alto del slide desktop en px (por defecto 437)
   mobileHeight?: number; // alto del slide mobile en px (por defecto 550)
   dotActiveClass?: string; // clase tailwind para punto activo
   dotInactiveClass?: string; // clase tailwind para punto inactivo
   slideHref?: string; // si se define, cada slide será un enlace a esta ruta
+  slideHrefs?: string[]; // hrefs por slide; tiene prioridad sobre slideHref
 };
 
 export function HeroSlider({
   desktopImages,
   mobileImages,
   objectFit = "cover",
+  objectPosition = "center",
   desktopHeight = 437,
   mobileHeight = 550,
   dotActiveClass = "bg-[#E40E36] w-3 h-3",
   dotInactiveClass = "bg-white w-2 h-2",
   slideHref,
+  slideHrefs,
 }: HeroSliderProps) {
   const desktop =
     desktopImages && desktopImages.length
@@ -111,8 +115,11 @@ export function HeroSlider({
                 className="embla__slide min-w-full"
                 style={{ height: `${desktopHeight}px` }}
               >
-                {slideHref ? (
-                  <Link href={slideHref} className="block w-full h-full">
+                {slideHrefs?.[index] || slideHref ? (
+                  <Link
+                    href={(slideHrefs && slideHrefs[index]) || slideHref || "#"}
+                    className="block w-full h-full"
+                  >
                     <img
                       src={image || "/placeholder.svg"}
                       alt={`Slide ${index + 1}`}
@@ -120,6 +127,12 @@ export function HeroSlider({
                         objectFit === "contain"
                           ? "object-contain"
                           : "object-cover"
+                      } ${
+                        objectPosition === "top"
+                          ? "object-top"
+                          : objectPosition === "bottom"
+                          ? "object-bottom"
+                          : "object-center"
                       }`}
                     />
                   </Link>
@@ -131,6 +144,12 @@ export function HeroSlider({
                       objectFit === "contain"
                         ? "object-contain"
                         : "object-cover"
+                    } ${
+                      objectPosition === "top"
+                        ? "object-top"
+                        : objectPosition === "bottom"
+                        ? "object-bottom"
+                        : "object-center"
                     }`}
                   />
                 )}
@@ -150,8 +169,11 @@ export function HeroSlider({
                 className="embla__slide min-w-full"
                 style={{ height: `${mobileHeight}px` }}
               >
-                {slideHref ? (
-                  <Link href={slideHref} className="block w-full h-full">
+                {slideHrefs?.[index] || slideHref ? (
+                  <Link
+                    href={(slideHrefs && slideHrefs[index]) || slideHref || "#"}
+                    className="block w-full h-full"
+                  >
                     <img
                       src={image || "/placeholder.svg"}
                       alt={`Slide ${index + 1}`}
@@ -159,6 +181,12 @@ export function HeroSlider({
                         objectFit === "contain"
                           ? "object-contain"
                           : "object-cover"
+                      } ${
+                        objectPosition === "top"
+                          ? "object-top"
+                          : objectPosition === "bottom"
+                          ? "object-bottom"
+                          : "object-center"
                       }`}
                     />
                   </Link>
@@ -170,6 +198,12 @@ export function HeroSlider({
                       objectFit === "contain"
                         ? "object-contain"
                         : "object-cover"
+                    } ${
+                      objectPosition === "top"
+                        ? "object-top"
+                        : objectPosition === "bottom"
+                        ? "object-bottom"
+                        : "object-center"
                     }`}
                   />
                 )}

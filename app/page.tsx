@@ -51,20 +51,8 @@ export default function Page() {
   };
   const currentBanner = bannerByLang[language] || bannerByLang.es;
 
-  // Hrefs por slide del slider de Home (alineado con el orden por defecto de desktopImagesDefault)
-  const homeSlideHrefs = [
-    "/categoria/arquitectura", // AQI ~ Arquitectura
-    "/categoria/barrios", // BARRIOS
-    "/categoria/iconos", // ICONOS
-    "/categoria/restaurantes", // slider genérico -> Restaurantes (fallback)
-    "/categoria/mercados", // MERCADOS
-    "/categoria/miradores", // MIRADORES
-    "/categoria/museos", // CULTURA
-    "/categoria/restaurantes", // slider genérico -> Restaurantes (fallback)
-    "/categoria/palacios", // PALACIOS
-    "/categoria/parques", // PARQUES
-    "/categoria/paseos-fuera-de-santiago", // FUERA DE SGO
-  ];
+  // Href global del slider de Home: al hacer clic en cualquier slide, ir a Restaurantes
+  const homeSliderHref = "/categoria/restaurantes";
 
   return (
     <div className="min-h-screen bg-white">
@@ -81,7 +69,7 @@ export default function Page() {
             {/* Slider: ocupa 2 columnas en lg */}
             <div className="w-full lg:col-span-2">
               <div className="w-full h-[600px] md:h-[520px] lg:h-[437px] overflow-hidden">
-                <HeroSlider slideHrefs={homeSlideHrefs} />
+                <HeroSlider slideHref={homeSliderHref} />
               </div>
             </div>
 

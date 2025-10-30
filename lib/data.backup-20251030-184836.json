@@ -26,6 +26,8 @@
       "category": "RESTAURANTES"
     },
     "images": [
+      "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/PORTADA-YUMCHA.webp",
+      "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/YUM-CHA-1.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/YUM-CHA-2.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/YUM-CHA-3.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/YUM-CHA-4.webp",
@@ -41,8 +43,7 @@
     "email": "",
     "phone": "",
     "photosCredit": "",
-    "address": "",
-    "featuredImage": "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/PORTADA-YUMCHA.webp"
+    "address": ""
   },
   {
     "slug": "dolce-salato",
@@ -67,6 +68,8 @@
       "category": "RESTAURANTES"
     },
     "images": [
+      "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/PORTADA-DOLCE-SALATO.webp",
+      "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/DOLCE-SALATO-1.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/DOLCE-SALATO-2.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/DOLCE-SALATO-3.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/DOLCE-SALATO-4.webp",
@@ -92,8 +95,7 @@
     "address": "ELIODORO YÁÑEZ 2820, PROVIDENCIA, SANTIAGO",
     "hours": "LUNES A VIERNES DE 8:30 A 20:30 HRS. (CONFIRMAR DISPONIBILIDAD PARA FINES DE SEMANA EN SU SITIO WEB).",
     "reservationPolicy": "EL SITIO WEB SUGIERE QUE LAS RESERVAS NO SON SIEMPRE NECESARIAS PERO SON RECOMENDABLES PARA GRUPOS. INFO@DOLCEYSALATO.CL",
-    "interestingFact": "LA CASONA QUE ALBERGA EL RESTAURANTE FUE LA ANTIGUA RESIDENCIA DE RICARDO LYON Y LORETO COUSIÑO.",
-    "featuredImage": "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/PORTADA-DOLCE-SALATO.webp"
+    "interestingFact": "LA CASONA QUE ALBERGA EL RESTAURANTE FUE LA ANTIGUA RESIDENCIA DE RICARDO LYON Y LORETO COUSIÑO."
   },
   {
     "slug": "la-vinoteca-zoco-celebracion-del-vino",
@@ -120,6 +122,8 @@
       "category": "RESTAURANTES"
     },
     "images": [
+      "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/PORTADA-VINOTECA.webp",
+      "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/LA-VINOTECA-1.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/LA-VINOTECA-2.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/LA-VINOTECA-3.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/LA-VINOTECA-4.webp",
@@ -134,8 +138,7 @@
     "email": "",
     "phone": "tel:+56224888800",
     "photosCredit": "",
-    "address": "",
-    "featuredImage": "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/PORTADA-VINOTECA.webp"
+    "address": ""
   },
   {
     "slug": "verde-sazon-la-revolucion-vegetal",
@@ -164,6 +167,8 @@
       "category": "RESTAURANTES"
     },
     "images": [
+      "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/PORTADA-VERDE-SAZON.webp",
+      "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/VERDE-SAZON-1.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/VERDE-SAZON-2.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/VERDE-SAZON-3.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/VERDE-SAZON-4.webp",
@@ -177,8 +182,7 @@
     "email": "",
     "phone": "",
     "photosCredit": "",
-    "address": "",
-    "featuredImage": "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/PORTADA-VERDE-SAZON.webp"
+    "address": ""
   },
   {
     "slug": "elementor-17486",
@@ -205,6 +209,8 @@
       "category": "RESTAURANTES"
     },
     "images": [
+      "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/PORTADA-TONY-LAUTARO.webp",
+      "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/TONI-LAUTARO-1.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/TONI-LAUTARO-2.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/TONI-LAUTARO-3.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/TONI-LAUTARO-4.webp",
@@ -222,8 +228,7 @@
     "email": "",
     "phone": "",
     "photosCredit": "",
-    "address": "",
-    "featuredImage": "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/PORTADA-TONY-LAUTARO.webp"
+    "address": ""
   },
   {
     "slug": "tanaka-la-fusion-redefinida",
@@ -248,6 +253,8 @@
       "category": "RESTAURANTES"
     },
     "images": [
+      "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/PORTADA-TANAKA.webp",
+      "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/TANAKA-1.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/TANAKA-2.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/TANAKA-3.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/TANAKA-4.webp",
@@ -267,8 +274,7 @@
     "email": "",
     "phone": "",
     "photosCredit": "",
-    "address": "",
-    "featuredImage": "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/PORTADA-TANAKA.webp"
+    "address": ""
   },
   {
     "slug": "siam-thai-experiencia-de-autor",
@@ -295,6 +301,8 @@
       "category": "RESTAURANTES"
     },
     "images": [
+      "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/PORTADA-SIAM.webp",
+      "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/SIAM-THAI-1.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/SIAM-THAI-2.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/SIAM-THAI-3.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/SIAM-THAI-4.webp",
@@ -311,8 +319,7 @@
     "email": "",
     "phone": "",
     "photosCredit": "",
-    "address": "",
-    "featuredImage": "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/PORTADA-SIAM.webp"
+    "address": ""
   },
   {
     "slug": "savia-asia-en-todo-su-esplendor",
@@ -341,6 +348,8 @@
       "category": "RESTAURANTES"
     },
     "images": [
+      "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/PORTADA-SAVIA.webp",
+      "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/SAVIA-1.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/SAVIA-2.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/SAVIA-3.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/SAVIA-4.webp",
@@ -354,8 +363,7 @@
     "email": "",
     "phone": "",
     "photosCredit": "",
-    "address": "",
-    "featuredImage": "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/PORTADA-SAVIA.webp"
+    "address": ""
   },
   {
     "slug": "rubaiyat-santiago-icono-de-la-parrilla-brasilena",
@@ -382,6 +390,8 @@
       "category": "RESTAURANTES"
     },
     "images": [
+      "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/PORTADA-RUBAIYAT.webp",
+      "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/RUBAIYAT-1.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/RUBAIYAT-2.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/RUBAIYAT-3.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/RUBAIYAT-4.webp",
@@ -398,8 +408,7 @@
     "email": "",
     "phone": "",
     "photosCredit": "",
-    "address": "",
-    "featuredImage": "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/PORTADA-RUBAIYAT.webp"
+    "address": ""
   },
   {
     "slug": "rivoli-ristorante-lo-mejor-de-roma-y-del-lazio",
@@ -426,6 +435,8 @@
       "category": "RESTAURANTES"
     },
     "images": [
+      "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/RIVOLI.webp",
+      "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/RIVOLI-1.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/RIVOLI-2.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/RIVOLI-3.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/RIVOLI-4.webp",
@@ -441,8 +452,7 @@
     "email": "",
     "phone": "tel:+56222317969",
     "photosCredit": "",
-    "address": "",
-    "featuredImage": "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/RIVOLI.webp"
+    "address": ""
   },
   {
     "slug": "quinoa-siempre-fresquisimo-y-de-temporada",
@@ -467,6 +477,8 @@
       "category": "RESTAURANTES"
     },
     "images": [
+      "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/PORTADA-QUINOA.webp",
+      "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/QUINOA-1.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/QUINOA-2.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/QUINOA-3.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/QUINOA-4.webp",
@@ -480,8 +492,7 @@
     "email": "",
     "phone": "",
     "photosCredit": "",
-    "address": "",
-    "featuredImage": "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/PORTADA-QUINOA.webp"
+    "address": ""
   },
   {
     "slug": "pulperia-santa-elvira-una-joya-de-matta-sur",
@@ -508,6 +519,8 @@
       "category": "RESTAURANTES"
     },
     "images": [
+      "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/PORTADA-PULPERIA.webp",
+      "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/PULPERIA-1.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/PULPERIA-2.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/PULPERIA-3.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/PULPERIA-4.webp",
@@ -522,8 +535,7 @@
     "email": "",
     "phone": "",
     "photosCredit": "",
-    "address": "",
-    "featuredImage": "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/PORTADA-PULPERIA.webp"
+    "address": ""
   },
   {
     "slug": "pristino-comfort-food-de-mantel-largo",
@@ -550,6 +562,8 @@
       "category": "RESTAURANTES"
     },
     "images": [
+      "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/PORTADA-PRISTINO.webp",
+      "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/PRISTINO-1.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/PRISTINO-2.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/PRISTINO-3.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/PRISTINO-4.webp",
@@ -564,8 +578,7 @@
     "email": "",
     "phone": "tel:+56974776093",
     "photosCredit": "",
-    "address": "",
-    "featuredImage": "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/PORTADA-PRISTINO.webp"
+    "address": ""
   },
   {
     "slug": "piso-uno-sofisticacion-en-formato-izakaya",
@@ -592,6 +605,8 @@
       "category": "RESTAURANTES"
     },
     "images": [
+      "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/PISO-UNO.webp",
+      "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/PISO-UNO-1.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/PISO-UNO-2.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/PISO-UNO-3.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/PISO-UNO-4.webp",
@@ -608,8 +623,7 @@
     "email": "",
     "phone": "tel:+56977676324",
     "photosCredit": "",
-    "address": "",
-    "featuredImage": "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/PISO-UNO.webp"
+    "address": ""
   },
   {
     "slug": "pallozzi-un-viaje-en-cada-copa",
@@ -636,6 +650,8 @@
       "category": "RESTAURANTES"
     },
     "images": [
+      "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/PORTADA-PALOZZI.webp",
+      "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/PALLOZZI-1.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/PALLOZZI-2.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/PALLOZZI-3.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/PALLOZZI-4.webp",
@@ -649,8 +665,7 @@
     "email": "",
     "phone": "tel:+56965265138",
     "photosCredit": "",
-    "address": "",
-    "featuredImage": "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/PORTADA-PALOZZI.webp"
+    "address": ""
   },
   {
     "slug": "ocean-pacifics-destino-gastronomico-patrimonial",
@@ -679,6 +694,8 @@
       "category": "RESTAURANTES"
     },
     "images": [
+      "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/PORTADA-OCEAN.webp",
+      "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/OCEAN-PACIFIC-1.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/OCEAN-PACIFIC-2.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/OCEAN-PACIFIC-3.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/OCEAN-PACIFIC-4.webp",
@@ -694,8 +711,7 @@
     "email": "",
     "phone": "",
     "photosCredit": "",
-    "address": "",
-    "featuredImage": "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/PORTADA-OCEAN.webp"
+    "address": ""
   },
   {
     "slug": "normandie-tradicion-francesa-y-mediterranea",
@@ -722,6 +738,8 @@
       "category": "RESTAURANTES"
     },
     "images": [
+      "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/PORTADA-NORMADIE.webp",
+      "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/NORMANDIE-1.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/NORMANDIE-2.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/NORMANDIE-3.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/NORMANDIE-4.webp",
@@ -737,8 +755,7 @@
     "email": "",
     "phone": "",
     "photosCredit": "",
-    "address": "",
-    "featuredImage": "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/PORTADA-NORMADIE.webp"
+    "address": ""
   },
   {
     "slug": "naoki-entre-japon-y-la-costa-chilena",
@@ -765,6 +782,8 @@
       "category": "RESTAURANTES"
     },
     "images": [
+      "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/PORTADA-NAOK.webp",
+      "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/NAOKI-1.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/NAOKI-2.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/NAOKI-3.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/NAOKI-4.webp",
@@ -778,8 +797,7 @@
     "email": "",
     "phone": "",
     "photosCredit": "",
-    "address": "",
-    "featuredImage": "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/PORTADA-NAOK.webp"
+    "address": ""
   },
   {
     "slug": "mayan-la-casa-de-los-guerrero",
@@ -809,6 +827,8 @@
       "category": "RESTAURANTES"
     },
     "images": [
+      "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/PORTADA-MAYAN.webp",
+      "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/MAYAN-1.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/MAYAN-2.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/MAYAN-3.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/MAYAN-4.webp",
@@ -829,8 +849,7 @@
     "email": "",
     "phone": "tel:+56954948813",
     "photosCredit": "",
-    "address": "",
-    "featuredImage": "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/PORTADA-MAYAN.webp"
+    "address": ""
   },
   {
     "slug": "marina-mar-de-tapas-un-oasis-maritimo-en-santiago",
@@ -857,6 +876,8 @@
       "category": "RESTAURANTES"
     },
     "images": [
+      "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/PORTADA-MARINA.webp",
+      "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/MARINA-1.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/MARINA-2.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/MARINA-3.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/MARINA-4.webp",
@@ -870,8 +891,7 @@
     "email": "",
     "phone": "",
     "photosCredit": "",
-    "address": "",
-    "featuredImage": "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/PORTADA-MARINA.webp"
+    "address": ""
   },
   {
     "slug": "liguria-lastarria-la-filosofia-cicali",
@@ -898,6 +918,8 @@
       "category": "RESTAURANTES"
     },
     "images": [
+      "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/PORTADA-LIGUARIA-LASTARRIA.webp",
+      "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/LIGURIA-LASTARRIA-1.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/LIGURIA-LASTARRIA-2.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/LIGURIA-LASTARRIA-3.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/LIGURIA-LASTARRIA-4.webp",
@@ -911,8 +933,7 @@
     "email": "",
     "phone": "",
     "photosCredit": "",
-    "address": "",
-    "featuredImage": "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/PORTADA-LIGUARIA-LASTARRIA.webp"
+    "address": ""
   },
   {
     "slug": "bar-la-providencia-un-viaje-a-la-memoria-emotiva",
@@ -941,6 +962,8 @@
       "category": "RESTAURANTES"
     },
     "images": [
+      "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/PORTADA-LA-PROVIDENCIA.webp",
+      "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/LA-PROVIDENCIA-1.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/LA-PROVIDENCIA-2.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/LA-PROVIDENCIA-3.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/LA-PROVIDENCIA-4.webp",
@@ -957,8 +980,7 @@
     "email": "",
     "phone": "",
     "photosCredit": "",
-    "address": "",
-    "featuredImage": "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/PORTADA-LA-PROVIDENCIA.webp"
+    "address": ""
   },
   {
     "slug": "la-mesa-el-lugar-para-compartir",
@@ -987,6 +1009,8 @@
       "category": "RESTAURANTES"
     },
     "images": [
+      "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/PORTADA-LA-MESA.webp",
+      "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/LA-MESA-1.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/LA-MESA-2.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/LA-MESA-3.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/LA-MESA-4.webp",
@@ -1000,8 +1024,7 @@
     "email": "",
     "phone": "",
     "photosCredit": "",
-    "address": "",
-    "featuredImage": "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/PORTADA-LA-MESA.webp"
+    "address": ""
   },
   {
     "slug": "la-dicha-refugio-del-goce-y-la-alegria",
@@ -1028,6 +1051,8 @@
       "category": "RESTAURANTES"
     },
     "images": [
+      "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/PORTAD-LA-DICHA.webp",
+      "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/LA-DICHA-1.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/LA-DICHA-2.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/LA-DICHA-3.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/LA-DICHA-4.webp",
@@ -1043,8 +1068,7 @@
     "email": "",
     "phone": "tel:+56228990031",
     "photosCredit": "",
-    "address": "",
-    "featuredImage": "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/PORTAD-LA-DICHA.webp"
+    "address": ""
   },
   {
     "slug": "__trashed",
@@ -1073,6 +1097,8 @@
       "category": "RESTAURANTES"
     },
     "images": [
+      "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/PORTADA-KILU.webp",
+      "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/KILU-1.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/KILU-2.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/KILU-3.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/KILU-4.webp",
@@ -1087,8 +1113,7 @@
     "email": "RESERVAS@KILUCASADECARNES.CL",
     "phone": "",
     "photosCredit": "",
-    "address": "",
-    "featuredImage": "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/PORTADA-KILU.webp"
+    "address": ""
   },
   {
     "slug": "karai-el-sello-del-mejor-del-mundo",
@@ -1117,6 +1142,8 @@
       "category": "RESTAURANTES"
     },
     "images": [
+      "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/PORTADA-KARAI.webp",
+      "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/KARAI-1.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/KARAI-2.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/KARAI-3.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/KARAI-4.webp",
@@ -1138,8 +1165,7 @@
     "email": "",
     "phone": "tel:+56227700082",
     "photosCredit": "",
-    "address": "",
-    "featuredImage": "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/PORTADA-KARAI.webp"
+    "address": ""
   },
   {
     "slug": "jose-ramon-277-oda-a-lo-mas-sabroso-de-chile",
@@ -1166,6 +1192,8 @@
       "category": "RESTAURANTES"
     },
     "images": [
+      "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/PORTADA-JOSE-RAMON.webp",
+      "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/JOSE-RAMON-1.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/JOSE-RAMON-2.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/JOSE-RAMON-3.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/JOSE-RAMON-4.webp",
@@ -1184,8 +1212,7 @@
     "email": "",
     "phone": "",
     "photosCredit": "",
-    "address": "",
-    "featuredImage": "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/PORTADA-JOSE-RAMON.webp"
+    "address": ""
   },
   {
     "slug": "fukasawa-esencia-japonesa",
@@ -1214,6 +1241,8 @@
       "category": "RESTAURANTES"
     },
     "images": [
+      "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/PORTADA-FUKASAWA.webp",
+      "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/FUKASAW-1.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/FUKASAW-2.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/FUKASAW-3.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/FUKASAW-4.webp",
@@ -1229,8 +1258,7 @@
     "email": "",
     "phone": "",
     "photosCredit": "",
-    "address": "",
-    "featuredImage": "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/PORTADA-FUKASAWA.webp"
+    "address": ""
   },
   {
     "slug": "flama-la-pizza-que-desafia-lo-clasico",
@@ -1257,6 +1285,8 @@
       "category": "RESTAURANTES"
     },
     "images": [
+      "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/PORTADA-FLAMA.webp",
+      "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/FLAMA-1.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/FLAMA-2.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/FLAMA-3.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/FLAMA-4.webp",
@@ -1272,8 +1302,7 @@
     "email": "",
     "phone": "",
     "photosCredit": "",
-    "address": "",
-    "featuredImage": "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/PORTADA-FLAMA.webp"
+    "address": ""
   },
   {
     "slug": "bar-enigma-misterios-relato-y-cocteleria-de-autor",
@@ -1300,6 +1329,8 @@
       "category": "RESTAURANTES"
     },
     "images": [
+      "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/PORTADA-ENIGMA.webp",
+      "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/ENIGMA-1.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/ENIGMA-2.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/ENIGMA-3.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/ENIGMA-4.webp",
@@ -1314,8 +1345,7 @@
     "email": "",
     "phone": "",
     "photosCredit": "",
-    "address": "",
-    "featuredImage": "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/PORTADA-ENIGMA.webp"
+    "address": ""
   },
   {
     "slug": "el-rey-fuente-de-soda-chilena-con-toques-de-bistro-frances",
@@ -1344,6 +1374,8 @@
       "category": "RESTAURANTES"
     },
     "images": [
+      "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/PORTADA-EL-REY.webp",
+      "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/EL-REY-1.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/EL-REY-2.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/EL-REY-3.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/EL-REY-4.webp",
@@ -1359,8 +1391,7 @@
     "email": "",
     "phone": "",
     "photosCredit": "",
-    "address": "",
-    "featuredImage": "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/PORTADA-EL-REY.webp"
+    "address": ""
   },
   {
     "slug": "el-huerto-pionero-de-lo-organico-y-saludable",
@@ -1387,6 +1418,8 @@
       "category": "RESTAURANTES"
     },
     "images": [
+      "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/PORTADA-EL-HUERTO.webp",
+      "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/EL-HUERTO-1.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/EL-HUERTO-2.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/EL-HUERTO-3.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/EL-HUERTO-4.webp"
@@ -1399,8 +1432,7 @@
     "email": "",
     "phone": "tel:+56973810442",
     "photosCredit": "",
-    "address": "",
-    "featuredImage": "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/PORTADA-EL-HUERTO.webp"
+    "address": ""
   },
   {
     "slug": "dona-paula-experiencia-enoturistica",
@@ -1427,6 +1459,8 @@
       "category": "RESTAURANTES"
     },
     "images": [
+      "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/PORTADA-DONA-PAULA.webp",
+      "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/DONA-PAULA-1.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/DONA-PAULA-2.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/DONA-PAULA-3.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/DONA-PAULA-4.webp",
@@ -1442,8 +1476,7 @@
     "email": "RESTAURANT@SANTARITA.CL",
     "phone": "tel:+56223622590",
     "photosCredit": "MAX DONOSO.",
-    "address": "",
-    "featuredImage": "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/PORTADA-DONA-PAULA.webp"
+    "address": ""
   },
   {
     "slug": "diablo-vino-y-fuego-pacto-entre-expertos",
@@ -1474,6 +1507,8 @@
       "category": "RESTAURANTES"
     },
     "images": [
+      "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/PORTADA-DIABLO.webp",
+      "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/DIABLO-1.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/DIABLO-2.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/DIABLO-3.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/DIABLO-4.webp",
@@ -1491,8 +1526,7 @@
     "email": "",
     "phone": "",
     "photosCredit": "",
-    "address": "",
-    "featuredImage": "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/PORTADA-DIABLO.webp"
+    "address": ""
   },
   {
     "slug": "demo-magnolia-honestidad-refrescante",
@@ -1519,6 +1553,8 @@
       "category": "RESTAURANTES"
     },
     "images": [
+      "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/PORTADA-DEMO-MAGONOLIA.webp",
+      "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/DEMO-MAGNOLIA-1.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/DEMO-MAGNOLIA-2.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/DEMO-MAGNOLIA-3.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/DEMO-MAGNOLIA-4.webp"
@@ -1531,8 +1567,7 @@
     "email": "CONTACTO@DEMORESTAURANT.CL",
     "phone": "tel:+56942729053",
     "photosCredit": "",
-    "address": "",
-    "featuredImage": "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/PORTADA-DEMO-MAGONOLIA.webp"
+    "address": ""
   },
   {
     "slug": "demencia-un-espectaculo-gastronomico",
@@ -1560,6 +1595,8 @@
       "category": "RESTAURANTES"
     },
     "images": [
+      "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/PORTADA-DEMENCIA.webp",
+      "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/DEMENCIA-1.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/DEMENCIA-2.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/DEMENCIA-3.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/DEMENCIA-4.webp",
@@ -1579,8 +1616,7 @@
     "email": "",
     "phone": "tel:+56932170696",
     "photosCredit": "",
-    "address": "",
-    "featuredImage": "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/PORTADA-DEMENCIA.webp"
+    "address": ""
   },
   {
     "slug": "cora-bistro-oda-a-la-cocina-chilena",
@@ -1609,6 +1645,8 @@
       "category": "RESTAURANTES"
     },
     "images": [
+      "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/PORTADA-CORA.webp",
+      "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/CORA-BISTRO-1.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/CORA-BISTRO-2.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/CORA-BISTRO-3.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/CORA-BISTRO-4.webp",
@@ -1625,8 +1663,7 @@
     "email": "",
     "phone": "",
     "photosCredit": "",
-    "address": "",
-    "featuredImage": "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/PORTADA-CORA.webp"
+    "address": ""
   },
   {
     "slug": "copper-room-y-gran-cafe-hotel-debaines-homenajes-necesarios",
@@ -1659,6 +1696,8 @@
       "category": "RESTAURANTES"
     },
     "images": [
+      "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/PORTADA-COPPER.webp",
+      "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/COPPER-1.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/COPPER-2.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/COPPER-3.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/COPPER-4.webp",
@@ -1675,8 +1714,7 @@
     "email": "",
     "phone": "",
     "photosCredit": "",
-    "address": "",
-    "featuredImage": "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/PORTADA-COPPER.webp"
+    "address": ""
   },
   {
     "slug": "conserbar-el-arte-de-la-restauracion-y-la-cocteleria",
@@ -1703,6 +1741,8 @@
       "category": "RESTAURANTES"
     },
     "images": [
+      "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/PORTADA-CONSERBAR.webp",
+      "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/CONSERBAR-1.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/CONSERBAR-2.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/CONSERBAR-3.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/CONSERBAR-4.webp",
@@ -1719,8 +1759,7 @@
     "email": "",
     "phone": "",
     "photosCredit": "",
-    "address": "",
-    "featuredImage": "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/PORTADA-CONSERBAR.webp"
+    "address": ""
   },
   {
     "slug": "citadelle-el-bar-del-barrio",
@@ -1749,6 +1788,8 @@
       "category": "RESTAURANTES"
     },
     "images": [
+      "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/PORTADA-CITADELLE.webp",
+      "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/CITADELLE-1.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/CITADELLE-2.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/CITADELLE-3.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/CITADELLE-4.webp",
@@ -1763,8 +1804,7 @@
     "email": "",
     "phone": "",
     "photosCredit": "antiguas y los revestimientos cerámicos aportan calidez y textura visual. El espacio se divide en tres zonas: una barra principal, un salón íntimo con sillones y una terraza exterior ideal para compartir.",
-    "address": "",
-    "featuredImage": "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/PORTADA-CITADELLE.webp"
+    "address": ""
   },
   {
     "slug": "ceiba-rooftop-bar-sabores-amazonicos",
@@ -1793,6 +1833,8 @@
       "category": "RESTAURANTES"
     },
     "images": [
+      "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/PORTADA-CIEBA.webp",
+      "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/CEIBA-1.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/CEIBA-2.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/CEIBA-3.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/CEIBA-4.webp",
@@ -1807,8 +1849,7 @@
     "email": "",
     "phone": "",
     "photosCredit": "",
-    "address": "",
-    "featuredImage": "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/PORTADA-CIEBA.webp"
+    "address": ""
   },
   {
     "slug": "cassis-alma-de-refugio",
@@ -1839,6 +1880,8 @@
       "category": "RESTAURANTES"
     },
     "images": [
+      "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/PORTADA-CASSIS.webp",
+      "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/CASSIS-1.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/CASSIS-2.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/CASSIS-3.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/CASSIS-4.webp",
@@ -1857,8 +1900,7 @@
     "email": "",
     "phone": "",
     "photosCredit": "",
-    "address": "",
-    "featuredImage": "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/PORTADA-CASSIS.webp"
+    "address": ""
   },
   {
     "slug": "casa-sanz-gastronomia-de-alta-vibracion",
@@ -1886,6 +1928,7 @@
       "category": "RESTAURANTES"
     },
     "images": [
+      "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/PORTADA-CASA-SANZ.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/CASA-SANZ-6.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/CASA-SANZ-2.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/CASA-SANZ-3.webp",
@@ -1901,8 +1944,7 @@
     "email": "",
     "phone": "tel:+56991651370",
     "photosCredit": "",
-    "address": "",
-    "featuredImage": "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/PORTADA-CASA-SANZ.webp"
+    "address": ""
   },
   {
     "slug": "casa-lastarria-nobleza-arquitectonica",
@@ -1929,6 +1971,8 @@
       "category": "RESTAURANTES"
     },
     "images": [
+      "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/PORTADA-CASA-LASTARRIAS.webp",
+      "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/CASA-LASTARRIA-1.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/CASA-LASTARRIA-2.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/CASA-LASTARRIA-3.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/CASA-LASTARRIA-4.webp",
@@ -1948,8 +1992,7 @@
     "email": "",
     "phone": "",
     "photosCredit": "",
-    "address": "",
-    "featuredImage": "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/PORTADA-CASA-LASTARRIAS.webp"
+    "address": ""
   },
   {
     "slug": "capogrossi-tradicion-con-innovacion",
@@ -1977,6 +2020,8 @@
       "category": "RESTAURANTES"
     },
     "images": [
+      "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/PORTDADA-CAPOGROSSI.webp",
+      "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/CAPOGROSSI-1.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/CAPOGROSSI-2.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/CAPOGROSSI-3.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/CAPOGROSSI-4.webp",
@@ -1995,8 +2040,7 @@
     "email": "",
     "phone": "",
     "photosCredit": "",
-    "address": "",
-    "featuredImage": "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/PORTDADA-CAPOGROSSI.webp"
+    "address": ""
   },
   {
     "slug": "borago-un-viaje-a-la-esencia-de-chile",
@@ -2023,6 +2067,8 @@
       "category": "RESTAURANTES"
     },
     "images": [
+      "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/PORTADA-BARAGO.webp",
+      "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/BORAGO-1.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/BORAGO-2.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/BORAGO-3.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/BORAGO-4.webp",
@@ -2037,8 +2083,7 @@
     "email": "",
     "phone": "",
     "photosCredit": "",
-    "address": "",
-    "featuredImage": "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/PORTADA-BARAGO.webp"
+    "address": ""
   },
   {
     "slug": "bocanariz-la-vitrina-del-vino-chileno",
@@ -2069,6 +2114,8 @@
       "category": "RESTAURANTES"
     },
     "images": [
+      "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/PORTADA-BOCANARIZ.webp",
+      "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/BOCANARIZ-1.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/BOCANARIZ-2.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/BOCANARIZ-3.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/BOCANARIZ-4.webp",
@@ -2086,8 +2133,7 @@
     "email": "",
     "phone": "",
     "photosCredit": "",
-    "address": "",
-    "featuredImage": "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/PORTADA-BOCANARIZ.webp"
+    "address": ""
   },
   {
     "slug": "blue-jar-nunca-decepciona",
@@ -2116,6 +2162,8 @@
       "category": "RESTAURANTES"
     },
     "images": [
+      "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/PORTADA-BLUE-JAR.webp",
+      "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/BLUE-JAR-1.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/BLUE-JAR-2.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/BLUE-JAR-3.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/BLUE-JAR-4.webp",
@@ -2133,8 +2181,7 @@
     "email": "",
     "phone": "",
     "photosCredit": "",
-    "address": "",
-    "featuredImage": "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/PORTADA-BLUE-JAR.webp"
+    "address": ""
   },
   {
     "slug": "bardot-comer-y-bailar-al-mas-alto-nivel",
@@ -2161,6 +2208,8 @@
       "category": "RESTAURANTES"
     },
     "images": [
+      "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/PORTADA-BARDOT.webp",
+      "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/BARDOT-1.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/BARDOT-2.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/BARDOT-3.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/BARDOT-4.webp",
@@ -2178,8 +2227,7 @@
     "email": "",
     "phone": "",
     "photosCredit": "",
-    "address": "",
-    "featuredImage": "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/PORTADA-BARDOT.webp"
+    "address": ""
   },
   {
     "slug": "artemisa-un-altar-a-la-cocteleria-de-autor",
@@ -2209,6 +2257,8 @@
       "category": "RESTAURANTES"
     },
     "images": [
+      "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/PORTADA-ARTEMISA.webp",
+      "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/ARTEMISA-1.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/ARTEMISA-2.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/ARTEMISA-3.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/ARTEMISA-4.webp",
@@ -2225,8 +2275,7 @@
     "email": "",
     "phone": "",
     "photosCredit": "",
-    "address": "",
-    "featuredImage": "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/PORTADA-ARTEMISA.webp"
+    "address": ""
   },
   {
     "slug": "arca-sabores-del-mundo-reunidos-en-vitacura",
@@ -2255,6 +2304,8 @@
       "category": "RESTAURANTES"
     },
     "images": [
+      "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/PORTADA-ARCA.webp",
+      "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/ARCA-1.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/ARCA-2.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/ARCA-3.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/ARCA-4.webp",
@@ -2270,8 +2321,7 @@
     "email": "",
     "phone": "",
     "photosCredit": "",
-    "address": "",
-    "featuredImage": "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/PORTADA-ARCA.webp"
+    "address": ""
   },
   {
     "slug": "ambrosia-restaurante-bistro-dos-versiones-de-un-gran-concepto",
@@ -2304,6 +2354,8 @@
       "category": "RESTAURANTES"
     },
     "images": [
+      "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/PORTADA-AMBROSIA.webp",
+      "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/AMBROSIA-1.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/AMBROSIA-2.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/AMBROSIA-3.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/AMBROSIA-4.webp",
@@ -2321,8 +2373,7 @@
     "email": "",
     "phone": "",
     "photosCredit": "",
-    "address": "RESTAURANTE AMBROSÍA\nDIRECCIÓN: PAMPLONA 78, VITACURA\nHORARIO: ALMUERZO: LUNES A DOMINGO, 13:00–15:30 HRS\nCENA: LUNES A SÁBADO, 18:30–22:30 HRS",
-    "featuredImage": "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/PORTADA-AMBROSIA.webp"
+    "address": "RESTAURANTE AMBROSÍA\nDIRECCIÓN: PAMPLONA 78, VITACURA\nHORARIO: ALMUERZO: LUNES A DOMINGO, 13:00–15:30 HRS\nCENA: LUNES A SÁBADO, 18:30–22:30 HRS"
   },
   {
     "slug": "ac-kitchen-la-madurez-de-un-chef-en-movimiento",
@@ -2354,6 +2405,8 @@
       "category": "RESTAURANTES"
     },
     "images": [
+      "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/PORTADA-AC-KITCHEN.webp",
+      "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/AC-KITCHEN.1.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/AC-KITCHEN.2.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/AC-KITCHEN.3.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/AC-KITCHEN.4.webp",
@@ -2374,8 +2427,7 @@
     "email": "",
     "phone": "",
     "photosCredit": "",
-    "address": "",
-    "featuredImage": "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/PORTADA-AC-KITCHEN.webp"
+    "address": ""
   },
   {
     "slug": "edificio-banco-de-chile-casi-100-anos-de-arquitectura-patrimonial",
@@ -2406,6 +2458,7 @@
       "category": "ICONOS"
     },
     "images": [
+      "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/09/PORTADA-BANCO-DE-CHILE.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/09/BANCO-DE-CHILE-1.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/09/BANCO-DE-CHILE-3.webp"
     ],
@@ -2417,8 +2470,7 @@
     "email": "",
     "phone": "",
     "photosCredit": "",
-    "address": "DIRECCIÓN: AHUMADA 251",
-    "featuredImage": "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/09/PORTADA-BANCO-DE-CHILE.webp"
+    "address": "DIRECCIÓN: AHUMADA 251"
   },
   {
     "slug": "barrio-san-diego-un-clasico-al-sur-de-la-alameda",
@@ -2443,6 +2495,7 @@
       "category": "BARRIOS"
     },
     "images": [
+      "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/09/PORTADA-SAN-DIEGO.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/09/SAN-DIEGO-1.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/09/SAN-DIEGO-2.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/09/SAN-DIEGO-3.webp"
@@ -2455,8 +2508,7 @@
     "email": "",
     "phone": "",
     "photosCredit": "",
-    "address": "",
-    "featuredImage": "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/09/PORTADA-SAN-DIEGO.webp"
+    "address": ""
   },
   {
     "slug": "barrio-infante-identidad-en-formacion",
@@ -2481,6 +2533,7 @@
       "category": "BARRIOS"
     },
     "images": [
+      "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/09/PORTADA-INFANTE.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/09/BARRIO-INFANTE-1.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/09/BARRIO-INFANTE-2.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/09/BARRIO-INFANTE-3.webp",
@@ -2495,8 +2548,7 @@
     "email": "",
     "phone": "",
     "photosCredit": "",
-    "address": "",
-    "featuredImage": "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/09/PORTADA-INFANTE.webp"
+    "address": ""
   },
   {
     "slug": "museo-san-francisco-una-de-las-mejores-colecciones-de-arte-virreinal-de-sudamerica",
@@ -2523,6 +2575,7 @@
       "category": "MUSEOS"
     },
     "images": [
+      "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/09/PORTADA-SAN-FRANCISCO.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/09/SAN-FRASICSCO-1.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/09/SAN-FRASICSCO-2.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/09/SAN-FRASICSCO-3.webp",
@@ -2537,8 +2590,7 @@
     "email": "",
     "phone": "",
     "photosCredit": "",
-    "address": "ALAMEDA LIBERTADOR BERNARDO O’HIGGINS 834\nHORARIOS LUNES A VIERNES: 9:30 A 14:00 Y 15:00 A 17:00\nSÁBADO: 9:30 A 14:00",
-    "featuredImage": "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/09/PORTADA-SAN-FRANCISCO.webp"
+    "address": "ALAMEDA LIBERTADOR BERNARDO O’HIGGINS 834\nHORARIOS LUNES A VIERNES: 9:30 A 14:00 Y 15:00 A 17:00\nSÁBADO: 9:30 A 14:00"
   },
   {
     "slug": "la-chascona-la-casa-de-neruda-en-el-barrio-bellavista",
@@ -2567,6 +2619,7 @@
       "category": "MUSEOS"
     },
     "images": [
+      "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/09/PORTADA-LA-CHASCONA.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/09/LA-CHASCONA-1.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/09/LA-CHASCONA-2.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/09/LA-CHASCONA-3.webp"
@@ -2579,8 +2632,7 @@
     "email": "",
     "phone": "",
     "photosCredit": "",
-    "address": "FERNANDO MÁRQUEZ DE LA PLATA 0192, PROVIDENCIA\nHORARIO CONTINUO, INGRESO DE TURISTAS POR ORDEN DE LLEGADA Y SIN RESERVA PREVIA",
-    "featuredImage": "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/09/PORTADA-LA-CHASCONA.webp"
+    "address": "FERNANDO MÁRQUEZ DE LA PLATA 0192, PROVIDENCIA\nHORARIO CONTINUO, INGRESO DE TURISTAS POR ORDEN DE LLEGADA Y SIN RESERVA PREVIA"
   },
   {
     "slug": "espacio-il-posto-amor-al-arte",
@@ -2611,6 +2663,7 @@
       "category": "MUSEOS"
     },
     "images": [
+      "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/09/PORTADA-POSTO.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/09/POSTO-1.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/09/POSTO-2.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/09/POSTO-3.webp"
@@ -2623,8 +2676,7 @@
     "email": "",
     "phone": "",
     "photosCredit": "",
-    "address": "WWW.ILPOSTO.CL ESPOZ 3150, PISO -1, OF. 080",
-    "featuredImage": "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/09/PORTADA-POSTO.webp"
+    "address": "WWW.ILPOSTO.CL ESPOZ 3150, PISO -1, OF. 080"
   },
   {
     "slug": "espacio-matta-el-centro-cultural-que-homenajea-el-mural-de-matta",
@@ -2654,6 +2706,7 @@
       "category": "MUSEOS"
     },
     "images": [
+      "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/09/PORTADA-ESPACIO-MALTTA.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/09/ESPACIO-MATTA-1.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/09/ESPACIO-MATTA-2.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/09/ESPACIO-MATTA-3.webp"
@@ -2666,8 +2719,7 @@
     "email": "",
     "phone": "",
     "photosCredit": "",
-    "address": "AV. SANTA ROSA 9014\nENTRADA GRATIS",
-    "featuredImage": "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/09/PORTADA-ESPACIO-MALTTA.webp"
+    "address": "AV. SANTA ROSA 9014\nENTRADA GRATIS"
   },
   {
     "slug": "museo-de-artes-decorativas-museo-historico-dominico-biblioteca-patrimonial-recoleta-dominica-centro-patrimonial-recoleta-dominica-3-en-1",
@@ -2696,6 +2748,7 @@
       "category": "MUSEOS"
     },
     "images": [
+      "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/09/Portada-Arte-decorativas.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/09/MUSEO-ARTES-DECORATIVA.webp"
     ],
     "website": "",
@@ -2706,8 +2759,7 @@
     "email": "",
     "phone": "",
     "photosCredit": "",
-    "address": "RECOLETA 683\nHORARIOS: MARTES A VIERNES: 10:00 A 17:00\nSÁBADO: 10:00 A 14:00\nENTRADA Y ESTACIONAMIENTO GRATIS",
-    "featuredImage": "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/09/Portada-Arte-decorativas.webp"
+    "address": "RECOLETA 683\nHORARIOS: MARTES A VIERNES: 10:00 A 17:00\nSÁBADO: 10:00 A 14:00\nENTRADA Y ESTACIONAMIENTO GRATIS"
   },
   {
     "slug": "museo-casa-colorada-un-espacio-patrimonial-de-250-anos-que-cuenta-la-historia-de-santiago",
@@ -2736,6 +2788,7 @@
       "category": "MUSEOS"
     },
     "images": [
+      "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/09/PORTADA-CASA-COLORADA.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/09/CASA-COLORADA-1.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/09/CASA-COLORADA-2.webp"
     ],
@@ -2747,8 +2800,7 @@
     "email": "",
     "phone": "tel:17691779",
     "photosCredit": "",
-    "address": "MERCED 860, A PASOS DE LA PLAZA DE ARMAS\nHORARIOS, MARTES A VIERNES: 10:00 A 18:00\nSÁBADOS: 10:00 A 14:00",
-    "featuredImage": "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/09/PORTADA-CASA-COLORADA.webp"
+    "address": "MERCED 860, A PASOS DE LA PLAZA DE ARMAS\nHORARIOS, MARTES A VIERNES: 10:00 A 18:00\nSÁBADOS: 10:00 A 14:00"
   },
   {
     "slug": "sala-gasco-regalo-para-santiago",
@@ -2777,6 +2829,7 @@
       "category": "MUSEOS"
     },
     "images": [
+      "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/09/PORTADA-SALA-GASCO.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/09/SALA-GASCO-1.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/09/SALA-GASCO-2.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/09/SALA-GASCO-3.webp",
@@ -2790,8 +2843,7 @@
     "email": "",
     "phone": "",
     "photosCredit": "",
-    "address": "SANTO DOMINGO 1061 (METRO PLAZA DE ARMAS)\nHORARIOS LUNES A VIERNES, 10:00 A 17:00",
-    "featuredImage": "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/09/PORTADA-SALA-GASCO.webp"
+    "address": "SANTO DOMINGO 1061 (METRO PLAZA DE ARMAS)\nHORARIOS LUNES A VIERNES, 10:00 A 17:00"
   },
   {
     "slug": "la-posada-del-corregidor-una-de-las-casas-mas-antiguas-de-santiago",
@@ -2822,6 +2874,7 @@
       "category": "MUSEOS"
     },
     "images": [
+      "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/09/PORTADA-LA-POSADA-DEL-CORREGIDOR.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/09/LA-POSADA-DEL-CORREGIDOR-1.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/09/LA-POSADA-DEL-CORREGIDOR-2.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/09/LA-POSADA-DEL-CORREGIDOR-3.webp",
@@ -2837,8 +2890,7 @@
     "email": "",
     "phone": "",
     "photosCredit": "",
-    "address": "ESMERALDA 749, ENTRE SAN ANTONIO Y MAC IVER\nHORARIOS MARTES A VIERNES: 10:00 A 13:00 / 14:00 A 17:00\nSÁBADO: 10:00 A 13:00\nENTRADA GRATIS",
-    "featuredImage": "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/09/PORTADA-LA-POSADA-DEL-CORREGIDOR.webp"
+    "address": "ESMERALDA 749, ENTRE SAN ANTONIO Y MAC IVER\nHORARIOS MARTES A VIERNES: 10:00 A 13:00 / 14:00 A 17:00\nSÁBADO: 10:00 A 13:00\nENTRADA GRATIS"
   },
   {
     "slug": "centro-cultural-casona-nemesio-antunez-la-reina-restauro-la-casona-y-hoy-brilla",
@@ -2867,6 +2919,7 @@
       "category": "MUSEOS"
     },
     "images": [
+      "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/09/PORTADA-NEMECIO-ANTUNEZ.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/09/NEMECIO-ANTUNEZ-1.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/09/NEMECIO-ANTUNEZ-2.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/09/NEMECIO-ANTUNEZ-3.webp",
@@ -2880,8 +2933,7 @@
     "email": "",
     "phone": "",
     "photosCredit": "",
-    "address": "CARLOS OSSANDÓN 11, LA REINA\nHORARIOS MARTES A SÁBADO, DE 9:30 A 18:30",
-    "featuredImage": "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/09/PORTADA-NEMECIO-ANTUNEZ.webp"
+    "address": "CARLOS OSSANDÓN 11, LA REINA\nHORARIOS MARTES A SÁBADO, DE 9:30 A 18:30"
   },
   {
     "slug": "museo-historico-y-militar-la-casa-que-acoge-el-monumento-al-general-baquedano",
@@ -2924,6 +2976,7 @@
       "category": "MUSEOS"
     },
     "images": [
+      "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/09/PORTADA-MUSEO-MILITAR.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/09/MUSEO-MILITAR-1.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/09/MUSEO-MILITAR-2.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/09/MUSEO-MILITAR-3.webp",
@@ -2940,8 +2993,7 @@
     "email": "",
     "phone": "",
     "photosCredit": "",
-    "address": "AV. ALMIRANTE BLANCO ENCALADA 1550\nHORARIOS MARTES A VIERNES: 9:30 A 16:30 HRS.\nSÁBADOS: 10:00 A 14:00 HRS.\nDOMINGO Y LUNES: CERRADO\nENTRADA GRATIS",
-    "featuredImage": "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/09/PORTADA-MUSEO-MILITAR.webp"
+    "address": "AV. ALMIRANTE BLANCO ENCALADA 1550\nHORARIOS MARTES A VIERNES: 9:30 A 16:30 HRS.\nSÁBADOS: 10:00 A 14:00 HRS.\nDOMINGO Y LUNES: CERRADO\nENTRADA GRATIS"
   },
   {
     "slug": "museo-benjamin-vicuna-mackenna-el-museo-ciudadano",
@@ -2970,6 +3022,7 @@
       "category": "MUSEOS"
     },
     "images": [
+      "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/09/PORTADA-MUSEO-BENJAMIN-VICUNA.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/09/MUSEO-BENJAMIN-VICUNA-1.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/09/MUSEO-BENJAMIN-VICUNA-2.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/09/MUSEO-BENJAMIN-VICUNA-3.webp",
@@ -2985,8 +3038,7 @@
     "email": "",
     "phone": "tel:18311886",
     "photosCredit": "",
-    "address": "VICUÑA MACKENNA 94\nHORARIO MARTES A SÁBADO, DE 10:00 A 17:00 HORAS (A PARTIR DEL 3 DE MARZO DE 202)\nENTRADA GRATIS",
-    "featuredImage": "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/09/PORTADA-MUSEO-BENJAMIN-VICUNA.webp"
+    "address": "VICUÑA MACKENNA 94\nHORARIO MARTES A SÁBADO, DE 10:00 A 17:00 HORAS (A PARTIR DEL 3 DE MARZO DE 202)\nENTRADA GRATIS"
   },
   {
     "slug": "elementor-15596",
@@ -3015,6 +3067,7 @@
       "category": "MUSEOS"
     },
     "images": [
+      "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/09/PORTADA-MUSEO-ANDINO.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/09/MUSEO-ANDINO-1.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/09/MUSEO-ANDINO-2.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/09/MUSEO-ANDINO-4.webp",
@@ -3032,8 +3085,7 @@
     "email": "",
     "phone": "",
     "photosCredit": "",
-    "address": "VIÑA SANTA RITA – CAMINO PADRE HURTADO 0695, ALTO JAHUEL, BUIN\nHORARIO MARTES A DOMINGO, DE 10:30 A 17:00 HORAS\nENTRADA GRATUITA",
-    "featuredImage": "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/09/PORTADA-MUSEO-ANDINO.webp"
+    "address": "VIÑA SANTA RITA – CAMINO PADRE HURTADO 0695, ALTO JAHUEL, BUIN\nHORARIO MARTES A DOMINGO, DE 10:30 A 17:00 HORAS\nENTRADA GRATUITA"
   },
   {
     "slug": "mim-centro-interactivo-de-los-conocimientos",
@@ -3062,6 +3114,7 @@
       "category": "MUSEOS"
     },
     "images": [
+      "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/09/PORTADA-MIN.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/09/MIN-1.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/09/MIN-2.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/09/MIN-3.webp",
@@ -3079,8 +3132,7 @@
     "email": "",
     "phone": "",
     "photosCredit": "",
-    "address": "AVENIDA PUNTA ARENAS 6711, LA GRANJA\nHORARIOS MARTES: 9:30 A 13:30 HORAS\nMIÉRCOLES A VIERNES: 9:30 A 17:30 HORAS\nSÁBADOS, DOMINGOS Y FESTIVOS: 10:00 A 18:00 HORAS",
-    "featuredImage": "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/09/PORTADA-MIN.webp"
+    "address": "AVENIDA PUNTA ARENAS 6711, LA GRANJA\nHORARIOS MARTES: 9:30 A 13:30 HORAS\nMIÉRCOLES A VIERNES: 9:30 A 17:30 HORAS\nSÁBADOS, DOMINGOS Y FESTIVOS: 10:00 A 18:00 HORAS"
   },
   {
     "slug": "ceina-de-catacumbas-a-gran-espacio-cultural",
@@ -3109,6 +3161,7 @@
       "category": "MUSEOS"
     },
     "images": [
+      "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/09/PORTADA-CEINA-1.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/09/CEINA-1.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/09/CEINA-2.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/09/CEINA-3.webp",
@@ -3127,8 +3180,7 @@
     "email": "",
     "phone": "",
     "photosCredit": "nacional. También cuenta con la Sala Negra, con piso de linóleo para expresiones de danza, y una espectacular Azotea de 1.000 m², ideal para actividades culturales al aire libre.",
-    "address": "ARTURO PRAT 33\nHORARIOS LUNES A VIERNES: 8:00 A 22:00\nSÁBADOS Y DOMINGOS: 9:00 A 22:00",
-    "featuredImage": "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/09/PORTADA-CEINA-1.webp"
+    "address": "ARTURO PRAT 33\nHORARIOS LUNES A VIERNES: 8:00 A 22:00\nSÁBADOS Y DOMINGOS: 9:00 A 22:00"
   },
   {
     "slug": "centro-cultural-estacion-mapocho-una-joya-de-la-arquitectura-neoclasica",
@@ -3161,6 +3213,7 @@
       "category": "MUSEOS"
     },
     "images": [
+      "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/09/PORTDA-ESTACION-MAPOCHO-1.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/09/ESTACION-MAPOCHO-1.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/09/ESTACION-MAPOCHO-2.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/09/ESTACION-MAPOCHO-3.webp",
@@ -3178,8 +3231,7 @@
     "email": "",
     "phone": "",
     "photosCredit": "",
-    "address": "WWW.ESTACIONMAPOCHO.CL PLAZA DE LA CULTURA S/N, EX ESTACIÓN DE TRENES\nMETRO, PUENTE CAL Y CANTO",
-    "featuredImage": "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/09/PORTDA-ESTACION-MAPOCHO-1.webp"
+    "address": "WWW.ESTACIONMAPOCHO.CL PLAZA DE LA CULTURA S/N, EX ESTACIÓN DE TRENES\nMETRO, PUENTE CAL Y CANTO"
   },
   {
     "slug": "complejo-universitario-vicuna-mackenna-20-la-cultura-de-la-u",
@@ -3207,6 +3259,7 @@
       "category": "MUSEOS"
     },
     "images": [
+      "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/09/PORTADA-CENTRO-CULTURAL-U-DE-CHILE-1.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/09/CENTRO-CULTURAL-U-DE-CHILE-1.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/09/CENTRO-CULTURAL-U-DE-CHILE-2.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/09/CENTRO-CULTURAL-U-DE-CHILE-3.webp",
@@ -3223,8 +3276,7 @@
     "email": "",
     "phone": "",
     "photosCredit": "",
-    "address": "WWW.CEACUCHILE.CL VICUÑA MACKENNA 20",
-    "featuredImage": "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/09/PORTADA-CENTRO-CULTURAL-U-DE-CHILE-1.webp"
+    "address": "WWW.CEACUCHILE.CL VICUÑA MACKENNA 20"
   },
   {
     "slug": "museo-artequin-arte-para-ninos-de-0-a-100-anos",
@@ -3253,6 +3305,7 @@
       "category": "MUSEOS"
     },
     "images": [
+      "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/09/PORTADA-ARTEQUIN-1.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/09/ARTEQUIN-1.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/09/ARTEQUIN-2.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/09/ARTEQUIN-3.webp",
@@ -3267,8 +3320,7 @@
     "email": "",
     "phone": "",
     "photosCredit": "",
-    "address": "",
-    "featuredImage": "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/09/PORTADA-ARTEQUIN-1.webp"
+    "address": ""
   },
   {
     "slug": "centro-cultural-el-tranque-lo-barnechea-se-la-juega-por-la-cultura",
@@ -3292,6 +3344,7 @@
       "category": "MUSEOS"
     },
     "images": [
+      "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/09/PORTADA-EL-TRANQU-1.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/09/EL-TRANQU-1.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/09/EL-TRANQU-2.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/09/EL-TRANQU-3.webp",
@@ -3306,8 +3359,7 @@
     "email": "",
     "phone": "",
     "photosCredit": "",
-    "address": "AV. EL TRANQUE 10300, LO BARNECHEA\nHORARIOS, MARTES A DOMINGO, DE 9:00 A 19:00\nENTRADA, GRATIS",
-    "featuredImage": "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/09/PORTADA-EL-TRANQU-1.webp"
+    "address": "AV. EL TRANQUE 10300, LO BARNECHEA\nHORARIOS, MARTES A DOMINGO, DE 9:00 A 19:00\nENTRADA, GRATIS"
   },
   {
     "slug": "parque-de-las-esculturas-un-espacio-que-fusiona-arte-y-paisaje",
@@ -3334,6 +3386,7 @@
       "category": "PARQUES"
     },
     "images": [
+      "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/09/PORTADA-PARQUE-DE-LAS-ESCULTURAS.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/09/ESCULTURAS-1.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/09/ESCULTURAS-2.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/09/ESCULTURAS-3.webp",
@@ -3349,8 +3402,7 @@
     "email": "",
     "phone": "",
     "photosCredit": "",
-    "address": "AVENIDA SANTA MARÍA, ENTRE PEDRO DE VALDIVIA Y NUEVA DE LYON, PROVIDENCIA, SANTIAGO\nHORARIOS, ABIERTO TODOS LOS DÍAS\nINVIERNO: 08:00 A 19:00\nVERANO: 08:00 A 20:00",
-    "featuredImage": "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/09/PORTADA-PARQUE-DE-LAS-ESCULTURAS.webp"
+    "address": "AVENIDA SANTA MARÍA, ENTRE PEDRO DE VALDIVIA Y NUEVA DE LYON, PROVIDENCIA, SANTIAGO\nHORARIOS, ABIERTO TODOS LOS DÍAS\nINVIERNO: 08:00 A 19:00\nVERANO: 08:00 A 20:00"
   },
   {
     "slug": "parque-titanium-un-gran-jardin-urbano",
@@ -3374,6 +3426,7 @@
       "category": "PARQUES"
     },
     "images": [
+      "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/09/PORTADA-PARQUE-TITANIUM.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/09/TITANIUM-1.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/09/TITANIUM-2.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/09/TITANIUM-3.webp",
@@ -3390,8 +3443,7 @@
     "email": "",
     "phone": "tel:27102730",
     "photosCredit": "",
-    "address": "PARQUE TITANIUM, AV. COSTANERA SUR 2710-2730, LAS CONDES",
-    "featuredImage": "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/09/PORTADA-PARQUE-TITANIUM.webp"
+    "address": "PARQUE TITANIUM, AV. COSTANERA SUR 2710-2730, LAS CONDES"
   },
   {
     "slug": "drugstore-un-clasico-de-providencia",
@@ -3416,6 +3468,7 @@
       "category": "MERCADOS"
     },
     "images": [
+      "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/09/PORTADA-DRUGESTORE.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/09/DRUGSTORE-1.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/09/DRUGSTORE-2.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/09/DRUGSTORE-3.webp",
@@ -3430,8 +3483,7 @@
     "email": "",
     "phone": "",
     "photosCredit": "",
-    "address": "",
-    "featuredImage": "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/09/PORTADA-DRUGESTORE.webp"
+    "address": ""
   },
   {
     "slug": "teatro-municipal-la-gran-obra-de-brunet-de-baines",
@@ -3460,6 +3512,7 @@
       "category": "ICONOS"
     },
     "images": [
+      "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/09/PORTADA-TEATRO-MUNICIPAL.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/09/TEATRO-MUNICIPAL-1.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/09/TEATRO-MUNICIPAL-2.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/09/TEATRO-MUNICIPAL-3.webp",
@@ -3477,8 +3530,7 @@
     "email": "",
     "phone": "",
     "photosCredit": "",
-    "address": "AGUSTINAS 794\nWWW.MUNICIPAL.CL",
-    "featuredImage": "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/09/PORTADA-TEATRO-MUNICIPAL.webp"
+    "address": "AGUSTINAS 794\nWWW.MUNICIPAL.CL"
   },
   {
     "slug": "fantasilandia-el-parque-de-atracciones-de-santiago",
@@ -3508,6 +3560,7 @@
       "category": "ICONOS"
     },
     "images": [
+      "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/09/PORTADA-FANTASILANDIA.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/09/FANTASILANDIA-1.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/09/FANTASILANDIA-2.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/09/FANTASILANDIA-3.webp",
@@ -3524,8 +3577,7 @@
     "email": "",
     "phone": "",
     "photosCredit": "",
-    "address": "AV. BEAUCHEFF 938, SANTIAGO, CHILE\nHORARIOS, DISPONIBLES EN WWW.FANTASILANDIA.CL",
-    "featuredImage": "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/09/PORTADA-FANTASILANDIA.webp"
+    "address": "AV. BEAUCHEFF 938, SANTIAGO, CHILE\nHORARIOS, DISPONIBLES EN WWW.FANTASILANDIA.CL"
   },
   {
     "slug": "biblioteca-nacional-joya-santiaguina",
@@ -3550,6 +3602,7 @@
       "category": "ICONOS"
     },
     "images": [
+      "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/09/PORTADA-BIBLIOTECA-NACIONAL.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/09/BIBLIOTECA-NACIONAL-1.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/09/BIBLIOTECA-NACIONAL-2.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/09/BIBLIOTECA-NACIONAL-3.webp",
@@ -3564,8 +3617,7 @@
     "email": "",
     "phone": "",
     "photosCredit": "",
-    "address": "DIRECCIÓN: ALAMEDA 651\nHORARIOS: LUNES A JUEVES: 9:15 A 18:00\nVIERNES: 9:15 A 17:00",
-    "featuredImage": "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/09/PORTADA-BIBLIOTECA-NACIONAL.webp"
+    "address": "DIRECCIÓN: ALAMEDA 651\nHORARIOS: LUNES A JUEVES: 9:15 A 18:00\nVIERNES: 9:15 A 17:00"
   },
   {
     "slug": "hotel-boutique-la-casona-de-vina-matetic-una-experiencia-unica-que-une-vino-y-naturaleza-en-el-valle-del-rosario",
@@ -3596,6 +3648,7 @@
       "category": "PASEOS FUERA DE SANTIAGO"
     },
     "images": [
+      "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/09/PORTADA-MATETIC.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/09/MATETIC-1.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/09/MATETIC-2.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/09/MATETIC-3.webp",
@@ -3614,8 +3667,7 @@
     "email": "",
     "phone": "",
     "photosCredit": "",
-    "address": "",
-    "featuredImage": "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/09/PORTADA-MATETIC.webp"
+    "address": ""
   },
   {
     "slug": "leonera-hotel-tradicion-naturaleza-y-experiencias-inolvidables-en-la-precordillera-de-codegua",
@@ -3652,6 +3704,7 @@
       "category": "PASEOS FUERA DE SANTIAGO"
     },
     "images": [
+      "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/09/PORTADA-LEONERA-HOTEL.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/09/LEONERA-10.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/09/LEONERA-2.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/09/LEONERA-3.webp",
@@ -3671,8 +3724,7 @@
     "email": "",
     "phone": "",
     "photosCredit": "",
-    "address": "",
-    "featuredImage": "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/09/PORTADA-LEONERA-HOTEL.webp"
+    "address": ""
   },
   {
     "slug": "buin-zoo-mas-que-un-zoo-un-bio-parque",
@@ -3700,6 +3752,7 @@
       "category": "PASEOS FUERA DE SANTIAGO"
     },
     "images": [
+      "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/09/PORTADA-BUIN-ZOO.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/09/BUIN_ZOO-1.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/09/BUIN_ZOO-2.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/09/BUIN_ZOO-3.webp",
@@ -3719,8 +3772,7 @@
     "email": "",
     "phone": "",
     "photosCredit": "",
-    "address": "",
-    "featuredImage": "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/09/PORTADA-BUIN-ZOO.webp"
+    "address": ""
   },
   {
     "slug": "museo-del-sonido-patrimonio-sonoro",
@@ -3745,6 +3797,7 @@
       "category": "MUSEOS"
     },
     "images": [
+      "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/09/portada-museo-del-sonido.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/09/museo-del-sonido-1.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/09/museo-del-sonido-2.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/09/museo-del-sonido-3.webp",
@@ -3760,8 +3813,7 @@
     "email": "",
     "phone": "",
     "photosCredit": "e ilustraciones contextualizan la evolución de la grabación sonora. El diseño busca generar una experiencia espacial y material que permita apreciar la casona, complementada con una sala central y una audiovisual.",
-    "address": "HUÉRFANOS 2919, SANTIAGO.\n@MUSEODELSONIDO\nMARTES A DOMINGO DE 10:00 A 18:00",
-    "featuredImage": "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/09/portada-museo-del-sonido.webp"
+    "address": "HUÉRFANOS 2919, SANTIAGO.\n@MUSEODELSONIDO\nMARTES A DOMINGO DE 10:00 A 18:00"
   },
   {
     "slug": "museo-de-la-memoria-y-los-derechos-humanos-recordar-para-no-repetir",
@@ -3790,6 +3842,7 @@
       "category": "MUSEOS"
     },
     "images": [
+      "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/09/portada-museo-de-l-a-memoria.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/09/museo-de-la-memoria-1.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/09/museo-de-la-memoria-2.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/09/museo-de-la-memoria-3.webp",
@@ -3803,8 +3856,7 @@
     "email": "",
     "phone": "",
     "photosCredit": "WWW.DISENOARQUITECTURA.CL",
-    "address": "MATUCANA 501, SANTIAGO\n@MUSEODELAMEMORIA\nMARTES A DOMINGO DE 10:00 A 18:00",
-    "featuredImage": "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/09/portada-museo-de-l-a-memoria.webp"
+    "address": "MATUCANA 501, SANTIAGO\n@MUSEODELAMEMORIA\nMARTES A DOMINGO DE 10:00 A 18:00"
   },
   {
     "slug": "mavi-arte-contemporaneo-en-el-corazon-de-lastarria",
@@ -3829,6 +3881,7 @@
       "category": "MUSEOS"
     },
     "images": [
+      "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/09/portada-mavi.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/09/mavi-1.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/09/mavi-2.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/09/mavi-3.webp",
@@ -3845,8 +3898,7 @@
     "email": "",
     "phone": "",
     "photosCredit": "",
-    "address": "JOSÉ VICTORINO LASTARRIA 307, SANTIAGO.\n@MAVICHILE\nMARTES A DOMINGO DE 10:00 A 18:00",
-    "featuredImage": "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/09/portada-mavi.webp"
+    "address": "JOSÉ VICTORINO LASTARRIA 307, SANTIAGO.\n@MAVICHILE\nMARTES A DOMINGO DE 10:00 A 18:00"
   },
   {
     "slug": "centro-nave-la-residencia-de-la-danza",
@@ -3875,6 +3927,7 @@
       "category": "MUSEOS"
     },
     "images": [
+      "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/09/portada-centro-nave.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/09/centro-nave-1.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/09/centro-nave-2.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/09/centro-nave-3.webp",
@@ -3888,8 +3941,7 @@
     "email": "VISITAS@NAVE.IO",
     "phone": "",
     "photosCredit": "MARIA GONZALEZ",
-    "address": "LIBERTAD 430, SANTIAGO.\n@CENTRO_NAVE\nVISITAS@NAVE.IO",
-    "featuredImage": "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/09/portada-centro-nave.webp"
+    "address": "LIBERTAD 430, SANTIAGO.\n@CENTRO_NAVE\nVISITAS@NAVE.IO"
   },
   {
     "slug": "parque-mapocho-rio-la-integracion-del-rio-al-tejido-urbano",
@@ -3914,6 +3966,7 @@
       "category": "PARQUES"
     },
     "images": [
+      "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/09/portada-mapocho-rio.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/09/mapocho-rio-1.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/09/mapocho-rio-2.webp"
     ],
@@ -3925,8 +3978,7 @@
     "email": "",
     "phone": "",
     "photosCredit": "",
-    "address": "AV. COSTANERA SUR S/N, SANTIAGO,\nHORARIO DE APERTURA Y CIERRE: MARTES A DOMINGO Y FERIADOS, DE 6:00 A 20:30 HRS.​",
-    "featuredImage": "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/09/portada-mapocho-rio.webp"
+    "address": "AV. COSTANERA SUR S/N, SANTIAGO,\nHORARIO DE APERTURA Y CIERRE: MARTES A DOMINGO Y FERIADOS, DE 6:00 A 20:30 HRS.​"
   },
   {
     "slug": "palacio-larrain-el-titanic",
@@ -3953,6 +4005,7 @@
       "category": "PALACIOS"
     },
     "images": [
+      "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/09/portada-larrain.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/09/larrain-1png.webp"
     ],
     "website": "",
@@ -3963,8 +4016,7 @@
     "email": "",
     "phone": "tel:+56978758709",
     "photosCredit": "",
-    "address": "CALLE CIENFUEGOS 99, SANTIAGO, REGIÓN METROPOLITANA, CHILE\n+56 9 7875 8709\nHORARIO DE APERTURA Y CIERRE: SÁBADOS Y DOMINGOS DE 12:30 A 19:00",
-    "featuredImage": "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/09/portada-larrain.webp"
+    "address": "CALLE CIENFUEGOS 99, SANTIAGO, REGIÓN METROPOLITANA, CHILE\n+56 9 7875 8709\nHORARIO DE APERTURA Y CIERRE: SÁBADOS Y DOMINGOS DE 12:30 A 19:00"
   },
   {
     "slug": "cerro-pochoco-paisajes-montanosos",
@@ -3986,6 +4038,7 @@
       "category": "MIRADORES"
     },
     "images": [
+      "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/09/portada-pochoco.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/09/pochoco-1.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/09/pochoco-2.webp"
     ],
@@ -3997,8 +4050,7 @@
     "email": "",
     "phone": "",
     "photosCredit": "de montaña especial para conectar con la naturaleza andina.",
-    "address": "CAMINO EL ALTO 18390, LO BARNECHEA",
-    "featuredImage": "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/09/portada-pochoco.webp"
+    "address": "CAMINO EL ALTO 18390, LO BARNECHEA"
   },
   {
     "slug": "cerro-carbon-el-atardecer-desde-las-alturas",
@@ -4024,6 +4076,7 @@
       "category": "MIRADORES"
     },
     "images": [
+      "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/09/portada-carbon.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/09/carbon-1.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/09/carbon-2.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/09/carbon-3.webp"
@@ -4036,8 +4089,7 @@
     "email": "",
     "phone": "tel:+56226259124",
     "photosCredit": "JOSE ANTONIO MENA",
-    "address": "WWW.PARQUEMET.CL/BOSQUE-SANTIAGO",
-    "featuredImage": "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/09/portada-carbon.webp"
+    "address": "WWW.PARQUEMET.CL/BOSQUE-SANTIAGO"
   },
   {
     "slug": "barrio-yungay-raices-de-la-republica",
@@ -4064,6 +4116,7 @@
       "category": "BARRIOS"
     },
     "images": [
+      "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/09/portada-barrio-yungay.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/09/yungay-1.webp"
     ],
     "website": "",
@@ -4074,8 +4127,7 @@
     "email": "",
     "phone": "",
     "photosCredit": "",
-    "address": "SECTOR NORPONIENTE DE SANTIAGO, ENTRE LAS CALLES MATUCANA Y RICARDO CUMMING",
-    "featuredImage": "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/09/portada-barrio-yungay.webp"
+    "address": "SECTOR NORPONIENTE DE SANTIAGO, ENTRE LAS CALLES MATUCANA Y RICARDO CUMMING"
   },
   {
     "slug": "barrio-bellavista-bohemia-y-cultura",
@@ -4100,6 +4152,7 @@
       "category": "BARRIOS"
     },
     "images": [
+      "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/09/portada-barrio-bellavista.png",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/09/Barrio-bellavista-1.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/09/Barrio-bellavista-2.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/09/Barrio-bellavista-3.webp",
@@ -4115,8 +4168,7 @@
     "email": "",
     "phone": "",
     "photosCredit": "GRAPHS: DISFRUTA SANTIAGO",
-    "address": "",
-    "featuredImage": "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/09/portada-barrio-bellavista.png"
+    "address": ""
   },
   {
     "slug": "villa-presidente-frei-hito-de-la-vivienda-social",
@@ -4141,6 +4193,7 @@
       "category": "ARQUITECTURA"
     },
     "images": [
+      "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/09/portada-villa-frei-.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/09/Villa-frei-1.webp"
     ],
     "website": "",
@@ -4151,8 +4204,7 @@
     "email": "",
     "phone": "",
     "photosCredit": "",
-    "address": "SECTOR ENTRE AV. IRARRÁZABAL, AV. RAMÓN CRUZ, AV. DUBLÉ ALMEYDA Y AV. ALCALDE JORGE MONCKEBERG",
-    "featuredImage": "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/09/portada-villa-frei-.webp"
+    "address": "SECTOR ENTRE AV. IRARRÁZABAL, AV. RAMÓN CRUZ, AV. DUBLÉ ALMEYDA Y AV. ALCALDE JORGE MONCKEBERG"
   },
   {
     "slug": "torres-de-san-borja-utopia-lecorbusiana",
@@ -4176,6 +4228,7 @@
       "category": "ARQUITECTURA"
     },
     "images": [
+      "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/09/portada-SAN-BORJA.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/09/SAN-BORJA-1.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/09/SAN-BORJA-2.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/09/SAN-BORJA-3.webp",
@@ -4190,8 +4243,7 @@
     "email": "",
     "phone": "",
     "photosCredit": "GRAPHS BY FELIPE RESTREPO ACOSTA",
-    "address": "AVENIDA LIBERTADOR BERNARDO O’HIGGINS 240, SANTIAGO.\nFOTGRAFIAS FELIPE RESTREPO ACOSTA",
-    "featuredImage": "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/09/portada-SAN-BORJA.webp"
+    "address": "AVENIDA LIBERTADOR BERNARDO O’HIGGINS 240, SANTIAGO.\nFOTGRAFIAS FELIPE RESTREPO ACOSTA"
   },
   {
     "slug": "edificio-ccu-integrado-al-entorno",
@@ -4218,6 +4270,7 @@
       "category": "ARQUITECTURA"
     },
     "images": [
+      "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/09/portada_CCU.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/09/CCU_1.webp"
     ],
     "website": "https://EDIFICIOCCU.CL",
@@ -4228,8 +4281,7 @@
     "email": "",
     "phone": "",
     "photosCredit": "",
-    "address": "AVENIDA VITACURA 2670, LAS CONDES",
-    "featuredImage": "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/09/portada_CCU.webp"
+    "address": "AVENIDA VITACURA 2670, LAS CONDES"
   },
   {
     "slug": "centro-de-innovacion-anacleto-angelini-catalizador-de-nuevas-ideas",
@@ -4258,6 +4310,7 @@
       "category": "ARQUITECTURA"
     },
     "images": [
+      "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/07/Portada-ANACLETO-ANGELINI_1.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/07/angelini-1.webp"
     ],
     "website": "https://UC.CL",
@@ -4268,8 +4321,7 @@
     "email": "",
     "phone": "tel:+56955044000",
     "photosCredit": "@SANTIAGOADICTO",
-    "address": "VICUÑA MACKENNA 4860, MACUL.\n+56955044000\n@CENTROINNOVAUC\n08:00 A 13:00 Y EN LA TARDE DE 14:00 A 18:00",
-    "featuredImage": "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/07/Portada-ANACLETO-ANGELINI_1.webp"
+    "address": "VICUÑA MACKENNA 4860, MACUL.\n+56955044000\n@CENTROINNOVAUC\n08:00 A 13:00 Y EN LA TARDE DE 14:00 A 18:00"
   },
   {
     "slug": "vina-concha-y-toro-embajadores-del-vino-chileno",
@@ -4296,6 +4348,7 @@
       "category": "PASEOS FUERA DE SANTIAGO"
     },
     "images": [
+      "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/07/portada-vinaconcha-y-toro.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/07/concha_y_toro-7.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/07/concha_y_toro-2.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/07/concha_y_toro-3.webp",
@@ -4311,8 +4364,7 @@
     "email": "",
     "phone": "",
     "photosCredit": "",
-    "address": "AVENIDA VIRGINIA SUBERCASEAUX 210, PIRQUE\n@CONCHAYTORO\nVISITAS DE LUNES A DOMINGO, DE 09:00 A 17:00",
-    "featuredImage": "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/07/portada-vinaconcha-y-toro.webp"
+    "address": "AVENIDA VIRGINIA SUBERCASEAUX 210, PIRQUE\n@CONCHAYTORO\nVISITAS DE LUNES A DOMINGO, DE 09:00 A 17:00"
   },
   {
     "slug": "centros-de-esqui-la-blanca-montana",
@@ -4337,6 +4389,7 @@
       "category": "PASEOS FUERA DE SANTIAGO"
     },
     "images": [
+      "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/07/portada-centro-de-esqui.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/07/centro_de_esqui-1.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/07/centro_de_esqui-2.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/07/centro_de_esqui-3.webp",
@@ -4351,8 +4404,7 @@
     "email": "",
     "phone": "",
     "photosCredit": "GUY WENBORNE Y SERNATUR PARA IMAGEN PAÍS",
-    "address": "",
-    "featuredImage": "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/07/portada-centro-de-esqui.webp"
+    "address": ""
   },
   {
     "slug": "las-majadas-de-pirque",
@@ -4379,6 +4431,7 @@
       "category": "PASEOS FUERA DE SANTIAGO"
     },
     "images": [
+      "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/07/portada-las-mejadas.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/07/las_mejada_pirque1.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/07/las_mejada_pirque2.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/07/las_mejada_pirque3.webp",
@@ -4393,8 +4446,7 @@
     "email": "",
     "phone": "",
     "photosCredit": "",
-    "address": "",
-    "featuredImage": "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/07/portada-las-mejadas.webp"
+    "address": ""
   },
   {
     "slug": "vinacasas-del-bosque",
@@ -4423,6 +4475,7 @@
       "category": "PASEOS FUERA DE SANTIAGO"
     },
     "images": [
+      "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/07/portada-casa-del-bosque.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/07/vina_casa_bosque1.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/07/vina_casa_bosque2.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/07/vina_casa_bosque3.webp",
@@ -4437,8 +4490,7 @@
     "email": "",
     "phone": "",
     "photosCredit": "DREAMSCOMETOUR.COM",
-    "address": "HIJUELA Nº 2 EX FUNDO SANTA ROSA, CASABLANCA.\n@CASASDELBOSQUE\nLOS HORARIOS DEPENDEN DE CADA EXPERIENCIA",
-    "featuredImage": "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/07/portada-casa-del-bosque.webp"
+    "address": "HIJUELA Nº 2 EX FUNDO SANTA ROSA, CASABLANCA.\n@CASASDELBOSQUE\nLOS HORARIOS DEPENDEN DE CADA EXPERIENCIA"
   },
   {
     "slug": "vina-santa-rita-casona-de-verano-convertida-en-hotel",
@@ -4465,6 +4517,7 @@
       "category": "PASEOS FUERA DE SANTIAGO"
     },
     "images": [
+      "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/07/portada-vina-santa-rita.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/07/vina-santa-rita1.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/07/vina-santa-rita2.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/07/vina-santa-rita3.webp",
@@ -4479,8 +4532,7 @@
     "email": "",
     "phone": "",
     "photosCredit": "",
-    "address": "CAMINO PADRE HURTADO 695, BUIN.\n@SANTARITAWINES",
-    "featuredImage": "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/07/portada-vina-santa-rita.webp"
+    "address": "CAMINO PADRE HURTADO 695, BUIN.\n@SANTARITAWINES"
   },
   {
     "slug": "parqueadero-inundable-victor-jara-humedal-artificial",
@@ -4507,6 +4559,7 @@
       "category": "PARQUES"
     },
     "images": [
+      "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/07/portada-vitor-jara.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/07/parque_victor_jara-1.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/07/parque_victor_jara-2.webp"
     ],
@@ -4518,8 +4571,7 @@
     "email": "",
     "phone": "",
     "photosCredit": "@FOTOSAEREAS",
-    "address": "HORARIO DE APERTURA Y CIERRE: MARTES A DOMINGO DE 08:00 A 19:00",
-    "featuredImage": "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/07/portada-vitor-jara.webp"
+    "address": "HORARIO DE APERTURA Y CIERRE: MARTES A DOMINGO DE 08:00 A 19:00"
   },
   {
     "slug": "parque-quinta-normal-concentracion-de-museos",
@@ -4548,6 +4600,7 @@
       "category": "PARQUES"
     },
     "images": [
+      "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/07/portada-parque-quinta-normal.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/07/parque_quinta_normal-1.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/07/parque_quinta_normal-2.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/07/parque_quinta_normal-3.webp",
@@ -4562,8 +4615,7 @@
     "email": "",
     "phone": "",
     "photosCredit": "@FOTOSAEREAS",
-    "address": "AVENIDA MATUCANA 520,\n@MUNISTGO​\nHORARIO DE APERTURA Y CIERRE LUNES A DOMINGO: 08:00 A 20:00",
-    "featuredImage": "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/07/portada-parque-quinta-normal.webp"
+    "address": "AVENIDA MATUCANA 520,\n@MUNISTGO​\nHORARIO DE APERTURA Y CIERRE LUNES A DOMINGO: 08:00 A 20:00"
   },
   {
     "slug": "parque-ohiggins-la-sede-de-las-fiestas-patrias",
@@ -4594,6 +4646,7 @@
       "category": "PARQUES"
     },
     "images": [
+      "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/07/portada-parque-ohhigins.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/07/parque_ohiggins-1.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/07/parque_ohiggins-2.webp"
     ],
@@ -4605,8 +4658,7 @@
     "email": "SANTIAGO@MUNISTGO.CL",
     "phone": "tel:+56223867720",
     "photosCredit": "GUY WENBORNE PARA IMAGEN PAÍS",
-    "address": "AVENIDA VIEL, ENTRE CALLES TUPPER Y RONDIZZONI, SANTIAGO\n+56 2 2386 7720",
-    "featuredImage": "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/07/portada-parque-ohhigins.webp"
+    "address": "AVENIDA VIEL, ENTRE CALLES TUPPER Y RONDIZZONI, SANTIAGO\n+56 2 2386 7720"
   },
   {
     "slug": "parque-de-la-familia-una-ribera-reaprovechada",
@@ -4633,6 +4685,7 @@
       "category": "PARQUES"
     },
     "images": [
+      "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/07/portada-parque-de-la-familia.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/07/parque_de_la_familia-1.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/07/parque_de_la_familia-2.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/07/parque_de_la_familia-3.webp",
@@ -4648,8 +4701,7 @@
     "email": "",
     "phone": "",
     "photosCredit": "@FOTOSAEREAS",
-    "address": "COSTANERA SUR N°3201, QUINTA NORMAL\n@PARQUEMETMINVU\nHORARIOS DE APERTURA Y CIERRE: MARTES A DOMINGO\n(CERRADO LOS LUNES) 06:00 A 19:00",
-    "featuredImage": "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/07/portada-parque-de-la-familia.webp"
+    "address": "COSTANERA SUR N°3201, QUINTA NORMAL\n@PARQUEMETMINVU\nHORARIOS DE APERTURA Y CIERRE: MARTES A DOMINGO\n(CERRADO LOS LUNES) 06:00 A 19:00"
   },
   {
     "slug": "parque-bicentenario-vitacura-paisajismo-de-excelencia",
@@ -4678,6 +4730,7 @@
       "category": "PARQUES"
     },
     "images": [
+      "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/07/portada-parque-Bicentenario.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/07/bicentenario_vitacura-1.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/07/bicentenario_vitacura-2.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/07/bicentenario_vitacura-3.webp",
@@ -4691,8 +4744,7 @@
     "email": "ATENCIONALVECINO@VITACURA.CL",
     "phone": "tel:+56222402200",
     "photosCredit": "JUAN ERNESTO JAEGER PARA IMAGEN PAÍS, SERNATUR PARA IMAGEN PAÍS, MARÍA JOSE PEDRAZA PARA IMAGEN PAÍS",
-    "address": "VITACURA.CL",
-    "featuredImage": "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/07/portada-parque-Bicentenario.webp"
+    "address": "VITACURA.CL"
   },
   {
     "slug": "parque-araucano-areas-verdes-vivas-y-ejemplares",
@@ -4719,6 +4771,7 @@
       "category": "PARQUES"
     },
     "images": [
+      "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/07/portada-parqeu-araucano.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/07/parque_araucano-1.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/07/parque_araucano-2.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/07/parque_araucano-3.webp"
@@ -4731,8 +4784,7 @@
     "email": "",
     "phone": "",
     "photosCredit": "AUGUSTO DOMINGUEZ PARA IMAGEN PAÍS",
-    "address": "PRESIDENTE RIESCO 5877, LAS CONDES.\n@PARQUEARAUCANO\nLUNES A DOMINGO DE 06:00 A 21:00",
-    "featuredImage": "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/07/portada-parqeu-araucano.webp"
+    "address": "PRESIDENTE RIESCO 5877, LAS CONDES.\n@PARQUEARAUCANO\nLUNES A DOMINGO DE 06:00 A 21:00"
   },
   {
     "slug": "parque-san-alberto-hurtado-escenario-de-grandes-eventos",
@@ -4759,6 +4811,7 @@
       "category": "PARQUES"
     },
     "images": [
+      "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/07/portada-arque-hurtado.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/07/bicentenario_cerrillos-1-1.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/07/bicentenario_cerrillos-2-1.webp"
     ],
@@ -4770,8 +4823,7 @@
     "email": "",
     "phone": "",
     "photosCredit": "@FOTOSAEREAS",
-    "address": "AVENIDA FRANCISCO BILBAO 8105, LAS CONDES, LA REINA,\nHORARIO DE APERTURA Y CIERRE: MARTES A DOMINGO\nY FESTIVOS. DE 8:30 A 19:00. LUNES CERRADO",
-    "featuredImage": "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/07/portada-arque-hurtado.webp"
+    "address": "AVENIDA FRANCISCO BILBAO 8105, LAS CONDES, LA REINA,\nHORARIO DE APERTURA Y CIERRE: MARTES A DOMINGO\nY FESTIVOS. DE 8:30 A 19:00. LUNES CERRADO"
   },
   {
     "slug": "parque-bicentenario-de-cerrillos-el-ex-aerodromo",
@@ -4798,6 +4850,7 @@
       "category": "PARQUES"
     },
     "images": [
+      "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/07/portada-parque-cerrillos.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/07/bicentenario_cerrillos-1.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/07/bicentenario_cerrillos-2.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/07/bicentenario_cerrillos-3.webp"
@@ -4810,8 +4863,7 @@
     "email": "",
     "phone": "",
     "photosCredit": "PARQUE METROPOLITANO",
-    "address": "PEDRO AGUIRRE CERDA 6100\n@PARQUEMETMINVU\nHORARIO DE APERTURA Y CIERRE: MARTES A DOMINGO Y FERIADOS, 6:00 A 20:30",
-    "featuredImage": "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/07/portada-parque-cerrillos.webp"
+    "address": "PEDRO AGUIRRE CERDA 6100\n@PARQUEMETMINVU\nHORARIO DE APERTURA Y CIERRE: MARTES A DOMINGO Y FERIADOS, 6:00 A 20:30"
   },
   {
     "slug": "parqueadero-bicentenario-de-la-infancia-dedicado-a-los-mas-pequenos",
@@ -4840,6 +4892,7 @@
       "category": "PARQUES"
     },
     "images": [
+      "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/07/portada-bicentenario-de-la-infancia.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/07/bicentenario_de_lainfancia-1.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/07/bicentenario_de_lainfancia-2.webp"
     ],
@@ -4851,8 +4904,7 @@
     "email": "",
     "phone": "",
     "photosCredit": "@FOTOSAEREAS",
-    "address": "PERÚ 1001, RECOLETA,\n@PARQUEMETMINVU\nHORARIO DE APERTURA Y CIERRE: MARTES A DOMINGO, 6:00 A 19:00",
-    "featuredImage": "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/07/portada-bicentenario-de-la-infancia.webp"
+    "address": "PERÚ 1001, RECOLETA,\n@PARQUEMETMINVU\nHORARIO DE APERTURA Y CIERRE: MARTES A DOMINGO, 6:00 A 19:00"
   },
   {
     "slug": "museo-precolombino-rescate-ejemplar",
@@ -4881,6 +4933,7 @@
       "category": "MUSEOS"
     },
     "images": [
+      "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/07/portada-precolombino.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/07/museo_precolmbino-1.webp"
     ],
     "website": "https://PRECOLOMBINO.CL",
@@ -4891,8 +4944,7 @@
     "email": "",
     "phone": "",
     "photosCredit": "@SANTIAGOADICTO",
-    "address": "BANDERA 361, SANTIAGO.\n@MUSEOPRECOLOMBINO\nMARTES A DOMINGO DE 10:00 A 18:00",
-    "featuredImage": "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/07/portada-precolombino.webp"
+    "address": "BANDERA 361, SANTIAGO.\n@MUSEOPRECOLOMBINO\nMARTES A DOMINGO DE 10:00 A 18:00"
   },
   {
     "slug": "museo-taller-el-valor-del-oficio",
@@ -4921,6 +4973,7 @@
       "category": "MUSEOS"
     },
     "images": [
+      "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/07/portada-museo-taller.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/07/museo_taller-1.webp"
     ],
     "website": "https://MUSEOTALLER.CL",
@@ -4931,8 +4984,7 @@
     "email": "",
     "phone": "",
     "photosCredit": "@SANTIAGOADICTO",
-    "address": "COMPAÑÍA DE JESÚS 2784, SANTIAGO.\n@MUSEOTALLER\nMARTES A DOMINGO DE 10:00 A 18:00",
-    "featuredImage": "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/07/portada-museo-taller.webp"
+    "address": "COMPAÑÍA DE JESÚS 2784, SANTIAGO.\n@MUSEOTALLER\nMARTES A DOMINGO DE 10:00 A 18:00"
   },
   {
     "slug": "museo-de-arte-contemporaneo-mac-el-espacio-de-las-vanguardias",
@@ -4961,6 +5013,7 @@
       "category": "MUSEOS"
     },
     "images": [
+      "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/07/portada-mac.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/07/mac-1.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/07/mac-2.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/07/mac-3.webp"
@@ -4973,8 +5026,7 @@
     "email": "",
     "phone": "",
     "photosCredit": ", video e instalaciones. El museo se caracteriza por su enfoque en las nuevas tendencias, el arte experimental y la promoción de artistas emergentes, así como por presentar obras de creadores latinoamericanos e internacionales.",
-    "address": "ISMAEL VALDÉS VERGARA 506, SANTIAGO.\n@MUSEO_MAC\nMARTES A DOMINGO DE 10:30 A 17:30",
-    "featuredImage": "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/07/portada-mac.webp"
+    "address": "ISMAEL VALDÉS VERGARA 506, SANTIAGO.\n@MUSEO_MAC\nMARTES A DOMINGO DE 10:30 A 17:30"
   },
   {
     "slug": "museo-historico-nacional-mhn",
@@ -5003,6 +5055,7 @@
       "category": "MUSEOS"
     },
     "images": [
+      "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/07/portada-historico-nacional.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/07/historio_nacional-1.webp"
     ],
     "website": "https://GOB.CL",
@@ -5013,8 +5066,7 @@
     "email": "",
     "phone": "",
     "photosCredit": "@SANTIAGOADICTO",
-    "address": "PLAZA DE ARMAS 951, SANTIAGO.\n@MHNCHILE\nMARTES A DOMINGO DE 10:00 A 17:30",
-    "featuredImage": "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/07/portada-historico-nacional.webp"
+    "address": "PLAZA DE ARMAS 951, SANTIAGO.\n@MHNCHILE\nMARTES A DOMINGO DE 10:00 A 17:30"
   },
   {
     "slug": "museo-nacional-de-historia-natural-mnhn-un-palacio-para-la-flora-y-la-fauna",
@@ -5043,6 +5095,7 @@
       "category": "MUSEOS"
     },
     "images": [
+      "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/07/portada-historia-natural.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/07/museo_historia_natural-1.webp"
     ],
     "website": "https://GOB.CL",
@@ -5053,8 +5106,7 @@
     "email": "",
     "phone": "",
     "photosCredit": "@SANTIAGOADICTO",
-    "address": "INTERIOR PARQUE QUINTA NORMAL, SANTIAGO.\n@MNHNCL\nMARTES A SÁBADO DE 10:00 A 17:30. DOMINGOS Y FESTIVOS DE 11:00 A 17:30",
-    "featuredImage": "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/07/portada-historia-natural.webp"
+    "address": "INTERIOR PARQUE QUINTA NORMAL, SANTIAGO.\n@MNHNCL\nMARTES A SÁBADO DE 10:00 A 17:30. DOMINGOS Y FESTIVOS DE 11:00 A 17:30"
   },
   {
     "slug": "centro-cultural-gabriela-mistral-gam-el-centro-cultural-mas-visitado",
@@ -5083,6 +5135,7 @@
       "category": "MUSEOS"
     },
     "images": [
+      "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/07/portada-gam.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/07/gam-1.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/07/gam-2.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/07/gam-3.webp",
@@ -5098,8 +5151,7 @@
     "email": "",
     "phone": "",
     "photosCredit": "CENTRO GAM",
-    "address": "AVENIDA LIBERTADOR BERNARDO O’HIGGINS 227, SANTIAGO.\n@CENTROGAM\nHORARIOS VARÍAN POR SALAS Y ESPACIOS EXPOSITIVOS, VAN DESDE LAS 09:00 A 22:00",
-    "featuredImage": "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/07/portada-gam.webp"
+    "address": "AVENIDA LIBERTADOR BERNARDO O’HIGGINS 227, SANTIAGO.\n@CENTROGAM\nHORARIOS VARÍAN POR SALAS Y ESPACIOS EXPOSITIVOS, VAN DESDE LAS 09:00 A 22:00"
   },
   {
     "slug": "museo-a-cielo-abierto-de-san-miguel-muralismo-y-encuentro-comunitario-2",
@@ -5128,6 +5180,7 @@
       "category": "MUSEOS"
     },
     "images": [
+      "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/07/portada-cielo-abierto.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/07/cielo_abierto-1.webp"
     ],
     "website": "https://MUSEOACIELOABIERTOENSANMIGUEL.CL",
@@ -5138,8 +5191,7 @@
     "email": "",
     "phone": "",
     "photosCredit": "@SANTIAGOADICTO",
-    "address": "CARLOS EDWARDS 1502, SAN MIGUEL.\n@MUSEOSANMIGUEL\nESPACIO ABIERTO SIN RESTRICCIÓN DE DÍAS U HORARIOS",
-    "featuredImage": "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/07/portada-cielo-abierto.webp"
+    "address": "CARLOS EDWARDS 1502, SAN MIGUEL.\n@MUSEOSANMIGUEL\nESPACIO ABIERTO SIN RESTRICCIÓN DE DÍAS U HORARIOS"
   },
   {
     "slug": "centro-cultural-la-moneda-acceso-democratico-al-arte",
@@ -5168,6 +5220,7 @@
       "category": "MUSEOS"
     },
     "images": [
+      "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/07/portada-la-moneda-1.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/07/ccplm-1.webp"
     ],
     "website": "https://CCLM.CL",
@@ -5178,8 +5231,7 @@
     "email": "",
     "phone": "",
     "photosCredit": "@SANTIAGOADICTO",
-    "address": "PLAZA DE LA CIUDADANÍA 26, SANTIAGO.\n@CCPLM\nEXPOSICIONES Y CINE DE MARTES A DOMINGO.\nTIENDAS Y RESTAURANTES DE LUNES A DOMINGO DE 10:00 A 19:00",
-    "featuredImage": "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/07/portada-la-moneda-1.webp"
+    "address": "PLAZA DE LA CIUDADANÍA 26, SANTIAGO.\n@CCPLM\nEXPOSICIONES Y CINE DE MARTES A DOMINGO.\nTIENDAS Y RESTAURANTES DE LUNES A DOMINGO DE 10:00 A 19:00"
   },
   {
     "slug": "museo-nacional-de-bellas-artes-mnba-un-recorrido-por-la-historia-del-arte-chileno",
@@ -5206,6 +5258,7 @@
       "category": "MUSEOS"
     },
     "images": [
+      "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/07/portada-bellas-artes.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/07/museo_bellas_artes-1.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/07/museo_bellas_artes-2.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/07/museo_bellas_artes-3.webp"
@@ -5218,8 +5271,7 @@
     "email": "",
     "phone": "",
     "photosCredit": "GUY WENBORNE PARA IMAGEN PAÍS, SERNATUR PARA IMAGEN PAÍS",
-    "address": "JOSÉ MIGUEL DE LA BARRA 650, SANTIAGO.\n@MNBACHILE\nMARTES A DOMINGO DE 10:00 A 18:30",
-    "featuredImage": "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/07/portada-bellas-artes.webp"
+    "address": "JOSÉ MIGUEL DE LA BARRA 650, SANTIAGO.\n@MNBACHILE\nMARTES A DOMINGO DE 10:00 A 18:30"
   },
   {
     "slug": "torre-entel-una-nueva-era-de-las-telecomunicaciones",
@@ -5246,6 +5298,7 @@
       "category": "ICONOS"
     },
     "images": [
+      "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/07/portada-torre-entel.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/07/torre_entel-1.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/07/torre_entel-2.webp"
     ],
@@ -5257,8 +5310,7 @@
     "email": "",
     "phone": "",
     "photosCredit": "@FOTOSAEREAS",
-    "address": "AVENIDA LIBERTADOR BERNARDO O’HIGGINS\n(ALAMEDA) ESQUINA AMUNÁTEGUI, SANTIAGO CENTRO, CHILE",
-    "featuredImage": "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/07/portada-torre-entel.webp"
+    "address": "AVENIDA LIBERTADOR BERNARDO O’HIGGINS\n(ALAMEDA) ESQUINA AMUNÁTEGUI, SANTIAGO CENTRO, CHILE"
   },
   {
     "slug": "templo-votivo-de-maipu-emblema-de-la-independencia",
@@ -5287,6 +5339,7 @@
       "category": "ICONOS"
     },
     "images": [
+      "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/07/portada-templo-votio-maipu.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/07/templo-maipu-1.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/07/templo-maipu-2.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/07/templo-maipu-3.webp",
@@ -5300,8 +5353,7 @@
     "email": "CONTACTO@SANTUARIONACIONAL.CL",
     "phone": "",
     "photosCredit": "JUAN MARTINEZ",
-    "address": "EL CARMEN 1751, MAIPÚ\nCONTACTO@SANTUARIONACIONAL.CL\nHORARIO DE APERTURA Y CIERRE: ABIERTO TODOS LOS DÍAS. HORARIO MISAS LUNES 19:00 MARTES A\nSÁBADO 12:00 Y 19:00. DOMINGOS 10:00, 12:00, 17:00 Y 19:0",
-    "featuredImage": "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/07/portada-templo-votio-maipu.webp"
+    "address": "EL CARMEN 1751, MAIPÚ\nCONTACTO@SANTUARIONACIONAL.CL\nHORARIO DE APERTURA Y CIERRE: ABIERTO TODOS LOS DÍAS. HORARIO MISAS LUNES 19:00 MARTES A\nSÁBADO 12:00 Y 19:00. DOMINGOS 10:00, 12:00, 17:00 Y 19:0"
   },
   {
     "slug": "estadio-nacional-deporte-entretencion-y-memoria",
@@ -5330,6 +5382,7 @@
       "category": "ICONOS"
     },
     "images": [
+      "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/07/portada-estadio-nacional.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/07/estadio_nacional-1.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/07/estadio_nacional-2.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/07/estadio_nacional-3.webp",
@@ -5344,8 +5397,7 @@
     "email": "ADMINISTRACION@ENMN.CL",
     "phone": "",
     "photosCredit": "@FOTOSAEREAS",
-    "address": "AVENIDA GRECIA 2001, ÑUÑOA,\nADMINISTRACION@ENMN.CL\nHORARIO DE APERTURA Y CIERRE: SÁBADOS DE 9:00 A 17:00.\nDOMINGOS DE 9:00 A 14:00 (PARQUE ESTADIO NACIONAL)\nMINDEP.CL",
-    "featuredImage": "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/07/portada-estadio-nacional.webp"
+    "address": "AVENIDA GRECIA 2001, ÑUÑOA,\nADMINISTRACION@ENMN.CL\nHORARIO DE APERTURA Y CIERRE: SÁBADOS DE 9:00 A 17:00.\nDOMINGOS DE 9:00 A 14:00 (PARQUE ESTADIO NACIONAL)\nMINDEP.CL"
   },
   {
     "slug": "iglesia-de-los-sacramentinos-icono-neogotico",
@@ -5373,6 +5425,7 @@
       "category": "ICONOS"
     },
     "images": [
+      "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/07/portada-sacramentinos.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/07/sacramentinos-1.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/07/sacramentinos-2.webp"
     ],
@@ -5384,8 +5437,7 @@
     "email": "P.SACRAMENTINOS@GMAIL.COM",
     "phone": "tel:+56226383189",
     "photosCredit": "@FOTOSAEREAS",
-    "address": "",
-    "featuredImage": "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/07/portada-sacramentinos.webp"
+    "address": ""
   },
   {
     "slug": "plaza-de-armas-nucleo-fundacional",
@@ -5412,6 +5464,7 @@
       "category": "ICONOS"
     },
     "images": [
+      "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/07/portada-plaza-de-armas.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/07/plaza_de_armas-1.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/07/plaza_de_armas-2.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/07/plaza_de_armas-6-1.webp",
@@ -5426,8 +5479,7 @@
     "email": "",
     "phone": "tel:+56988195842",
     "photosCredit": "MARÍA JOSÉ PEDRAZA Y",
-    "address": "BETWEEN ROSAS, 21 DE MAYO, MONJITAS, AND MERCED STREETS\n@MUNISTGO\n+56988195842\nOPEN 24 HOURS",
-    "featuredImage": "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/07/portada-plaza-de-armas.webp"
+    "address": "BETWEEN ROSAS, 21 DE MAYO, MONJITAS, AND MERCED STREETS\n@MUNISTGO\n+56988195842\nOPEN 24 HOURS"
   },
   {
     "slug": "parqueadero-metropolitano-un-versatil-pulmon-verde",
@@ -5456,6 +5508,7 @@
       "category": "ICONOS"
     },
     "images": [
+      "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/07/portada-parque-metropolitano.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/07/parque_metropolitano-1.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/07/parque_metropolitano-2.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/07/parque_metropolitano-3.webp",
@@ -5471,8 +5524,7 @@
     "email": "",
     "phone": "",
     "photosCredit": "GUY WENBORNE PARA IMAGEN PAÍS, MARÍA JOSÉ PEDRAZA",
-    "address": "PIO NONO 450, RECOLETA.\n@PARQUEMETMINVU\nPEATONES: LUNES A DOMINGO Y FESTIVOS DE 06:00 - 19:00\nCICLISTAS: LUNES A VIERNES DE 06:00 - 19:00\nFINES DE SEMANA Y FESTIVOS: 06:00 -13:30",
-    "featuredImage": "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/07/portada-parque-metropolitano.webp"
+    "address": "PIO NONO 450, RECOLETA.\n@PARQUEMETMINVU\nPEATONES: LUNES A DOMINGO Y FESTIVOS DE 06:00 - 19:00\nCICLISTAS: LUNES A VIERNES DE 06:00 - 19:00\nFINES DE SEMANA Y FESTIVOS: 06:00 -13:30"
   },
   {
     "slug": "metro-de-santiagocolumna-vertebral-del-transporte-urbano",
@@ -5501,6 +5553,7 @@
       "category": "ICONOS"
     },
     "images": [
+      "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/07/portada-metro.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/07/metro_santiago-1.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/07/metro_santiago-2.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/07/metro_santiago-3.webp",
@@ -5514,8 +5567,7 @@
     "email": "",
     "phone": "tel:6006009292",
     "photosCredit": "MARÍA JOSÉ PEDRAZA PARA IMAGEN PAÍS",
-    "address": "",
-    "featuredImage": "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/07/portada-metro.webp"
+    "address": ""
   },
   {
     "slug": "palacio-de-la-moneda-y-plazas-de-la-ciudadania-y-de-la-constitucion-el-corazon-politico-y-administrativo",
@@ -5542,6 +5594,7 @@
       "category": "ICONOS"
     },
     "images": [
+      "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/07/portada-la-moneda.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/07/palacio_de_la_moneda-1.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/07/palacio_de_la_moneda-2.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/07/palacio_de_la_moneda-3.webp",
@@ -5555,8 +5608,7 @@
     "email": "",
     "phone": "tel:+56226904000",
     "photosCredit": "GUY WENBORNE Y MARÍA JOSÉ PEDRAZA PARA IMAGEN PAÍS",
-    "address": "MANZANA COMPRENDIDA POR LAS CALLES MORANDÉ,\nMONEDA, TEATINOS Y AVDA. LIBERTADOR BERNARDO O’HIGGINS.\n+56226904000\nINFORMACIÓN DE VISITAS PATRIMONIALES\nVISITASPATRIMONIO.PRESIDENCIA.CL",
-    "featuredImage": "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/07/portada-la-moneda.webp"
+    "address": "MANZANA COMPRENDIDA POR LAS CALLES MORANDÉ,\nMONEDA, TEATINOS Y AVDA. LIBERTADOR BERNARDO O’HIGGINS.\n+56226904000\nINFORMACIÓN DE VISITAS PATRIMONIALES\nVISITASPATRIMONIO.PRESIDENCIA.CL"
   },
   {
     "slug": "torre-costanera-center-la-mas-alta-de-sudamerica",
@@ -5585,6 +5637,7 @@
       "category": "ICONOS"
     },
     "images": [
+      "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/07/portada-costanera.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/07/costanera_center-1.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/07/costanera_center-2.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/07/costanera_center-3.webp",
@@ -5598,8 +5651,7 @@
     "email": "",
     "phone": "",
     "photosCredit": "MARÍA JOSÉ PEDRAZA Y GUY WENBORNE PARA IMAGEN PAÍS",
-    "address": "ANDRÉS BELLO 2457, PROVIDENCIA.\n@OFFICEHUBCOSTANERA\nSKY COSTANERA ABIERTO DE LUNES A DOMINGO, DE 10:00 A 22:00",
-    "featuredImage": "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/07/portada-costanera.webp"
+    "address": "ANDRÉS BELLO 2457, PROVIDENCIA.\n@OFFICEHUBCOSTANERA\nSKY COSTANERA ABIERTO DE LUNES A DOMINGO, DE 10:00 A 22:00"
   },
   {
     "slug": "templo-bahai-arquitectura-que-emociona",
@@ -5628,6 +5680,7 @@
       "category": "ICONOS"
     },
     "images": [
+      "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/07/portada-bahai.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/07/templo_bahai-1.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/07/templo_bahai-2.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/07/templo_bahai-3.webp",
@@ -5641,8 +5694,7 @@
     "email": "",
     "phone": "",
     "photosCredit": "MARÍA JOSÉ PEDRAZA",
-    "address": "DIAGONAL LAS TORRES 2000, PEÑALOLÉN.\n@TEMPLOBAHAI\nABIERTO DE MARTES A DOMINGO, DE 9:00 A 18:00",
-    "featuredImage": "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/07/portada-bahai.webp"
+    "address": "DIAGONAL LAS TORRES 2000, PEÑALOLÉN.\n@TEMPLOBAHAI\nABIERTO DE MARTES A DOMINGO, DE 9:00 A 18:00"
   },
   {
     "slug": "cementerio-general-multiples-capas-de-historia",
@@ -5671,6 +5723,7 @@
       "category": "ICONOS"
     },
     "images": [
+      "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/07/portada-cementerio.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/07/cementerio_general-1.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/07/cementerio_general-2.webp"
     ],
@@ -5682,8 +5735,7 @@
     "email": "",
     "phone": "",
     "photosCredit": "@FOTOSAEREAS",
-    "address": "AVENIDA LA PAZ 1037, RECOLETA,\n@CEMENTERIOGRAL\nHORARIO DE APERTURA Y CIERRE: LUNES A VIERNES DE 9:00 A 17:00.\nSÁBADOS, DOMINGOS Y FESTIVOS DE 9:00 A 14:00 (INGRESO PEATONAL DESDE 8:45)",
-    "featuredImage": "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/07/portada-cementerio.webp"
+    "address": "AVENIDA LA PAZ 1037, RECOLETA,\n@CEMENTERIOGRAL\nHORARIO DE APERTURA Y CIERRE: LUNES A VIERNES DE 9:00 A 17:00.\nSÁBADOS, DOMINGOS Y FESTIVOS DE 9:00 A 14:00 (INGRESO PEATONAL DESDE 8:45)"
   },
   {
     "slug": "unidad-vecinal-portales-referente-modernista",
@@ -5710,6 +5762,7 @@
       "category": "ARQUITECTURA"
     },
     "images": [
+      "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/07/portada-portales_1.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/07/villa_portales-1.webp"
     ],
     "website": "",
@@ -5720,8 +5773,7 @@
     "email": "",
     "phone": "",
     "photosCredit": "@SANTIAGOADICTO",
-    "address": "",
-    "featuredImage": "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/07/portada-portales_1.webp"
+    "address": ""
   },
   {
     "slug": "monasterio-benedictino-de-la-santisima-trinidad-la-luz-como-elemento-central",
@@ -5750,6 +5802,7 @@
       "category": "ARQUITECTURA"
     },
     "images": [
+      "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/07/portada-monasterio-benedictino_1.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/07/monastero-1.webp"
     ],
     "website": "https://BENEDICTINOS.CL",
@@ -5760,8 +5813,7 @@
     "email": "",
     "phone": "tel:56222417992",
     "photosCredit": "@SANTIAGOADICTO",
-    "address": "BENEDICTINOS.CL MONTECASSINO 960, COMUNA DE LAS CONDES\nTELÉFONO: (56) 2 2241 7992\n@BENEDIC_TIENDA\nLUNES A SÁBADO DE 9:15 A 12:00 Y 16.15 A 17:30",
-    "featuredImage": "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/07/portada-monasterio-benedictino_1.webp"
+    "address": "BENEDICTINOS.CL MONTECASSINO 960, COMUNA DE LAS CONDES\nTELÉFONO: (56) 2 2241 7992\n@BENEDIC_TIENDA\nLUNES A SÁBADO DE 9:15 A 12:00 Y 16.15 A 17:30"
   },
   {
     "slug": "edificio-consorcio-pionero-en-sustentabilidad",
@@ -5790,6 +5842,7 @@
       "category": "ARQUITECTURA"
     },
     "images": [
+      "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/07/portada-consorcio_1.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/07/consorcio-1.webp"
     ],
     "website": "https://CONSORCIO.CL",
@@ -5800,8 +5853,7 @@
     "email": "",
     "phone": "",
     "photosCredit": "@SANTIAGOADICTO",
-    "address": "EL BOSQUE CENTRAL 180, LAS CONDES.\n@CONSORCIO.CL",
-    "featuredImage": "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/07/portada-consorcio_1.webp"
+    "address": "EL BOSQUE CENTRAL 180, LAS CONDES.\n@CONSORCIO.CL"
   },
   {
     "slug": "edificio-tanica-eficiencia-y-diseno",
@@ -5830,6 +5882,7 @@
       "category": "ARQUITECTURA"
     },
     "images": [
+      "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/07/portada-edificio-tanica_1.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/09/edificio_tinca-2.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/07/edificio_tinca-1.webp"
     ],
@@ -5841,8 +5894,7 @@
     "email": "",
     "phone": "",
     "photosCredit": "@SANTIAGOADICTO",
-    "address": "SANTA MARÍA 5888, VITACURA.\n@TANICAINMOBILIARIA",
-    "featuredImage": "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/07/portada-edificio-tanica_1.webp"
+    "address": "SANTA MARÍA 5888, VITACURA.\n@TANICAINMOBILIARIA"
   },
   {
     "slug": "conjunto-alcantara-una-nueva-propuesta-de-vivienda",
@@ -5869,6 +5921,7 @@
       "category": "ARQUITECTURA"
     },
     "images": [
+      "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/07/portada-conjunto-alcantara_1.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/07/alcantara-1.webp"
     ],
     "website": "https://IZQUIERDOLEHMANN.COM",
@@ -5879,8 +5932,7 @@
     "email": "",
     "phone": "",
     "photosCredit": "@SANTIAGOADICTO",
-    "address": "IZQUIERDOLEHMANN.COM\nALCÁNTARA 360, LAS CONDES",
-    "featuredImage": "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/07/portada-conjunto-alcantara_1.webp"
+    "address": "IZQUIERDOLEHMANN.COM\nALCÁNTARA 360, LAS CONDES"
   },
   {
     "slug": "barrio-paris-londres-influencias-europeas",
@@ -5907,6 +5959,7 @@
       "category": "BARRIOS"
     },
     "images": [
+      "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/07/portada-paris-londres_1.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/07/paris_londres-1.webp"
     ],
     "website": "",
@@ -5917,8 +5970,7 @@
     "email": "",
     "phone": "",
     "photosCredit": "@SANTIAGOADICTO",
-    "address": "AVENIDA LIBERTADOR BERNARDO O’HIGGINS,\nA UN COSTADO DE LA IGLESIA Y CONVENTO DE SAN FRANCISCO.\n@BARRIO.PARISLONDRES",
-    "featuredImage": "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/07/portada-paris-londres_1.webp"
+    "address": "AVENIDA LIBERTADOR BERNARDO O’HIGGINS,\nA UN COSTADO DE LA IGLESIA Y CONVENTO DE SAN FRANCISCO.\n@BARRIO.PARISLONDRES"
   },
   {
     "slug": "bellas-artes-lastarria-cultura-y-gastronomia-para-recorrer",
@@ -5945,6 +5997,7 @@
       "category": "BARRIOS"
     },
     "images": [
+      "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/07/portada-lastarria_1.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/07/bellas_artes_las_tarrias-1.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/07/bellas_artes_las_tarrias-2.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/07/bellas_artes_las_tarrias-3.webp",
@@ -5959,8 +6012,7 @@
     "email": "",
     "phone": "",
     "photosCredit": "@FOTOSA",
-    "address": "",
-    "featuredImage": "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/07/portada-lastarria_1.webp"
+    "address": ""
   },
   {
     "slug": "barrio-italia-migracion-italiana",
@@ -5990,6 +6042,7 @@
       "category": "BARRIOS"
     },
     "images": [
+      "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/07/portada-barrio-itala_1.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/07/barrio_itala-1.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/07/barrio_itala-2.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/07/barrio_itala-3.webp"
@@ -6002,8 +6055,7 @@
     "email": "",
     "phone": "",
     "photosCredit": "@FOTOSA",
-    "address": "TERRITORIO EXTENSO ENTRE LAS COMUNAS DE\nPROVIDENCIA Y ÑUÑOA, EN TORNO A LAS CALLES SANTA ISABEL Y AVENIDA ITALIA",
-    "featuredImage": "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/07/portada-barrio-itala_1.webp"
+    "address": "TERRITORIO EXTENSO ENTRE LAS COMUNAS DE\nPROVIDENCIA Y ÑUÑOA, EN TORNO A LAS CALLES SANTA ISABEL Y AVENIDA ITALIA"
   },
   {
     "slug": "barrio-el-golf-sanhattan",
@@ -6030,6 +6082,7 @@
       "category": "BARRIOS"
     },
     "images": [
+      "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/07/portada-isidora_1.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/07/sanhattan-1.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/07/sanhattan-2.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/07/sanhattan-3.webp",
@@ -6043,8 +6096,7 @@
     "email": "",
     "phone": "",
     "photosCredit": "@FOTOSA",
-    "address": "",
-    "featuredImage": "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/07/portada-isidora_1.webp"
+    "address": ""
   },
   {
     "slug": "barrio-alonso-de-cordova-gastronomia-y-comercio-exclusivo",
@@ -6071,6 +6123,7 @@
       "category": "BARRIOS"
     },
     "images": [
+      "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/07/portada-alonso-de-corcova_1.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/07/alonso_de_cordova-1.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/07/alonso_de_cordova-2.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/07/alonso_de_cordova-3.webp"
@@ -6083,8 +6136,7 @@
     "email": "",
     "phone": "",
     "photosCredit": "@FOTOSA",
-    "address": "",
-    "featuredImage": "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/07/portada-alonso-de-corcova_1.webp"
+    "address": ""
   },
   {
     "slug": "manquehuito-el-trekking-favorito",
@@ -6111,6 +6163,7 @@
       "category": "MIRADORES"
     },
     "images": [
+      "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/07/portada-manquehuito.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/07/manquehuito-1.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/07/manquehuito-2.webp"
     ],
@@ -6122,8 +6175,7 @@
     "email": "CONTACTO@OUTLIFE.CL",
     "phone": "",
     "photosCredit": "@FOTOSAEREAS",
-    "address": "ACCESO PRINCIPAL POR VÍA ROJA, VITACURA\nCONTACTO@OUTLIFE.CL\nHORARIO DE APERTURA Y CIERRE: LUNES A DOMINGO: 08:00 A 20:00",
-    "featuredImage": "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/07/portada-manquehuito.webp"
+    "address": "ACCESO PRINCIPAL POR VÍA ROJA, VITACURA\nCONTACTO@OUTLIFE.CL\nHORARIO DE APERTURA Y CIERRE: LUNES A DOMINGO: 08:00 A 20:00"
   },
   {
     "slug": "manquehue-simbolo-natural",
@@ -6150,6 +6202,7 @@
       "category": "MIRADORES"
     },
     "images": [
+      "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/07/portada-manquehue.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/07/manquehue-1.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/07/manquehue-2.webp"
     ],
@@ -6161,8 +6214,7 @@
     "email": "CONTACTO@OUTLIFE.CL",
     "phone": "",
     "photosCredit": "@FOTOSAEREAS",
-    "address": "ACCESO PRINCIPAL POR VÍA ROJA, VITACURA\nCONTACTO@OUTLIFE.CL\nHORARIO DE APERTURA Y CIERRE: LUNES A DOMINGO: 08:00 A 20:00",
-    "featuredImage": "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/07/portada-manquehue.webp"
+    "address": "ACCESO PRINCIPAL POR VÍA ROJA, VITACURA\nCONTACTO@OUTLIFE.CL\nHORARIO DE APERTURA Y CIERRE: LUNES A DOMINGO: 08:00 A 20:00"
   },
   {
     "slug": "cerro-renca-hito-natural-y-cultural",
@@ -6189,6 +6241,7 @@
       "category": "MIRADORES"
     },
     "images": [
+      "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/07/portada-cerro-renca.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/07/Cerro_renca-1.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/07/Cerro_renca-2.webp"
     ],
@@ -6200,8 +6253,7 @@
     "email": "",
     "phone": "tel:+56226856600",
     "photosCredit": "@FOTOSAEREAS",
-    "address": "CAMINO EL CERRO 1555 Y CAMINO LO BOZA 5407, RENCA,\n+56 2 2685 6600\n@PARQUECERROSDERENCA\nHORARIO DE APERTURA Y CIERRE: LUNES A VIERNES: 08:30 A 19:00.\nSÁBADO, DOMINGO Y FESTIVOS: 09:00 A 19:00​",
-    "featuredImage": "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/07/portada-cerro-renca.webp"
+    "address": "CAMINO EL CERRO 1555 Y CAMINO LO BOZA 5407, RENCA,\n+56 2 2685 6600\n@PARQUECERROSDERENCA\nHORARIO DE APERTURA Y CIERRE: LUNES A VIERNES: 08:30 A 19:00.\nSÁBADO, DOMINGO Y FESTIVOS: 09:00 A 19:00​"
   },
   {
     "slug": "cerro-calan-observar-la-urbe-y-los-cielos",
@@ -6228,6 +6280,7 @@
       "category": "MIRADORES"
     },
     "images": [
+      "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/07/portada-cerro-calan.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/07/cerro_calan-1.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/07/cerro_calan-2.webp"
     ],
@@ -6239,8 +6292,7 @@
     "email": "CONTACTO@OUTLIFE.CL",
     "phone": "",
     "photosCredit": "@FOTOSAEREAS",
-    "address": "CAMINO EL OBSERVATORIO 1515, LAS CONDES.\nCONTACTO@OUTLIFE.CL\n@PARQUECERROCALAN\nHORARIO DE APERTURA Y CIERRE: ABIERTO TODOS LOS DÍAS ENTRE LAS 7:30 A 20:00",
-    "featuredImage": "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/07/portada-cerro-calan.webp"
+    "address": "CAMINO EL OBSERVATORIO 1515, LAS CONDES.\nCONTACTO@OUTLIFE.CL\n@PARQUECERROCALAN\nHORARIO DE APERTURA Y CIERRE: ABIERTO TODOS LOS DÍAS ENTRE LAS 7:30 A 20:00"
   },
   {
     "slug": "cerro-santa-lucia-testigo-de-la-evolucion-de-santiago",
@@ -6267,6 +6319,7 @@
       "category": "MIRADORES"
     },
     "images": [
+      "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/07/portada-cerro-santa-lucia.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/07/cerro_santa_lucia-1.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/07/cerro_santa_lucia-2.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/07/cerro_santa_lucia-3.webp",
@@ -6281,8 +6334,7 @@
     "email": "",
     "phone": "tel:+56223867185",
     "photosCredit": "@FOTOSAEREAS",
-    "address": "MERCED CON SANTA LUCÍA, SANTIAGO",
-    "featuredImage": "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/07/portada-cerro-santa-lucia.webp"
+    "address": "MERCED CON SANTA LUCÍA, SANTIAGO"
   },
   {
     "slug": "persa-bio-bio-reflejo-de-la-idiosincrasia-chilena",
@@ -6311,6 +6363,7 @@
       "category": "MERCADOS"
     },
     "images": [
+      "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/09/portada-persa-biobio.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/07/persa_biobio-1.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/07/persa_biobio-3.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/07/persa_biobio-2.webp"
@@ -6323,8 +6376,7 @@
     "email": "",
     "phone": "",
     "photosCredit": "@SANTIAGOADICTO",
-    "address": "A PASOS DE METRO FRANKLIN.\nSÁBADOS, DOMINGOS Y FESTIVOS. EL FUNCIONAMIENTO ÓPTIMO\nES DESDE LAS 11:00 A LAS 16:00, PERO DEPENDE DE CADA LOCAL Y GALPÓN",
-    "featuredImage": "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/09/portada-persa-biobio.webp"
+    "address": "A PASOS DE METRO FRANKLIN.\nSÁBADOS, DOMINGOS Y FESTIVOS. EL FUNCIONAMIENTO ÓPTIMO\nES DESDE LAS 11:00 A LAS 16:00, PERO DEPENDE DE CADA LOCAL Y GALPÓN"
   },
   {
     "slug": "mut-la-renovacion-del-concepto-mercado",
@@ -6353,6 +6405,7 @@
       "category": "MERCADOS"
     },
     "images": [
+      "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/07/portada-mut.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/07/mut-1.webp"
     ],
     "website": "https://MUT.CL",
@@ -6363,8 +6416,7 @@
     "email": "",
     "phone": "",
     "photosCredit": "@SANTIAGOADICTO",
-    "address": "AVENIDA APOQUINDO 2730, LAS CONDES.\n@MUT.CL\nLUNES A SÁBADO DE 08:00 A 21:00, DOMINGOS DE 08:00 A 20:00",
-    "featuredImage": "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/07/portada-mut.webp"
+    "address": "AVENIDA APOQUINDO 2730, LAS CONDES.\n@MUT.CL\nLUNES A SÁBADO DE 08:00 A 21:00, DOMINGOS DE 08:00 A 20:00"
   },
   {
     "slug": "pueblito-los-dominicos-artesania-de-todo-chile",
@@ -6393,6 +6445,7 @@
       "category": "MERCADOS"
     },
     "images": [
+      "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/07/portada-los-dominicos.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/07/los_dominico_1.webp"
     ],
     "website": "https://CULTURALLASCONDES.CL",
@@ -6403,8 +6456,7 @@
     "email": "",
     "phone": "",
     "photosCredit": "@SANTIAGOADICTO",
-    "address": "AVENIDA APOQUINDO 9085, LAS CONDES.\n@CENTROLOSDOMINICOSLUNES A DOMINGO DE 10:30 A 20:00",
-    "featuredImage": "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/07/portada-los-dominicos.webp"
+    "address": "AVENIDA APOQUINDO 9085, LAS CONDES.\n@CENTROLOSDOMINICOSLUNES A DOMINGO DE 10:30 A 20:00"
   },
   {
     "slug": "factoria-franklin-zona-de-emprendimiento-innovador",
@@ -6433,6 +6485,7 @@
       "category": "MERCADOS"
     },
     "images": [
+      "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/07/portada-factoria-franklin.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/07/factoria_franklin-1.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/07/factoria_franklin-2.webp"
     ],
@@ -6444,8 +6497,7 @@
     "email": "",
     "phone": "",
     "photosCredit": "@SANTIAGOADICTO",
-    "address": "FRANKLIN 741, SANTIAGO.\n@FACTORIA_FRANKLIN\nLUNES A DOMINGO, FESTIVOS, DE 10:00 A 20:00",
-    "featuredImage": "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/07/portada-factoria-franklin.webp"
+    "address": "FRANKLIN 741, SANTIAGO.\n@FACTORIA_FRANKLIN\nLUNES A DOMINGO, FESTIVOS, DE 10:00 A 20:00"
   },
   {
     "slug": "palacio-pereira-la-nueva-sede-del-mincap",
@@ -6474,6 +6526,7 @@
       "category": "PALACIOS"
     },
     "images": [
+      "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/07/portada-palacio-pereira_1.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/07/palacio_pereira-1.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/07/palacio_pereira-2.webp"
     ],
@@ -6485,8 +6538,7 @@
     "email": "PALACIO.PEREIRA@CULTURA.GOB.CL",
     "phone": "tel:+56229979475",
     "photosCredit": "@FOTOSAEREAS",
-    "address": "PALACIOPEREIRA.CL CALLE SAN MARTÍN ESQUINA HUÉRFANOS, SANTIAGO,\nCENTRO DE EXTENSIÓN PALACIO PEREIRA: +56 2 2997 9475\nPALACIO.PEREIRA@CULTURA.GOB.CL",
-    "featuredImage": "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/07/portada-palacio-pereira_1.webp"
+    "address": "PALACIOPEREIRA.CL CALLE SAN MARTÍN ESQUINA HUÉRFANOS, SANTIAGO,\nCENTRO DE EXTENSIÓN PALACIO PEREIRA: +56 2 2997 9475\nPALACIO.PEREIRA@CULTURA.GOB.CL"
   },
   {
     "slug": "palacio-falabella-el-edificio-consistorial-de-providencia",
@@ -6511,6 +6563,7 @@
       "category": "PALACIOS"
     },
     "images": [
+      "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/07/portada-palacio-fabella_1.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/07/palacio_falabella-1.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/07/palacio_falabella-2.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/07/palacio_falabella-3.webp",
@@ -6524,8 +6577,7 @@
     "email": "MUNICIPALIDAD@PROVIDENCIA.CL",
     "phone": "tel:+56226543200",
     "photosCredit": "@FOTOSAEREAS",
-    "address": "PEDRO DE VALDIVIA 963, PROVIDENCIA.\nMUNICIPALIDAD@PROVIDENCIA.CL\n+56 2 2654 3200\n@MUNIPROVI",
-    "featuredImage": "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/07/portada-palacio-fabella_1.webp"
+    "address": "PEDRO DE VALDIVIA 963, PROVIDENCIA.\nMUNICIPALIDAD@PROVIDENCIA.CL\n+56 2 2654 3200\n@MUNIPROVI"
   },
   {
     "slug": "palacio-cousinotestimonio-de-la-aristocracia",
@@ -6587,6 +6639,7 @@
       "category": "RESTAURANTES"
     },
     "images": [
+      "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/PORTADA-99.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/99-1.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/99-2.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/99-3.webp",
@@ -6597,7 +6650,8 @@
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/99-8.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/99-9.webp"
     ],
-    "featuredImage": "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/PORTADA-99.webp",
+
+    "featuredImage": "",
     "website": "https://99restaurante.cl",
     "instagram": "https://www.instagram.com/99restaurante.cl",
     "categories": ["ALL", "RESTAURANTES", "TODOS"],
@@ -6634,6 +6688,7 @@
       "category": "RESTAURANTES"
     },
     "images": [
+      "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/CAOS-COMEDOR-CAFE-1.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/CAOS-COMEDOR-CAFE-2.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/CAOS-COMEDOR-CAFE-3.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/CAOS-COMEDOR-CAFE-4.webp",
@@ -6641,7 +6696,7 @@
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/CAOS-COMEDOR-CAFE-6.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/CAOS-COMEDOR-CAFE-7.webp"
     ],
-    "featuredImage": "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/CAOS-COMEDOR-CAFE-1.webp",
+    "featuredImage": "",
     "website": "",
     "instagram": "https://www.instagram.com/caos.comedor.cafe",
     "categories": ["ALL", "RESTAURANTES", "TODOS"],
@@ -6678,6 +6733,7 @@
       "category": "RESTAURANTES"
     },
     "images": [
+      "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/HAPPENING-1.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/HAPPENING-2.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/HAPPENING-3.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/HAPPENING-4.webp",
@@ -6688,7 +6744,8 @@
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/HAPPENING-9.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/HAPPENING-10.webp"
     ],
-    "featuredImage": "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/HAPPENING-1.webp",
+
+    "featuredImage": "",
     "website": "https://happening.cl",
     "instagram": "https://www.instagram.com/happening_scl",
     "categories": ["ALL", "RESTAURANTES", "TODOS"],
@@ -6723,6 +6780,7 @@
       "category": "RESTAURANTES"
     },
     "images": [
+      "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/PORTADA-LA-BIFERIA.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/LA-BIFERIA-2.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/LA-BIFERIA-3.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/LA-BIFERIA-4.webp",
@@ -6733,7 +6791,7 @@
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/LA-BIFERIA-9.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/LA-BIFERIA-10.webp"
     ],
-    "featuredImage": "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/PORTADA-LA-BIFERIA.webp",
+    "featuredImage": "",
     "website": "https://labiferia.cl",
     "instagram": "https://www.instagram.com/labiferia",
     "categories": ["ALL", "RESTAURANTES", "TODOS"],
@@ -6770,6 +6828,7 @@
       "category": "RESTAURANTES"
     },
     "images": [
+      "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/PORTADA-MIRAI-FOOD-LAB.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/MIRAI-FOOD-LAB-2.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/MIRAI-FOOD-LAB-3.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/MIRAI-FOOD-LAB-4.webp",
@@ -6782,7 +6841,7 @@
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/MIRAI-FOOD-LAB-11.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/MIRAI-FOOD-LAB-12.webp"
     ],
-    "featuredImage": "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/PORTADA-MIRAI-FOOD-LAB.webp",
+    "featuredImage": "",
     "website": "https://www.miraifoodlab.cl",
     "instagram": "https://www.instagram.com/mirai.foodlab",
     "categories": ["ALL", "RESTAURANTES", "TODOS"],
@@ -6835,6 +6894,7 @@
       "category": "RESTAURANTES"
     },
     "images": [
+      "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/PORTADA-PRIMA-BAR.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/PRIMA-BAR-3.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/PRIMA-BAR-4.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/PRIMA-BAR-5.webp",
@@ -6843,7 +6903,7 @@
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/PRIMA-BAR-8.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/PRIMA-BAR-9.webp"
     ],
-    "featuredImage": "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/PORTADA-PRIMA-BAR.webp",
+    "featuredImage": "",
     "website": "https://primabar.cl",
     "instagram": "https://www.instagram.com/prima.bar",
     "categories": ["ALL", "RESTAURANTES", "TODOS"],
@@ -6882,6 +6942,8 @@
       "category": "RESTAURANTES"
     },
     "images": [
+      "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/PORTADA-THE-SINGULAR.webp",
+      "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/THE-SINGULAR-1.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/THE-SINGULAR-2.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/THE-SINGULAR-3.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/THE-SINGULAR-4.webp",
@@ -6890,7 +6952,7 @@
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/THE-SINGULAR-7.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/THE-SINGULAR-8.webp"
     ],
-    "featuredImage": "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/PORTADA-THE-SINGULAR.webp",
+    "featuredImage": "",
     "website": "https://www.thesingular.com/santiago",
     "instagram": "https://www.instagram.com/thesingularhotels",
     "categories": ["ALL", "RESTAURANTES", "TODOS"],

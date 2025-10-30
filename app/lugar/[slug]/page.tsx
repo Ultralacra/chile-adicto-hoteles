@@ -83,15 +83,46 @@ export default function LugarPage(props: any) {
         reservationLink: source.reservationLink || "",
         reservationPolicy: source.reservationPolicy || "",
         interestingFact: source.interestingFact || "",
-        featuredImage:
-          source.featuredImage || (source.images && source.images[0]) || "",
-        galleryImages: Array.isArray(source.images)
-          ? source.featuredImage
-            ? source.images.filter(
-                (img: string) => img !== source.featuredImage
-              )
-            : source.images
-          : [],
+        // Imagen destacada separada de la galería; si no viene, usamos la primera.
+        // Además, evitamos duplicados comparando por nombre de archivo (ignorando query y mayúsculas).
+        ...(() => {
+          const imgs: string[] = Array.isArray(source.images)
+            ? source.images.filter((s: string) => !!s)
+            : [];
+
+          const normalizeName = (u: string) => {
+            if (!u) return "";
+            try {
+              const url = new URL(u);
+              return (url.pathname.split("/").pop() || "").toLowerCase();
+            } catch {
+              const noQuery = String(u).split("?")[0];
+              return (noQuery.split("/").pop() || "").toLowerCase();
+            }
+          };
+
+          let derivedFeatured = (source.featuredImage || imgs[0] || "").trim();
+          const featuredKey = normalizeName(derivedFeatured);
+
+          // Si no hay featured pero hay imágenes, asegura que featured sea la primera normalizada
+          if (!derivedFeatured && imgs.length) {
+            derivedFeatured = imgs[0];
+          }
+
+          const seen = new Set<string>();
+          const gallery = imgs.filter((img) => {
+            const key = normalizeName(img);
+            if (featuredKey && key === featuredKey) return false; // filtra la portada
+            if (seen.has(key)) return false; // evita repetidos por nombre
+            seen.add(key);
+            return true;
+          });
+
+          return {
+            featuredImage: derivedFeatured,
+            galleryImages: gallery,
+          };
+        })(),
         categories: source[language]?.category
           ? [source[language].category]
           : source.categories || [],

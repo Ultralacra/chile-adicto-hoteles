@@ -8,6 +8,8 @@ export const localizedSchema = z.object({
   description: z
     .array(z.string().min(1))
     .min(1, "al menos 1 párrafo"),
+  // HTML libre para el bloque "Datos útiles" (opcional)
+  infoHtml: z.string().optional(),
   category: z.string().optional(),
   location: z.string().optional(),
   distance: z.string().optional(),
@@ -18,7 +20,8 @@ export const postSchema = z.object({
   slug: z.string().regex(slugRegex, "slug inválido: usa minusculas y guiones"),
   es: localizedSchema,
   en: localizedSchema,
-  images: z.array(z.string().url({ message: "imagen debe ser URL" })).min(1, "al menos 1 imagen"),
+  featuredImage: z.string().url().optional(),
+  images: z.array(z.string().url({ message: "imagen debe ser URL" })).min(0),
   categories: z.array(z.string().min(1)).min(1, "al menos 1 categoría"),
   website: z.string().url().optional(),
   website_display: z.string().optional(),

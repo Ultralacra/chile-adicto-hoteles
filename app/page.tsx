@@ -33,6 +33,24 @@ export default function Page() {
 
   const hotels = allHotels.filter((h) => !isRestaurant(h));
 
+  // Banner por idioma (ES/EN): reemplazar las URLs cuando tengas las versiones en ambos idiomas
+  const bannerByLang: Record<
+    string,
+    { href: string; src: string; alt: string }
+  > = {
+    es: {
+      href: "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/WhatsApp-Image-2025-10-28-at-5.15.32-PM.jpeg",
+      src: "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/WhatsApp-Image-2025-10-28-at-5.15.32-PM.jpeg",
+      alt: "Banner Restaurantes (ES)",
+    },
+    en: {
+      href: "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/WhatsApp-Image-2025-10-28-at-5.15.32-PM.jpeg",
+      src: "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/WhatsApp-Image-2025-10-28-at-5.15.32-PM.jpeg",
+      alt: "Restaurants Banner (EN)",
+    },
+  };
+  const currentBanner = bannerByLang[language] || bannerByLang.es;
+
   return (
     <div className="min-h-screen bg-white">
       <Header />
@@ -54,13 +72,10 @@ export default function Page() {
 
             {/* Banner: ocupa 1 columna en lg - imagen escala hacia abajo y fondo negro */}
             <div className="hidden lg:block w-full h-[437px] relative bg-black">
-              <Link
-                href="https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/WhatsApp-Image-2025-10-28-at-5.15.32-PM.jpeg"
-                className="block w-full h-full"
-              >
+              <Link href={currentBanner.href} className="block w-full h-full">
                 <img
-                  src="https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/WhatsApp-Image-2025-10-28-at-5.15.32-PM.jpeg"
-                  alt="Banner Restaurantes"
+                  src={currentBanner.src}
+                  alt={currentBanner.alt}
                   className="object-scale-down object-center w-full h-full"
                 />
               </Link>
@@ -90,7 +105,7 @@ export default function Page() {
                         : [];
                       return buildCardExcerpt(paras);
                     })()}
-                    image={hotel.images?.[0]}
+                    image={hotel.featuredImage || hotel.images?.[0] || ""}
                   />
                 </div>
               ))}

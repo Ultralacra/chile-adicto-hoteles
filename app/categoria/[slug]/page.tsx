@@ -137,15 +137,51 @@ export default function CategoryPage({ params }: { params: any }) {
     }
   }, [slug]);
 
-  // Placeholder images for restaurants slider/banner — replace with your real URLs
-  const restaurantDesktopImages = [
-    "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/SLIDER-RESTAURANTES.webp",
-    "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/SLIDER-RESTAURANTES-2.webp",
-  ];
-  const restaurantMobileImages = [
-    "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/SLIDER-RESTAURANTES.webp",
-    "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/SLIDER-RESTAURANTES-2.webp",
-  ];
+  // Cargar imágenes del slider de restaurantes desde /public/imagenes-slider/manifest.json
+  // Soporta dos formatos de manifest:
+  // 1) Array simple de strings ["img1.webp", "img2.webp", ...]
+  // 2) Objeto por idioma { es: string[], en: string[] }
+  const [restaurantSliderImages, setRestaurantSliderImages] = useState<
+    string[]
+  >([]);
+  useEffect(() => {
+    if (!isRestaurantsPage) return;
+    let cancelled = false;
+    fetch("/imagenes-slider/manifest.json")
+      .then((r) => (r.ok ? r.json() : []))
+      .then((payload) => {
+        if (cancelled) return;
+
+        const normalizeList = (list: unknown): string[] => {
+          if (!Array.isArray(list)) return [];
+          return list
+            .map((s) => String(s || "").trim())
+            .filter(Boolean)
+            .map((s) => (s.startsWith("/") ? s : `/imagenes-slider/${s}`));
+        };
+
+        if (Array.isArray(payload)) {
+          // Formato antiguo: array simple
+          setRestaurantSliderImages(normalizeList(payload));
+          return;
+        }
+
+        if (payload && typeof payload === "object") {
+          const byLang =
+            (payload as any)[language] ||
+            (payload as any)["es"] ||
+            (payload as any)["en"];
+          setRestaurantSliderImages(normalizeList(byLang));
+          return;
+        }
+
+        setRestaurantSliderImages([]);
+      })
+      .catch(() => setRestaurantSliderImages([]));
+    return () => {
+      cancelled = true;
+    };
+  }, [isRestaurantsPage, language]);
 
   // Apply comuna filter if selectedComuna is set (match in descriptions or address)
   const finalHotels = selectedComuna
@@ -165,7 +201,11 @@ export default function CategoryPage({ params }: { params: any }) {
     <div className="min-h-screen bg-white">
       <Header />
 
-      <main className="container mx-auto px-4 py-8 max-w-[1200px]">
+      <main
+        className={`container mx-auto px-4 max-w-[1200px] ${
+          isRestaurantsPage ? "pt-4 pb-8" : "py-8"
+        }`}
+      >
         {isRestaurantsPage ? (
           // Submenú de comunas para restaurantes con primer item "VOLVER"
           <nav className="py-4">
@@ -215,23 +255,19 @@ export default function CategoryPage({ params }: { params: any }) {
           <CategoryNav activeCategory={slug} />
         )}
 
-        {/* Banner + Slider for restaurants - show only when no comuna is selected */}
+        {/* Slider de restaurantes a ancho completo, sin banner, solo cuando no hay comuna seleccionada */}
         {isRestaurantsPage && !selectedComuna && (
-          <div className="py-6">
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
-              <div className="w-full lg:col-span-2 h-[437px]">
-                <HeroSlider
-                  desktopImages={restaurantDesktopImages}
-                  mobileImages={restaurantMobileImages}
-                />
-              </div>
-              <div className="hidden lg:block w-full h-[437px] relative bg-black">
-                <img
-                  src="https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/Group-84-3.webp"
-                  alt="Banner Restaurantes"
-                  className="object-scale-down object-center w-full h-full"
-                />
-              </div>
+          <div className="pt-2">
+            <div className="w-full overflow-hidden">
+              <HeroSlider
+                desktopImages={restaurantSliderImages}
+                mobileImages={restaurantSliderImages}
+                objectFit="contain"
+                desktopHeight={600}
+                mobileHeight={550}
+                dotInactiveClass="bg-gray-300 w-2 h-2"
+                dotActiveClass="bg-[#E40E36] w-3 h-3"
+              />
             </div>
           </div>
         )}
@@ -248,7 +284,7 @@ export default function CategoryPage({ params }: { params: any }) {
                 name={hotel[language].name}
                 subtitle={hotel[language].subtitle}
                 description={buildCardExcerpt(hotel[language].description)}
-                image={hotel.images[0]}
+                image={hotel.featuredImage || hotel.images?.[0] || ""}
               />
             ))
           ) : (

@@ -29,6 +29,10 @@ export default function EditPostPage({ params }: { params: { slug: string } }) {
   const [descriptionUnified, setDescriptionUnified] = useState<string>(
     (hotel?.es?.description || []).join("\n\n")
   );
+  const [infoHtmlEs, setInfoHtmlEs] = useState<string>(
+    hotel?.es?.infoHtml || ""
+  );
+  const [rawPasteEs, setRawPasteEs] = useState<string>("");
 
   // Inglés
   const [nameEn, setNameEn] = useState(hotel?.en?.name || "");
@@ -36,6 +40,10 @@ export default function EditPostPage({ params }: { params: { slug: string } }) {
   const [descriptionUnifiedEn, setDescriptionUnifiedEn] = useState<string>(
     (hotel?.en?.description || []).join("\n\n")
   );
+  const [infoHtmlEn, setInfoHtmlEn] = useState<string>(
+    hotel?.en?.infoHtml || ""
+  );
+  const [rawPasteEn, setRawPasteEn] = useState<string>("");
 
   // Contacto editable
   const [website, setWebsite] = useState(hotel?.website || "");
@@ -103,8 +111,18 @@ export default function EditPostPage({ params }: { params: { slug: string } }) {
 
     const updated = {
       slug: hotel.slug,
-      es: { name: nameEs, subtitle: subtitleEs, description: descriptionEs },
-      en: { name: nameEn, subtitle: subtitleEn, description: descriptionEn },
+      es: {
+        name: nameEs,
+        subtitle: subtitleEs,
+        description: descriptionEs,
+        infoHtml: infoHtmlEs || undefined,
+      },
+      en: {
+        name: nameEn,
+        subtitle: subtitleEn,
+        description: descriptionEn,
+        infoHtml: infoHtmlEn || undefined,
+      },
       website,
       website_display: websiteDisplay,
       instagram,
@@ -128,6 +146,135 @@ export default function EditPostPage({ params }: { params: { slug: string } }) {
     console.log("Updated post:", JSON.stringify(normalized, null, 2));
     alert("Cambios guardados! Revisa la consola para ver el JSON actualizado.");
   };
+
+  // --- Pegado inteligente (idéntico a Nuevo) ---
+  function autoFillFromPaste(lang: "es" | "en", raw: string) {
+    if (!raw || !raw.trim()) return;
+    const blocks = String(raw)
+      .replace(/\r\n/g, "\n")
+      .replace(/\u00A0/g, " ")
+      .trim()
+      .split(/\n{2,}/)
+      .map((b) => b.trim())
+      .filter(Boolean);
+
+    const labelMap =
+      lang === "es"
+        ? {
+            direccion: /^(direcci[oó]n|ubicaci[oó]n)\s*[:\-]?/i,
+            web: /^(web|website|sitio)\s*[:\-]?/i,
+            instagram: /^(instagram)\s*[:\-]?/i,
+            horario: /^(horario|apertura|cierre)\s*[:\-]?/i,
+            reservas: /^(reservas?)\s*[:\-]?/i,
+            dato: /^(dato\s+de\s+inter[eé]s)\s*[:\-]?/i,
+            tel: /^(tel[eé]fono|tel)\s*[:\-]?/i,
+            email: /^(email|mail|correo)\s*[:\-]?/i,
+            fotos: /^(fotos|fotograf[ií]as)\s*[:\-]?/i,
+          }
+        : {
+            direccion: /^(address|location)\s*[:\-]?/i,
+            web: /^(web|website|site)\s*[:\-]?/i,
+            instagram: /^(instagram)\s*[:\-]?/i,
+            horario: /^(hours?)\s*[:\-]?/i,
+            reservas: /^(reservations?)\s*[:\-]?/i,
+            dato: /^(interesting\s+fact)\s*[:\-]?/i,
+            tel: /^(tel|phone)\s*[:\-]?/i,
+            email: /^(email|mail)\s*[:\-]?/i,
+            fotos: /^(photos?)\s*[:\-]?/i,
+          };
+
+    const found: Partial<Record<keyof typeof labelMap, string>> = {};
+    const remaining: string[] = [];
+    for (const b of blocks) {
+      const line = b.split("\n")[0];
+      let matchedKey: keyof typeof labelMap | undefined;
+      for (const key of Object.keys(labelMap) as Array<keyof typeof labelMap>) {
+        if (labelMap[key].test(line)) {
+          matchedKey = key;
+          break;
+        }
+      }
+      if (matchedKey) {
+        const value = b.replace(labelMap[matchedKey], "").trim();
+        if (value) found[matchedKey] = value;
+      } else {
+        remaining.push(b);
+      }
+    }
+    const fmtLink = (val: string) => {
+      const v = val.trim();
+      if (/^https?:\/\//i.test(v))
+        return `<a href="${v}" target="_blank" rel="noopener noreferrer">${v.replace(
+          /^https?:\/\//i,
+          ""
+        )}</a>`;
+      if (/^@/.test(v))
+        return `<a href="https://www.instagram.com/${v.replace(
+          /^@/,
+          ""
+        )}" target="_blank" rel="noopener noreferrer">${v}</a>`;
+      if (/^[\w.-]+\.[a-z]{2,}$/i.test(v))
+        return `<a href="https://${v}" target="_blank" rel="noopener noreferrer">${v}</a>`;
+      return v;
+    };
+    function buildInfoHtmlES() {
+      const parts: string[] = [];
+      if (found.direccion)
+        parts.push(`<p><strong>Dirección:</strong> ${found.direccion}</p>`);
+      if (found.web)
+        parts.push(`<p><strong>Web:</strong> ${fmtLink(found.web)}</p>`);
+      if (found.instagram)
+        parts.push(
+          `<p><strong>Instagram:</strong> ${fmtLink(found.instagram)}</p>`
+        );
+      if (found.horario)
+        parts.push(`<p><strong>Horario:</strong> ${found.horario}</p>`);
+      if (found.reservas)
+        parts.push(
+          `<p><strong>Reservas:</strong> ${fmtLink(found.reservas)}</p>`
+        );
+      if (found.dato)
+        parts.push(`<p><strong>Dato de interés:</strong> ${found.dato}</p>`);
+      if (found.tel) parts.push(`<p><strong>Tel:</strong> ${found.tel}</p>`);
+      if (found.email)
+        parts.push(`<p><strong>Email:</strong> ${found.email}</p>`);
+      if (found.fotos)
+        parts.push(`<p><strong>Fotos:</strong> ${found.fotos}</p>`);
+      return parts.join("\n");
+    }
+    function buildInfoHtmlEN() {
+      const parts: string[] = [];
+      if (found.direccion)
+        parts.push(`<p><strong>Address:</strong> ${found.direccion}</p>`);
+      if (found.web)
+        parts.push(`<p><strong>Web:</strong> ${fmtLink(found.web)}</p>`);
+      if (found.instagram)
+        parts.push(
+          `<p><strong>Instagram:</strong> ${fmtLink(found.instagram)}</p>`
+        );
+      if (found.horario)
+        parts.push(`<p><strong>Hours:</strong> ${found.horario}</p>`);
+      if (found.reservas)
+        parts.push(
+          `<p><strong>Reservations:</strong> ${fmtLink(found.reservas)}</p>`
+        );
+      if (found.dato)
+        parts.push(`<p><strong>Interesting fact:</strong> ${found.dato}</p>`);
+      if (found.tel) parts.push(`<p><strong>Tel:</strong> ${found.tel}</p>`);
+      if (found.email)
+        parts.push(`<p><strong>Email:</strong> ${found.email}</p>`);
+      if (found.fotos)
+        parts.push(`<p><strong>Photos:</strong> ${found.fotos}</p>`);
+      return parts.join("\n");
+    }
+    if (lang === "es") {
+      setDescriptionUnified(remaining.join("\n\n"));
+      setInfoHtmlEs(buildInfoHtmlES());
+    } else {
+      setDescriptionUnifiedEn(remaining.join("\n\n"));
+      setInfoHtmlEn(buildInfoHtmlEN());
+    }
+  }
 
   const toggleCategory = (category: string) => {
     if (categories.includes(category)) {
@@ -399,6 +546,48 @@ export default function EditPostPage({ params }: { params: { slug: string } }) {
                   Separa párrafos con una línea en blanco.
                 </p>
               </div>
+
+              {/* Pegado inteligente ES */}
+              <div className="p-3 border rounded bg-gray-50">
+                <Label className="text-xs text-gray-600 mb-1 block">
+                  Pegado inteligente (ES)
+                </Label>
+                <Textarea
+                  rows={5}
+                  value={rawPasteEs}
+                  onChange={(e) => setRawPasteEs(e.target.value)}
+                  placeholder="Pega aquí…"
+                />
+                <div className="flex gap-2 mt-2">
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    onClick={() => autoFillFromPaste("es", rawPasteEs)}
+                  >
+                    Formatear y repartir
+                  </Button>
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => setRawPasteEs("")}
+                  >
+                    Limpiar
+                  </Button>
+                </div>
+              </div>
+
+              {/* Datos útiles HTML ES */}
+              <div>
+                <Label className="text-xs text-gray-600">
+                  Datos útiles (HTML)
+                </Label>
+                <AdminRichText value={infoHtmlEs} onChange={setInfoHtmlEs} />
+                <p className="text-[11px] text-gray-500 mt-1">
+                  Si existe, reemplaza el bloque estructurado en la vista.
+                </p>
+              </div>
             </div>
 
             {/* English */}
@@ -428,6 +617,49 @@ export default function EditPostPage({ params }: { params: { slug: string } }) {
                 />
                 <p className="text-[11px] text-gray-500 mt-1">
                   Separate paragraphs with a blank line.
+                </p>
+              </div>
+
+              {/* Smart paste EN */}
+              <div className="p-3 border rounded bg-gray-50">
+                <Label className="text-xs text-gray-600 mb-1 block">
+                  Smart paste (EN)
+                </Label>
+                <Textarea
+                  rows={5}
+                  value={rawPasteEn}
+                  onChange={(e) => setRawPasteEn(e.target.value)}
+                  placeholder="Paste here…"
+                />
+                <div className="flex gap-2 mt-2">
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    onClick={() => autoFillFromPaste("en", rawPasteEn)}
+                  >
+                    Format & fill
+                  </Button>
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => setRawPasteEn("")}
+                  >
+                    Clear
+                  </Button>
+                </div>
+              </div>
+
+              {/* Useful info HTML EN */}
+              <div>
+                <Label className="text-xs text-gray-600">
+                  Useful information (HTML)
+                </Label>
+                <AdminRichText value={infoHtmlEn} onChange={setInfoHtmlEn} />
+                <p className="text-[11px] text-gray-500 mt-1">
+                  If present, it replaces the structured block in the detail
+                  view.
                 </p>
               </div>
             </div>

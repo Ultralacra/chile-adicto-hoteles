@@ -5,6 +5,9 @@ export interface LocalizedContent {
   subtitle: string;
   // Array de párrafos (HTML permitido). Mantener orden.
   description: string[];
+  // Contenido HTML libre para el bloque "Datos útiles" (opcional).
+  // Si está presente, reemplaza el bloque estructurado (dirección/web/IG/horario/etc.).
+  infoHtml?: string;
   // Campos opcionales por idioma si en algún momento se requieren
   category?: string;
   location?: string;
@@ -46,7 +49,8 @@ export interface PostBase {
   slug: string;
   es: LocalizedContent;
   en: LocalizedContent;
-  images: string[]; // destacada en índice 0
+  featuredImage?: string; // imagen principal (separada de la galería)
+  images: string[]; // galería (excluye la destacada)
   categories: string[]; // etiquetas superiores (ALL/TODOS, NORTE, etc.)
 }
 

@@ -28,9 +28,22 @@ const mobileImagesDefault = [
 type HeroSliderProps = {
   desktopImages?: string[];
   mobileImages?: string[];
+  objectFit?: "cover" | "contain"; // cover por defecto; contain para no recortar
+  desktopHeight?: number; // alto del slide desktop en px (por defecto 437)
+  mobileHeight?: number; // alto del slide mobile en px (por defecto 550)
+  dotActiveClass?: string; // clase tailwind para punto activo
+  dotInactiveClass?: string; // clase tailwind para punto inactivo
 };
 
-export function HeroSlider({ desktopImages, mobileImages }: HeroSliderProps) {
+export function HeroSlider({
+  desktopImages,
+  mobileImages,
+  objectFit = "cover",
+  desktopHeight = 437,
+  mobileHeight = 550,
+  dotActiveClass = "bg-[#E40E36] w-3 h-3",
+  dotInactiveClass = "bg-white w-2 h-2",
+}: HeroSliderProps) {
   const desktop =
     desktopImages && desktopImages.length
       ? desktopImages
@@ -84,7 +97,7 @@ export function HeroSlider({ desktopImages, mobileImages }: HeroSliderProps) {
   };
 
   return (
-    <div className="relative w-full h-full overflow-hidden">
+    <div className="relative w-full overflow-hidden">
       {/* Desktop Embla */}
       <div className="hidden md:block">
         <div className="embla" ref={emblaDesktopRef as any}>
@@ -92,12 +105,15 @@ export function HeroSlider({ desktopImages, mobileImages }: HeroSliderProps) {
             {desktop.map((image, index) => (
               <div
                 key={`d-${index}`}
-                className="embla__slide min-w-full h-[437px]"
+                className="embla__slide min-w-full"
+                style={{ height: `${desktopHeight}px` }}
               >
                 <img
                   src={image || "/placeholder.svg"}
                   alt={`Slide ${index + 1}`}
-                  className="w-full h-full object-cover"
+                  className={`w-full h-full ${
+                    objectFit === "contain" ? "object-contain" : "object-cover"
+                  }`}
                 />
               </div>
             ))}
@@ -112,12 +128,15 @@ export function HeroSlider({ desktopImages, mobileImages }: HeroSliderProps) {
             {mobile.map((image, index) => (
               <div
                 key={`m-${index}`}
-                className="embla__slide min-w-full h-[550px]"
+                className="embla__slide min-w-full"
+                style={{ height: `${mobileHeight}px` }}
               >
                 <img
                   src={image || "/placeholder.svg"}
                   alt={`Slide ${index + 1}`}
-                  className="w-full h-full object-cover"
+                  className={`w-full h-full ${
+                    objectFit === "contain" ? "object-contain" : "object-cover"
+                  }`}
                 />
               </div>
             ))}
@@ -133,9 +152,7 @@ export function HeroSlider({ desktopImages, mobileImages }: HeroSliderProps) {
               key={`global-dot-${dotIndex}`}
               onClick={() => goToSlide(dotIndex)}
               className={`rounded-full transition-all focus:outline-none ${
-                dotIndex === selectedIndex
-                  ? "bg-[#E40E36] w-3 h-3"
-                  : "bg-white w-2 h-2"
+                dotIndex === selectedIndex ? dotActiveClass : dotInactiveClass
               }`}
               aria-label={`Go to slide ${dotIndex + 1}`}
             />

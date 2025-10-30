@@ -69,6 +69,7 @@ export default function LugarPage(props: any) {
           .filter(Boolean)
           .map((p: string) => `<p>${p}</p>`)
           .join(""),
+        infoHtml: source[language]?.infoHtml || "",
         website: source.website || "",
         website_display: source.website_display || "",
         instagram: source.instagram || "",
@@ -82,8 +83,15 @@ export default function LugarPage(props: any) {
         reservationLink: source.reservationLink || "",
         reservationPolicy: source.reservationPolicy || "",
         interestingFact: source.interestingFact || "",
-        featuredImage: (source.images && source.images[0]) || "",
-        galleryImages: source.images || [],
+        featuredImage:
+          source.featuredImage || (source.images && source.images[0]) || "",
+        galleryImages: Array.isArray(source.images)
+          ? source.featuredImage
+            ? source.images.filter(
+                (img: string) => img !== source.featuredImage
+              )
+            : source.images
+          : [],
         categories: source[language]?.category
           ? [source[language].category]
           : source.categories || [],

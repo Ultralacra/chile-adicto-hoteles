@@ -34,3 +34,22 @@ export function buildCardExcerpt(paragraphs: string[] | undefined, targetMinChar
   }
   return out;
 }
+
+// Normaliza una URL de imagen para comparaciones: extrae el último segmento del pathname
+// y lo devuelve en minúsculas sin querystring. Esto ayuda a detectar duplicados
+// aunque la URL tenga parámetros o diferencias en mayúsculas.
+export function normalizeImageUrl(src?: string) {
+  if (!src) return "";
+  try {
+    // Soporta URLs absolutas y relativas
+    const u = new URL(src, "http://example.invalid");
+    const parts = u.pathname.split("/").filter(Boolean);
+    const last = parts.length ? parts[parts.length - 1] : u.pathname;
+    return decodeURIComponent(String(last)).toLowerCase();
+  } catch (e) {
+    // Fallback: remove querystring and take last segment
+    const withoutQuery = String(src).split("?")[0];
+    const parts = withoutQuery.split("/").filter(Boolean);
+    return (parts.length ? parts[parts.length - 1] : withoutQuery).toLowerCase();
+  }
+}

@@ -1776,7 +1776,7 @@
         "Executive Chef Ricardo Rodex leads the kitchen with an audacious yet environmentally conscious approach. His menu is a sensory journey through exotic flavors, blending Amazonian ingredients with haute cuisine techniques. Dishes like the exquisite venison tartare or the comforting duck arroz caldoso reflect his commitment to sustainability, using local ingredients and minimizing waste.",
         "The gastronomic experience is heightened by the immersive atmosphere designed by Javiera Bravo. The space —a climate-controlled greenhouse overflowing with greenery— invites guests to disconnect from the city’s bustle and reconnect with nature.",
         "Though not yet featured in major gastronomic guides, Ceiba has already earned recognition as one of Santiago’s most original and promising culinary concepts.\n\t\t\n\t\t\t\t\t\n\t\t\nDATOS ÚTILES",
-        "ADDRESS: JOSÉ ALCALDE DÉLANO 10425, LOCAL 25, THIRD FLOOR, LA DEHESA, SANTIAGO\nWEBSITE: WWW.CEIBASTGO.CL\nSOCIAL MEDIA: @CEIBASTGO\nHOURS: TUESDAY TO SATURDAY, 13:00 TO 22:00 HRS\nRESERVATIONS: RECOMMENDED THROUGH THE WEBSITE\nINTERESTING FACT: THE RESTAURANT OPERATES UNDER A ZERO-WASTE MODEL, REUSING UNCOMMON INGREDIENTS, SUCH AS BANANA PEEL, TO CREATE NEW DISHES."
+        "ADDRESS: JOSÉ ALCALDE DÉLANO 10425, LOCAL 25, THIRD FLOOR, LA DEHESA, SANTIAGO\nWEBSITE: WWW.CEIBASTGO.CL\nSOCIAL MEDIA: @CEIBASTGO\nHOURS: TUESDAY TO SATURDAY, 13:00 TO 22:00 HRS\nRESERVATIONS: RECOMMENDED THROUGH THE WEBSITE\nINTERESTING FACT: THE RESTAURANT OPERATES UNDER A ZERO-WASTE MODEL, REUSING UNCOMMON INGREDIENTS, SUCH AS BANANA PEEL, TO CREATE NEW DISHES.\nADDITIONAL LOCATION: LO BARNECHEA"
       ],
       "category": "RESTAURANTES"
     },
@@ -1788,7 +1788,7 @@
         "El chef ejecutivo Ricardo Rodex lidera la cocina con una propuesta audaz y respetuosa con el entorno. Su menú es un viaje sensorial por sabores exóticos que fusionan ingredientes amazónicos con técnicas de alta cocina. Platos como el exquisito tártaro de ciervo o el reconfortante arroz caldoso de pato son una muestra de su compromiso con la sostenibilidad, utilizando ingredientes locales y minimizando los residuos.",
         "La experiencia gastronómica se eleva gracias a la atmósfera inmersiva creada por la diseñadora Javiera Bravo. El espacio, un invernadero climatizado rebosante de vegetación, invita a desconectarse del bullicio urbano y reconectar con la naturaleza.",
         "Aunque aún no figura en las guías gastronómicas más prestigiosas, Ceiba se ha ganado un lugar como una de las propuestas más originales y prometedoras de la escena culinaria de Santiago.\n\t\t\n\t\t\t\t\t\n\t\t\nDATOS ÚTILES",
-        "DIRECCIÓN: JOSÉ ALCALDE DÉLANO 10425, LOCAL 25, TERCER PISO, LA DEHESA, SANTIAGO.\nSITIO WEB: WWW.CEIBASTGO.CL\nREDES SOCIALES: @CEIBASTGO\nHORARIO: MARTES A SÁBADO, DE 13:00 A 22:00 HRS.\nRESERVAS: RECOMENDADAS A TRAVÉS DEL SITIO WEB.\nDATO DE INTERÉS: EL RESTAURANTE OPERA BAJO UN MODELO DE CERO DESPERDICIOS, REUTILIZANDO INGREDIENTES POCO COMUNES, COMO LA CÁSCARA DE PLÁTANO, PARA CREAR NUEVAS PREPARACIONES."
+        "DIRECCIÓN: JOSÉ ALCALDE DÉLANO 10425, LOCAL 25, TERCER PISO, LA DEHESA, SANTIAGO.\nSITIO WEB: WWW.CEIBASTGO.CL\nREDES SOCIALES: @CEIBASTGO\nHORARIO: MARTES A SÁBADO, DE 13:00 A 22:00 HRS.\nRESERVAS: RECOMENDADAS A TRAVÉS DEL SITIO WEB.\nDATO DE INTERÉS: EL RESTAURANTE OPERA BAJO UN MODELO DE CERO DESPERDICIOS, REUTILIZANDO INGREDIENTES POCO COMUNES, COMO LA CÁSCARA DE PLÁTANO, PARA CREAR NUEVAS PREPARACIONES.\nSEDE ADICIONAL: LO BARNECHEA"
       ],
       "category": "RESTAURANTES"
     },
@@ -1810,6 +1810,7 @@
     "address": "",
     "featuredImage": "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/PORTADA-CIEBA.webp"
   },
+
   {
     "slug": "cassis-alma-de-refugio",
     "en": {

@@ -4,6 +4,7 @@ import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
 import { HotelDetail } from "@/components/hotel-detail";
 import data from "@/lib/data.json";
+import { normalizeImageUrl } from "@/lib/utils";
 import { useLanguage } from "@/contexts/language-context";
 import { useEffect, use } from "react";
 
@@ -90,29 +91,18 @@ export default function LugarPage(props: any) {
             ? source.images.filter((s: string) => !!s)
             : [];
 
-          const normalizeName = (u: string) => {
-            if (!u) return "";
-            try {
-              const url = new URL(u);
-              return (url.pathname.split("/").pop() || "").toLowerCase();
-            } catch {
-              const noQuery = String(u).split("?")[0];
-              return (noQuery.split("/").pop() || "").toLowerCase();
-            }
-          };
-
           let derivedFeatured = (source.featuredImage || imgs[0] || "").trim();
-          const featuredKey = normalizeName(derivedFeatured);
-
-          // Si no hay featured pero hay imágenes, asegura que featured sea la primera normalizada
+          // Si no hay featured pero hay imágenes, asegura que featured sea la primera
           if (!derivedFeatured && imgs.length) {
             derivedFeatured = imgs[0];
           }
 
+          const featuredKey = normalizeImageUrl(derivedFeatured);
           const seen = new Set<string>();
           const gallery = imgs.filter((img) => {
-            const key = normalizeName(img);
-            if (featuredKey && key === featuredKey) return false; // filtra la portada
+            const key = normalizeImageUrl(img);
+            if (featuredKey && key && key === featuredKey) return false; // filtra la portada
+            if (!key) return false;
             if (seen.has(key)) return false; // evita repetidos por nombre
             seen.add(key);
             return true;

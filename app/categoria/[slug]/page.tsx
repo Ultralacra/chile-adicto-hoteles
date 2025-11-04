@@ -252,13 +252,22 @@ export default function CategoryPage({ params }: { params: any }) {
   // Apply comuna filter if selectedComuna is set (match in descriptions or address)
   const finalHotels = selectedComuna
     ? filteredHotels.filter((h) => {
-        const haystack = [
-          ...(Array.isArray(h.es?.description) ? h.es.description : []),
-          ...(Array.isArray(h.en?.description) ? h.en.description : []),
-          h.address || "",
-        ]
-          .join(" ")
-          .toUpperCase();
+        // Construir un texto de búsqueda que incluya:
+        // - descripciones ES/EN
+        // - dirección principal
+        // - todas las direcciones y labels de las sucursales (locations[])
+        const parts: string[] = [];
+        if (Array.isArray(h.es?.description)) parts.push(...h.es.description);
+        if (Array.isArray(h.en?.description)) parts.push(...h.en.description);
+        if (h.address) parts.push(h.address);
+        if (Array.isArray(h.locations)) {
+          for (const loc of h.locations) {
+            if (loc.address) parts.push(loc.address);
+            if (loc.label) parts.push(loc.label);
+          }
+        }
+
+        const haystack = parts.join(" ").toUpperCase();
         return haystack.includes(String(selectedComuna).toUpperCase());
       })
     : filteredHotels;

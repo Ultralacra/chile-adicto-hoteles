@@ -104,11 +104,11 @@ export function ChileAdictoLogo() {
         <path d="M611.54 88.7599V135.96H604.42V88.7599H611.54Z" fill="black" />
         <path d="M645.66 88.7599V135.96H638.54V88.7599H645.66Z" fill="black" />
       </g>
-      <defs>
+      {/*   <defs>
         <clipPath id="clip0_86_114">
           <rect width="646" height="182" fill="white" />
         </clipPath>
-      </defs>
+      </defs> */}
     </svg>
   );
 }

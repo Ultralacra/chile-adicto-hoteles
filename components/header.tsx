@@ -14,7 +14,7 @@ export function Header() {
   return (
     <>
       <header className="">
-        <div className="container mx-auto px-4 py-6 max-w-[1200px] font-neutra text-[16px] leading-[20px] text-black">
+        <div className="site-inner py-6 font-neutra text-[16px] leading-[20px] text-black">
           <div className="flex items-center justify-between lg:justify-between">
             <div className="flex items-center lg:hidden">
               <Image

@@ -175,6 +175,17 @@
   .font-neutra-demi {
     font-family: 'Neutra Demi', 'Neutra', var(--font-sans) !important;
   }
+  /* Site inner container: shared max-width and horizontal padding to keep
+     header, menus and sliders aligned across pages. Use this instead of
+     repeating `mx-auto px-4 max-w-[1200px]` in components. */
+  .site-inner {
+    max-width: 1200px;
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: 1rem; /* matches tailwind px-4 */
+    padding-right: 1rem;
+    width: 100%;
+  }
   h1,
   h2,
   h3,

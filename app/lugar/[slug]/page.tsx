@@ -99,7 +99,7 @@ export default function LugarPage(props: any) {
           // 2) Elegir featured:
           //    - Preferir source.featuredImage si viene
           //    - Si no, buscar una imagen que tenga 'PORTADA' en el nombre
-          //    - Si no, usar la primera numerada en orden; si no hay numeradas, la primera disponible
+          //    - No usar numeradas como featured por fallback, para no excluir "-1" de la galería
           let derivedFeatured = String(source.featuredImage || "").trim();
           if (!derivedFeatured) {
             const portada = imgs.find((s) => isPortada(s));
@@ -114,18 +114,7 @@ export default function LugarPage(props: any) {
             return m ? parseInt(m[1], 10) : NaN;
           };
 
-          // 3) Si aún no hay featured, intentar con la primera numerada (por índice ascendente)
-          if (!derivedFeatured) {
-            const numeradas = imgs
-              .map((s) => ({ s, idx: getIndex(s) }))
-              .filter((x) => Number.isFinite(x.idx))
-              .sort((a, b) => a.idx - b.idx);
-            if (numeradas.length) derivedFeatured = numeradas[0].s;
-          }
-          // 4) Último fallback: primera imagen
-          if (!derivedFeatured && imgs.length) {
-            derivedFeatured = imgs[0];
-          }
+          // 3) Mantener sin featured si no hay explícita ni 'PORTADA'
 
           const featuredKey = normalizeImageUrl(derivedFeatured);
 

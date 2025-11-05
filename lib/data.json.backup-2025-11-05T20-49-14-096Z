@@ -26,7 +26,6 @@
       "category": "RESTAURANTES"
     },
     "images": [
-      "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/YUM-CHA-1.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/YUM-CHA-2.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/YUM-CHA-3.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/YUM-CHA-4.webp",
@@ -36,10 +35,7 @@
     ],
     "website": "",
     "instagram": "https://www.instagram.com/YUMCHACLHORARIO",
-    "categories": [
-      "ALL",
-      "RESTAURANTES"
-    ],
+    "categories": ["ALL", "RESTAURANTES"],
     "website_display": "",
     "instagram_display": "@yumchaclhorario",
     "email": "",
@@ -71,7 +67,6 @@
       "category": "RESTAURANTES"
     },
     "images": [
-      "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/DOLCE-SALATO-1.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/DOLCE-SALATO-2.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/DOLCE-SALATO-3.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/DOLCE-SALATO-4.webp",
@@ -88,11 +83,7 @@
     ],
     "website": "https://dolceysalato.cl",
     "instagram": "https://www.instagram.com/dolceysalato",
-    "categories": [
-      "ALL",
-      "RESTAURANTES",
-      "TODOS"
-    ],
+    "categories": ["ALL", "RESTAURANTES", "TODOS"],
     "website_display": "dolceysalato.cl",
     "instagram_display": "@dolceysalato",
     "email": "INFO@DOLCEYSALATO.CL",
@@ -129,7 +120,6 @@
       "category": "RESTAURANTES"
     },
     "images": [
-      "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/LA-VINOTECA-1.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/LA-VINOTECA-2.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/LA-VINOTECA-3.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/LA-VINOTECA-4.webp",
@@ -138,10 +128,7 @@
     ],
     "website": "",
     "instagram": "https://www.instagram.com/LAVINOTECA_CHILEHORARIO",
-    "categories": [
-      "ALL",
-      "RESTAURANTES"
-    ],
+    "categories": ["ALL", "RESTAURANTES"],
     "website_display": "",
     "instagram_display": "@lavinoteca_chilehorario",
     "email": "",
@@ -177,7 +164,6 @@
       "category": "RESTAURANTES"
     },
     "images": [
-      "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/VERDE-SAZON-1.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/VERDE-SAZON-2.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/VERDE-SAZON-3.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/VERDE-SAZON-4.webp",
@@ -185,10 +171,7 @@
     ],
     "website": "",
     "instagram": "https://www.instagram.com/VERDESAZONCHILEHORARIO",
-    "categories": [
-      "ALL",
-      "RESTAURANTES"
-    ],
+    "categories": ["ALL", "RESTAURANTES"],
     "website_display": "",
     "instagram_display": "@verdesazonchilehorario",
     "email": "",
@@ -222,7 +205,6 @@
       "category": "RESTAURANTES"
     },
     "images": [
-      "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/TONI-LAUTARO-1.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/TONI-LAUTARO-2.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/TONI-LAUTARO-3.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/TONI-LAUTARO-4.webp",
@@ -234,10 +216,7 @@
     ],
     "website": "",
     "instagram": "https://www.instagram.com/TONI_LAUTAROHORARIO",
-    "categories": [
-      "ALL",
-      "RESTAURANTES"
-    ],
+    "categories": ["ALL", "RESTAURANTES"],
     "website_display": "",
     "instagram_display": "@toni_lautarohorario",
     "email": "",
@@ -269,7 +248,6 @@
       "category": "RESTAURANTES"
     },
     "images": [
-      "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/TANAKA-1.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/TANAKA-2.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/TANAKA-3.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/TANAKA-4.webp",
@@ -283,10 +261,7 @@
     ],
     "website": "",
     "instagram": "https://www.instagram.com/TANAKAFUSIONHORARIO",
-    "categories": [
-      "ALL",
-      "RESTAURANTES"
-    ],
+    "categories": ["ALL", "RESTAURANTES"],
     "website_display": "",
     "instagram_display": "@tanakafusionhorario",
     "email": "",
@@ -320,7 +295,6 @@
       "category": "RESTAURANTES"
     },
     "images": [
-      "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/SIAM-THAI-1.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/SIAM-THAI-2.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/SIAM-THAI-3.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/SIAM-THAI-4.webp",
@@ -331,10 +305,7 @@
     ],
     "website": "",
     "instagram": "https://www.instagram.com/SIAMTHAI.CLHORARIO",
-    "categories": [
-      "ALL",
-      "RESTAURANTES"
-    ],
+    "categories": ["ALL", "RESTAURANTES"],
     "website_display": "",
     "instagram_display": "@siamthai.clhorario",
     "email": "",
@@ -370,7 +341,6 @@
       "category": "RESTAURANTES"
     },
     "images": [
-      "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/SAVIA-1.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/SAVIA-2.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/SAVIA-3.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/SAVIA-4.webp",
@@ -378,10 +348,7 @@
     ],
     "website": "",
     "instagram": "https://www.instagram.com/SAVIABAR_CLHORARIO",
-    "categories": [
-      "ALL",
-      "RESTAURANTES"
-    ],
+    "categories": ["ALL", "RESTAURANTES"],
     "website_display": "",
     "instagram_display": "@saviabar_clhorario",
     "email": "",
@@ -415,7 +382,6 @@
       "category": "RESTAURANTES"
     },
     "images": [
-      "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/RUBAIYAT-1.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/RUBAIYAT-2.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/RUBAIYAT-3.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/RUBAIYAT-4.webp",
@@ -426,10 +392,7 @@
     ],
     "website": "",
     "instagram": "https://www.instagram.com/RUBAIYATBRASILHORARIO",
-    "categories": [
-      "ALL",
-      "RESTAURANTES"
-    ],
+    "categories": ["ALL", "RESTAURANTES"],
     "website_display": "",
     "instagram_display": "@rubaiyatbrasilhorario",
     "email": "",
@@ -463,7 +426,6 @@
       "category": "RESTAURANTES"
     },
     "images": [
-      "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/RIVOLI-1.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/RIVOLI-2.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/RIVOLI-3.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/RIVOLI-4.webp",
@@ -473,10 +435,7 @@
     ],
     "website": "",
     "instagram": "https://www.instagram.com/RIVOLICLHORARIO",
-    "categories": [
-      "ALL",
-      "RESTAURANTES"
-    ],
+    "categories": ["ALL", "RESTAURANTES"],
     "website_display": "",
     "instagram_display": "@rivoliclhorario",
     "email": "",
@@ -508,7 +467,6 @@
       "category": "RESTAURANTES"
     },
     "images": [
-      "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/QUINOA-1.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/QUINOA-2.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/QUINOA-3.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/QUINOA-4.webp",
@@ -516,10 +474,7 @@
     ],
     "website": "",
     "instagram": "https://www.instagram.com/QUINOAREST",
-    "categories": [
-      "ALL",
-      "RESTAURANTES"
-    ],
+    "categories": ["ALL", "RESTAURANTES"],
     "website_display": "",
     "instagram_display": "@quinoarest",
     "email": "",
@@ -553,7 +508,6 @@
       "category": "RESTAURANTES"
     },
     "images": [
-      "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/PULPERIA-1.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/PULPERIA-2.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/PULPERIA-3.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/PULPERIA-4.webp",
@@ -562,10 +516,7 @@
     ],
     "website": "",
     "instagram": "https://www.instagram.com/PULPERIASANTAELVIRAHORARIO",
-    "categories": [
-      "ALL",
-      "RESTAURANTES"
-    ],
+    "categories": ["ALL", "RESTAURANTES"],
     "website_display": "",
     "instagram_display": "@pulperiasantaelvirahorario",
     "email": "",
@@ -599,7 +550,6 @@
       "category": "RESTAURANTES"
     },
     "images": [
-      "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/PRISTINO-1.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/PRISTINO-2.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/PRISTINO-3.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/PRISTINO-4.webp",
@@ -608,10 +558,7 @@
     ],
     "website": "",
     "instagram": "https://www.instagram.com/PRISTINORESTAURANTEHORARIO",
-    "categories": [
-      "ALL",
-      "RESTAURANTES"
-    ],
+    "categories": ["ALL", "RESTAURANTES"],
     "website_display": "",
     "instagram_display": "@pristinorestaurantehorario",
     "email": "",
@@ -645,7 +592,6 @@
       "category": "RESTAURANTES"
     },
     "images": [
-      "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/PISO-UNO-1.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/PISO-UNO-2.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/PISO-UNO-3.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/PISO-UNO-4.webp",
@@ -656,10 +602,7 @@
     ],
     "website": "",
     "instagram": "https://www.instagram.com/PISOUNORESTAURANTHORARIO",
-    "categories": [
-      "ALL",
-      "RESTAURANTES"
-    ],
+    "categories": ["ALL", "RESTAURANTES"],
     "website_display": "",
     "instagram_display": "@pisounorestauranthorario",
     "email": "",
@@ -693,7 +636,6 @@
       "category": "RESTAURANTES"
     },
     "images": [
-      "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/PALLOZZI-1.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/PALLOZZI-2.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/PALLOZZI-3.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/PALLOZZI-4.webp",
@@ -701,10 +643,7 @@
     ],
     "website": "",
     "instagram": "https://www.instagram.com/PALLOZZI.CLHORARIO",
-    "categories": [
-      "ALL",
-      "RESTAURANTES"
-    ],
+    "categories": ["ALL", "RESTAURANTES"],
     "website_display": "",
     "instagram_display": "@pallozzi.clhorario",
     "email": "",
@@ -740,7 +679,6 @@
       "category": "RESTAURANTES"
     },
     "images": [
-      "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/OCEAN-PACIFIC-1.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/OCEAN-PACIFIC-2.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/OCEAN-PACIFIC-3.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/OCEAN-PACIFIC-4.webp",
@@ -750,10 +688,7 @@
     ],
     "website": "",
     "instagram": "https://www.instagram.com/OCEANPACIFICRESTAURANTHORARIO",
-    "categories": [
-      "ALL",
-      "RESTAURANTES"
-    ],
+    "categories": ["ALL", "RESTAURANTES"],
     "website_display": "",
     "instagram_display": "@oceanpacificrestauranthorario",
     "email": "",
@@ -787,7 +722,6 @@
       "category": "RESTAURANTES"
     },
     "images": [
-      "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/NORMANDIE-1.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/NORMANDIE-2.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/NORMANDIE-3.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/NORMANDIE-4.webp",
@@ -797,10 +731,7 @@
     ],
     "website": "",
     "instagram": "https://www.instagram.com/NORMANDIE_RESTAURANTHORARIO",
-    "categories": [
-      "ALL",
-      "RESTAURANTES"
-    ],
+    "categories": ["ALL", "RESTAURANTES"],
     "website_display": "",
     "instagram_display": "@normandie_restauranthorario",
     "email": "",
@@ -834,7 +765,6 @@
       "category": "RESTAURANTES"
     },
     "images": [
-      "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/NAOKI-1.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/NAOKI-2.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/NAOKI-3.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/NAOKI-4.webp",
@@ -842,10 +772,7 @@
     ],
     "website": "",
     "instagram": "https://www.instagram.com/NAOKI.CLHORARIO",
-    "categories": [
-      "ALL",
-      "RESTAURANTES"
-    ],
+    "categories": ["ALL", "RESTAURANTES"],
     "website_display": "",
     "instagram_display": "@naoki.clhorario",
     "email": "",
@@ -882,7 +809,6 @@
       "category": "RESTAURANTES"
     },
     "images": [
-      "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/MAYAN-1.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/MAYAN-2.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/MAYAN-3.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/MAYAN-4.webp",
@@ -897,10 +823,7 @@
     ],
     "website": "",
     "instagram": "https://www.instagram.com/MAYAN.BAR",
-    "categories": [
-      "ALL",
-      "RESTAURANTES"
-    ],
+    "categories": ["ALL", "RESTAURANTES"],
     "website_display": "",
     "instagram_display": "@mayan.bar",
     "email": "",
@@ -934,7 +857,6 @@
       "category": "RESTAURANTES"
     },
     "images": [
-      "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/MARINA-1.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/MARINA-2.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/MARINA-3.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/MARINA-4.webp",
@@ -942,10 +864,7 @@
     ],
     "website": "",
     "instagram": "https://www.instagram.com/MARINAMARDETAPASHORARIO",
-    "categories": [
-      "ALL",
-      "RESTAURANTES"
-    ],
+    "categories": ["ALL", "RESTAURANTES"],
     "website_display": "",
     "instagram_display": "@marinamardetapashorario",
     "email": "",
@@ -979,7 +898,6 @@
       "category": "RESTAURANTES"
     },
     "images": [
-      "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/LIGURIA-LASTARRIA-1.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/LIGURIA-LASTARRIA-2.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/LIGURIA-LASTARRIA-3.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/LIGURIA-LASTARRIA-4.webp",
@@ -987,10 +905,7 @@
     ],
     "website": "",
     "instagram": "https://www.instagram.com/BAR_LIGURIAHORARIO",
-    "categories": [
-      "ALL",
-      "RESTAURANTES"
-    ],
+    "categories": ["ALL", "RESTAURANTES"],
     "website_display": "",
     "instagram_display": "@bar_liguriahorario",
     "email": "",
@@ -1026,7 +941,6 @@
       "category": "RESTAURANTES"
     },
     "images": [
-      "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/LA-PROVIDENCIA-1.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/LA-PROVIDENCIA-2.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/LA-PROVIDENCIA-3.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/LA-PROVIDENCIA-4.webp",
@@ -1037,10 +951,7 @@
     ],
     "website": "",
     "instagram": "https://www.instagram.com/BARLAPROVIDENCIAHORARIO",
-    "categories": [
-      "ALL",
-      "RESTAURANTES"
-    ],
+    "categories": ["ALL", "RESTAURANTES"],
     "website_display": "",
     "instagram_display": "@barlaprovidenciahorario",
     "email": "",
@@ -1076,7 +987,6 @@
       "category": "RESTAURANTES"
     },
     "images": [
-      "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/LA-MESA-1.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/LA-MESA-2.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/LA-MESA-3.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/LA-MESA-4.webp",
@@ -1084,10 +994,7 @@
     ],
     "website": "https://RESTAURANTLAMESA.COM",
     "instagram": "https://www.instagram.com/LAMESA_CHILEHORARIO",
-    "categories": [
-      "ALL",
-      "RESTAURANTES"
-    ],
+    "categories": ["ALL", "RESTAURANTES"],
     "website_display": "restaurantlamesa.com",
     "instagram_display": "@lamesa_chilehorario",
     "email": "",
@@ -1121,7 +1028,6 @@
       "category": "RESTAURANTES"
     },
     "images": [
-      "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/LA-DICHA-1.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/LA-DICHA-2.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/LA-DICHA-3.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/LA-DICHA-4.webp",
@@ -1131,10 +1037,7 @@
     ],
     "website": "",
     "instagram": "",
-    "categories": [
-      "ALL",
-      "RESTAURANTES"
-    ],
+    "categories": ["ALL", "RESTAURANTES"],
     "website_display": "",
     "instagram_display": "",
     "email": "",
@@ -1170,7 +1073,6 @@
       "category": "RESTAURANTES"
     },
     "images": [
-      "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/KILU-1.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/KILU-2.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/KILU-3.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/KILU-4.webp",
@@ -1179,10 +1081,7 @@
     ],
     "website": "https://KILUCASADECARNES.CL",
     "instagram": "https://www.instagram.com/KILUCASADECARNESHORARIO",
-    "categories": [
-      "ALL",
-      "RESTAURANTES"
-    ],
+    "categories": ["ALL", "RESTAURANTES"],
     "website_display": "kilucasadecarnes.cl",
     "instagram_display": "@kilucasadecarneshorario",
     "email": "RESERVAS@KILUCASADECARNES.CL",
@@ -1218,7 +1117,6 @@
       "category": "RESTAURANTES"
     },
     "images": [
-      "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/KARAI-1.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/KARAI-2.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/KARAI-3.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/KARAI-4.webp",
@@ -1234,10 +1132,7 @@
     ],
     "website": "",
     "instagram": "https://www.instagram.com/KARAIWSANTIAGO",
-    "categories": [
-      "ALL",
-      "RESTAURANTES"
-    ],
+    "categories": ["ALL", "RESTAURANTES"],
     "website_display": "",
     "instagram_display": "@karaiwsantiago",
     "email": "",
@@ -1283,10 +1178,7 @@
     ],
     "website": "",
     "instagram": "https://www.instagram.com/JOSERAMON277",
-    "categories": [
-      "ALL",
-      "RESTAURANTES"
-    ],
+    "categories": ["ALL", "RESTAURANTES"],
     "website_display": "",
     "instagram_display": "@joseramon277",
     "email": "",
@@ -1322,7 +1214,6 @@
       "category": "RESTAURANTES"
     },
     "images": [
-      "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/FUKASAW-1.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/FUKASAW-2.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/FUKASAW-3.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/FUKASAW-4.webp",
@@ -1332,10 +1223,7 @@
     ],
     "website": "",
     "instagram": "https://www.instagram.com/FUKASAWA_SANTIAGO",
-    "categories": [
-      "ALL",
-      "RESTAURANTES"
-    ],
+    "categories": ["ALL", "RESTAURANTES"],
     "website_display": "",
     "instagram_display": "@fukasawa_santiago",
     "email": "",
@@ -1369,7 +1257,6 @@
       "category": "RESTAURANTES"
     },
     "images": [
-      "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/FLAMA-1.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/FLAMA-2.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/FLAMA-3.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/FLAMA-4.webp",
@@ -1379,10 +1266,7 @@
     ],
     "website": "",
     "instagram": "https://www.instagram.com/BARFLAMA",
-    "categories": [
-      "ALL",
-      "RESTAURANTES"
-    ],
+    "categories": ["ALL", "RESTAURANTES"],
     "website_display": "",
     "instagram_display": "@barflama",
     "email": "",
@@ -1416,7 +1300,6 @@
       "category": "RESTAURANTES"
     },
     "images": [
-      "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/ENIGMA-1.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/ENIGMA-2.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/ENIGMA-3.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/ENIGMA-4.webp",
@@ -1425,10 +1308,7 @@
     ],
     "website": "https://BARENIGMA.CL",
     "instagram": "https://www.instagram.com/BARENIGMA.CL",
-    "categories": [
-      "ALL",
-      "RESTAURANTES"
-    ],
+    "categories": ["ALL", "RESTAURANTES"],
     "website_display": "barenigma.cl",
     "instagram_display": "@barenigma.cl",
     "email": "",
@@ -1464,7 +1344,6 @@
       "category": "RESTAURANTES"
     },
     "images": [
-      "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/EL-REY-1.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/EL-REY-2.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/EL-REY-3.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/EL-REY-4.webp",
@@ -1474,10 +1353,7 @@
     ],
     "website": "",
     "instagram": "https://www.instagram.com/ELREY_CL",
-    "categories": [
-      "ALL",
-      "RESTAURANTES"
-    ],
+    "categories": ["ALL", "RESTAURANTES"],
     "website_display": "",
     "instagram_display": "@elrey_cl",
     "email": "",
@@ -1511,17 +1387,13 @@
       "category": "RESTAURANTES"
     },
     "images": [
-      "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/EL-HUERTO-1.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/EL-HUERTO-2.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/EL-HUERTO-3.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/EL-HUERTO-4.webp"
     ],
     "website": "https://ELHUERTO.CL",
     "instagram": "https://www.instagram.com/ELHUERTO.CL",
-    "categories": [
-      "ALL",
-      "RESTAURANTES"
-    ],
+    "categories": ["ALL", "RESTAURANTES"],
     "website_display": "elhuerto.cl",
     "instagram_display": "@elhuerto.cl",
     "email": "",
@@ -1555,7 +1427,6 @@
       "category": "RESTAURANTES"
     },
     "images": [
-      "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/DONA-PAULA-1.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/DONA-PAULA-2.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/DONA-PAULA-3.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/DONA-PAULA-4.webp",
@@ -1565,10 +1436,7 @@
     ],
     "website": "https://SANTARITA.CL",
     "instagram": "https://www.instagram.com/SANTARITAWINES",
-    "categories": [
-      "ALL",
-      "RESTAURANTES"
-    ],
+    "categories": ["ALL", "RESTAURANTES"],
     "website_display": "santarita.cl",
     "instagram_display": "@santaritawines",
     "email": "RESTAURANT@SANTARITA.CL",
@@ -1606,7 +1474,6 @@
       "category": "RESTAURANTES"
     },
     "images": [
-      "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/DIABLO-1.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/DIABLO-2.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/DIABLO-3.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/DIABLO-4.webp",
@@ -1618,10 +1485,7 @@
     ],
     "website": "",
     "instagram": "https://www.instagram.com/DIABLOVINO",
-    "categories": [
-      "ALL",
-      "RESTAURANTES"
-    ],
+    "categories": ["ALL", "RESTAURANTES"],
     "website_display": "",
     "instagram_display": "@diablovino",
     "email": "",
@@ -1655,17 +1519,13 @@
       "category": "RESTAURANTES"
     },
     "images": [
-      "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/DEMO-MAGNOLIA-1.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/DEMO-MAGNOLIA-2.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/DEMO-MAGNOLIA-3.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/DEMO-MAGNOLIA-4.webp"
     ],
     "website": "https://HOTELMAGNOLIA.CL",
     "instagram": "https://www.instagram.com/DEMO.MAGNOLIA",
-    "categories": [
-      "ALL",
-      "RESTAURANTES"
-    ],
+    "categories": ["ALL", "RESTAURANTES"],
     "website_display": "hotelmagnolia.cl",
     "instagram_display": "@demo.magnolia",
     "email": "CONTACTO@DEMORESTAURANT.CL",
@@ -1700,7 +1560,6 @@
       "category": "RESTAURANTES"
     },
     "images": [
-      "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/DEMENCIA-1.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/DEMENCIA-2.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/DEMENCIA-3.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/DEMENCIA-4.webp",
@@ -1714,10 +1573,7 @@
     ],
     "website": "https://DEMENCIA.CL",
     "instagram": "https://www.instagram.com/DEMENCIA.CL",
-    "categories": [
-      "ALL",
-      "RESTAURANTES"
-    ],
+    "categories": ["ALL", "RESTAURANTES"],
     "website_display": "demencia.cl",
     "instagram_display": "@demencia.cl",
     "email": "",
@@ -1753,7 +1609,6 @@
       "category": "RESTAURANTES"
     },
     "images": [
-      "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/CORA-BISTRO-1.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/CORA-BISTRO-2.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/CORA-BISTRO-3.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/CORA-BISTRO-4.webp",
@@ -1764,10 +1619,7 @@
     ],
     "website": "",
     "instagram": "https://www.instagram.com/CORA.BISTRO",
-    "categories": [
-      "ALL",
-      "RESTAURANTES"
-    ],
+    "categories": ["ALL", "RESTAURANTES"],
     "website_display": "",
     "instagram_display": "@cora.bistro",
     "email": "",
@@ -1807,7 +1659,6 @@
       "category": "RESTAURANTES"
     },
     "images": [
-      "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/COPPER-1.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/COPPER-2.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/COPPER-3.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/COPPER-4.webp",
@@ -1818,10 +1669,7 @@
     ],
     "website": "",
     "instagram": "https://www.instagram.com/DEBAINESSANTIAGO",
-    "categories": [
-      "ALL",
-      "RESTAURANTES"
-    ],
+    "categories": ["ALL", "RESTAURANTES"],
     "website_display": "",
     "instagram_display": "@debainessantiago",
     "email": "",
@@ -1855,7 +1703,6 @@
       "category": "RESTAURANTES"
     },
     "images": [
-      "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/CONSERBAR-1.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/CONSERBAR-2.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/CONSERBAR-3.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/CONSERBAR-4.webp",
@@ -1866,10 +1713,7 @@
     ],
     "website": "",
     "instagram": "https://www.instagram.com/CONSERBAR",
-    "categories": [
-      "ALL",
-      "RESTAURANTES"
-    ],
+    "categories": ["ALL", "RESTAURANTES"],
     "website_display": "",
     "instagram_display": "@conserbar",
     "email": "",
@@ -1905,7 +1749,6 @@
       "category": "RESTAURANTES"
     },
     "images": [
-      "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/CITADELLE-1.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/CITADELLE-2.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/CITADELLE-3.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/CITADELLE-4.webp",
@@ -1914,10 +1757,7 @@
     ],
     "website": "",
     "instagram": "https://www.instagram.com/BARCITADELLE",
-    "categories": [
-      "ALL",
-      "RESTAURANTES"
-    ],
+    "categories": ["ALL", "RESTAURANTES"],
     "website_display": "",
     "instagram_display": "@barcitadelle",
     "email": "",
@@ -1953,7 +1793,6 @@
       "category": "RESTAURANTES"
     },
     "images": [
-      "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/CEIBA-1.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/CEIBA-2.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/CEIBA-3.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/CEIBA-4.webp",
@@ -1962,10 +1801,7 @@
     ],
     "website": "https://CEIBASTGO.CL",
     "instagram": "https://www.instagram.com/CEIBASTGO",
-    "categories": [
-      "ALL",
-      "RESTAURANTES"
-    ],
+    "categories": ["ALL", "RESTAURANTES"],
     "website_display": "ceibastgo.cl",
     "instagram_display": "@ceibastgo",
     "email": "",
@@ -1974,6 +1810,7 @@
     "address": "",
     "featuredImage": "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/PORTADA-CIEBA.webp"
   },
+
   {
     "slug": "cassis-alma-de-refugio",
     "en": {
@@ -2003,7 +1840,6 @@
       "category": "RESTAURANTES"
     },
     "images": [
-      "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/CASSIS-1.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/CASSIS-2.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/CASSIS-3.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/CASSIS-4.webp",
@@ -2016,10 +1852,7 @@
     ],
     "website": "",
     "instagram": "https://www.instagram.com/CASSISCAFE",
-    "categories": [
-      "ALL",
-      "RESTAURANTES"
-    ],
+    "categories": ["ALL", "RESTAURANTES"],
     "website_display": "",
     "instagram_display": "@cassiscafe",
     "email": "",
@@ -2063,10 +1896,7 @@
     ],
     "website": "",
     "instagram": "https://www.instagram.com/HOTELBIDASOA",
-    "categories": [
-      "ALL",
-      "RESTAURANTES"
-    ],
+    "categories": ["ALL", "RESTAURANTES"],
     "website_display": "",
     "instagram_display": "@hotelbidasoa",
     "email": "",
@@ -2100,7 +1930,6 @@
       "category": "RESTAURANTES"
     },
     "images": [
-      "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/CASA-LASTARRIA-1.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/CASA-LASTARRIA-2.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/CASA-LASTARRIA-3.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/CASA-LASTARRIA-4.webp",
@@ -2114,10 +1943,7 @@
     ],
     "website": "",
     "instagram": "https://www.instagram.com/CASALASTARRIA",
-    "categories": [
-      "ALL",
-      "RESTAURANTES"
-    ],
+    "categories": ["ALL", "RESTAURANTES"],
     "website_display": "",
     "instagram_display": "@casalastarria",
     "email": "",
@@ -2152,7 +1978,6 @@
       "category": "RESTAURANTES"
     },
     "images": [
-      "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/CAPOGROSSI-1.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/CAPOGROSSI-2.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/CAPOGROSSI-3.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/CAPOGROSSI-4.webp",
@@ -2165,10 +1990,7 @@
     ],
     "website": "",
     "instagram": "https://www.instagram.com/CAPOGROSSI_CHILE",
-    "categories": [
-      "ALL",
-      "RESTAURANTES"
-    ],
+    "categories": ["ALL", "RESTAURANTES"],
     "website_display": "",
     "instagram_display": "@capogrossi_chile",
     "email": "",
@@ -2202,7 +2024,6 @@
       "category": "RESTAURANTES"
     },
     "images": [
-      "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/BORAGO-1.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/BORAGO-2.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/BORAGO-3.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/BORAGO-4.webp",
@@ -2211,10 +2032,7 @@
     ],
     "website": "",
     "instagram": "https://www.instagram.com/BORAGOCL",
-    "categories": [
-      "ALL",
-      "RESTAURANTES"
-    ],
+    "categories": ["ALL", "RESTAURANTES"],
     "website_display": "",
     "instagram_display": "@boragocl",
     "email": "",
@@ -2252,7 +2070,6 @@
       "category": "RESTAURANTES"
     },
     "images": [
-      "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/BOCANARIZ-1.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/BOCANARIZ-2.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/BOCANARIZ-3.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/BOCANARIZ-4.webp",
@@ -2264,10 +2081,7 @@
     ],
     "website": "",
     "instagram": "https://www.instagram.com/BOCANARIZ",
-    "categories": [
-      "ALL",
-      "RESTAURANTES"
-    ],
+    "categories": ["ALL", "RESTAURANTES"],
     "website_display": "",
     "instagram_display": "@bocanariz",
     "email": "",
@@ -2303,7 +2117,6 @@
       "category": "RESTAURANTES"
     },
     "images": [
-      "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/BLUE-JAR-1.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/BLUE-JAR-2.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/BLUE-JAR-3.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/BLUE-JAR-4.webp",
@@ -2315,10 +2128,7 @@
     ],
     "website": "https://BLUEJAR.CL",
     "instagram": "https://www.instagram.com/BLUE_RESTAURANT",
-    "categories": [
-      "ALL",
-      "RESTAURANTES"
-    ],
+    "categories": ["ALL", "RESTAURANTES"],
     "website_display": "bluejar.cl",
     "instagram_display": "@blue_restaurant",
     "email": "",
@@ -2352,7 +2162,6 @@
       "category": "RESTAURANTES"
     },
     "images": [
-      "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/BARDOT-1.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/BARDOT-2.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/BARDOT-3.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/BARDOT-4.webp",
@@ -2364,10 +2173,7 @@
     ],
     "website": "",
     "instagram": "https://www.instagram.com/BARDOT.SANTIAGO",
-    "categories": [
-      "ALL",
-      "RESTAURANTES"
-    ],
+    "categories": ["ALL", "RESTAURANTES"],
     "website_display": "",
     "instagram_display": "@bardot.santiago",
     "email": "",
@@ -2404,7 +2210,6 @@
       "category": "RESTAURANTES"
     },
     "images": [
-      "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/ARTEMISA-1.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/ARTEMISA-2.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/ARTEMISA-3.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/ARTEMISA-4.webp",
@@ -2415,10 +2220,7 @@
     ],
     "website": "https://ARTEMISA-BAR.CL",
     "instagram": "https://www.instagram.com/ARTEMISA_COCKTAILBAR",
-    "categories": [
-      "ALL",
-      "RESTAURANTES"
-    ],
+    "categories": ["ALL", "RESTAURANTES"],
     "website_display": "artemisa-bar.cl",
     "instagram_display": "@artemisa_cocktailbar",
     "email": "",
@@ -2454,7 +2256,6 @@
       "category": "RESTAURANTES"
     },
     "images": [
-      "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/ARCA-1.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/ARCA-2.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/ARCA-3.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/ARCA-4.webp",
@@ -2464,10 +2265,7 @@
     ],
     "website": "https://ARCABAR.CL",
     "instagram": "https://www.instagram.com/ARCABAR",
-    "categories": [
-      "ALL",
-      "RESTAURANTES"
-    ],
+    "categories": ["ALL", "RESTAURANTES"],
     "website_display": "arcabar.cl",
     "instagram_display": "@arcabar",
     "email": "",
@@ -2507,7 +2305,6 @@
       "category": "RESTAURANTES"
     },
     "images": [
-      "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/AMBROSIA-1.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/AMBROSIA-2.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/AMBROSIA-3.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/AMBROSIA-4.webp",
@@ -2519,10 +2316,7 @@
     ],
     "website": "https://AMBROSIA.CL",
     "instagram": "https://www.instagram.com/AMBROSIA_REST",
-    "categories": [
-      "ALL",
-      "RESTAURANTES"
-    ],
+    "categories": ["ALL", "RESTAURANTES"],
     "website_display": "ambrosia.cl",
     "instagram_display": "@ambrosia_rest",
     "email": "",
@@ -2561,7 +2355,6 @@
       "category": "RESTAURANTES"
     },
     "images": [
-      "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/AC-KITCHEN.1.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/AC-KITCHEN.2.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/AC-KITCHEN.3.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/AC-KITCHEN.4.webp",
@@ -2576,10 +2369,7 @@
     ],
     "website": "",
     "instagram": "https://www.instagram.com/ACHSANTIAGOCENCOCOSTANERA",
-    "categories": [
-      "ALL",
-      "RESTAURANTES"
-    ],
+    "categories": ["ALL", "RESTAURANTES"],
     "website_display": "",
     "instagram_display": "@achsantiagocencocostanera",
     "email": "",
@@ -2622,11 +2412,7 @@
     ],
     "website": "https://BANCOCHILE.CL",
     "instagram": "",
-    "categories": [
-      "ALL",
-      "ICONOS",
-      "TODOS"
-    ],
+    "categories": ["ALL", "ICONOS", "TODOS"],
     "website_display": "bancochile.cl",
     "instagram_display": "",
     "email": "",
@@ -2664,11 +2450,7 @@
     ],
     "website": "",
     "instagram": "",
-    "categories": [
-      "ALL",
-      "BARRIOS",
-      "TODOS"
-    ],
+    "categories": ["ALL", "BARRIOS", "TODOS"],
     "website_display": "",
     "instagram_display": "",
     "email": "",
@@ -2708,11 +2490,7 @@
     ],
     "website": "",
     "instagram": "",
-    "categories": [
-      "ALL",
-      "BARRIOS",
-      "TODOS"
-    ],
+    "categories": ["ALL", "BARRIOS", "TODOS"],
     "website_display": "",
     "instagram_display": "",
     "email": "",
@@ -2754,11 +2532,7 @@
     ],
     "website": "https://museosanfrancisco.com",
     "instagram": "https://www.instagram.com/museosanfranciscochile",
-    "categories": [
-      "ALL",
-      "MUSEOS",
-      "TODOS"
-    ],
+    "categories": ["ALL", "MUSEOS", "TODOS"],
     "website_display": "museosanfrancisco.com",
     "instagram_display": "@museosanfranciscochile",
     "email": "",
@@ -2800,11 +2574,7 @@
     ],
     "website": "https://FUNDACIONNERUDA.ORG",
     "instagram": "",
-    "categories": [
-      "ALL",
-      "MUSEOS",
-      "TODOS"
-    ],
+    "categories": ["ALL", "MUSEOS", "TODOS"],
     "website_display": "fundacionneruda.org",
     "instagram_display": "",
     "email": "",
@@ -2848,11 +2618,7 @@
     ],
     "website": "https://ILPOSTO.CL",
     "instagram": "",
-    "categories": [
-      "ALL",
-      "MUSEOS",
-      "TODOS"
-    ],
+    "categories": ["ALL", "MUSEOS", "TODOS"],
     "website_display": "ilposto.cl",
     "instagram_display": "",
     "email": "",
@@ -2895,11 +2661,7 @@
     ],
     "website": "https://ESPACIOMATTA.CL",
     "instagram": "",
-    "categories": [
-      "ALL",
-      "MUSEOS",
-      "TODOS"
-    ],
+    "categories": ["ALL", "MUSEOS", "TODOS"],
     "website_display": "espaciomatta.cl",
     "instagram_display": "",
     "email": "",
@@ -2939,11 +2701,7 @@
     ],
     "website": "",
     "instagram": "",
-    "categories": [
-      "ALL",
-      "MUSEOS",
-      "TODOS"
-    ],
+    "categories": ["ALL", "MUSEOS", "TODOS"],
     "website_display": "",
     "instagram_display": "",
     "email": "",
@@ -2984,11 +2742,7 @@
     ],
     "website": "https://MUNISTGO.CL",
     "instagram": "",
-    "categories": [
-      "ALL",
-      "MUSEOS",
-      "TODOS"
-    ],
+    "categories": ["ALL", "MUSEOS", "TODOS"],
     "website_display": "munistgo.cl",
     "instagram_display": "",
     "email": "",
@@ -3031,11 +2785,7 @@
     ],
     "website": "https://FUNDACIONGASCO.CL",
     "instagram": "",
-    "categories": [
-      "ALL",
-      "MUSEOS",
-      "TODOS"
-    ],
+    "categories": ["ALL", "MUSEOS", "TODOS"],
     "website_display": "fundaciongasco.cl",
     "instagram_display": "",
     "email": "",
@@ -3082,11 +2832,7 @@
     ],
     "website": "",
     "instagram": "https://www.instagram.com/POSADADELCORREGIDOR",
-    "categories": [
-      "ALL",
-      "MUSEOS",
-      "TODOS"
-    ],
+    "categories": ["ALL", "MUSEOS", "TODOS"],
     "website_display": "",
     "instagram_display": "@posadadelcorregidor",
     "email": "",
@@ -3129,11 +2875,7 @@
     ],
     "website": "https://CULTURALAREINA.CL",
     "instagram": "",
-    "categories": [
-      "ALL",
-      "MUSEOS",
-      "TODOS"
-    ],
+    "categories": ["ALL", "MUSEOS", "TODOS"],
     "website_display": "culturalareina.cl",
     "instagram_display": "",
     "email": "",
@@ -3193,11 +2935,7 @@
     ],
     "website": "https://MHM.CL",
     "instagram": "",
-    "categories": [
-      "ALL",
-      "MUSEOS",
-      "TODOS"
-    ],
+    "categories": ["ALL", "MUSEOS", "TODOS"],
     "website_display": "mhm.cl",
     "instagram_display": "",
     "email": "",
@@ -3242,11 +2980,7 @@
     ],
     "website": "https://GOB.CL",
     "instagram": "",
-    "categories": [
-      "ALL",
-      "MUSEOS",
-      "TODOS"
-    ],
+    "categories": ["ALL", "MUSEOS", "TODOS"],
     "website_display": "gob.cl",
     "instagram_display": "",
     "email": "",
@@ -3293,11 +3027,7 @@
     ],
     "website": "",
     "instagram": "",
-    "categories": [
-      "ALL",
-      "MUSEOS",
-      "TODOS"
-    ],
+    "categories": ["ALL", "MUSEOS", "TODOS"],
     "website_display": "",
     "instagram_display": "",
     "email": "",
@@ -3344,11 +3074,7 @@
     ],
     "website": "https://MIN.CL",
     "instagram": "",
-    "categories": [
-      "ALL",
-      "MUSEOS",
-      "TODOS"
-    ],
+    "categories": ["ALL", "MUSEOS", "TODOS"],
     "website_display": "min.cl",
     "instagram_display": "",
     "email": "",
@@ -3396,11 +3122,7 @@
     ],
     "website": "",
     "instagram": "",
-    "categories": [
-      "ALL",
-      "MUSEOS",
-      "TODOS"
-    ],
+    "categories": ["ALL", "MUSEOS", "TODOS"],
     "website_display": "",
     "instagram_display": "",
     "email": "",
@@ -3451,11 +3173,7 @@
     ],
     "website": "https://ESTACIONMAPOCHO.CL",
     "instagram": "",
-    "categories": [
-      "ALL",
-      "MUSEOS",
-      "TODOS"
-    ],
+    "categories": ["ALL", "MUSEOS", "TODOS"],
     "website_display": "estacionmapocho.cl",
     "instagram_display": "",
     "email": "",
@@ -3500,11 +3218,7 @@
     ],
     "website": "https://CEACUCHILE.CL",
     "instagram": "",
-    "categories": [
-      "ALL",
-      "MUSEOS",
-      "TODOS"
-    ],
+    "categories": ["ALL", "MUSEOS", "TODOS"],
     "website_display": "ceacuchile.cl",
     "instagram_display": "",
     "email": "",
@@ -3548,11 +3262,7 @@
     ],
     "website": "",
     "instagram": "",
-    "categories": [
-      "ALL",
-      "MUSEOS",
-      "TODOS"
-    ],
+    "categories": ["ALL", "MUSEOS", "TODOS"],
     "website_display": "",
     "instagram_display": "",
     "email": "",
@@ -3591,11 +3301,7 @@
     ],
     "website": "",
     "instagram": "",
-    "categories": [
-      "ALL",
-      "MUSEOS",
-      "TODOS"
-    ],
+    "categories": ["ALL", "MUSEOS", "TODOS"],
     "website_display": "",
     "instagram_display": "",
     "email": "",
@@ -3638,11 +3344,7 @@
     ],
     "website": "",
     "instagram": "",
-    "categories": [
-      "ALL",
-      "PARQUES",
-      "TODOS"
-    ],
+    "categories": ["ALL", "PARQUES", "TODOS"],
     "website_display": "",
     "instagram_display": "",
     "email": "",
@@ -3683,11 +3385,7 @@
     ],
     "website": "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/09/TITANIUM-1.webphttps://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/09/TITANIUM-2.webphttps://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/09/TITANIUM-3.webphttps://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/09/TITANIUM-4.webphttps://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/09/TITANIUM-5.webphttps://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/09/TITANIUM-6.webphttps://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/09/TITANIUM-7.webp",
     "instagram": "",
-    "categories": [
-      "ALL",
-      "PARQUES",
-      "TODOS"
-    ],
+    "categories": ["ALL", "PARQUES", "TODOS"],
     "website_display": "azure-seal-918691.hostingersite.com",
     "instagram_display": "",
     "email": "",
@@ -3727,11 +3425,7 @@
     ],
     "website": "",
     "instagram": "",
-    "categories": [
-      "ALL",
-      "MERCADOS",
-      "TODOS"
-    ],
+    "categories": ["ALL", "MERCADOS", "TODOS"],
     "website_display": "",
     "instagram_display": "",
     "email": "",
@@ -3778,11 +3472,7 @@
     ],
     "website": "https://MUNICIPAL.CL",
     "instagram": "",
-    "categories": [
-      "ALL",
-      "ICONOS",
-      "TODOS"
-    ],
+    "categories": ["ALL", "ICONOS", "TODOS"],
     "website_display": "municipal.cl",
     "instagram_display": "",
     "email": "",
@@ -3829,11 +3519,7 @@
     ],
     "website": "https://FANTASILANDIA.CL",
     "instagram": "",
-    "categories": [
-      "ALL",
-      "ICONOS",
-      "TODOS"
-    ],
+    "categories": ["ALL", "ICONOS", "TODOS"],
     "website_display": "fantasilandia.cl",
     "instagram_display": "",
     "email": "",
@@ -3873,11 +3559,7 @@
     ],
     "website": "",
     "instagram": "",
-    "categories": [
-      "ALL",
-      "ICONOS",
-      "TODOS"
-    ],
+    "categories": ["ALL", "ICONOS", "TODOS"],
     "website_display": "",
     "instagram_display": "",
     "email": "",
@@ -3927,11 +3609,7 @@
     ],
     "website": "https://MATETIC.COM",
     "instagram": "https://www.instagram.com/MATETICTURISMO",
-    "categories": [
-      "ALL",
-      "PASEOS FUERA DE SANTIAGO",
-      "TODOS"
-    ],
+    "categories": ["ALL", "PASEOS FUERA DE SANTIAGO", "TODOS"],
     "website_display": "matetic.com",
     "instagram_display": "@mateticturismo",
     "email": "",
@@ -3988,11 +3666,7 @@
     ],
     "website": "https://LEONERA.CL",
     "instagram": "https://www.instagram.com/LEONERAHOTEL",
-    "categories": [
-      "ALL",
-      "PASEOS FUERA DE SANTIAGO",
-      "TODOS"
-    ],
+    "categories": ["ALL", "PASEOS FUERA DE SANTIAGO", "TODOS"],
     "website_display": "leonera.cl",
     "instagram_display": "@leonerahotel",
     "email": "",
@@ -4040,11 +3714,7 @@
     ],
     "website": "https://BUINZOO.CL",
     "instagram": "",
-    "categories": [
-      "ALL",
-      "PASEOS FUERA DE SANTIAGO",
-      "TODOS"
-    ],
+    "categories": ["ALL", "PASEOS FUERA DE SANTIAGO", "TODOS"],
     "website_display": "buinzoo.cl",
     "instagram_display": "",
     "email": "",
@@ -4085,11 +3755,7 @@
     ],
     "website": "https://MUSEODELSONIDO.CL",
     "instagram": "https://www.instagram.com/MUSEODELSONIDO",
-    "categories": [
-      "ALL",
-      "MUSEOS",
-      "TODOS"
-    ],
+    "categories": ["ALL", "MUSEOS", "TODOS"],
     "website_display": "museodelsonido.cl",
     "instagram_display": "@museodelsonido",
     "email": "",
@@ -4132,11 +3798,7 @@
     ],
     "website": "https://MMDH.CL",
     "instagram": "https://www.instagram.com/MUSEODELAMEMORIA",
-    "categories": [
-      "ALL",
-      "MUSEOS",
-      "TODOS"
-    ],
+    "categories": ["ALL", "MUSEOS", "TODOS"],
     "website_display": "mmdh.cl",
     "instagram_display": "@museodelamemoria",
     "email": "",
@@ -4178,11 +3840,7 @@
     ],
     "website": "https://UC.CL",
     "instagram": "https://www.instagram.com/MAVICHILE",
-    "categories": [
-      "ALL",
-      "MUSEOS",
-      "TODOS"
-    ],
+    "categories": ["ALL", "MUSEOS", "TODOS"],
     "website_display": "uc.cl",
     "instagram_display": "@mavichile",
     "email": "",
@@ -4225,11 +3883,7 @@
     ],
     "website": "https://NAVE.IO",
     "instagram": "https://www.instagram.com/CENTRO_NAVE",
-    "categories": [
-      "ALL",
-      "MUSEOS",
-      "TODOS"
-    ],
+    "categories": ["ALL", "MUSEOS", "TODOS"],
     "website_display": "nave.io",
     "instagram_display": "@centro_nave",
     "email": "VISITAS@NAVE.IO",
@@ -4266,11 +3920,7 @@
     ],
     "website": "https://PARQUEMET.CL",
     "instagram": "",
-    "categories": [
-      "ALL",
-      "PARQUES",
-      "TODOS"
-    ],
+    "categories": ["ALL", "PARQUES", "TODOS"],
     "website_display": "parquemet.cl",
     "instagram_display": "",
     "email": "",
@@ -4308,11 +3958,7 @@
     ],
     "website": "",
     "instagram": "https://www.instagram.com/PALACIOLARRAIN",
-    "categories": [
-      "ALL",
-      "PALACIOS",
-      "TODOS"
-    ],
+    "categories": ["ALL", "PALACIOS", "TODOS"],
     "website_display": "",
     "instagram_display": "@palaciolarrain",
     "email": "",
@@ -4346,11 +3992,7 @@
     ],
     "website": "",
     "instagram": "",
-    "categories": [
-      "ALL",
-      "MIRADORES",
-      "TODOS"
-    ],
+    "categories": ["ALL", "MIRADORES", "TODOS"],
     "website_display": "",
     "instagram_display": "",
     "email": "",
@@ -4389,11 +4031,7 @@
     ],
     "website": "https://PARQUEMET.CL",
     "instagram": "",
-    "categories": [
-      "ALL",
-      "MIRADORES",
-      "TODOS"
-    ],
+    "categories": ["ALL", "MIRADORES", "TODOS"],
     "website_display": "parquemet.cl",
     "instagram_display": "",
     "email": "",
@@ -4431,11 +4069,7 @@
     ],
     "website": "",
     "instagram": "https://www.instagram.com/BARRIO_YUNGAY",
-    "categories": [
-      "ALL",
-      "BARRIOS",
-      "TODOS"
-    ],
+    "categories": ["ALL", "BARRIOS", "TODOS"],
     "website_display": "",
     "instagram_display": "@barrio_yungay",
     "email": "",
@@ -4476,11 +4110,7 @@
     ],
     "website": "",
     "instagram": "",
-    "categories": [
-      "ALL",
-      "BARRIOS",
-      "TODOS"
-    ],
+    "categories": ["ALL", "BARRIOS", "TODOS"],
     "website_display": "",
     "instagram_display": "",
     "email": "",
@@ -4516,11 +4146,7 @@
     ],
     "website": "",
     "instagram": "",
-    "categories": [
-      "ALL",
-      "ARQUITECTURA",
-      "TODOS"
-    ],
+    "categories": ["ALL", "ARQUITECTURA", "TODOS"],
     "website_display": "",
     "instagram_display": "",
     "email": "",
@@ -4559,11 +4185,7 @@
     ],
     "website": "",
     "instagram": "",
-    "categories": [
-      "ALL",
-      "ARQUITECTURA",
-      "TODOS"
-    ],
+    "categories": ["ALL", "ARQUITECTURA", "TODOS"],
     "website_display": "",
     "instagram_display": "",
     "email": "",
@@ -4601,11 +4223,7 @@
     ],
     "website": "https://EDIFICIOCCU.CL",
     "instagram": "",
-    "categories": [
-      "ALL",
-      "ARQUITECTURA",
-      "TODOS"
-    ],
+    "categories": ["ALL", "ARQUITECTURA", "TODOS"],
     "website_display": "edificioccu.cl",
     "instagram_display": "",
     "email": "",
@@ -4645,11 +4263,7 @@
     ],
     "website": "https://UC.CL",
     "instagram": "https://www.instagram.com/CENTROINNOVAUC",
-    "categories": [
-      "ALL",
-      "ARQUITECTURA",
-      "TODOS"
-    ],
+    "categories": ["ALL", "ARQUITECTURA", "TODOS"],
     "website_display": "uc.cl",
     "instagram_display": "@centroinnovauc",
     "email": "",
@@ -4684,7 +4298,6 @@
     },
     "images": [
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/07/concha_y_toro-7.webp",
-      "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/07/concha_y_toro-1.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/07/concha_y_toro-2.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/07/concha_y_toro-3.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/07/concha_y_toro-4.webp",
@@ -4693,11 +4306,7 @@
     ],
     "website": "https://CONCHAYTORO.COM",
     "instagram": "https://www.instagram.com/CONCHAYTORO",
-    "categories": [
-      "ALL",
-      "PASEOS FUERA DE SANTIAGO",
-      "TODOS"
-    ],
+    "categories": ["ALL", "PASEOS FUERA DE SANTIAGO", "TODOS"],
     "website_display": "conchaytoro.com",
     "instagram_display": "@conchaytoro",
     "email": "",
@@ -4737,11 +4346,7 @@
     ],
     "website": "https://VALLENEVADO.COM",
     "instagram": "",
-    "categories": [
-      "ALL",
-      "PASEOS FUERA DE SANTIAGO",
-      "TODOS"
-    ],
+    "categories": ["ALL", "PASEOS FUERA DE SANTIAGO", "TODOS"],
     "website_display": "vallenevado.com",
     "instagram_display": "",
     "email": "",
@@ -4783,11 +4388,7 @@
     ],
     "website": "https://LASMAJADAS.CL",
     "instagram": "https://www.instagram.com/LASMAJADASHOTEL",
-    "categories": [
-      "ALL",
-      "PASEOS FUERA DE SANTIAGO",
-      "TODOS"
-    ],
+    "categories": ["ALL", "PASEOS FUERA DE SANTIAGO", "TODOS"],
     "website_display": "lasmajadas.cl",
     "instagram_display": "@lasmajadashotel",
     "email": "",
@@ -4831,11 +4432,7 @@
     ],
     "website": "https://CASASDELBOSQUE.CL",
     "instagram": "https://www.instagram.com/CASASDELBOSQUE",
-    "categories": [
-      "ALL",
-      "PASEOS FUERA DE SANTIAGO",
-      "TODOS"
-    ],
+    "categories": ["ALL", "PASEOS FUERA DE SANTIAGO", "TODOS"],
     "website_display": "casasdelbosque.cl",
     "instagram_display": "@casasdelbosque",
     "email": "",
@@ -4877,11 +4474,7 @@
     ],
     "website": "https://SANTARITA.COM",
     "instagram": "https://www.instagram.com/SANTARITAWINES",
-    "categories": [
-      "ALL",
-      "PASEOS FUERA DE SANTIAGO",
-      "TODOS"
-    ],
+    "categories": ["ALL", "PASEOS FUERA DE SANTIAGO", "TODOS"],
     "website_display": "santarita.com",
     "instagram_display": "@santaritawines",
     "email": "",
@@ -4920,11 +4513,7 @@
     ],
     "website": "https://PARQUEVICTORJARA.CL",
     "instagram": "https://www.instagram.com/FOTOSAEREAS",
-    "categories": [
-      "ALL",
-      "PARQUES",
-      "TODOS"
-    ],
+    "categories": ["ALL", "PARQUES", "TODOS"],
     "website_display": "parquevictorjara.cl",
     "instagram_display": "@fotosaereas",
     "email": "",
@@ -4968,11 +4557,7 @@
     ],
     "website": "https://SANTIAGOTURISMO.CL",
     "instagram": "https://www.instagram.com/MUNISTGO",
-    "categories": [
-      "ALL",
-      "PARQUES",
-      "TODOS"
-    ],
+    "categories": ["ALL", "PARQUES", "TODOS"],
     "website_display": "santiagoturismo.cl",
     "instagram_display": "@munistgo",
     "email": "",
@@ -5015,11 +4600,7 @@
     ],
     "website": "https://MUNISTGO.CL",
     "instagram": "https://www.instagram.com/MUNISTGO.CL",
-    "categories": [
-      "ALL",
-      "PARQUES",
-      "TODOS"
-    ],
+    "categories": ["ALL", "PARQUES", "TODOS"],
     "website_display": "munistgo.cl",
     "instagram_display": "@munistgo.cl",
     "email": "SANTIAGO@MUNISTGO.CL",
@@ -5062,11 +4643,7 @@
     ],
     "website": "https://PARQUEMET.CL",
     "instagram": "https://www.instagram.com/PARQUEMETMINVU",
-    "categories": [
-      "ALL",
-      "PARQUES",
-      "TODOS"
-    ],
+    "categories": ["ALL", "PARQUES", "TODOS"],
     "website_display": "parquemet.cl",
     "instagram_display": "@parquemetminvu",
     "email": "",
@@ -5109,11 +4686,7 @@
     ],
     "website": "https://VITACURA.CL",
     "instagram": "https://www.instagram.com/VITACURA.CL",
-    "categories": [
-      "ALL",
-      "PARQUES",
-      "TODOS"
-    ],
+    "categories": ["ALL", "PARQUES", "TODOS"],
     "website_display": "vitacura.cl",
     "instagram_display": "@vitacura.cl",
     "email": "ATENCIONALVECINO@VITACURA.CL",
@@ -5153,11 +4726,7 @@
     ],
     "website": "",
     "instagram": "https://www.instagram.com/PARQUEARAUCANO",
-    "categories": [
-      "ALL",
-      "PARQUES",
-      "TODOS"
-    ],
+    "categories": ["ALL", "PARQUES", "TODOS"],
     "website_display": "",
     "instagram_display": "@parquearaucano",
     "email": "",
@@ -5196,11 +4765,7 @@
     ],
     "website": "https://PARQUESANALBERTOHURTADO.CL",
     "instagram": "https://www.instagram.com/FOTOSAEREAS",
-    "categories": [
-      "ALL",
-      "PARQUES",
-      "TODOS"
-    ],
+    "categories": ["ALL", "PARQUES", "TODOS"],
     "website_display": "parquesanalbertohurtado.cl",
     "instagram_display": "@fotosaereas",
     "email": "",
@@ -5240,11 +4805,7 @@
     ],
     "website": "https://PARQUEMET.CL",
     "instagram": "https://www.instagram.com/PARQUEMETMINVU",
-    "categories": [
-      "ALL",
-      "PARQUES",
-      "TODOS"
-    ],
+    "categories": ["ALL", "PARQUES", "TODOS"],
     "website_display": "parquemet.cl",
     "instagram_display": "@parquemetminvu",
     "email": "",
@@ -5285,11 +4846,7 @@
     ],
     "website": "https://PARQUEMET.CL",
     "instagram": "https://www.instagram.com/PARQUEMETMINVU",
-    "categories": [
-      "ALL",
-      "PARQUES",
-      "TODOS"
-    ],
+    "categories": ["ALL", "PARQUES", "TODOS"],
     "website_display": "parquemet.cl",
     "instagram_display": "@parquemetminvu",
     "email": "",
@@ -5329,11 +4886,7 @@
     ],
     "website": "https://PRECOLOMBINO.CL",
     "instagram": "https://www.instagram.com/MUSEOPRECOLOMBINO",
-    "categories": [
-      "ALL",
-      "MUSEOS",
-      "TODOS"
-    ],
+    "categories": ["ALL", "MUSEOS", "TODOS"],
     "website_display": "precolombino.cl",
     "instagram_display": "@museoprecolombino",
     "email": "",
@@ -5373,11 +4926,7 @@
     ],
     "website": "https://MUSEOTALLER.CL",
     "instagram": "https://www.instagram.com/MUSEOTALLER",
-    "categories": [
-      "ALL",
-      "MUSEOS",
-      "TODOS"
-    ],
+    "categories": ["ALL", "MUSEOS", "TODOS"],
     "website_display": "museotaller.cl",
     "instagram_display": "@museotaller",
     "email": "",
@@ -5419,11 +4968,7 @@
     ],
     "website": "https://UCHILE.CL",
     "instagram": "https://www.instagram.com/MUSEO_MAC",
-    "categories": [
-      "ALL",
-      "MUSEOS",
-      "TODOS"
-    ],
+    "categories": ["ALL", "MUSEOS", "TODOS"],
     "website_display": "uchile.cl",
     "instagram_display": "@museo_mac",
     "email": "",
@@ -5463,11 +5008,7 @@
     ],
     "website": "https://GOB.CL",
     "instagram": "https://www.instagram.com/MHNCHILE",
-    "categories": [
-      "ALL",
-      "MUSEOS",
-      "TODOS"
-    ],
+    "categories": ["ALL", "MUSEOS", "TODOS"],
     "website_display": "gob.cl",
     "instagram_display": "@mhnchile",
     "email": "",
@@ -5507,11 +5048,7 @@
     ],
     "website": "https://GOB.CL",
     "instagram": "https://www.instagram.com/MNHNCL",
-    "categories": [
-      "ALL",
-      "MUSEOS",
-      "TODOS"
-    ],
+    "categories": ["ALL", "MUSEOS", "TODOS"],
     "website_display": "gob.cl",
     "instagram_display": "@mnhncl",
     "email": "",
@@ -5556,11 +5093,7 @@
     ],
     "website": "https://GAM.CL",
     "instagram": "https://www.instagram.com/CENTROGAM",
-    "categories": [
-      "ALL",
-      "MUSEOS",
-      "TODOS"
-    ],
+    "categories": ["ALL", "MUSEOS", "TODOS"],
     "website_display": "gam.cl",
     "instagram_display": "@centrogam",
     "email": "",
@@ -5600,11 +5133,7 @@
     ],
     "website": "https://MUSEOACIELOABIERTOENSANMIGUEL.CL",
     "instagram": "https://www.instagram.com/MUSEOSANMIGUEL",
-    "categories": [
-      "ALL",
-      "MUSEOS",
-      "TODOS"
-    ],
+    "categories": ["ALL", "MUSEOS", "TODOS"],
     "website_display": "museoacieloabiertoensanmiguel.cl",
     "instagram_display": "@museosanmiguel",
     "email": "",
@@ -5644,11 +5173,7 @@
     ],
     "website": "https://CCLM.CL",
     "instagram": "https://www.instagram.com/CCPLM",
-    "categories": [
-      "ALL",
-      "MUSEOS",
-      "TODOS"
-    ],
+    "categories": ["ALL", "MUSEOS", "TODOS"],
     "website_display": "cclm.cl",
     "instagram_display": "@ccplm",
     "email": "",
@@ -5688,11 +5213,7 @@
     ],
     "website": "https://GOB.CL",
     "instagram": "https://www.instagram.com/MNBACHILE",
-    "categories": [
-      "ALL",
-      "MUSEOS",
-      "TODOS"
-    ],
+    "categories": ["ALL", "MUSEOS", "TODOS"],
     "website_display": "gob.cl",
     "instagram_display": "@mnbachile",
     "email": "",
@@ -5731,11 +5252,7 @@
     ],
     "website": "",
     "instagram": "https://www.instagram.com/FOTOSAEREAS",
-    "categories": [
-      "ALL",
-      "ICONOS",
-      "TODOS"
-    ],
+    "categories": ["ALL", "ICONOS", "TODOS"],
     "website_display": "",
     "instagram_display": "@fotosaereas",
     "email": "",
@@ -5778,11 +5295,7 @@
     ],
     "website": "https://SANTUARIOS.CL",
     "instagram": "https://www.instagram.com/SANTUARIONACIONAL.CL",
-    "categories": [
-      "ALL",
-      "ICONOS",
-      "TODOS"
-    ],
+    "categories": ["ALL", "ICONOS", "TODOS"],
     "website_display": "santuarios.cl",
     "instagram_display": "@santuarionacional.cl",
     "email": "CONTACTO@SANTUARIONACIONAL.CL",
@@ -5826,11 +5339,7 @@
     ],
     "website": "https://MEMORIAESTADIONACIONAL.CL",
     "instagram": "https://www.instagram.com/ENMN.CL",
-    "categories": [
-      "ALL",
-      "ICONOS",
-      "TODOS"
-    ],
+    "categories": ["ALL", "ICONOS", "TODOS"],
     "website_display": "memoriaestadionacional.cl",
     "instagram_display": "@enmn.cl",
     "email": "ADMINISTRACION@ENMN.CL",
@@ -5870,11 +5379,7 @@
     ],
     "website": "https://SACRAMENTINOS.CL",
     "instagram": "https://www.instagram.com/GMAIL.COM",
-    "categories": [
-      "ALL",
-      "ICONOS",
-      "TODOS"
-    ],
+    "categories": ["ALL", "ICONOS", "TODOS"],
     "website_display": "sacramentinos.cl",
     "instagram_display": "@gmail.com",
     "email": "P.SACRAMENTINOS@GMAIL.COM",
@@ -5916,11 +5421,7 @@
     ],
     "website": "https://MUNISTGO.CL",
     "instagram": "https://www.instagram.com/MUNISTGO",
-    "categories": [
-      "ALL",
-      "ICONOS",
-      "TODOS"
-    ],
+    "categories": ["ALL", "ICONOS", "TODOS"],
     "website_display": "munistgo.cl",
     "instagram_display": "@munistgo",
     "email": "",
@@ -5965,11 +5466,7 @@
     ],
     "website": "https://PARQUEMET.CL",
     "instagram": "https://www.instagram.com/PARQUEMETMINVU",
-    "categories": [
-      "ALL",
-      "ICONOS",
-      "TODOS"
-    ],
+    "categories": ["ALL", "ICONOS", "TODOS"],
     "website_display": "parquemet.cl",
     "instagram_display": "@parquemetminvu",
     "email": "",
@@ -6012,11 +5509,7 @@
     ],
     "website": "https://METRO.CL",
     "instagram": "https://www.instagram.com/METRODESANTIAGO",
-    "categories": [
-      "ALL",
-      "ICONOS",
-      "TODOS"
-    ],
+    "categories": ["ALL", "ICONOS", "TODOS"],
     "website_display": "metro.cl",
     "instagram_display": "@metrodesantiago",
     "email": "",
@@ -6057,11 +5550,7 @@
     ],
     "website": "https://PRESIDENCIA.CL",
     "instagram": "",
-    "categories": [
-      "ALL",
-      "ICONOS",
-      "TODOS"
-    ],
+    "categories": ["ALL", "ICONOS", "TODOS"],
     "website_display": "presidencia.cl",
     "instagram_display": "",
     "email": "",
@@ -6104,11 +5593,7 @@
     ],
     "website": "https://OFFICEHUBCOSTANERA.CL",
     "instagram": "https://www.instagram.com/OFFICEHUBCOSTANERA",
-    "categories": [
-      "ALL",
-      "ICONOS",
-      "TODOS"
-    ],
+    "categories": ["ALL", "ICONOS", "TODOS"],
     "website_display": "officehubcostanera.cl",
     "instagram_display": "@officehubcostanera",
     "email": "",
@@ -6151,11 +5636,7 @@
     ],
     "website": "https://BAHAI.CL",
     "instagram": "https://www.instagram.com/TEMPLOBAHAI",
-    "categories": [
-      "ALL",
-      "ICONOS",
-      "TODOS"
-    ],
+    "categories": ["ALL", "ICONOS", "TODOS"],
     "website_display": "bahai.cl",
     "instagram_display": "@templobahai",
     "email": "",
@@ -6196,11 +5677,7 @@
     ],
     "website": "https://CEMENTERIOGENERAL.CL",
     "instagram": "https://www.instagram.com/CEMENTERIOGRAL",
-    "categories": [
-      "ALL",
-      "ICONOS",
-      "TODOS"
-    ],
+    "categories": ["ALL", "ICONOS", "TODOS"],
     "website_display": "cementeriogeneral.cl",
     "instagram_display": "@cementeriogral",
     "email": "",
@@ -6238,11 +5715,7 @@
     ],
     "website": "",
     "instagram": "https://www.instagram.com/SANTIAGOADICTO",
-    "categories": [
-      "ALL",
-      "ARQUITECTURA",
-      "TODOS"
-    ],
+    "categories": ["ALL", "ARQUITECTURA", "TODOS"],
     "website_display": "",
     "instagram_display": "@santiagoadicto",
     "email": "",
@@ -6282,11 +5755,7 @@
     ],
     "website": "https://BENEDICTINOS.CL",
     "instagram": "https://www.instagram.com/BENEDIC_TIENDA",
-    "categories": [
-      "ALL",
-      "ARQUITECTURA",
-      "TODOS"
-    ],
+    "categories": ["ALL", "ARQUITECTURA", "TODOS"],
     "website_display": "benedictinos.cl",
     "instagram_display": "@benedic_tienda",
     "email": "",
@@ -6326,11 +5795,7 @@
     ],
     "website": "https://CONSORCIO.CL",
     "instagram": "https://www.instagram.com/CONSORCIO.CL",
-    "categories": [
-      "ALL",
-      "ARQUITECTURA",
-      "TODOS"
-    ],
+    "categories": ["ALL", "ARQUITECTURA", "TODOS"],
     "website_display": "consorcio.cl",
     "instagram_display": "@consorcio.cl",
     "email": "",
@@ -6371,11 +5836,7 @@
     ],
     "website": "https://TANICAINMOBILIARIA.COM",
     "instagram": "https://www.instagram.com/TANICAINMOBILIARIA",
-    "categories": [
-      "ALL",
-      "ARQUITECTURA",
-      "TODOS"
-    ],
+    "categories": ["ALL", "ARQUITECTURA", "TODOS"],
     "website_display": "tanicainmobiliaria.com",
     "instagram_display": "@tanicainmobiliaria",
     "email": "",
@@ -6413,11 +5874,7 @@
     ],
     "website": "https://IZQUIERDOLEHMANN.COM",
     "instagram": "https://www.instagram.com/SANTIAGOADICTO",
-    "categories": [
-      "ALL",
-      "ARQUITECTURA",
-      "TODOS"
-    ],
+    "categories": ["ALL", "ARQUITECTURA", "TODOS"],
     "website_display": "izquierdolehmann.com",
     "instagram_display": "@santiagoadicto",
     "email": "",
@@ -6455,11 +5912,7 @@
     ],
     "website": "",
     "instagram": "https://www.instagram.com/BARRIO.PARISLONDRES",
-    "categories": [
-      "ALL",
-      "BARRIOS",
-      "TODOS"
-    ],
+    "categories": ["ALL", "BARRIOS", "TODOS"],
     "website_display": "",
     "instagram_display": "@barrio.parislondres",
     "email": "",
@@ -6501,11 +5954,7 @@
     ],
     "website": "https://BARRIOBELLASARTES.CL",
     "instagram": "https://www.instagram.com/BARRIOBELLASARTES.CL",
-    "categories": [
-      "ALL",
-      "BARRIOS",
-      "TODOS"
-    ],
+    "categories": ["ALL", "BARRIOS", "TODOS"],
     "website_display": "barriobellasartes.cl",
     "instagram_display": "@barriobellasartes.cl",
     "email": "",
@@ -6548,11 +5997,7 @@
     ],
     "website": "https://BARRIOITALIACHILE.CL",
     "instagram": "https://www.instagram.com/BARRIOITALIA.CHILE",
-    "categories": [
-      "ALL",
-      "BARRIOS",
-      "TODOS"
-    ],
+    "categories": ["ALL", "BARRIOS", "TODOS"],
     "website_display": "barrioitaliachile.cl",
     "instagram_display": "@barrioitalia.chile",
     "email": "",
@@ -6593,11 +6038,7 @@
     ],
     "website": "",
     "instagram": "https://www.instagram.com/FOTOSA",
-    "categories": [
-      "ALL",
-      "BARRIOS",
-      "TODOS"
-    ],
+    "categories": ["ALL", "BARRIOS", "TODOS"],
     "website_display": "",
     "instagram_display": "@fotosa",
     "email": "",
@@ -6637,11 +6078,7 @@
     ],
     "website": "",
     "instagram": "https://www.instagram.com/FOTOSA",
-    "categories": [
-      "ALL",
-      "BARRIOS",
-      "TODOS"
-    ],
+    "categories": ["ALL", "BARRIOS", "TODOS"],
     "website_display": "",
     "instagram_display": "@fotosa",
     "email": "",
@@ -6680,11 +6117,7 @@
     ],
     "website": "https://OUTLIFE.CL",
     "instagram": "https://www.instagram.com/OUTLIFE.CL",
-    "categories": [
-      "ALL",
-      "MIRADORES",
-      "TODOS"
-    ],
+    "categories": ["ALL", "MIRADORES", "TODOS"],
     "website_display": "outlife.cl",
     "instagram_display": "@outlife.cl",
     "email": "CONTACTO@OUTLIFE.CL",
@@ -6723,11 +6156,7 @@
     ],
     "website": "https://OUTLIFE.CL",
     "instagram": "https://www.instagram.com/OUTLIFE.CL",
-    "categories": [
-      "ALL",
-      "MIRADORES",
-      "TODOS"
-    ],
+    "categories": ["ALL", "MIRADORES", "TODOS"],
     "website_display": "outlife.cl",
     "instagram_display": "@outlife.cl",
     "email": "CONTACTO@OUTLIFE.CL",
@@ -6766,11 +6195,7 @@
     ],
     "website": "https://RENCA.CL",
     "instagram": "https://www.instagram.com/PARQUECERROSDERENCA",
-    "categories": [
-      "ALL",
-      "MIRADORES",
-      "TODOS"
-    ],
+    "categories": ["ALL", "MIRADORES", "TODOS"],
     "website_display": "renca.cl",
     "instagram_display": "@parquecerrosderenca",
     "email": "",
@@ -6809,11 +6234,7 @@
     ],
     "website": "https://PARQUECERROCALAN.CL",
     "instagram": "https://www.instagram.com/OUTLIFE.CL",
-    "categories": [
-      "ALL",
-      "MIRADORES",
-      "TODOS"
-    ],
+    "categories": ["ALL", "MIRADORES", "TODOS"],
     "website_display": "parquecerrocalan.cl",
     "instagram_display": "@outlife.cl",
     "email": "CONTACTO@OUTLIFE.CL",
@@ -6855,11 +6276,7 @@
     ],
     "website": "https://SANTIAGOTURISMO.CL",
     "instagram": "https://www.instagram.com/FOTOSAEREAS",
-    "categories": [
-      "ALL",
-      "MIRADORES",
-      "TODOS"
-    ],
+    "categories": ["ALL", "MIRADORES", "TODOS"],
     "website_display": "santiagoturismo.cl",
     "instagram_display": "@fotosaereas",
     "email": "",
@@ -6901,11 +6318,7 @@
     ],
     "website": "https://PERSA-BIOBIO.COM",
     "instagram": "https://www.instagram.com/SANTIAGOADICTO",
-    "categories": [
-      "ALL",
-      "MERCADOS",
-      "TODOS"
-    ],
+    "categories": ["ALL", "MERCADOS", "TODOS"],
     "website_display": "persa-biobio.com",
     "instagram_display": "@santiagoadicto",
     "email": "",
@@ -6945,11 +6358,7 @@
     ],
     "website": "https://MUT.CL",
     "instagram": "https://www.instagram.com/MUT.CL",
-    "categories": [
-      "ALL",
-      "MERCADOS",
-      "TODOS"
-    ],
+    "categories": ["ALL", "MERCADOS", "TODOS"],
     "website_display": "mut.cl",
     "instagram_display": "@mut.cl",
     "email": "",
@@ -6989,11 +6398,7 @@
     ],
     "website": "https://CULTURALLASCONDES.CL",
     "instagram": "https://www.instagram.com/CENTROLOSDOMINICOSLUNES",
-    "categories": [
-      "ALL",
-      "MERCADOS",
-      "TODOS"
-    ],
+    "categories": ["ALL", "MERCADOS", "TODOS"],
     "website_display": "culturallascondes.cl",
     "instagram_display": "@centrolosdominicoslunes",
     "email": "",
@@ -7034,11 +6439,7 @@
     ],
     "website": "https://FACTORIA-FRANKLIN.CL",
     "instagram": "https://www.instagram.com/FACTORIA_FRANKLIN",
-    "categories": [
-      "ALL",
-      "MERCADOS",
-      "TODOS"
-    ],
+    "categories": ["ALL", "MERCADOS", "TODOS"],
     "website_display": "factoria-franklin.cl",
     "instagram_display": "@factoria_franklin",
     "email": "",
@@ -7079,11 +6480,7 @@
     ],
     "website": "https://PALACIOPEREIRA.CL",
     "instagram": "https://www.instagram.com/CULTURA.GOB.CL",
-    "categories": [
-      "ALL",
-      "PALACIOS",
-      "TODOS"
-    ],
+    "categories": ["ALL", "PALACIOS", "TODOS"],
     "website_display": "palaciopereira.cl",
     "instagram_display": "@cultura.gob.cl",
     "email": "PALACIO.PEREIRA@CULTURA.GOB.CL",
@@ -7122,11 +6519,7 @@
     ],
     "website": "https://PROVIDENCIA.CL",
     "instagram": "https://www.instagram.com/PROVIDENCIA.CL",
-    "categories": [
-      "ALL",
-      "PALACIOS",
-      "TODOS"
-    ],
+    "categories": ["ALL", "PALACIOS", "TODOS"],
     "website_display": "providencia.cl",
     "instagram_display": "@providencia.cl",
     "email": "MUNICIPALIDAD@PROVIDENCIA.CL",
@@ -7164,11 +6557,7 @@
     "images": [],
     "website": "https://SANTIAGOCULTURA.CL",
     "instagram": "https://www.instagram.com/FOTOSAEREAS",
-    "categories": [
-      "ALL",
-      "PALACIOS",
-      "TODOS"
-    ],
+    "categories": ["ALL", "PALACIOS", "TODOS"],
     "website_display": "santiagocultura.cl",
     "instagram_display": "@fotosaereas",
     "email": "",
@@ -7199,7 +6588,6 @@
       "category": "RESTAURANTES"
     },
     "images": [
-      "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/1-1.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/99-1.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/99-2.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/99-3.webp",
@@ -7213,11 +6601,7 @@
     "featuredImage": "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/PORTADA-99.webp",
     "website": "https://99restaurante.cl",
     "instagram": "https://www.instagram.com/99restaurante.cl",
-    "categories": [
-      "ALL",
-      "RESTAURANTES",
-      "TODOS"
-    ],
+    "categories": ["ALL", "RESTAURANTES", "TODOS"],
     "website_display": "99restaurante.cl",
     "instagram_display": "@99restaurante.cl",
     "email": "",
@@ -7251,7 +6635,6 @@
       "category": "RESTAURANTES"
     },
     "images": [
-      "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/CAOS-COMEDOR-CAFE-1.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/CAOS-COMEDOR-CAFE-2.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/CAOS-COMEDOR-CAFE-3.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/CAOS-COMEDOR-CAFE-4.webp",
@@ -7262,11 +6645,7 @@
     "featuredImage": "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/CAOS-COMEDOR-CAFE-1.webp",
     "website": "",
     "instagram": "https://www.instagram.com/caos.comedor.cafe",
-    "categories": [
-      "ALL",
-      "RESTAURANTES",
-      "TODOS"
-    ],
+    "categories": ["ALL", "RESTAURANTES", "TODOS"],
     "website_display": "",
     "instagram_display": "@caos.comedor.cafe",
     "email": "",
@@ -7300,7 +6679,6 @@
       "category": "RESTAURANTES"
     },
     "images": [
-      "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/HAPPENING-1.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/HAPPENING-2.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/HAPPENING-3.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/HAPPENING-4.webp",
@@ -7314,11 +6692,7 @@
     "featuredImage": "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/HAPPENING-1.webp",
     "website": "https://happening.cl",
     "instagram": "https://www.instagram.com/happening_scl",
-    "categories": [
-      "ALL",
-      "RESTAURANTES",
-      "TODOS"
-    ],
+    "categories": ["ALL", "RESTAURANTES", "TODOS"],
     "website_display": "happening.cl",
     "instagram_display": "@happening_scl",
     "email": "",
@@ -7350,7 +6724,6 @@
       "category": "RESTAURANTES"
     },
     "images": [
-      "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/LA-BIFERIA-1.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/LA-BIFERIA-2.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/LA-BIFERIA-3.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/LA-BIFERIA-4.webp",
@@ -7364,11 +6737,7 @@
     "featuredImage": "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/PORTADA-LA-BIFERIA.webp",
     "website": "https://labiferia.cl",
     "instagram": "https://www.instagram.com/labiferia",
-    "categories": [
-      "ALL",
-      "RESTAURANTES",
-      "TODOS"
-    ],
+    "categories": ["ALL", "RESTAURANTES", "TODOS"],
     "website_display": "labiferia.cl",
     "instagram_display": "@labiferia",
     "email": "",
@@ -7402,7 +6771,6 @@
       "category": "RESTAURANTES"
     },
     "images": [
-      "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/MIRAI-FOOD-LAB-1.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/MIRAI-FOOD-LAB-2.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/MIRAI-FOOD-LAB-3.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/MIRAI-FOOD-LAB-4.webp",
@@ -7418,11 +6786,7 @@
     "featuredImage": "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/PORTADA-MIRAI-FOOD-LAB.webp",
     "website": "https://www.miraifoodlab.cl",
     "instagram": "https://www.instagram.com/mirai.foodlab",
-    "categories": [
-      "ALL",
-      "RESTAURANTES",
-      "TODOS"
-    ],
+    "categories": ["ALL", "RESTAURANTES", "TODOS"],
     "website_display": "miraifoodlab.cl",
     "instagram_display": "@mirai.foodlab",
     "email": "",
@@ -7472,7 +6836,6 @@
       "category": "RESTAURANTES"
     },
     "images": [
-      "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/PRIMA-BAR-1.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/PRIMA-BAR-3.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/PRIMA-BAR-4.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/PRIMA-BAR-5.webp",
@@ -7484,11 +6847,7 @@
     "featuredImage": "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/PORTADA-PRIMA-BAR.webp",
     "website": "https://primabar.cl",
     "instagram": "https://www.instagram.com/prima.bar",
-    "categories": [
-      "ALL",
-      "RESTAURANTES",
-      "TODOS"
-    ],
+    "categories": ["ALL", "RESTAURANTES", "TODOS"],
     "website_display": "primabar.cl",
     "instagram_display": "@prima.bar",
     "email": "",
@@ -7524,7 +6883,6 @@
       "category": "RESTAURANTES"
     },
     "images": [
-      "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/THE-SINGULAR-1.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/THE-SINGULAR-2.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/THE-SINGULAR-3.webp",
       "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/THE-SINGULAR-4.webp",
@@ -7536,11 +6894,7 @@
     "featuredImage": "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/PORTADA-THE-SINGULAR.webp",
     "website": "https://www.thesingular.com/santiago",
     "instagram": "https://www.instagram.com/thesingularhotels",
-    "categories": [
-      "ALL",
-      "RESTAURANTES",
-      "TODOS"
-    ],
+    "categories": ["ALL", "RESTAURANTES", "TODOS"],
     "website_display": "thesingular.com/santiago",
     "instagram_display": "@thesingularhotels",
     "email": "",

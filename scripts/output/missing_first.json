@@ -1,0 +1,889 @@
+[
+  {
+    "slug": "yum-cha-comer-y-beber-con-te",
+    "has1": false,
+    "min": 2,
+    "max": 7,
+    "numbers": [
+      2,
+      3,
+      4,
+      5,
+      6,
+      7
+    ]
+  },
+  {
+    "slug": "dolce-salato",
+    "has1": false,
+    "min": 2,
+    "max": 14,
+    "numbers": [
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14
+    ]
+  },
+  {
+    "slug": "la-vinoteca-zoco-celebracion-del-vino",
+    "has1": false,
+    "min": 2,
+    "max": 6,
+    "numbers": [
+      2,
+      3,
+      4,
+      5,
+      6
+    ]
+  },
+  {
+    "slug": "verde-sazon-la-revolucion-vegetal",
+    "has1": false,
+    "min": 2,
+    "max": 5,
+    "numbers": [
+      2,
+      3,
+      4,
+      5
+    ]
+  },
+  {
+    "slug": "elementor-17486",
+    "has1": false,
+    "min": 2,
+    "max": 9,
+    "numbers": [
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9
+    ]
+  },
+  {
+    "slug": "tanaka-la-fusion-redefinida",
+    "has1": false,
+    "min": 2,
+    "max": 11,
+    "numbers": [
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11
+    ]
+  },
+  {
+    "slug": "siam-thai-experiencia-de-autor",
+    "has1": false,
+    "min": 2,
+    "max": 8,
+    "numbers": [
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8
+    ]
+  },
+  {
+    "slug": "savia-asia-en-todo-su-esplendor",
+    "has1": false,
+    "min": 2,
+    "max": 5,
+    "numbers": [
+      2,
+      3,
+      4,
+      5
+    ]
+  },
+  {
+    "slug": "rubaiyat-santiago-icono-de-la-parrilla-brasilena",
+    "has1": false,
+    "min": 2,
+    "max": 8,
+    "numbers": [
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8
+    ]
+  },
+  {
+    "slug": "rivoli-ristorante-lo-mejor-de-roma-y-del-lazio",
+    "has1": false,
+    "min": 2,
+    "max": 7,
+    "numbers": [
+      2,
+      3,
+      4,
+      5,
+      6,
+      7
+    ]
+  },
+  {
+    "slug": "quinoa-siempre-fresquisimo-y-de-temporada",
+    "has1": false,
+    "min": 2,
+    "max": 5,
+    "numbers": [
+      2,
+      3,
+      4,
+      5
+    ]
+  },
+  {
+    "slug": "pulperia-santa-elvira-una-joya-de-matta-sur",
+    "has1": false,
+    "min": 2,
+    "max": 6,
+    "numbers": [
+      2,
+      3,
+      4,
+      5,
+      6
+    ]
+  },
+  {
+    "slug": "pristino-comfort-food-de-mantel-largo",
+    "has1": false,
+    "min": 2,
+    "max": 6,
+    "numbers": [
+      2,
+      3,
+      4,
+      5,
+      6
+    ]
+  },
+  {
+    "slug": "piso-uno-sofisticacion-en-formato-izakaya",
+    "has1": false,
+    "min": 2,
+    "max": 8,
+    "numbers": [
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8
+    ]
+  },
+  {
+    "slug": "pallozzi-un-viaje-en-cada-copa",
+    "has1": false,
+    "min": 2,
+    "max": 5,
+    "numbers": [
+      2,
+      3,
+      4,
+      5
+    ]
+  },
+  {
+    "slug": "ocean-pacifics-destino-gastronomico-patrimonial",
+    "has1": false,
+    "min": 2,
+    "max": 7,
+    "numbers": [
+      2,
+      3,
+      4,
+      5,
+      6,
+      7
+    ]
+  },
+  {
+    "slug": "normandie-tradicion-francesa-y-mediterranea",
+    "has1": false,
+    "min": 2,
+    "max": 7,
+    "numbers": [
+      2,
+      3,
+      4,
+      5,
+      6,
+      7
+    ]
+  },
+  {
+    "slug": "naoki-entre-japon-y-la-costa-chilena",
+    "has1": false,
+    "min": 2,
+    "max": 5,
+    "numbers": [
+      2,
+      3,
+      4,
+      5
+    ]
+  },
+  {
+    "slug": "mayan-la-casa-de-los-guerrero",
+    "has1": false,
+    "min": 2,
+    "max": 12,
+    "numbers": [
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12
+    ]
+  },
+  {
+    "slug": "marina-mar-de-tapas-un-oasis-maritimo-en-santiago",
+    "has1": false,
+    "min": 2,
+    "max": 5,
+    "numbers": [
+      2,
+      3,
+      4,
+      5
+    ]
+  },
+  {
+    "slug": "liguria-lastarria-la-filosofia-cicali",
+    "has1": false,
+    "min": 2,
+    "max": 5,
+    "numbers": [
+      2,
+      3,
+      4,
+      5
+    ]
+  },
+  {
+    "slug": "bar-la-providencia-un-viaje-a-la-memoria-emotiva",
+    "has1": false,
+    "min": 2,
+    "max": 8,
+    "numbers": [
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8
+    ]
+  },
+  {
+    "slug": "la-mesa-el-lugar-para-compartir",
+    "has1": false,
+    "min": 2,
+    "max": 5,
+    "numbers": [
+      2,
+      3,
+      4,
+      5
+    ]
+  },
+  {
+    "slug": "la-dicha-refugio-del-goce-y-la-alegria",
+    "has1": false,
+    "min": 2,
+    "max": 7,
+    "numbers": [
+      2,
+      3,
+      4,
+      5,
+      6,
+      7
+    ]
+  },
+  {
+    "slug": "__trashed",
+    "has1": false,
+    "min": 2,
+    "max": 6,
+    "numbers": [
+      2,
+      3,
+      4,
+      5,
+      6
+    ]
+  },
+  {
+    "slug": "karai-el-sello-del-mejor-del-mundo",
+    "has1": false,
+    "min": 2,
+    "max": 13,
+    "numbers": [
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13
+    ]
+  },
+  {
+    "slug": "fukasawa-esencia-japonesa",
+    "has1": false,
+    "min": 2,
+    "max": 7,
+    "numbers": [
+      2,
+      3,
+      4,
+      5,
+      6,
+      7
+    ]
+  },
+  {
+    "slug": "flama-la-pizza-que-desafia-lo-clasico",
+    "has1": false,
+    "min": 2,
+    "max": 7,
+    "numbers": [
+      2,
+      3,
+      4,
+      5,
+      6,
+      7
+    ]
+  },
+  {
+    "slug": "bar-enigma-misterios-relato-y-cocteleria-de-autor",
+    "has1": false,
+    "min": 2,
+    "max": 6,
+    "numbers": [
+      2,
+      3,
+      4,
+      5,
+      6
+    ]
+  },
+  {
+    "slug": "el-rey-fuente-de-soda-chilena-con-toques-de-bistro-frances",
+    "has1": false,
+    "min": 2,
+    "max": 7,
+    "numbers": [
+      2,
+      3,
+      4,
+      5,
+      6,
+      7
+    ]
+  },
+  {
+    "slug": "el-huerto-pionero-de-lo-organico-y-saludable",
+    "has1": false,
+    "min": 2,
+    "max": 4,
+    "numbers": [
+      2,
+      3,
+      4
+    ]
+  },
+  {
+    "slug": "dona-paula-experiencia-enoturistica",
+    "has1": false,
+    "min": 2,
+    "max": 7,
+    "numbers": [
+      2,
+      3,
+      4,
+      5,
+      6,
+      7
+    ]
+  },
+  {
+    "slug": "diablo-vino-y-fuego-pacto-entre-expertos",
+    "has1": false,
+    "min": 2,
+    "max": 9,
+    "numbers": [
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9
+    ]
+  },
+  {
+    "slug": "demo-magnolia-honestidad-refrescante",
+    "has1": false,
+    "min": 2,
+    "max": 4,
+    "numbers": [
+      2,
+      3,
+      4
+    ]
+  },
+  {
+    "slug": "demencia-un-espectaculo-gastronomico",
+    "has1": false,
+    "min": 2,
+    "max": 11,
+    "numbers": [
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11
+    ]
+  },
+  {
+    "slug": "cora-bistro-oda-a-la-cocina-chilena",
+    "has1": false,
+    "min": 2,
+    "max": 8,
+    "numbers": [
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8
+    ]
+  },
+  {
+    "slug": "copper-room-y-gran-cafe-hotel-debaines-homenajes-necesarios",
+    "has1": false,
+    "min": 2,
+    "max": 8,
+    "numbers": [
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8
+    ]
+  },
+  {
+    "slug": "conserbar-el-arte-de-la-restauracion-y-la-cocteleria",
+    "has1": false,
+    "min": 2,
+    "max": 8,
+    "numbers": [
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8
+    ]
+  },
+  {
+    "slug": "citadelle-el-bar-del-barrio",
+    "has1": false,
+    "min": 2,
+    "max": 6,
+    "numbers": [
+      2,
+      3,
+      4,
+      5,
+      6
+    ]
+  },
+  {
+    "slug": "ceiba-rooftop-bar-sabores-amazonicos",
+    "has1": false,
+    "min": 2,
+    "max": 6,
+    "numbers": [
+      2,
+      3,
+      4,
+      5,
+      6
+    ]
+  },
+  {
+    "slug": "cassis-alma-de-refugio",
+    "has1": false,
+    "min": 2,
+    "max": 10,
+    "numbers": [
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10
+    ]
+  },
+  {
+    "slug": "casa-lastarria-nobleza-arquitectonica",
+    "has1": false,
+    "min": 2,
+    "max": 11,
+    "numbers": [
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11
+    ]
+  },
+  {
+    "slug": "capogrossi-tradicion-con-innovacion",
+    "has1": false,
+    "min": 2,
+    "max": 10,
+    "numbers": [
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10
+    ]
+  },
+  {
+    "slug": "borago-un-viaje-a-la-esencia-de-chile",
+    "has1": false,
+    "min": 2,
+    "max": 6,
+    "numbers": [
+      2,
+      3,
+      4,
+      5,
+      6
+    ]
+  },
+  {
+    "slug": "bocanariz-la-vitrina-del-vino-chileno",
+    "has1": false,
+    "min": 2,
+    "max": 9,
+    "numbers": [
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9
+    ]
+  },
+  {
+    "slug": "blue-jar-nunca-decepciona",
+    "has1": false,
+    "min": 2,
+    "max": 9,
+    "numbers": [
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9
+    ]
+  },
+  {
+    "slug": "bardot-comer-y-bailar-al-mas-alto-nivel",
+    "has1": false,
+    "min": 2,
+    "max": 12,
+    "numbers": [
+      2,
+      3,
+      4,
+      6,
+      7,
+      9,
+      10,
+      12
+    ]
+  },
+  {
+    "slug": "artemisa-un-altar-a-la-cocteleria-de-autor",
+    "has1": false,
+    "min": 2,
+    "max": 8,
+    "numbers": [
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8
+    ]
+  },
+  {
+    "slug": "arca-sabores-del-mundo-reunidos-en-vitacura",
+    "has1": false,
+    "min": 2,
+    "max": 7,
+    "numbers": [
+      2,
+      3,
+      4,
+      5,
+      6,
+      7
+    ]
+  },
+  {
+    "slug": "ambrosia-restaurante-bistro-dos-versiones-de-un-gran-concepto",
+    "has1": false,
+    "min": 2,
+    "max": 9,
+    "numbers": [
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9
+    ]
+  },
+  {
+    "slug": "ac-kitchen-la-madurez-de-un-chef-en-movimiento",
+    "has1": false,
+    "min": 2,
+    "max": 12,
+    "numbers": [
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12
+    ]
+  },
+  {
+    "slug": "museo-de-artes-decorativas-museo-historico-dominico-biblioteca-patrimonial-recoleta-dominica-centro-patrimonial-recoleta-dominica-3-en-1",
+    "has1": false,
+    "min": null,
+    "max": null,
+    "numbers": []
+  },
+  {
+    "slug": "vina-concha-y-toro-embajadores-del-vino-chileno",
+    "has1": false,
+    "min": 2,
+    "max": 7,
+    "numbers": [
+      2,
+      3,
+      4,
+      5,
+      6,
+      7
+    ]
+  },
+  {
+    "slug": "palacio-cousinotestimonio-de-la-aristocracia",
+    "has1": false,
+    "min": null,
+    "max": null,
+    "numbers": []
+  },
+  {
+    "slug": "99",
+    "has1": false,
+    "min": 99,
+    "max": 99,
+    "numbers": [
+      99,
+      99,
+      99,
+      99,
+      99,
+      99,
+      99,
+      99,
+      99
+    ]
+  },
+  {
+    "slug": "caos",
+    "has1": false,
+    "min": 2,
+    "max": 7,
+    "numbers": [
+      2,
+      3,
+      4,
+      5,
+      6,
+      7
+    ]
+  },
+  {
+    "slug": "happening-santiago",
+    "has1": false,
+    "min": 2,
+    "max": 10,
+    "numbers": [
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10
+    ]
+  },
+  {
+    "slug": "la-biferia",
+    "has1": false,
+    "min": 2,
+    "max": 10,
+    "numbers": [
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10
+    ]
+  },
+  {
+    "slug": "mirai-food-lab",
+    "has1": false,
+    "min": 2,
+    "max": 12,
+    "numbers": [
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12
+    ]
+  },
+  {
+    "slug": "prima-bar",
+    "has1": false,
+    "min": 3,
+    "max": 9,
+    "numbers": [
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9
+    ]
+  },
+  {
+    "slug": "restaurante-the-singular",
+    "has1": false,
+    "min": 2,
+    "max": 8,
+    "numbers": [
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8
+    ]
+  }
+]

@@ -55,12 +55,10 @@ export function HotelDetail({ hotel }: HotelDetailProps) {
   const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true });
 
   // Mostrar solo la galería numerada en el carrusel.
-  // Si no existen numeradas, usar la featured como único fallback.
+  // Si no existen numeradas, NO mostrar carrusel (para nunca incluir PORTADA en galería).
   const allImages =
     hotel.galleryImages && hotel.galleryImages.length > 0
       ? hotel.galleryImages
-      : hotel.featuredImage
-      ? [hotel.featuredImage]
       : [];
   const canShowControls = (allImages?.length || 0) > 1;
 
@@ -201,76 +199,78 @@ export function HotelDetail({ hotel }: HotelDetailProps) {
 
       <main className="site-inner pt-0 pb-8">
         {/* Main Image Carousel */}
-        <div className="mb-4 w-full">
-          {/*
+        {allImages.length > 0 && (
+          <div className="mb-4 w-full">
+            {/*
             Responsive height: on small screens make the carousel height relative to
             viewport width (so images are wider than tall). On large screens keep
             a fixed tall height.
           */}
-          <div className="relative overflow-hidden h-[40vw] md:h-[35vw] lg:h-[600px]">
-            {canShowControls && (
-              <>
-                <button
-                  type="button"
-                  aria-label="Imagen previa"
-                  onClick={() => emblaApi?.scrollPrev()}
-                  className="absolute left-2 md:left-3 top-1/2 -translate-y-1/2 z-10 text-white bg-black/30 hover:bg-black/50 backdrop-blur-[2px] p-2 md:p-3 rounded-full focus:outline-none focus:ring-2 focus:ring-white/70"
-                >
-                  <ChevronLeft className="w-5 h-5 md:w-6 md:h-6" />
-                </button>
-                <button
-                  type="button"
-                  aria-label="Imagen siguiente"
-                  onClick={() => emblaApi?.scrollNext()}
-                  className="absolute right-2 md:right-3 top-1/2 -translate-y-1/2 z-10 text-white bg-black/30 hover:bg-black/50 backdrop-blur-[2px] p-2 md:p-3 rounded-full focus:outline-none focus:ring-2 focus:ring-white/70"
-                >
-                  <ChevronRight className="w-5 h-5 md:w-6 md:h-6" />
-                </button>
-              </>
-            )}
-            {/* Embla root */}
-            <div ref={emblaRef} className="h-full">
-              <div className="flex h-full">
-                {allImages.map((src, idx) => (
-                  <div
-                    key={idx}
-                    className="relative min-w-full h-full flex-shrink-0"
+            <div className="relative overflow-hidden h-[40vw] md:h-[35vw] lg:h-[600px]">
+              {canShowControls && (
+                <>
+                  <button
+                    type="button"
+                    aria-label="Imagen previa"
+                    onClick={() => emblaApi?.scrollPrev()}
+                    className="absolute left-2 md:left-3 top-1/2 -translate-y-1/2 z-10 text-white bg-black/30 hover:bg-black/50 backdrop-blur-[2px] p-2 md:p-3 rounded-full focus:outline-none focus:ring-2 focus:ring-white/70"
                   >
-                    <Image
-                      src={src || "/placeholder.svg"}
-                      alt={`${hotel.name} ${idx + 1}`}
-                      fill
-                      priority={idx === 0}
-                      className="object-cover cursor-pointer"
-                      onClick={() => {
-                        setLightboxIndex(idx);
-                        setIsLightboxOpen(true);
-                      }}
-                    />
-                  </div>
-                ))}
+                    <ChevronLeft className="w-5 h-5 md:w-6 md:h-6" />
+                  </button>
+                  <button
+                    type="button"
+                    aria-label="Imagen siguiente"
+                    onClick={() => emblaApi?.scrollNext()}
+                    className="absolute right-2 md:right-3 top-1/2 -translate-y-1/2 z-10 text-white bg-black/30 hover:bg-black/50 backdrop-blur-[2px] p-2 md:p-3 rounded-full focus:outline-none focus:ring-2 focus:ring-white/70"
+                  >
+                    <ChevronRight className="w-5 h-5 md:w-6 md:h-6" />
+                  </button>
+                </>
+              )}
+              {/* Embla root */}
+              <div ref={emblaRef} className="h-full">
+                <div className="flex h-full">
+                  {allImages.map((src, idx) => (
+                    <div
+                      key={idx}
+                      className="relative min-w-full h-full flex-shrink-0"
+                    >
+                      <Image
+                        src={src || "/placeholder.svg"}
+                        alt={`${hotel.name} ${idx + 1}`}
+                        fill
+                        priority={idx === 0}
+                        className="object-cover cursor-pointer"
+                        onClick={() => {
+                          setLightboxIndex(idx);
+                          setIsLightboxOpen(true);
+                        }}
+                      />
+                    </div>
+                  ))}
+                </div>
               </div>
             </div>
-          </div>
 
-          {/* Dots navigation placed below the carousel (active red) */}
-          {canShowControls && (
-            <div className="flex items-center justify-center gap-2 mt-3 mb-6">
-              {allImages.map((_, idx) => (
-                <button
-                  key={idx}
-                  onClick={() => emblaApi?.scrollTo(idx)}
-                  aria-label={`Ir a la imagen ${idx + 1}`}
-                  className={`rounded-full transition-all duration-200 focus:outline-none ${
-                    idx === selectedIndex
-                      ? "bg-[#E40E36] w-3 h-3 ring-2 ring-white"
-                      : "bg-gray-300 w-2 h-2"
-                  }`}
-                />
-              ))}
-            </div>
-          )}
-        </div>
+            {/* Dots navigation placed below the carousel (active red) */}
+            {canShowControls && (
+              <div className="flex items-center justify-center gap-2 mt-3 mb-6">
+                {allImages.map((_, idx) => (
+                  <button
+                    key={idx}
+                    onClick={() => emblaApi?.scrollTo(idx)}
+                    aria-label={`Ir a la imagen ${idx + 1}`}
+                    className={`rounded-full transition-all duration-200 focus:outline-none ${
+                      idx === selectedIndex
+                        ? "bg-[#E40E36] w-3 h-3 ring-2 ring-white"
+                        : "bg-gray-300 w-2 h-2"
+                    }`}
+                  />
+                ))}
+              </div>
+            )}
+          </div>
+        )}
 
         {/* Thumbnail gallery removed per spec - we show only dots+autoplay */}
 

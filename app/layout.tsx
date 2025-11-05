@@ -1,5 +1,6 @@
 import type React from "react";
 import type { Metadata } from "next";
+import { Suspense } from "react";
 import { Analytics } from "@vercel/analytics/next";
 import { Montserrat } from "next/font/google";
 import Script from "next/script";
@@ -45,7 +46,9 @@ export default function RootLayout({
           `}
         </Script>
         <LanguageProvider>
-          <GATracker />
+          <Suspense>
+            <GATracker />
+          </Suspense>
           {children}
           <ScrollToTop />
         </LanguageProvider>

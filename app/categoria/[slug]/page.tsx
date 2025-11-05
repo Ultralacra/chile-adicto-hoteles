@@ -324,7 +324,7 @@ export default function CategoryPage({ params }: { params: any }) {
           </nav>
         ) : (
           <div className="hidden lg:block">
-            <CategoryNav activeCategory={slug} />
+            <CategoryNav activeCategory={slug} compact />
           </div>
         )}
 
@@ -353,7 +353,7 @@ export default function CategoryPage({ params }: { params: any }) {
         {/* Contador oculto por solicitud: se elimina el conteo de posts */}
 
         {/* Hotel Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 mt-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 mt-4">
           {finalHotels.length > 0 ? (
             finalHotels.map((hotel) => (
               <HotelCard

@@ -35,8 +35,10 @@ type HeroSliderProps = {
   mobileHeight?: number; // alto del slide mobile en px (por defecto 550)
   dotActiveClass?: string; // clase tailwind para punto activo
   dotInactiveClass?: string; // clase tailwind para punto inactivo
+  dotBottom?: number; // espacio en px desde el fondo para los dots (por defecto 16)
   slideHref?: string; // si se define, cada slide será un enlace a esta ruta
   slideHrefs?: string[]; // hrefs por slide; tiene prioridad sobre slideHref
+  autoHeight?: boolean; // si true, la altura se adapta a la imagen (w-full h-auto)
 };
 
 export function HeroSlider({
@@ -48,8 +50,10 @@ export function HeroSlider({
   mobileHeight = 550,
   dotActiveClass = "bg-[#E40E36] w-3 h-3",
   dotInactiveClass = "bg-white w-2 h-2",
+  dotBottom = 16,
   slideHref,
   slideHrefs,
+  autoHeight = false,
 }: HeroSliderProps) {
   const desktop =
     desktopImages && desktopImages.length
@@ -113,44 +117,56 @@ export function HeroSlider({
               <div
                 key={`d-${index}`}
                 className="embla__slide min-w-full"
-                style={{ height: `${desktopHeight}px` }}
+                style={
+                  autoHeight ? undefined : { height: `${desktopHeight}px` }
+                }
               >
                 {slideHrefs?.[index] || slideHref ? (
                   <Link
                     href={(slideHrefs && slideHrefs[index]) || slideHref || "#"}
-                    className="block w-full h-full"
+                    className={`block w-full ${
+                      autoHeight ? "h-auto" : "h-full"
+                    }`}
                   >
                     <img
                       src={image || "/placeholder.svg"}
                       alt={`Slide ${index + 1}`}
-                      className={`w-full h-full ${
-                        objectFit === "contain"
-                          ? "object-contain"
-                          : "object-cover"
-                      } ${
-                        objectPosition === "top"
-                          ? "object-top"
-                          : objectPosition === "bottom"
-                          ? "object-bottom"
-                          : "object-center"
-                      }`}
+                      className={
+                        autoHeight
+                          ? "w-full h-auto"
+                          : `w-full h-full ${
+                              objectFit === "contain"
+                                ? "object-contain"
+                                : "object-cover"
+                            } ${
+                              objectPosition === "top"
+                                ? "object-top"
+                                : objectPosition === "bottom"
+                                ? "object-bottom"
+                                : "object-center"
+                            }`
+                      }
                     />
                   </Link>
                 ) : (
                   <img
                     src={image || "/placeholder.svg"}
                     alt={`Slide ${index + 1}`}
-                    className={`w-full h-full ${
-                      objectFit === "contain"
-                        ? "object-contain"
-                        : "object-cover"
-                    } ${
-                      objectPosition === "top"
-                        ? "object-top"
-                        : objectPosition === "bottom"
-                        ? "object-bottom"
-                        : "object-center"
-                    }`}
+                    className={
+                      autoHeight
+                        ? "w-full h-auto"
+                        : `w-full h-full ${
+                            objectFit === "contain"
+                              ? "object-contain"
+                              : "object-cover"
+                          } ${
+                            objectPosition === "top"
+                              ? "object-top"
+                              : objectPosition === "bottom"
+                              ? "object-bottom"
+                              : "object-center"
+                          }`
+                    }
                   />
                 )}
               </div>
@@ -167,44 +183,54 @@ export function HeroSlider({
               <div
                 key={`m-${index}`}
                 className="embla__slide min-w-full"
-                style={{ height: `${mobileHeight}px` }}
+                style={autoHeight ? undefined : { height: `${mobileHeight}px` }}
               >
                 {slideHrefs?.[index] || slideHref ? (
                   <Link
                     href={(slideHrefs && slideHrefs[index]) || slideHref || "#"}
-                    className="block w-full h-full"
+                    className={`block w-full ${
+                      autoHeight ? "h-auto" : "h-full"
+                    }`}
                   >
                     <img
                       src={image || "/placeholder.svg"}
                       alt={`Slide ${index + 1}`}
-                      className={`w-full h-full ${
-                        objectFit === "contain"
-                          ? "object-contain"
-                          : "object-cover"
-                      } ${
-                        objectPosition === "top"
-                          ? "object-top"
-                          : objectPosition === "bottom"
-                          ? "object-bottom"
-                          : "object-center"
-                      }`}
+                      className={
+                        autoHeight
+                          ? "w-full h-auto"
+                          : `w-full h-full ${
+                              objectFit === "contain"
+                                ? "object-contain"
+                                : "object-cover"
+                            } ${
+                              objectPosition === "top"
+                                ? "object-top"
+                                : objectPosition === "bottom"
+                                ? "object-bottom"
+                                : "object-center"
+                            }`
+                      }
                     />
                   </Link>
                 ) : (
                   <img
                     src={image || "/placeholder.svg"}
                     alt={`Slide ${index + 1}`}
-                    className={`w-full h-full ${
-                      objectFit === "contain"
-                        ? "object-contain"
-                        : "object-cover"
-                    } ${
-                      objectPosition === "top"
-                        ? "object-top"
-                        : objectPosition === "bottom"
-                        ? "object-bottom"
-                        : "object-center"
-                    }`}
+                    className={
+                      autoHeight
+                        ? "w-full h-auto"
+                        : `w-full h-full ${
+                            objectFit === "contain"
+                              ? "object-contain"
+                              : "object-cover"
+                          } ${
+                            objectPosition === "top"
+                              ? "object-top"
+                              : objectPosition === "bottom"
+                              ? "object-bottom"
+                              : "object-center"
+                          }`
+                    }
                   />
                 )}
               </div>
@@ -214,7 +240,10 @@ export function HeroSlider({
       </div>
 
       {/* dots: centered bottom */}
-      <div className="absolute left-0 right-0 bottom-4 z-40 flex justify-center pointer-events-auto">
+      <div
+        className="absolute left-0 right-0 z-40 flex justify-center pointer-events-auto"
+        style={{ bottom: `${dotBottom}px` }}
+      >
         <div className="flex gap-2">
           {desktop.map((_, dotIndex) => (
             <button

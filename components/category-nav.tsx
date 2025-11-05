@@ -5,6 +5,7 @@ import { useLanguage } from "@/contexts/language-context";
 
 interface CategoryNavProps {
   activeCategory?: string;
+  compact?: boolean; // reduce padding vertical (posts)
 }
 
 export const categories = [
@@ -27,12 +28,12 @@ export const categories = [
   { slug: "restaurantes", labelEs: "RESTAURANTES", labelEn: "Restaurants" },
 ];
 
-export function CategoryNav({ activeCategory = "todos" }: CategoryNavProps) {
+export function CategoryNav({ activeCategory = "todos", compact = false }: CategoryNavProps) {
   const { language } = useLanguage();
 
   return (
     // Hide desktop category nav on small screens; mobile menu provides navigation
-    <nav className="py-4">
+    <nav className={compact ? "py-2" : "py-4"}>
       <ul className="hidden lg:flex flex-nowrap items-center gap-2 text-sm font-medium whitespace-nowrap">
         {categories.map((category, index) => (
           <li key={category.slug} className="flex items-center gap-2">

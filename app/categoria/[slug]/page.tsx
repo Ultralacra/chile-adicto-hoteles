@@ -276,7 +276,7 @@ export default function CategoryPage({ params }: { params: any }) {
     <div className="min-h-screen bg-white">
       <Header />
 
-      <main className="container mx-auto px-4 py-4 max-w-[1200px]">
+      <main className="site-inner py-4">
         {isRestaurantsPage ? (
           // Submenú de comunas para restaurantes con primer item "VOLVER"
           <nav className="py-4 hidden lg:block">
@@ -331,17 +331,20 @@ export default function CategoryPage({ params }: { params: any }) {
         {/* Slider de restaurantes a ancho completo, sin banner, solo cuando no hay comuna seleccionada */}
         {isRestaurantsPage && !selectedComuna && (
           <div className="py-2">
-            <div className="w-full overflow-hidden">
+            <div className="w-full overflow-hidden mb-0">
               <HeroSlider
                 desktopImages={restaurantSliderImages}
                 mobileImages={restaurantSliderImages}
-                objectFit="contain"
-                objectPosition="top"
-                desktopHeight={600}
+                // Ver imagen completa sin recortar y mantener el ancho del contenedor
+                autoHeight
+                // keep default desktop height (closer to other sliders)
+                desktopHeight={437}
                 mobileHeight={550}
                 slideHrefs={restaurantSlideHrefs}
                 dotInactiveClass="bg-gray-300 w-2 h-2"
                 dotActiveClass="bg-[#E40E36] w-3 h-3"
+                // mismo espacio para los puntos que en Home
+                dotBottom={16}
               />
             </div>
           </div>
@@ -350,7 +353,7 @@ export default function CategoryPage({ params }: { params: any }) {
         {/* Contador oculto por solicitud: se elimina el conteo de posts */}
 
         {/* Hotel Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 mt-2">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 mt-6">
           {finalHotels.length > 0 ? (
             finalHotels.map((hotel) => (
               <HotelCard

@@ -2,6 +2,7 @@
 
 import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
+import { CategoryNav } from "@/components/category-nav";
 import { HotelDetail } from "@/components/hotel-detail";
 import data from "@/lib/data.json";
 import { normalizeImageUrl } from "@/lib/utils";
@@ -168,10 +169,17 @@ export default function LugarPage(props: any) {
   const activeCategorySlug = categoryToSlug(
     (hotel?.categories && hotel.categories[0]) || "todos"
   );
+  const isRestaurantPost = activeCategorySlug === "restaurantes";
 
   return (
     <div className="min-h-screen bg-white">
       <Header />
+      {/* Menú de categorías normal para posts que NO son restaurantes (coincide con el contenedor de otras páginas) */}
+      {!isRestaurantPost && (
+        <div className="mx-auto px-4 py-2 max-w-[1200px] hidden lg:block">
+          <CategoryNav activeCategory={activeCategorySlug} compact />
+        </div>
+      )}
       <HotelDetail hotel={hotel as any} />
       <Footer activeCategory={activeCategorySlug} />
     </div>

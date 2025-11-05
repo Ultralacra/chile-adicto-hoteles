@@ -137,15 +137,64 @@ export function HotelDetail({ hotel }: HotelDetailProps) {
 
   return (
     <>
-      <div className="mx-auto px-4 pt-6 max-w-[1200px]">
+      {/* Mostrar submenú de comunas para posts de restaurante */}
+  <div className="site-inner py-2">
         <div className="hidden lg:block">
-          <CategoryNav />
+          {(() => {
+            const cats = hotel?.categories || [];
+            const up = (cats || []).map((c) => String(c).toUpperCase());
+            const isRestaurant =
+              up.includes("RESTAURANTES") || up.includes("RESTAURANTS");
+            if (!isRestaurant) return null;
+
+            const communes = [
+              "Vitacura",
+              "Las Condes",
+              "Santiago",
+              "Lo Barnechea",
+              "Providencia",
+              "Alto Jahuel",
+              "La Reina",
+            ];
+
+            return (
+              <nav className="py-4">
+                <ul className="hidden lg:flex flex-nowrap items-center gap-2 text-sm font-medium whitespace-nowrap">
+                  <li className="flex items-center gap-2">
+                    <a
+                      href="/categoria/restaurantes"
+                      className={`font-neutra hover:text-[var(--color-brand-red)] transition-colors tracking-wide text-[15px] leading-[20px] text-black`}
+                    >
+                      {t("VOLVER", "BACK")}
+                    </a>
+                    <span className="text-black">•</span>
+                  </li>
+                  {communes.map((c, index) => {
+                    const slugified = c.toLowerCase().replace(/\s+/g, "-");
+                    return (
+                      <li key={c} className="flex items-center gap-2">
+                        <a
+                          href={`/categoria/restaurantes?comuna=${slugified}`}
+                          className={`font-neutra hover:text-[var(--color-brand-red)] transition-colors tracking-wide text-[15px] leading-[20px] text-black`}
+                        >
+                          {c.toUpperCase()}
+                        </a>
+                        {index < communes.length - 1 && (
+                          <span className="text-black">•</span>
+                        )}
+                      </li>
+                    );
+                  })}
+                </ul>
+              </nav>
+            );
+          })()}
         </div>
       </div>
 
-      <main className="mx-auto px-4 py-8 max-w-[1200px]">
+  <main className="site-inner pt-0 pb-8">
         {/* Main Image Carousel */}
-        <div className="mx-auto mb-4 w-full max-w-[1200px]">
+        <div className="mb-4 w-full">
           {/*
             Responsive height: on small screens make the carousel height relative to
             viewport width (so images are wider than tall). On large screens keep

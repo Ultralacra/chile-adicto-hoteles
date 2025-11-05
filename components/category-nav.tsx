@@ -28,7 +28,10 @@ export const categories = [
   { slug: "restaurantes", labelEs: "RESTAURANTES", labelEn: "Restaurants" },
 ];
 
-export function CategoryNav({ activeCategory = "todos", compact = false }: CategoryNavProps) {
+export function CategoryNav({
+  activeCategory = "todos",
+  compact = false,
+}: CategoryNavProps) {
   const { language } = useLanguage();
 
   return (

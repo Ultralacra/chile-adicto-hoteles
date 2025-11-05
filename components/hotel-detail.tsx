@@ -138,7 +138,7 @@ export function HotelDetail({ hotel }: HotelDetailProps) {
   return (
     <>
       {/* Mostrar submenú de comunas para posts de restaurante */}
-  <div className="site-inner py-2">
+      <div className="site-inner py-2">
         <div className="hidden lg:block">
           {(() => {
             const cats = hotel?.categories || [];
@@ -192,7 +192,7 @@ export function HotelDetail({ hotel }: HotelDetailProps) {
         </div>
       </div>
 
-  <main className="site-inner pt-0 pb-8">
+      <main className="site-inner pt-0 pb-8">
         {/* Main Image Carousel */}
         <div className="mb-4 w-full">
           {/*

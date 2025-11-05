@@ -57,9 +57,11 @@ export function HotelDetail({ hotel }: HotelDetailProps) {
   // Mostrar solo la galería numerada en el carrusel.
   // Si no existen numeradas, usar la featured como único fallback.
   const allImages =
-    (hotel.galleryImages && hotel.galleryImages.length > 0)
+    hotel.galleryImages && hotel.galleryImages.length > 0
       ? hotel.galleryImages
-      : (hotel.featuredImage ? [hotel.featuredImage] : []);
+      : hotel.featuredImage
+      ? [hotel.featuredImage]
+      : [];
   const canShowControls = (allImages?.length || 0) > 1;
 
   const [cleanedFullContent, setCleanedFullContent] = useState(

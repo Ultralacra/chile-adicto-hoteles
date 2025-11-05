@@ -118,13 +118,28 @@ export function HotelDetail({ hotel }: HotelDetailProps) {
       /^\s*(tel[eé]fono|tel|phone)\s*:?/i,
       /^\s*(email|mail)\s*:?/i,
     ];
+    const norm = (s: string) =>
+      (s || "")
+        .replace(/<[^>]+>/g, " ")
+        .replace(/[\s\u00A0]+/g, " ")
+        .replace(/[\.,;:]+$/g, "")
+        .trim()
+        .toUpperCase();
+    const addressSet = new Set<string>();
+    if (foundAddress) addressSet.add(norm(foundAddress));
+    if (hotel.address) addressSet.add(norm(hotel.address));
+    (hotel.locations || []).forEach((l) => {
+      if (l?.address) addressSet.add(norm(l.address));
+    });
     // Eliminamos cualquier <p> cuyo texto matchee alguno de los patrones
     const processed = html.replace(/<p[^>]*>[\s\S]*?<\/p>/gi, (p) => {
       const text = p
         .replace(/<[^>]+>/g, " ")
         .replace(/\s+/g, " ")
         .trim();
-      const isContact = contactPatterns.some((re) => re.test(text));
+      const isContactLabel = contactPatterns.some((re) => re.test(text));
+      const isAddressDuplicate = addressSet.has(norm(text));
+      const isContact = isContactLabel || isAddressDuplicate;
       return isContact ? "" : p;
     });
     // Limpieza inline: eliminar URLs/WWW/emails dentro de párrafos editoriales, manteniendo el resto

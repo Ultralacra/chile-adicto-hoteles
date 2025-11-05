@@ -55,12 +55,19 @@ export function HeroSlider({
   slideHrefs,
   autoHeight = false,
 }: HeroSliderProps) {
+  // Estado para imágenes obtenidas desde API (si existen en /public/slider-*)
+  const [desktopFromApi, setDesktopFromApi] = useState<string[] | null>(null);
+  const [mobileFromApi, setMobileFromApi] = useState<string[] | null>(null);
+
+  // Elegir fuentes en orden de prioridad: props -> API -> defaults
   const desktop =
-    desktopImages && desktopImages.length
-      ? desktopImages
-      : desktopImagesDefault;
+    (desktopImages && desktopImages.length ? desktopImages : undefined) ??
+    (desktopFromApi && desktopFromApi.length ? desktopFromApi : undefined) ??
+    desktopImagesDefault;
   const mobile =
-    mobileImages && mobileImages.length ? mobileImages : mobileImagesDefault;
+    (mobileImages && mobileImages.length ? mobileImages : undefined) ??
+    (mobileFromApi && mobileFromApi.length ? mobileFromApi : undefined) ??
+    mobileImagesDefault;
 
   // Embla for desktop and mobile instances
   const [emblaDesktopRef, emblaDesktopApi] = useEmblaCarousel({ loop: true });
@@ -78,6 +85,39 @@ export function HeroSlider({
     const id = setInterval(play, 5000);
     return () => clearInterval(id);
   }, [emblaDesktopApi, emblaMobileApi]);
+
+  // Cargar imágenes locales desde API si no se pasaron por props
+  useEffect(() => {
+    let cancelled = false;
+    async function loadFromApi() {
+      try {
+        // Si ya nos pasaron props, no hacemos fetch innecesario
+        const needDesktop = !(desktopImages && desktopImages.length);
+        const needMobile = !(mobileImages && mobileImages.length);
+        if (!needDesktop && !needMobile) return;
+
+        const res = await fetch("/api/slider-images", { cache: "no-store" });
+        if (!res.ok) return;
+        const json = (await res.json()) as {
+          desktop: string[];
+          mobile: string[];
+        };
+        if (cancelled) return;
+        if (needDesktop && Array.isArray(json.desktop)) {
+          setDesktopFromApi(json.desktop);
+        }
+        if (needMobile && Array.isArray(json.mobile)) {
+          setMobileFromApi(json.mobile);
+        }
+      } catch (e) {
+        // Silencioso: mantenemos defaults
+      }
+    }
+    loadFromApi();
+    return () => {
+      cancelled = true;
+    };
+  }, [desktopImages, mobileImages]);
 
   // sync selected index from embla
   const onSelect = useCallback(() => {

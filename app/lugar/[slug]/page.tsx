@@ -92,22 +92,64 @@ export default function LugarPage(props: any) {
             ? source.images.filter((s: string) => !!s)
             : [];
 
-          let derivedFeatured = (source.featuredImage || imgs[0] || "").trim();
-          // Si no hay featured pero hay imágenes, asegura que featured sea la primera
+          // 1) Detectar imagen 'PORTADA' por nombre de archivo (case-insensitive)
+          const isPortada = (s: string) =>
+            /portada/i.test(normalizeImageUrl(s).replace(/\.[^.]+$/, ""));
+
+          // 2) Elegir featured:
+          //    - Preferir source.featuredImage si viene
+          //    - Si no, buscar una imagen que tenga 'PORTADA' en el nombre
+          //    - Si no, usar la primera numerada en orden; si no hay numeradas, la primera disponible
+          let derivedFeatured = String(source.featuredImage || "").trim();
+          if (!derivedFeatured) {
+            const portada = imgs.find((s) => isPortada(s));
+            if (portada) derivedFeatured = portada;
+          }
+
+          // helper para extraer índice numérico desde el nombre (para orden)
+          const getIndex = (s: string) => {
+            const base = normalizeImageUrl(s).replace(/\.[^.]+$/, "");
+            // Busca el primer grupo de dígitos en el nombre
+            const m = base.match(/(\d{1,4})/);
+            return m ? parseInt(m[1], 10) : NaN;
+          };
+
+          // 3) Si aún no hay featured, intentar con la primera numerada (por índice ascendente)
+          if (!derivedFeatured) {
+            const numeradas = imgs
+              .map((s) => ({ s, idx: getIndex(s) }))
+              .filter((x) => Number.isFinite(x.idx))
+              .sort((a, b) => a.idx - b.idx);
+            if (numeradas.length) derivedFeatured = numeradas[0].s;
+          }
+          // 4) Último fallback: primera imagen
           if (!derivedFeatured && imgs.length) {
             derivedFeatured = imgs[0];
           }
 
           const featuredKey = normalizeImageUrl(derivedFeatured);
+
+          // 5) Construir galería:
+          //    - excluir featured
+          //    - excluir cualquier imagen cuyo nombre contenga 'PORTADA'
+          //    - incluir SOLO imágenes numeradas (que contengan dígitos)
+          //    - ordenar por el número ascendente
           const seen = new Set<string>();
-          const gallery = imgs.filter((img) => {
-            const key = normalizeImageUrl(img);
-            if (featuredKey && key && key === featuredKey) return false; // filtra la portada
-            if (!key) return false;
-            if (seen.has(key)) return false; // evita repetidos por nombre
-            seen.add(key);
-            return true;
-          });
+          const gallery = imgs
+            .filter((img) => {
+              const key = normalizeImageUrl(img);
+              if (!key) return false;
+              if (key === featuredKey) return false; // excluir featured
+              if (/portada/i.test(key)) return false; // excluir PORTADA en galería
+              const idx = getIndex(img);
+              if (!Number.isFinite(idx)) return false; // solo numeradas
+              if (seen.has(key)) return false; // evitar duplicados
+              seen.add(key);
+              return true;
+            })
+            .map((s) => ({ s, idx: getIndex(s) }))
+            .sort((a, b) => a.idx - b.idx)
+            .map((x) => x.s);
 
           return {
             featuredImage: derivedFeatured,

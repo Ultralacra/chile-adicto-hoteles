@@ -455,9 +455,7 @@ export function HotelDetail({ hotel }: HotelDetailProps) {
                 ) : (
                   address && (
                     <div className="mb-2">
-                      <span className="mr-2">
-                        {t("DIRECCIÓN", "ADDRESS")}:
-                      </span>
+                      <span className="mr-2">{t("DIRECCIÓN", "ADDRESS")}:</span>
                       <span className="text-black">
                         {address.toUpperCase()}
                       </span>
@@ -492,9 +490,7 @@ export function HotelDetail({ hotel }: HotelDetailProps) {
                 {/* 3) Redes Sociales */}
                 {hotel.instagram && (
                   <div className="mb-2">
-                    <span className="mr-2">
-                      {t("INSTAGRAM", "INSTAGRAM")}:
-                    </span>
+                    <span className="mr-2">{t("INSTAGRAM", "INSTAGRAM")}:</span>
                     <a
                       href={hotel.instagram}
                       target="_blank"
@@ -512,9 +508,7 @@ export function HotelDetail({ hotel }: HotelDetailProps) {
                 {/* 4) Horario */}
                 {hotel.hours && (
                   <div className="mb-2">
-                    <span className="mr-2">
-                      {t("HORARIO", "HOURS")}:
-                    </span>
+                    <span className="mr-2">{t("HORARIO", "HOURS")}:</span>
                     <span className="text-black">{hotel.hours}</span>
                   </div>
                 )}
@@ -590,9 +584,7 @@ export function HotelDetail({ hotel }: HotelDetailProps) {
                           {/* Sitio web sucursal */}
                           {loc.website && (
                             <div className="mb-1">
-                              <span className="mr-2">
-                                {t("WEB", "WEB")}:
-                              </span>
+                              <span className="mr-2">{t("WEB", "WEB")}:</span>
                               <a
                                 href={loc.website}
                                 target="_blank"
@@ -669,9 +661,7 @@ export function HotelDetail({ hotel }: HotelDetailProps) {
                           {/* Contacto sucursal */}
                           {loc.phone && (
                             <div className="mb-1">
-                              <span className="mr-2">
-                                {t("TEL", "TEL")}:
-                              </span>
+                              <span className="mr-2">{t("TEL", "TEL")}:</span>
                               <a
                                 href={formatTel(loc.phone)}
                                 className="text-[var(--color-brand-red)] no-underline"
@@ -713,9 +703,7 @@ export function HotelDetail({ hotel }: HotelDetailProps) {
                 )}
                 {hotel.email && (
                   <div className="mb-2">
-                    <span className="mr-2">
-                      {t("EMAIL", "EMAIL")}:
-                    </span>
+                    <span className="mr-2">{t("EMAIL", "EMAIL")}:</span>
                     <a
                       href={formatMailto(hotel.email)}
                       className="text-[var(--color-brand-red)] no-underline"

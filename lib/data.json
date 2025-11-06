@@ -6486,7 +6486,13 @@
       ],
       "category": "PALACIOS"
     },
-    "images": [],
+    "images": [
+      "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/07/Palacio_causino-1_resultado.webp",
+      "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/07/Palacio_causino-2_resultado.webp",
+      "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/09/Palacio_causino-3.webp"
+    ],
+    "featuredImage": "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/07/Portada_palacio_cauisno_resultado.webp",
+
     "website": "https://SANTIAGOCULTURA.CL",
     "instagram": "https://www.instagram.com/FOTOSAEREAS",
     "categories": ["ALL", "PALACIOS", "TODOS"],

@@ -4,27 +4,25 @@ import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
 import useEmblaCarousel from "embla-carousel-react";
 
+// Orden alineado con el menú del Home (sin "Todos"):
+// arquitectura, barrios, iconos, mercados, miradores, museos (CULTURA),
+// palacios, parques, paseos-fuera-de-santiago (FUERA DE STGO), restaurantes
 const desktopImagesDefault = [
-  "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/09/AQI-scaled.webp",
-  "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/09/BARRIOS-scaled.webp",
-  "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/09/ICONOS-scaled.webp",
-  "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/09/slider-100-scaled.webp",
-  "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/09/MERCADOS-scaled.webp",
-  "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/09/MIRADORES-scaled.webp",
-  "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/09/CULTURA-scaled.webp",
-  "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/09/slider-100-scaled.webp",
-  "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/09/PALACIOS-scaled.webp",
-  "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/09/PARQUES-scaled.webp",
-  "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/09/FUERA-DE-SGO-scaled.webp",
+  "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/09/AQI-scaled.webp", // Arquitectura
+  "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/09/BARRIOS-scaled.webp", // Barrios
+  "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/09/ICONOS-scaled.webp", // Iconos
+  "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/09/MERCADOS-scaled.webp", // Mercados
+  "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/09/MIRADORES-scaled.webp", // Miradores
+  "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/09/CULTURA-scaled.webp", // Museos (Cultura)
+  "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/09/PALACIOS-scaled.webp", // Palacios
+  "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/09/PARQUES-scaled.webp", // Parques
+  "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/09/FUERA-DE-SGO-scaled.webp", // Fuera de Stgo
+  "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/09/slider-100-scaled.webp", // Restaurantes (promo)
 ];
 
-const mobileImagesDefault = [
-  "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/09/QA-1.webp",
-  "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/09/QA-2.webp",
-  "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/09/QA-3.webp",
-  "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/09/QA-4.webp",
-  "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/09/QA-5.webp",
-];
+// Para evitar desajuste de dots entre desktop y mobile, mantenemos la misma
+// cantidad y orden de imágenes por defecto en mobile.
+const mobileImagesDefault = [...desktopImagesDefault];
 
 type HeroSliderProps = {
   desktopImages?: string[];

@@ -71,17 +71,16 @@ export default function Page() {
               <div className="w-full h-[600px] md:h-[520px] lg:h-[437px] overflow-hidden">
                 <HeroSlider
                   slideHrefs={[
-                    "/categoria/arquitectura", // AQI -> Arquitectura
+                    "/categoria/arquitectura", // Arquitectura
                     "/categoria/barrios", // Barrios
                     "/categoria/iconos", // Iconos
-                    "/categoria/restaurantes", // Slider 100 (promocional)
                     "/categoria/mercados", // Mercados
                     "/categoria/miradores", // Miradores
-                    "/categoria/museos", // Cultura (slug museos)
-                    "/categoria/restaurantes", // Slider 100 repetido
+                    "/categoria/museos", // Museos (Cultura)
                     "/categoria/palacios", // Palacios
                     "/categoria/parques", // Parques
                     "/categoria/paseos-fuera-de-santiago", // Fuera de Stgo
+                    "/categoria/restaurantes", // Restaurantes (al final como en el menú)
                   ]}
                 />
               </div>

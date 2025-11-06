@@ -409,13 +409,13 @@ export function HotelDetail({ hotel }: HotelDetailProps) {
           </div>
 
           {/* Contacto / Redes: si infoHtml está presente, se usa como bloque manual; de lo contrario, se usa el bloque estructurado */}
-          <div className="mt-4 mb-8 text-sm font-neutra text-gray-700">
-            <h3 className="font-neutra text-[15px] leading-[22px] font-normal uppercase text-black mb-3">
+          <div className="mt-4 mb-8 font-neutra text-black text-[15px] leading-[22px]">
+            <h3 className="font-neutra text-[15px] leading-[22px] font-[700] uppercase text-black mb-3">
               {t("DATOS ÚTILES", "USEFUL INFORMATION")}
             </h3>
             {hotel.infoHtml ? (
               <div
-                className="prose prose-sm md:prose-base max-w-none font-neutra text-black [&_strong]:font-[700] [&_em]:italic [&_a]:text-[var(--color-brand-red)] [&_a]:no-underline hover:[&_a]:underline"
+                className="prose prose-sm md:prose-base max-w-none font-neutra text-black text-[15px] leading-[22px] [&_*]:text-[15px] [&_strong]:font-[700] [&_em]:italic [&_a]:text-[var(--color-brand-red)] [&_a]:no-underline hover:[&_a]:underline"
                 dangerouslySetInnerHTML={{ __html: hotel.infoHtml }}
               />
             ) : (
@@ -423,7 +423,7 @@ export function HotelDetail({ hotel }: HotelDetailProps) {
                 {/* 1) Dirección / Sucursales */}
                 {hotel.locations && hotel.locations.length > 0 ? (
                   <div className="mb-2">
-                    <div className="font-[700] mr-2 inline-block">
+                    <div className="mr-2 inline-block">
                       {t("DIRECCIÓN", "ADDRESS")}:
                     </div>
                     <div className="mt-1">
@@ -431,7 +431,7 @@ export function HotelDetail({ hotel }: HotelDetailProps) {
                         <div key={idx} className="mb-1">
                           {loc.label ? (
                             <>
-                              <span className="font-[700] mr-2">
+                              <span className="mr-2">
                                 {String(loc.label).toUpperCase()}:
                               </span>
                               <span className="text-black">
@@ -455,7 +455,7 @@ export function HotelDetail({ hotel }: HotelDetailProps) {
                 ) : (
                   address && (
                     <div className="mb-2">
-                      <span className="font-[700] mr-2">
+                      <span className="mr-2">
                         {t("DIRECCIÓN", "ADDRESS")}:
                       </span>
                       <span className="text-black">
@@ -467,7 +467,7 @@ export function HotelDetail({ hotel }: HotelDetailProps) {
 
                 {/* 2) Sitio web */}
                 <div className="mb-2">
-                  <span className="font-[700] mr-2">{t("WEB", "WEB")}:</span>
+                  <span className="mr-2">{t("WEB", "WEB")}:</span>
                   {hotel.website ? (
                     <a
                       href={hotel.website}
@@ -492,7 +492,7 @@ export function HotelDetail({ hotel }: HotelDetailProps) {
                 {/* 3) Redes Sociales */}
                 {hotel.instagram && (
                   <div className="mb-2">
-                    <span className="font-[700] mr-2">
+                    <span className="mr-2">
                       {t("INSTAGRAM", "INSTAGRAM")}:
                     </span>
                     <a
@@ -512,7 +512,7 @@ export function HotelDetail({ hotel }: HotelDetailProps) {
                 {/* 4) Horario */}
                 {hotel.hours && (
                   <div className="mb-2">
-                    <span className="font-[700] mr-2">
+                    <span className="mr-2">
                       {t("HORARIO", "HOURS")}:
                     </span>
                     <span className="text-black">{hotel.hours}</span>
@@ -522,7 +522,7 @@ export function HotelDetail({ hotel }: HotelDetailProps) {
                 {/* 5) Reservas */}
                 {(hotel.reservationPolicy || hotel.reservationLink) && (
                   <div className="mb-2">
-                    <span className="font-[700] mr-2">
+                    <span className="mr-2">
                       {t("RESERVAS", "RESERVATIONS")}:
                     </span>
                     {hotel.reservationLink ? (
@@ -545,7 +545,7 @@ export function HotelDetail({ hotel }: HotelDetailProps) {
                 {/* 6) Dato de interés */}
                 {hotel.interestingFact && (
                   <div className="mb-2">
-                    <span className="font-[700] mr-2">
+                    <span className="mr-2">
                       {t("DATO DE INTERÉS", "INTERESTING FACT")}:
                     </span>
                     <span className="text-black">{hotel.interestingFact}</span>
@@ -577,7 +577,7 @@ export function HotelDetail({ hotel }: HotelDetailProps) {
                           {/* Dirección de la sucursal (opcionalmente repetir para claridad) */}
                           {loc.address && (
                             <div className="mb-1">
-                              <span className="font-[700] mr-2">
+                              <span className="mr-2">
                                 {t("DIRECCIÓN", "ADDRESS")}:
                               </span>
                               <span className="text-black">
@@ -590,7 +590,7 @@ export function HotelDetail({ hotel }: HotelDetailProps) {
                           {/* Sitio web sucursal */}
                           {loc.website && (
                             <div className="mb-1">
-                              <span className="font-[700] mr-2">
+                              <span className="mr-2">
                                 {t("WEB", "WEB")}:
                               </span>
                               <a
@@ -608,7 +608,7 @@ export function HotelDetail({ hotel }: HotelDetailProps) {
                           {/* Instagram sucursal */}
                           {loc.instagram && (
                             <div className="mb-1">
-                              <span className="font-[700] mr-2">
+                              <span className="mr-2">
                                 {t("INSTAGRAM", "INSTAGRAM")}:
                               </span>
                               <a
@@ -627,7 +627,7 @@ export function HotelDetail({ hotel }: HotelDetailProps) {
                           {/* Horario sucursal */}
                           {loc.hours && (
                             <div className="mb-1">
-                              <span className="font-[700] mr-2">
+                              <span className="mr-2">
                                 {t("HORARIO", "HOURS")}:
                               </span>
                               <span className="text-black">{loc.hours}</span>
@@ -636,7 +636,7 @@ export function HotelDetail({ hotel }: HotelDetailProps) {
                           {/* Reservas sucursal */}
                           {(loc.reservationPolicy || loc.reservationLink) && (
                             <div className="mb-1">
-                              <span className="font-[700] mr-2">
+                              <span className="mr-2">
                                 {t("RESERVAS", "RESERVATIONS")}:
                               </span>
                               {loc.reservationLink ? (
@@ -658,7 +658,7 @@ export function HotelDetail({ hotel }: HotelDetailProps) {
                           {/* Dato de interés sucursal */}
                           {loc.interestingFact && (
                             <div className="mb-1">
-                              <span className="font-[700] mr-2">
+                              <span className="mr-2">
                                 {t("DATO DE INTERÉS", "INTERESTING FACT")}:
                               </span>
                               <span className="text-black">
@@ -669,7 +669,7 @@ export function HotelDetail({ hotel }: HotelDetailProps) {
                           {/* Contacto sucursal */}
                           {loc.phone && (
                             <div className="mb-1">
-                              <span className="font-[700] mr-2">
+                              <span className="mr-2">
                                 {t("TEL", "TEL")}:
                               </span>
                               <a
@@ -682,7 +682,7 @@ export function HotelDetail({ hotel }: HotelDetailProps) {
                           )}
                           {loc.email && (
                             <div className="mb-1">
-                              <span className="font-[700] mr-2">
+                              <span className="mr-2">
                                 {t("EMAIL", "EMAIL")}:
                               </span>
                               <a
@@ -702,7 +702,7 @@ export function HotelDetail({ hotel }: HotelDetailProps) {
                 {/* Teléfono y email (opcionalmente debajo) */}
                 {hotel.phone && (
                   <div className="mb-2">
-                    <span className="font-[700] mr-2">{t("TEL", "TEL")}:</span>
+                    <span className="mr-2">{t("TEL", "TEL")}:</span>
                     <a
                       href={formatTel(hotel.phone)}
                       className="text-[var(--color-brand-red)] no-underline"
@@ -713,7 +713,7 @@ export function HotelDetail({ hotel }: HotelDetailProps) {
                 )}
                 {hotel.email && (
                   <div className="mb-2">
-                    <span className="font-[700] mr-2">
+                    <span className="mr-2">
                       {t("EMAIL", "EMAIL")}:
                     </span>
                     <a
@@ -727,9 +727,9 @@ export function HotelDetail({ hotel }: HotelDetailProps) {
 
                 {/* Crédito de fotos (si aplica) */}
                 {hotel.photosCredit && (
-                  <div className="mb-2 text-[13px] text-gray-600">
-                    <span className="font-[700] mr-2">
-                      {t("PHOTOS", "PHOTOS")}:
+                  <div className="mb-2 text-[15px] text-black">
+                    <span className="mr-2">
+                      {t("FOTOGRAFÍAS", "PHOTOGRAPHS")}:
                     </span>
                     <span>{hotel.photosCredit.toUpperCase()}</span>
                   </div>

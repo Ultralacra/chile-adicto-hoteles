@@ -6,11 +6,12 @@ import { Footer } from "@/components/footer";
 import { CategoryNav } from "@/components/category-nav";
 import { HeroSlider } from "@/components/hero-slider";
 import { notFound } from "next/navigation";
-import data from "@/lib/data.json";
+// Dejamos de consumir data.json; consultamos al API
 import { useLanguage } from "@/contexts/language-context";
 import { useEffect, use, useState } from "react";
 import { buildCardExcerpt } from "@/lib/utils";
 import Link from "next/link";
+import { Spinner } from "@/components/ui/spinner";
 
 const validCategories = [
   "norte",
@@ -91,19 +92,23 @@ export default function CategoryPage({ params }: { params: any }) {
 
   const candidates = categoryCandidatesMap[slug] || [categoryName];
 
-  // Use data.json as main source; compare normalized uppercase values
-  let filteredHotels = (data as unknown as any[]).filter((h) => {
-    const entryCats = (h.categories || []).map((c: any) =>
-      String(c).toUpperCase()
-    );
-    const enCat = h.en?.category ? String(h.en.category).toUpperCase() : null;
-    const esCat = h.es?.category ? String(h.es.category).toUpperCase() : null;
-
-    return candidates.some((cand) => {
-      const C = String(cand).toUpperCase();
-      return entryCats.includes(C) || enCat === C || esCat === C;
-    });
-  });
+  const [filteredHotels, setFilteredHotels] = useState<any[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+  useEffect(() => {
+    let cancelled = false;
+    setLoading(true);
+    // Preferimos filtrar por slug de categoría en el backend
+    fetch(`/api/posts?categorySlug=${encodeURIComponent(slug)}`)
+      .then((r) => (r.ok ? r.json() : []))
+      .then((rows) => {
+        if (!cancelled) setFilteredHotels(Array.isArray(rows) ? rows : []);
+      })
+      .catch(() => !cancelled && setFilteredHotels([]))
+      .finally(() => !cancelled && setLoading(false));
+    return () => {
+      cancelled = true;
+    };
+  }, [slug]);
 
   const isRestaurantsPage = slug === "restaurantes";
 
@@ -353,29 +358,37 @@ export default function CategoryPage({ params }: { params: any }) {
         {/* Contador oculto por solicitud: se elimina el conteo de posts */}
 
         {/* Hotel Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 mt-4">
-          {finalHotels.length > 0 ? (
-            finalHotels.map((hotel) => (
-              <HotelCard
-                key={hotel.slug}
-                slug={hotel.slug}
-                name={hotel[language].name}
-                subtitle={hotel[language].subtitle}
-                description={buildCardExcerpt(hotel[language].description)}
-                image={hotel.featuredImage || hotel.images?.[0] || ""}
-              />
-            ))
-          ) : (
-            <div className="col-span-full text-center py-12 text-gray-500">
-              <p>
-                {t(
-                  "No hay hoteles disponibles en esta categoría.",
-                  "No hotels available in this category."
-                )}
-              </p>
+        {loading ? (
+          <div className="w-full py-16 grid place-items-center text-gray-500">
+            <div className="flex items-center gap-2">
+              <Spinner className="size-5" /> Cargando…
             </div>
-          )}
-        </div>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 mt-4">
+            {finalHotels.length > 0 ? (
+              finalHotels.map((hotel) => (
+                <HotelCard
+                  key={hotel.slug}
+                  slug={hotel.slug}
+                  name={hotel[language].name}
+                  subtitle={hotel[language].subtitle}
+                  description={buildCardExcerpt(hotel[language].description)}
+                  image={hotel.featuredImage || hotel.images?.[0] || ""}
+                />
+              ))
+            ) : (
+              <div className="col-span-full text-center py-12 text-gray-500">
+                <p>
+                  {t(
+                    "No hay hoteles disponibles en esta categoría.",
+                    "No hotels available in this category."
+                  )}
+                </p>
+              </div>
+            )}
+          </div>
+        )}
       </main>
 
       <Footer activeCategory={slug} />

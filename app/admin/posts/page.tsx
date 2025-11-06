@@ -1,7 +1,5 @@
 "use client";
 
-import data from "@/lib/data.json";
-const hotelsData = data as any[];
 import { Edit, Eye, Trash2, Plus, Search } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
@@ -24,28 +22,57 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination";
+import { Spinner } from "@/components/ui/spinner";
 
 export default function PostsListPage() {
   const router = useRouter();
   const [query, setQuery] = useState("");
   const [category, setCategory] = useState<string>("ALL");
   const [page, setPage] = useState(1);
+  const [hotelsData, setHotelsData] = useState<any[]>([]);
+  const [categoriesApi, setCategoriesApi] = useState<string[]>([]);
+  const [loading, setLoading] = useState(true);
   const pageSize = 12;
 
-  // Derivar categorías únicas desde data.json (usando es/en.category y categories[])
-  const allCategories = useMemo(() => {
-    const set = new Set<string>();
-    for (const h of hotelsData) {
-      if (h.es?.category) set.add(String(h.es.category).toUpperCase());
-      if (h.en?.category) set.add(String(h.en.category).toUpperCase());
-      (h.categories || []).forEach(
-        (c: string) => c && set.add(String(c).toUpperCase())
-      );
+  // Cargar posts y categorías desde la API
+  useEffect(() => {
+    let cancelled = false;
+    async function load() {
+      setLoading(true);
+      try {
+        const [pRes, cRes] = await Promise.all([
+          fetch("/api/posts", { cache: "no-store" }),
+          fetch("/api/categories", { cache: "no-store" }),
+        ]);
+        const p = pRes.ok ? await pRes.json() : [];
+        const c = cRes.ok ? await cRes.json() : [];
+        // Debug: imprimir en consola lo recibido desde la API/BD
+        console.log("[Admin Posts] /api/posts ->", p);
+        console.log("[Admin Posts] /api/categories ->", c);
+        if (!cancelled) {
+          setHotelsData(Array.isArray(p) ? p : []);
+          setCategoriesApi(Array.isArray(c) ? c : []);
+        }
+      } catch (e) {
+        console.error("[Admin Posts] Error cargando datos", e);
+        if (!cancelled) {
+          setHotelsData([]);
+          setCategoriesApi([]);
+        }
+      } finally {
+        if (!cancelled) setLoading(false);
+      }
     }
-    // Normalizar alias comunes
-    const arr = Array.from(set);
-    return ["ALL", ...arr.sort()];
+    load();
+    return () => {
+      cancelled = true;
+    };
   }, []);
+
+  const allCategories = useMemo(
+    () => ["ALL", ...categoriesApi],
+    [categoriesApi]
+  );
 
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
@@ -156,91 +183,101 @@ export default function PostsListPage() {
         </div>
 
         {/* Posts Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {pageItems.map((hotel) => (
-            <div
-              key={hotel.slug}
-              className="bg-white rounded-lg shadow-sm overflow-hidden hover:shadow-md transition-shadow"
-            >
-              {/* Image */}
-              <div className="relative h-48 bg-gray-100">
-                <Image
-                  src={
-                    hotel.images[0] || "/placeholder.svg?height=200&width=400"
-                  }
-                  alt={hotel.es.name}
-                  fill
-                  className="object-cover"
-                />
-                <div className="absolute top-2 right-2 flex gap-1">
-                  {((hotel.categories as any[]) || [])
-                    .slice(0, 2)
-                    .map((cat: any) => (
-                      <span
-                        key={cat}
-                        className="bg-white/90 backdrop-blur-sm px-2 py-1 rounded text-xs font-medium text-gray-700"
-                      >
-                        {cat}
-                      </span>
-                    ))}
+        {loading ? (
+          <div className="w-full py-16 grid place-items-center text-gray-500">
+            <div className="flex items-center gap-2">
+              <Spinner className="size-5" /> Cargando…
+            </div>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {pageItems.map((hotel) => (
+              <div
+                key={hotel.slug}
+                className="bg-white rounded-lg shadow-sm overflow-hidden hover:shadow-md transition-shadow"
+              >
+                {/* Image */}
+                <div className="relative h-48 bg-gray-100">
+                  <Image
+                    src={
+                      hotel.images?.[0] ||
+                      hotel.featuredImage ||
+                      "/placeholder.svg?height=200&width=400"
+                    }
+                    alt={hotel.es.name}
+                    fill
+                    className="object-cover"
+                  />
+                  <div className="absolute top-2 right-2 flex gap-1">
+                    {((hotel.categories as any[]) || [])
+                      .slice(0, 2)
+                      .map((cat: any) => (
+                        <span
+                          key={cat}
+                          className="bg-white/90 backdrop-blur-sm px-2 py-1 rounded text-xs font-medium text-gray-700"
+                        >
+                          {cat}
+                        </span>
+                      ))}
+                  </div>
                 </div>
-              </div>
 
-              {/* Content */}
-              <div className="p-4">
-                <h3 className="font-semibold text-lg text-gray-900 mb-1 line-clamp-1">
-                  {hotel.es.name}
-                </h3>
-                <p className="text-sm text-gray-600 mb-2 line-clamp-2">
-                  {hotel.es.subtitle}
-                </p>
-                <p className="text-xs text-gray-500 font-mono mb-4">
-                  /{hotel.slug}
-                </p>
+                {/* Content */}
+                <div className="p-4">
+                  <h3 className="font-semibold text-lg text-gray-900 mb-1 line-clamp-1">
+                    {hotel.es?.name || hotel.en?.name || hotel.slug}
+                  </h3>
+                  <p className="text-sm text-gray-600 mb-2 line-clamp-2">
+                    {hotel.es?.subtitle || hotel.en?.subtitle || ""}
+                  </p>
+                  <p className="text-xs text-gray-500 font-mono mb-4">
+                    /{hotel.slug}
+                  </p>
 
-                {/* Actions */}
-                <div className="flex gap-2">
-                  <Link
-                    href={`/lugar/${hotel.slug}`}
-                    target="_blank"
-                    className="flex-1"
-                  >
+                  {/* Actions */}
+                  <div className="flex gap-2">
+                    <Link
+                      href={`/lugar/${hotel.slug}`}
+                      target="_blank"
+                      className="flex-1"
+                    >
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        className="w-full gap-2 bg-transparent"
+                      >
+                        <Eye size={16} />
+                        Ver
+                      </Button>
+                    </Link>
+                    <Link
+                      href={`/admin/posts/edit/${hotel.slug}`}
+                      className="flex-1"
+                    >
+                      <Button
+                        size="sm"
+                        className="w-full gap-2 bg-green-600 hover:bg-green-700"
+                      >
+                        <Edit size={16} />
+                        Editar
+                      </Button>
+                    </Link>
                     <Button
                       variant="outline"
                       size="sm"
-                      className="w-full gap-2 bg-transparent"
+                      className="text-red-600 hover:text-red-700 hover:bg-red-50 bg-transparent"
+                      onClick={() =>
+                        alert("Funcionalidad de eliminar próximamente")
+                      }
                     >
-                      <Eye size={16} />
-                      Ver
+                      <Trash2 size={16} />
                     </Button>
-                  </Link>
-                  <Link
-                    href={`/admin/posts/edit/${hotel.slug}`}
-                    className="flex-1"
-                  >
-                    <Button
-                      size="sm"
-                      className="w-full gap-2 bg-green-600 hover:bg-green-700"
-                    >
-                      <Edit size={16} />
-                      Editar
-                    </Button>
-                  </Link>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    className="text-red-600 hover:text-red-700 hover:bg-red-50 bg-transparent"
-                    onClick={() =>
-                      alert("Funcionalidad de eliminar próximamente")
-                    }
-                  >
-                    <Trash2 size={16} />
-                  </Button>
+                  </div>
                 </div>
               </div>
-            </div>
-          ))}
-        </div>
+            ))}
+          </div>
+        )}
 
         {filtered.length === 0 && (
           <div className="bg-white rounded-lg shadow-sm p-12 text-center">
@@ -249,7 +286,7 @@ export default function PostsListPage() {
         )}
 
         {/* Paginación */}
-        {filtered.length > pageSize && (
+        {!loading && filtered.length > pageSize && (
           <Pagination className="mt-4">
             <PaginationContent>
               <PaginationItem>

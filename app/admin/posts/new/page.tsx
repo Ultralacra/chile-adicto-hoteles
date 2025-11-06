@@ -24,7 +24,8 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { postSchema } from "@/lib/post-schema";
-import { normalizePost, validatePost, saveDraft } from "@/lib/post-service";
+import { normalizePost, validatePost } from "@/lib/post-service";
+import { Spinner } from "@/components/ui/spinner";
 
 const toSlug = (v: string) =>
   v
@@ -37,6 +38,7 @@ const toSlug = (v: string) =>
 export default function NewPostPage() {
   const router = useRouter();
   const [activeTab, setActiveTab] = useState<"es" | "en">("es");
+  const [creating, setCreating] = useState(false);
 
   // Form state
   const [slug, setSlug] = useState("");
@@ -137,7 +139,7 @@ export default function NewPostPage() {
     }
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     const allImages = [featuredImage, ...galleryImages].filter(
@@ -189,9 +191,28 @@ export default function NewPostPage() {
       );
       return;
     }
-    console.log("New Hotel Data:", JSON.stringify(normalized, null, 2));
-    saveDraft(normalized as any);
-    alert("Post creado en borrador! Revisa la consola y localStorage.");
+
+    try {
+      setCreating(true);
+      const res = await fetch("/api/posts", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(normalized),
+      });
+      if (!res.ok) {
+        const text = await res.text();
+        throw new Error(text || "Error creando el post");
+      }
+      const data = await res.json();
+      const s = data?.slug || normalized.slug;
+      alert("Post creado correctamente");
+      router.push(`/admin/posts/edit/${s}`);
+    } catch (err: any) {
+      alert(`No se pudo crear el post: ${err?.message || err}`);
+      console.error("[Admin New] create error", err);
+    } finally {
+      setCreating(false);
+    }
   };
 
   const handleNameChange = (value: string) => {
@@ -205,6 +226,14 @@ export default function NewPostPage() {
   return (
     <div className="min-h-screen bg-gray-50">
       <div className="w-full px-4 lg:px-8 py-6 space-y-6">
+        {creating && (
+          <div className="fixed inset-0 z-50 bg-black/30 backdrop-blur-sm grid place-items-center">
+            <div className="bg-white rounded-lg shadow-lg p-6 flex items-center gap-3">
+              <Spinner className="size-5" />
+              <div className="text-gray-700 font-medium">Creando post…</div>
+            </div>
+          </div>
+        )}
         {/* Header */}
         <div className="flex items-center gap-4">
           <Link href="/admin/posts">
@@ -760,10 +789,11 @@ export default function NewPostPage() {
             <Button
               type="submit"
               size="lg"
-              className="flex-1 bg-red-600 hover:bg-red-700 gap-2"
+              className="flex-1 bg-red-600 hover:bg-red-700 gap-2 disabled:opacity-60"
+              disabled={creating}
             >
               <Plus size={20} />
-              Crear post
+              {creating ? "Creando..." : "Crear post"}
             </Button>
             <Button
               type="button"

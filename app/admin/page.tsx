@@ -1,33 +1,59 @@
 "use client";
 
-import data from "@/lib/data.json";
 import { FileText, Plus, TrendingUp } from "lucide-react";
 import Link from "next/link";
+import { useEffect, useMemo, useState } from "react";
+import { Spinner } from "@/components/ui/spinner";
 
 export default function AdminDashboard() {
-  const dataset = data as any[];
-  const totalPosts = dataset.length;
-  // Derivar categorías únicas de data.json (es/en.category + categories[])
-  const categorySet = new Set<string>();
-  for (const h of dataset) {
-    if (h.es?.category) categorySet.add(String(h.es.category).toUpperCase());
-    if (h.en?.category) categorySet.add(String(h.en.category).toUpperCase());
-    (h.categories || []).forEach(
-      (c: string) => c && categorySet.add(String(c).toUpperCase())
-    );
-  }
-  const categories = Array.from(categorySet).sort();
-  const postsByCategory = categories.map((cat) => {
-    const has = (h: any) => {
-      const cats = new Set<string>([
-        ...(h.categories || []).map((c: string) => String(c).toUpperCase()),
-      ]);
-      if (h.es?.category) cats.add(String(h.es.category).toUpperCase());
-      if (h.en?.category) cats.add(String(h.en.category).toUpperCase());
-      return cats.has(cat);
+  const [posts, setPosts] = useState<any[]>([]);
+  const [categories, setCategories] = useState<string[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    let cancelled = false;
+    async function load() {
+      setLoading(true);
+      try {
+        const [pRes, cRes] = await Promise.all([
+          fetch("/api/posts", { cache: "no-store" }),
+          fetch("/api/categories", { cache: "no-store" }),
+        ]);
+        const p = pRes.ok ? await pRes.json() : [];
+        const c = cRes.ok ? await cRes.json() : [];
+        if (!cancelled) {
+          setPosts(Array.isArray(p) ? p : []);
+          setCategories(Array.isArray(c) ? c : []);
+        }
+      } catch (e) {
+        if (!cancelled) {
+          setPosts([]);
+          setCategories([]);
+        }
+      } finally {
+        if (!cancelled) setLoading(false);
+      }
+    }
+    load();
+    return () => {
+      cancelled = true;
     };
-    return { name: cat, count: dataset.filter(has).length };
-  });
+  }, []);
+
+  const totalPosts = posts.length;
+  const postsByCategory = useMemo(() => {
+    return categories.map((cat) => {
+      const has = (h: any) => {
+        const cats = new Set<string>([
+          ...(h.categories || []).map((c: string) => String(c).toUpperCase()),
+        ]);
+        if (h.es?.category) cats.add(String(h.es.category).toUpperCase());
+        if (h.en?.category) cats.add(String(h.en.category).toUpperCase());
+        return cats.has(cat);
+      };
+      return { name: cat, count: posts.filter(has).length };
+    });
+  }, [posts, categories]);
 
   return (
     <div className="space-y-6">
@@ -37,6 +63,12 @@ export default function AdminDashboard() {
           Welcome to Chile Adicto Hotels Admin Panel
         </p>
       </div>
+
+      {loading && (
+        <div className="w-full p-6 bg-white rounded-lg shadow flex items-center gap-2 text-gray-600">
+          <Spinner className="size-4" /> Cargando datos…
+        </div>
+      )}
 
       {/* Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">

@@ -8,30 +8,54 @@ import { HotelCard } from "@/components/hotel-card";
 import { Footer } from "@/components/footer";
 import { CategoryNav } from "@/components/category-nav";
 import { buildCardExcerpt } from "@/lib/utils";
-import data from "@/lib/data.json";
+import { useEffect, useState } from "react";
+import { Spinner } from "@/components/ui/spinner";
 import { useLanguage } from "@/contexts/language-context";
 
 export default function Page() {
   const { language } = useLanguage();
-  // Mostrar todos excepto los restaurantes
-  const allHotels = (data as any[]) || [];
+  const [hotels, setHotels] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  const isRestaurant = (h: any) => {
-    const cats = (h.categories || []).map((c: string) =>
-      String(c).toUpperCase()
-    );
-    const esCat = h.es?.category ? String(h.es.category).toUpperCase() : null;
-    const enCat = h.en?.category ? String(h.en.category).toUpperCase() : null;
-    return (
-      cats.includes("RESTAURANTES") ||
-      cats.includes("RESTAURANTS") ||
-      esCat === "RESTAURANTES" ||
-      enCat === "RESTAURANTS" ||
-      enCat === "RESTAURANTES"
-    );
-  };
-
-  const hotels = allHotels.filter((h) => !isRestaurant(h));
+  useEffect(() => {
+    let cancelled = false;
+    setLoading(true);
+    fetch("/api/posts")
+      .then((r) => (r.ok ? r.json() : []))
+      .then((rows) => {
+        if (cancelled) return;
+        const list = Array.isArray(rows) ? rows : [];
+        const filtered = list.filter((h) => {
+          const cats = new Set<string>([
+            ...(h.categories || []).map((c: any) => String(c).toUpperCase()),
+          ]);
+          const esCat = h.es?.category
+            ? String(h.es.category).toUpperCase()
+            : null;
+          const enCat = h.en?.category
+            ? String(h.en.category).toUpperCase()
+            : null;
+          return !(
+            cats.has("RESTAURANTES") ||
+            cats.has("RESTAURANTS") ||
+            esCat === "RESTAURANTES" ||
+            enCat === "RESTAURANTS" ||
+            enCat === "RESTAURANTES"
+          );
+        });
+        setHotels(filtered);
+        setLoading(false);
+      })
+      .catch(() => {
+        if (!cancelled) {
+          setHotels([]);
+          setLoading(false);
+        }
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   // Banner por idioma (ES/EN): reemplazar las URLs cuando tengas las versiones en ambos idiomas
   const bannerByLang: Record<
@@ -100,32 +124,44 @@ export default function Page() {
 
           {/* Cards section below - full width */}
           <section className="mt-6">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-              {hotels.map((hotel) => (
-                <div key={hotel.slug} className="col-span-1">
-                  <HotelCard
-                    slug={hotel.slug}
-                    name={
-                      hotel[language]?.name || hotel.en?.name || hotel.es?.name
-                    }
-                    subtitle={
-                      hotel[language]?.subtitle ||
-                      hotel.en?.subtitle ||
-                      hotel.es?.subtitle
-                    }
-                    description={(() => {
-                      const paras = Array.isArray(hotel[language]?.description)
-                        ? hotel[language].description
-                        : Array.isArray(hotel.en?.description)
-                        ? hotel.en.description
-                        : [];
-                      return buildCardExcerpt(paras);
-                    })()}
-                    image={hotel.featuredImage || hotel.images?.[0] || ""}
-                  />
+            {loading ? (
+              <div className="w-full py-16 grid place-items-center text-gray-500">
+                <div className="flex items-center gap-2">
+                  <Spinner className="size-5" /> Cargando…
                 </div>
-              ))}
-            </div>
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+                {hotels.map((hotel) => (
+                  <div key={hotel.slug} className="col-span-1">
+                    <HotelCard
+                      slug={hotel.slug}
+                      name={
+                        hotel[language]?.name ||
+                        hotel.en?.name ||
+                        hotel.es?.name
+                      }
+                      subtitle={
+                        hotel[language]?.subtitle ||
+                        hotel.en?.subtitle ||
+                        hotel.es?.subtitle
+                      }
+                      description={(() => {
+                        const paras = Array.isArray(
+                          hotel[language]?.description
+                        )
+                          ? hotel[language].description
+                          : Array.isArray(hotel.en?.description)
+                          ? hotel.en.description
+                          : [];
+                        return buildCardExcerpt(paras);
+                      })()}
+                      image={hotel.featuredImage || hotel.images?.[0] || ""}
+                    />
+                  </div>
+                ))}
+              </div>
+            )}
           </section>
         </div>
       </main>

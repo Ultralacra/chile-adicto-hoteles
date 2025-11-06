@@ -6,7 +6,10 @@
     "build": "next build",
     "dev": "next dev",
     "lint": "eslint .",
-    "start": "next start"
+    "start": "next start",
+    "db:schema:apply": "node scripts/apply-schema.mjs",
+    "db:migrate": "node scripts/migrate-supabase.mjs",
+    "db:migrate:rest": "node scripts/migrate-supabase-http.mjs"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.10.0",

@@ -1,9 +1,8 @@
 "use client";
 
-import data from "@/lib/data.json";
-import { notFound, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { useState } from "react";
+import { use, useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -12,82 +11,136 @@ import { Card } from "@/components/ui/card";
 import AdminRichText from "@/components/admin-rich-text";
 import { ArrowLeft, Save, Tag, Globe, Plus, X } from "lucide-react";
 import { normalizePost, validatePost } from "@/lib/post-service";
+import { Spinner } from "@/components/ui/spinner";
 
-export default function EditPostPage({ params }: { params: { slug: string } }) {
+export default function EditPostPage({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}) {
   const router = useRouter();
-  const { slug } = params;
-  const hotel = (data as any[]).find((p) => p.slug === slug);
+  const { slug } = use(params);
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
+  const [hotel, setHotel] = useState<any | null>(null);
+  const [categoriesApi, setCategoriesApi] = useState<string[]>([]);
 
-  if (!hotel) {
-    notFound();
-  }
+  useEffect(() => {
+    let cancelled = false;
+    async function load() {
+      setLoading(true);
+      try {
+        const [pRes, cRes] = await Promise.all([
+          fetch(`/api/posts/${encodeURIComponent(slug)}`, {
+            cache: "no-store",
+          }),
+          fetch("/api/categories", { cache: "no-store" }),
+        ]);
+        const p = pRes.ok ? await pRes.json() : null;
+        const c = cRes.ok ? await cRes.json() : [];
+        // Debug: imprimir lo cargado
+        console.log("[Admin Edit] GET post", p);
+        console.log("[Admin Edit] GET categories", c);
+        if (!cancelled) {
+          setHotel(p && p.slug ? p : null);
+          setCategoriesApi(Array.isArray(c) ? c : []);
+        }
+      } catch (e) {
+        if (!cancelled) {
+          setHotel(null);
+          setCategoriesApi([]);
+        }
+      } finally {
+        if (!cancelled) setLoading(false);
+      }
+    }
+    load();
+    return () => {
+      cancelled = true;
+    };
+  }, [slug]);
 
   // Local editable state (pre-filled)
-  const [nameEs, setNameEs] = useState(hotel?.es?.name || "");
-  const [subtitleEs, setSubtitleEs] = useState(hotel?.es?.subtitle || "");
+  const [nameEs, setNameEs] = useState("");
+  const [subtitleEs, setSubtitleEs] = useState("");
   // Descripción: un solo bloque (párrafos separados por línea en blanco)
-  const [descriptionUnified, setDescriptionUnified] = useState<string>(
-    (hotel?.es?.description || []).join("\n\n")
-  );
-  const [infoHtmlEs, setInfoHtmlEs] = useState<string>(
-    hotel?.es?.infoHtml || ""
-  );
+  const [descriptionUnified, setDescriptionUnified] = useState<string>("");
+  const [infoHtmlEs, setInfoHtmlEs] = useState<string>("");
   const [rawPasteEs, setRawPasteEs] = useState<string>("");
 
   // Inglés
-  const [nameEn, setNameEn] = useState(hotel?.en?.name || "");
-  const [subtitleEn, setSubtitleEn] = useState(hotel?.en?.subtitle || "");
-  const [descriptionUnifiedEn, setDescriptionUnifiedEn] = useState<string>(
-    (hotel?.en?.description || []).join("\n\n")
-  );
-  const [infoHtmlEn, setInfoHtmlEn] = useState<string>(
-    hotel?.en?.infoHtml || ""
-  );
+  const [nameEn, setNameEn] = useState("");
+  const [subtitleEn, setSubtitleEn] = useState("");
+  const [descriptionUnifiedEn, setDescriptionUnifiedEn] = useState<string>("");
+  const [infoHtmlEn, setInfoHtmlEn] = useState<string>("");
   const [rawPasteEn, setRawPasteEn] = useState<string>("");
 
   // Contacto editable
-  const [website, setWebsite] = useState(hotel?.website || "");
-  const [websiteDisplay, setWebsiteDisplay] = useState(
-    hotel?.website_display || ""
-  );
-  const [instagram, setInstagram] = useState(hotel?.instagram || "");
-  const [instagramDisplay, setInstagramDisplay] = useState(
-    hotel?.instagram_display || ""
-  );
-  const [email, setEmail] = useState(hotel?.email || "");
-  const [phone, setPhone] = useState(
-    String(hotel?.phone || "").replace(/^tel:/i, "")
-  );
-  const [address, setAddress] = useState(hotel?.address || "");
-  const [photosCredit, setPhotosCredit] = useState(hotel?.photosCredit || "");
+  const [website, setWebsite] = useState("");
+  const [websiteDisplay, setWebsiteDisplay] = useState("");
+  const [instagram, setInstagram] = useState("");
+  const [instagramDisplay, setInstagramDisplay] = useState("");
+  const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
+  const [address, setAddress] = useState("");
+  const [photosCredit, setPhotosCredit] = useState("");
 
   // Imágenes: mantener arreglo y featured index
-  const initialImages: string[] = Array.isArray(hotel?.images)
-    ? hotel.images
-    : [];
-  const [images, setImages] = useState<string[]>(initialImages);
+  const [images, setImages] = useState<string[]>([]);
   const [featuredIndex, setFeaturedIndex] = useState(0);
   const moveImage = moveImageFactory(images, setImages);
   const removeImage = removeImageFactory(images, setImages);
-  const [categories, setCategories] = useState<string[]>(
-    hotel?.categories || ["TODOS"]
-  );
+  const [categories, setCategories] = useState<string[]>(["TODOS"]);
 
-  // Derivar todas las categorías disponibles de data.json
-  const allCategories = Array.from(
-    new Set(
-      (data as any[]).flatMap((h: any) => [
-        ...(h.categories || []),
-        h.es?.category || null,
-        h.en?.category || null,
-      ])
-    )
-  )
-    .filter(Boolean)
-    .map((c) => String(c).toUpperCase())
-    .sort();
+  // Cargar datos del hotel en los estados locales cuando llegue
+  useEffect(() => {
+    if (!hotel) return;
+    setNameEs(hotel.es?.name || "");
+    setSubtitleEs(hotel.es?.subtitle || "");
+    setDescriptionUnified(
+      Array.isArray(hotel.es?.description)
+        ? hotel.es.description.join("\n\n")
+        : ""
+    );
+    setInfoHtmlEs(hotel.es?.infoHtml || "");
+
+    setNameEn(hotel.en?.name || "");
+    setSubtitleEn(hotel.en?.subtitle || "");
+    setDescriptionUnifiedEn(
+      Array.isArray(hotel.en?.description)
+        ? hotel.en.description.join("\n\n")
+        : ""
+    );
+    setInfoHtmlEn(hotel.en?.infoHtml || "");
+
+    setWebsite(hotel.website || "");
+    setWebsiteDisplay(hotel.website_display || "");
+    setInstagram(hotel.instagram || "");
+    setInstagramDisplay(hotel.instagram_display || "");
+    setEmail(hotel.email || "");
+    setPhone(String(hotel.phone || "").replace(/^tel:/i, ""));
+    setAddress(hotel.address || "");
+    setPhotosCredit(hotel.photosCredit || "");
+
+    const initialImgs: string[] = Array.isArray(hotel.images)
+      ? hotel.images
+      : [];
+    setImages(initialImgs);
+    setFeaturedIndex(0);
+    setCategories(
+      Array.isArray(hotel.categories) && hotel.categories.length
+        ? hotel.categories.map((c: any) => String(c).toUpperCase())
+        : ["TODOS"]
+    );
+  }, [hotel]);
+
+  const allCategories = categoriesApi;
 
   const handleSave = () => {
+    if (!hotel) {
+      alert("No hay post cargado para guardar");
+      return;
+    }
     // Extraer solo la parte de contenido (antes del separador ---) y convertir a array de párrafos
     const descriptionEs = String(descriptionUnified)
       .split(/\n{2,}/)
@@ -110,7 +163,7 @@ export default function EditPostPage({ params }: { params: { slug: string } }) {
       : [];
 
     const updated = {
-      slug: hotel.slug,
+      slug: hotel?.slug || slug,
       es: {
         name: nameEs,
         subtitle: subtitleEs,
@@ -135,6 +188,7 @@ export default function EditPostPage({ params }: { params: { slug: string } }) {
       categories,
     };
     const normalized = normalizePost(updated as any);
+    console.log("[Admin Edit] PUT normalized payload", normalized);
     const result = validatePost(normalized as any);
     if (!result.ok) {
       const first = result.issues?.[0];
@@ -143,8 +197,31 @@ export default function EditPostPage({ params }: { params: { slug: string } }) {
       );
       return;
     }
-    console.log("Updated post:", JSON.stringify(normalized, null, 2));
-    alert("Cambios guardados! Revisa la consola para ver el JSON actualizado.");
+    setSaving(true);
+    fetch(`/api/posts/${encodeURIComponent(slug)}`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(normalized),
+    })
+      .then(async (r) => {
+        if (!r.ok) {
+          const msg = await r.text();
+          throw new Error(msg || `Error ${r.status}`);
+        }
+        const data = await r.json();
+        console.log("[Admin Edit] PUT response", data);
+        return data;
+      })
+      .then(() => {
+        alert("Cambios guardados correctamente");
+      })
+      .catch((e) => {
+        console.error("Update failed", e);
+        alert("No se pudo guardar: " + (e?.message || e));
+      })
+      .finally(() => {
+        setSaving(false);
+      });
   };
 
   // --- Pegado inteligente (idéntico a Nuevo) ---
@@ -287,6 +364,31 @@ export default function EditPostPage({ params }: { params: { slug: string } }) {
   return (
     <div className="min-h-screen bg-gray-50">
       <div className="w-full px-4 lg:px-8 py-6 space-y-6">
+        {saving && (
+          <div className="fixed inset-0 z-50 bg-black/30 backdrop-blur-sm grid place-items-center">
+            <div className="bg-white rounded-lg shadow-lg p-6 flex items-center gap-3">
+              <Spinner className="size-5" />
+              <div className="text-gray-700 font-medium">
+                Guardando cambios…
+              </div>
+            </div>
+          </div>
+        )}
+        {loading ? (
+          <div className="w-full p-6 bg-white rounded-lg shadow flex items-center gap-2 text-gray-600">
+            <Spinner className="size-4" /> Cargando post…
+          </div>
+        ) : !hotel ? (
+          <div className="w-full p-6 bg-white rounded-lg shadow text-gray-700">
+            No se encontró el post "{slug}".{" "}
+            <button
+              className="text-red-600 underline"
+              onClick={() => router.push("/admin/posts")}
+            >
+              Volver a la lista
+            </button>
+          </div>
+        ) : null}
         {/* Header */}
         <div className="flex items-center gap-4">
           <Link href="/admin/posts">
@@ -296,14 +398,17 @@ export default function EditPostPage({ params }: { params: { slug: string } }) {
           </Link>
           <div className="flex-1">
             <h1 className="text-3xl font-bold text-gray-900">Editar post</h1>
-            <p className="text-gray-600 mt-1">{hotel.es.name}</p>
+            <p className="text-gray-600 mt-1">
+              {hotel?.es?.name || hotel?.en?.name || slug}
+            </p>
           </div>
           <Button
             onClick={handleSave}
-            className="bg-green-600 hover:bg-green-700 gap-2"
+            className="bg-green-600 hover:bg-green-700 gap-2 disabled:opacity-60"
+            disabled={saving}
           >
             <Save size={20} />
-            Guardar cambios
+            {saving ? "Guardando..." : "Guardar cambios"}
           </Button>
         </div>
 
@@ -319,7 +424,7 @@ export default function EditPostPage({ params }: { params: { slug: string } }) {
                 Categorías <span className="text-red-600">*</span>
               </Label>
               <div className="flex flex-wrap gap-2">
-                {["TODOS", ...allCategories].map((cat) => (
+                {Array.from(new Set(["TODOS", ...allCategories])).map((cat) => (
                   <label
                     key={cat}
                     className={`px-4 py-2 rounded-lg border-2 cursor-pointer transition-all ${
@@ -670,10 +775,11 @@ export default function EditPostPage({ params }: { params: { slug: string } }) {
         <div className="flex gap-4 sticky bottom-6 bg-white p-4 rounded-lg shadow-lg border">
           <Button
             onClick={handleSave}
-            className="flex-1 bg-green-600 hover:bg-green-700 gap-2"
+            className="flex-1 bg-green-600 hover:bg-green-700 gap-2 disabled:opacity-60"
+            disabled={saving}
           >
             <Save size={20} />
-            Guardar cambios
+            {saving ? "Guardando..." : "Guardar cambios"}
           </Button>
           <Button variant="outline" onClick={() => router.push("/admin/posts")}>
             Cancelar

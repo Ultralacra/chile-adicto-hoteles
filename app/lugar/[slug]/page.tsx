@@ -4,10 +4,11 @@ import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
 import { CategoryNav } from "@/components/category-nav";
 import { HotelDetail } from "@/components/hotel-detail";
-import data from "@/lib/data.json";
+// Dejamos de consumir data.json; consultamos al API
 import { normalizeImageUrl } from "@/lib/utils";
 import { useLanguage } from "@/contexts/language-context";
-import { useEffect, use } from "react";
+import { useEffect, use, useState } from "react";
+import { Spinner } from "@/components/ui/spinner";
 
 type ResolvedParams = { slug: string };
 
@@ -21,9 +22,37 @@ export default function LugarPage(props: any) {
     window.scrollTo(0, 0);
   }, [resolvedParams?.slug]);
 
-  // buscar en data.json
-  const a = data as unknown as any[];
-  const arquitecturaEntry = a.find((x) => x.slug === resolvedParams?.slug);
+  const [arquitecturaEntry, setArquitecturaEntry] = useState<any | null>(null);
+  const [loading, setLoading] = useState<boolean>(true);
+  useEffect(() => {
+    let cancelled = false;
+    if (!resolvedParams?.slug) return;
+    setLoading(true);
+    fetch(`/api/posts/${encodeURIComponent(resolvedParams.slug)}`)
+      .then((r) => (r.ok ? r.json() : null))
+      .then((row) => {
+        if (!cancelled) setArquitecturaEntry(row);
+      })
+      .catch(() => !cancelled && setArquitecturaEntry(null))
+      .finally(() => !cancelled && setLoading(false));
+    return () => {
+      cancelled = true;
+    };
+  }, [resolvedParams?.slug]);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-white">
+        <Header />
+        <main className="container mx-auto px-4 py-16 text-center">
+          <div className="max-w-2xl mx-auto text-gray-600 flex items-center justify-center gap-2">
+            <Spinner className="size-5" /> Cargando…
+          </div>
+        </main>
+        <Footer />
+      </div>
+    );
+  }
 
   if (!arquitecturaEntry) {
     return (

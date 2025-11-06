@@ -2,12 +2,11 @@ import { z } from "zod";
 
 const slugRegex = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
 
+// Relajamos la validación: ningún campo de contenido es obligatorio
 export const localizedSchema = z.object({
-  name: z.string().min(1, "name requerido"),
-  subtitle: z.string().min(1, "subtitle requerido"),
-  description: z
-    .array(z.string().min(1))
-    .min(1, "al menos 1 párrafo"),
+  name: z.string().optional(),
+  subtitle: z.string().optional(),
+  description: z.array(z.string()).optional(),
   // HTML libre para el bloque "Datos útiles" (opcional)
   infoHtml: z.string().optional(),
   category: z.string().optional(),
@@ -18,17 +17,19 @@ export const localizedSchema = z.object({
 
 export const postSchema = z.object({
   slug: z.string().regex(slugRegex, "slug inválido: usa minusculas y guiones"),
-  es: localizedSchema,
-  en: localizedSchema,
+  es: localizedSchema.optional(),
+  en: localizedSchema.optional(),
   featuredImage: z.string().url().optional(),
-  images: z.array(z.string().url({ message: "imagen debe ser URL" })).min(0),
-  categories: z.array(z.string().min(1)).min(1, "al menos 1 categoría"),
+  images: z.array(z.string().url({ message: "imagen debe ser URL" })).optional(),
+  categories: z.array(z.string().min(1)).optional(),
   website: z.string().url().optional(),
   website_display: z.string().optional(),
   instagram: z.string().optional(),
   instagram_display: z.string().optional(),
-  email: z.string().email().optional(),
-  phone: z.string().regex(/^tel:\+?[0-9]+$/, "phone debe ser tel:+..." ).optional(),
+  // Email totalmente opcional, sin validar formato para no bloquear edición
+  email: z.string().optional(),
+  // Permitir cadena vacía o formato tel:+...; valores inválidos se descartan en normalización
+  phone: z.union([z.string().regex(/^tel:\+?[0-9]+$/, "phone debe ser tel:+..." ), z.literal("")]).optional(),
   address: z.string().optional(),
   photosCredit: z.string().optional(),
   reservationLink: z.string().url().optional(),
@@ -39,7 +40,7 @@ export const postSchema = z.object({
     .array(
       z.object({
         label: z.string().optional(),
-        address: z.string().min(1, "address requerido en location"),
+        address: z.string().optional(),
         hours: z.string().optional(),
         website: z.string().url().optional(),
         website_display: z.string().optional(),
@@ -48,8 +49,12 @@ export const postSchema = z.object({
         reservationLink: z.string().url().optional(),
         reservationPolicy: z.string().optional(),
         interestingFact: z.string().optional(),
-        email: z.string().email().optional(),
-        phone: z.string().regex(/^tel:\+?[0-9]+$/, "phone debe ser tel:+...").optional(),
+        // Email opcional sin validar formato
+        email: z.string().optional(),
+        phone: z.union([
+          z.string().regex(/^tel:\+?[0-9]+$/, "phone debe ser tel:+..."),
+          z.literal("")
+        ]).optional(),
       })
     )
     .optional(),

@@ -231,38 +231,46 @@ export async function PUT(
       }
     }
 
-    // 3) Reemplazar traducciones (solo enviar campos no vacíos)
+    // 3) Reemplazar traducciones: PostgREST exige que todos los objetos de un bulk insert tengan las mismas claves.
+    // Unificamos claves (name, subtitle, description, info_html, category) siempre presentes.
     const esT = normalized.es || {} as any;
     const enT = normalized.en || {} as any;
-    const candidates = [
-      { lang: "es", src: esT },
-      { lang: "en", src: enT },
+    const unifiedTranslations = [
+      {
+        post_id: postId,
+        lang: "es",
+        name: esT.name ? String(esT.name).trim() : null,
+        subtitle: esT.subtitle ? String(esT.subtitle).trim() : null,
+        description: Array.isArray(esT.description) ? esT.description : [],
+        info_html: esT.infoHtml ? String(esT.infoHtml).trim() : null,
+        category: esT.category ? String(esT.category).trim() : null,
+      },
+      {
+        post_id: postId,
+        lang: "en",
+        name: enT.name ? String(enT.name).trim() : null,
+        subtitle: enT.subtitle ? String(enT.subtitle).trim() : null,
+        description: Array.isArray(enT.description) ? enT.description : [],
+        info_html: enT.infoHtml ? String(enT.infoHtml).trim() : null,
+        category: enT.category ? String(enT.category).trim() : null,
+      },
     ];
-    const cleaned = candidates
-      .map(({ lang, src }) => {
-        const obj: any = { post_id: postId, lang };
-        if (src.name && String(src.name).trim()) obj.name = String(src.name).trim();
-        if (src.subtitle && String(src.subtitle).trim()) obj.subtitle = String(src.subtitle).trim();
-        if (Array.isArray(src.description) && src.description.length > 0) obj.description = src.description;
-        if (src.infoHtml && String(src.infoHtml).trim()) obj.info_html = String(src.infoHtml).trim();
-        if (src.category && String(src.category).trim()) obj.category = String(src.category).trim();
-        return obj;
-      })
-      .filter((t) => Object.keys(t).length > 2); // más que post_id y lang
-
-    if (cleaned.length > 0) {
+    // Decidimos insertar solo si al menos un idioma tiene algún campo no nulo o descripción no vacía
+    const shouldWrite = unifiedTranslations.some(t => (t.name||t.subtitle||t.info_html||t.category|| (Array.isArray(t.description) && t.description.length>0)));
+    if (shouldWrite) {
       step = "delete_translations";
       await serviceRest(`/post_translations?post_id=eq.${postId}`, { method: "DELETE" });
       step = "post_translations";
       try {
-        await serviceRest(`/post_translations`, { method: "POST", body: JSON.stringify(cleaned) });
+        await serviceRest(`/post_translations`, { method: "POST", body: JSON.stringify(unifiedTranslations) });
       } catch (e: any) {
         const firstMsg = String(e?.message || "");
+        // Fallback: eliminar columnas inexistentes manteniendo uniformidad
         let errCurr: any = e;
         const prune = new Set<string>();
         for (const m of firstMsg.matchAll(/Could not find the '([a-zA-Z0-9_]+)' column/gi)) prune.add(m[1]);
-        if (prune.size > 0) {
-          const payload = cleaned.map((t) => {
+        if (prune.size>0) {
+          const payload = unifiedTranslations.map(t => {
             const c: any = { ...t };
             for (const col of prune) delete c[col];
             return c;
@@ -271,29 +279,20 @@ export async function PUT(
             await serviceRest(`/post_translations`, { method: "POST", body: JSON.stringify(payload) });
             console.warn("[PUT posts] degradado traducciones columnas faltantes", Array.from(prune));
             errCurr = null;
-          } catch (e2: any) {
-            errCurr = e2;
-          }
+          } catch (e2:any){ errCurr = e2; }
         }
         if (errCurr) {
-          // patrón genérico
-          for (let i = 0; i < 5 && errCurr; i++) {
-            const msg = String(errCurr?.message || "");
+          for (let i=0;i<5 && errCurr;i++) {
+            const msg = String(errCurr?.message||"");
             const m = msg.match(/column\s+[^.]*\.?([a-zA-Z0-9_]+)\s+does not exist/i);
-            if (!m) break;
+            if(!m) break;
             prune.add(m[1]);
-            const payload = cleaned.map((t) => {
-              const c: any = { ...t };
-              for (const col of prune) delete c[col];
+            const payload = unifiedTranslations.map(t=>{
+              const c:any={...t};
+              for(const col of prune) delete c[col];
               return c;
             });
-            try {
-              await serviceRest(`/post_translations`, { method: "POST", body: JSON.stringify(payload) });
-              errCurr = null;
-              break;
-            } catch (e3: any) {
-              errCurr = e3;
-            }
+            try { await serviceRest(`/post_translations`,{method:"POST",body:JSON.stringify(payload)}); errCurr=null; break; } catch(e3:any){ errCurr=e3; }
           }
         }
         if (errCurr) throw errCurr;

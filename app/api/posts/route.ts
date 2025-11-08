@@ -1,3 +1,4 @@
+// Limpieza: reemplazo completo del archivo con implementación válida
 import { NextResponse } from "next/server";
 import { postSchema } from "@/lib/post-schema";
 import { normalizePost } from "@/lib/post-normalize";
@@ -54,7 +55,6 @@ async function serviceRest(path: string, init?: RequestInit) {
 }
 
 function mapRowToLegacy(row: any) {
-  // Transforma el resultado del REST (con relaciones) al formato parecido a data.json
   const images = Array.isArray(row.images)
     ? row.images
         .slice()
@@ -120,7 +120,6 @@ function mapRowToLegacy(row: any) {
   };
 }
 
-// GET /api/posts -> lista de posts (mock: lee desde data.json)
 export async function GET(req: Request) {
   try {
     const url = new URL(req.url);
@@ -128,14 +127,12 @@ export async function GET(req: Request) {
     const category = url.searchParams.get("category");
     const categorySlug = url.searchParams.get("categorySlug");
 
-    // Intentar Supabase REST primero
     const select =
       "slug,featured_image,website,instagram,website_display,instagram_display,email,phone,photos_credit,address,hours,reservation_link,reservation_policy,interesting_fact,images:post_images(url,position),locations:post_locations(*),translations:post_translations(*),category_links:post_category_map(category:categories(slug,label_es,label_en))";
     let rows: any[] | null = await fetchFromSupabase(
       `/posts?select=${encodeURIComponent(select)}`
     );
 
-    // Filtro básico en memoria (q, category/categorySlug) cuando usamos Supabase REST
     if (rows) {
       if (category || categorySlug) {
         const catU = category ? category.toUpperCase() : null;
@@ -173,8 +170,6 @@ export async function GET(req: Request) {
       const mapped = rows.map(mapRowToLegacy);
       return NextResponse.json(mapped, { status: 200 });
     }
-
-    // Sin fallback a data.json: devolver vacío si no hay Supabase configurado
     return NextResponse.json([], { status: 200 });
   } catch (err: any) {
     console.error("[GET /api/posts] error", err);
@@ -182,7 +177,6 @@ export async function GET(req: Request) {
   }
 }
 
-// POST /api/posts -> crea post (solo loguea y devuelve el payload validado)
 export async function POST(req: Request) {
   try {
     const body = await req.json();
@@ -195,7 +189,6 @@ export async function POST(req: Request) {
       );
     }
 
-    // 0) Verificar duplicado por slug
     const existing: any[] = await serviceRest(
       `/posts?slug=eq.${encodeURIComponent(normalized.slug)}&select=id`
     );
@@ -206,7 +199,6 @@ export async function POST(req: Request) {
       );
     }
 
-    // 1) Crear post base
     const featured = normalized.featuredImage || normalized.images?.[0] || null;
     const insertedPosts: any[] = await serviceRest(`/posts`, {
       method: "POST",
@@ -232,7 +224,6 @@ export async function POST(req: Request) {
     const postId = insertedPosts?.[0]?.id;
     if (!postId) throw new Error("No se pudo obtener id del nuevo post");
 
-    // 2) Traducciones ES/EN
     const esT = normalized.es || { name: "", subtitle: "", description: [], infoHtml: null, category: null } as any;
     const enT = normalized.en || { name: "", subtitle: "", description: [], infoHtml: null, category: null } as any;
     const translationsPayload = [
@@ -255,81 +246,50 @@ export async function POST(req: Request) {
         category: enT.category || null,
       },
     ];
-    try {
-      await serviceRest(`/post_translations`, { method: "POST", body: JSON.stringify(translationsPayload) });
-    } catch (e: any) {
-      // Manejar casos: "Could not find the 'X' column ..." y patrón genérico
-      let errCurr: any = e;
-      const prune = new Set<string>();
-      const firstMsg = String(errCurr?.message || "");
-      const reMissing = /Could not find the '([a-zA-Z0-9_]+)' column/i;
-      let m: RegExpExecArray | null;
-      while ((m = reMissing.exec(firstMsg)) !== null) prune.add(m[1]);
-      if (prune.size > 0) {
-        const fallback = translationsPayload.map((t) => {
-          const copy: any = { ...t };
-          for (const c of prune) delete copy[c];
-          return copy;
-        });
-        try {
-          await serviceRest(`/post_translations`, { method: "POST", body: JSON.stringify(fallback) });
-          console.warn("[POST posts] degradado: columnas faltantes", Array.from(prune));
-          errCurr = null;
-        } catch (e2: any) {
-          errCurr = e2;
+    const anyContent = translationsPayload.some(t => (t.name || t.subtitle || t.info_html || t.category || (Array.isArray(t.description) && t.description.length > 0)));
+    if (anyContent) {
+      try {
+        await serviceRest(`/post_translations`, { method: "POST", body: JSON.stringify(translationsPayload) });
+      } catch (e: any) {
+        let errCurr: any = e;
+        const prune = new Set<string>();
+        const firstMsg = String(errCurr?.message || "");
+        for (const m of firstMsg.matchAll(/Could not find the '([a-zA-Z0-9_]+)' column/gi)) prune.add(m[1]);
+        if (prune.size > 0) {
+          const fb = translationsPayload.map(t => { const c: any = { ...t }; for (const col of prune) delete c[col]; return c; });
+          try { await serviceRest(`/post_translations`, { method: "POST", body: JSON.stringify(fb) }); console.warn("[POST posts] degradado traducciones columnas faltantes", Array.from(prune)); errCurr = null; } catch (e2:any){ errCurr = e2; }
         }
-      }
-      if (errCurr) {
-        // intentar con patrón genérico "column ... does not exist"
-        for (let i = 0; i < 6 && errCurr; i++) {
-          const msg = String(errCurr?.message || "");
-          const m2 = msg.match(/column\s+[^.]*\.?([a-zA-Z0-9_]+)\s+does not exist/i);
-          if (!m2) break;
-          prune.add(m2[1]);
-          const fallback = translationsPayload.map((t) => {
-            const copy: any = { ...t };
-            for (const c of prune) delete copy[c];
-            return copy;
-          });
-          try {
-            await serviceRest(`/post_translations`, { method: "POST", body: JSON.stringify(fallback) });
-            errCurr = null;
-            break;
-          } catch (e3: any) {
-            errCurr = e3;
+        if (errCurr) {
+          for (let i = 0; i < 5 && errCurr; i++) {
+            const msg = String(errCurr?.message || "");
+            const mm = msg.match(/column\s+[^.]*\.?([a-zA-Z0-9_]+)\s+does not exist/i);
+            if (!mm) break;
+            prune.add(mm[1]);
+            const fb = translationsPayload.map(t => { const c: any = { ...t }; for (const col of prune) delete c[col]; return c; });
+            try { await serviceRest(`/post_translations`, { method: "POST", body: JSON.stringify(fb) }); errCurr = null; break; } catch (e3:any){ errCurr = e3; }
           }
         }
+        if (errCurr) throw errCurr;
       }
-      if (errCurr) throw errCurr;
     }
 
-    // 3) Imágenes
     const imagesPayload = (normalized.images || []).map((url, idx) => ({
       post_id: postId,
       url,
       position: idx,
     }));
     if (imagesPayload.length > 0) {
-      await serviceRest(`/post_images`, {
-        method: "POST",
-        body: JSON.stringify(imagesPayload),
-      });
+      await serviceRest(`/post_images`, { method: "POST", body: JSON.stringify(imagesPayload) });
     }
 
-    // 4) Categorías (opcional)
     try {
       const cats: any[] = await serviceRest(`/categories?select=id,slug,label_es,label_en`);
-      const wanted = new Set(
-        (normalized.categories || []).map((c) => String(c).toUpperCase())
-      );
+      const wanted = new Set((normalized.categories || []).map(c => String(c).toUpperCase()));
       const catIds = cats
-        .filter((r) => wanted.has(String(r.label_es || r.slug || "").toUpperCase()))
-        .map((r) => r.id);
+        .filter(r => wanted.has(String(r.label_es || r.slug || "").toUpperCase()))
+        .map(r => r.id);
       if (catIds.length > 0) {
-        await serviceRest(`/post_category_map`, {
-          method: "POST",
-          body: JSON.stringify(catIds.map((id: number) => ({ post_id: postId, category_id: id }))),
-        });
+        await serviceRest(`/post_category_map`, { method: "POST", body: JSON.stringify(catIds.map((id: number) => ({ post_id: postId, category_id: id }))) });
       }
     } catch (e) {
       console.warn("[POST posts] Categorías: continuidad tras fallo en mapeo", e);

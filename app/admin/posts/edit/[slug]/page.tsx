@@ -210,6 +210,11 @@ export default function EditPostPage({
         }
         const data = await r.json();
         console.log("[Admin Edit] PUT response", data);
+        // Actualizar estado local de imágenes si cambió
+        if (Array.isArray(normalized.images)) {
+          setImages(normalized.images);
+          setFeaturedIndex(0);
+        }
         return data;
       })
       .then(() => {

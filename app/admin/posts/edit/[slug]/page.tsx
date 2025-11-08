@@ -85,11 +85,20 @@ export default function EditPostPage({
   const [address, setAddress] = useState("");
   const [photosCredit, setPhotosCredit] = useState("");
 
-  // Imágenes: mantener arreglo y featured index
+  // Imágenes: mantener arreglo y featured index + featuredImage persistente
   const [images, setImages] = useState<string[]>([]);
   const [featuredIndex, setFeaturedIndex] = useState(0);
+  const [featuredImage, setFeaturedImage] = useState<string>("");
   const moveImage = moveImageFactory(images, setImages);
-  const removeImage = removeImageFactory(images, setImages);
+  const removeImage = (index: number) => {
+    const arr = images.filter((_, i) => i !== index);
+    setImages(arr);
+    if (index === featuredIndex) {
+      setFeaturedIndex(0);
+    } else if (index < featuredIndex) {
+      setFeaturedIndex(Math.max(0, featuredIndex - 1));
+    }
+  };
   const [categories, setCategories] = useState<string[]>(["TODOS"]);
 
   // Cargar datos del hotel en los estados locales cuando llegue
@@ -122,11 +131,18 @@ export default function EditPostPage({
     setAddress(hotel.address || "");
     setPhotosCredit(hotel.photosCredit || "");
 
-    const initialImgs: string[] = Array.isArray(hotel.images)
-      ? hotel.images
+    let initialImgs: string[] = Array.isArray(hotel.images)
+      ? hotel.images.slice()
       : [];
+    // Incluir la featuredImage en la lista local si no está (para poder volver a seleccionarla).
+    if (hotel.featuredImage && !initialImgs.includes(hotel.featuredImage)) {
+      initialImgs = [hotel.featuredImage, ...initialImgs];
+    }
     setImages(initialImgs);
-    setFeaturedIndex(0);
+    // Marcar índice de la featured si existe
+    const idx = hotel.featuredImage ? initialImgs.indexOf(hotel.featuredImage) : -1;
+    setFeaturedIndex(idx >= 0 ? idx : 0);
+    setFeaturedImage(hotel.featuredImage || (initialImgs[0] || ""));
     setCategories(
       Array.isArray(hotel.categories) && hotel.categories.length
         ? hotel.categories.map((c: any) => String(c).toUpperCase())
@@ -135,6 +151,14 @@ export default function EditPostPage({
   }, [hotel]);
 
   const allCategories = categoriesApi;
+
+  // Mantener sincronizado featuredImage cuando cambia featuredIndex o images
+  useEffect(() => {
+    if (images.length === 0) return;
+    if (featuredIndex >= 0 && featuredIndex < images.length) {
+      setFeaturedImage(images[featuredIndex]);
+    }
+  }, [featuredIndex, images]);
 
   const handleSave = () => {
     if (!hotel) {
@@ -150,20 +174,18 @@ export default function EditPostPage({
       .split(/\n{2,}/)
       .map((p) => p.trim())
       .filter(Boolean);
-    // Ensamblar imágenes poniendo la destacada al inicio
-    const normalizedFeatured = Math.min(
+    // Determinar featured final; si no hay imágenes mantener la previa
+    const normalizedFeaturedIdx = Math.min(
       Math.max(0, featuredIndex || 0),
       Math.max(0, images.length - 1)
     );
-    const orderedImages = images.length
-      ? [
-          images[normalizedFeatured],
-          ...images.filter((_, i) => i !== normalizedFeatured),
-        ]
-      : [];
+    const finalFeatured = images[normalizedFeaturedIdx] || featuredImage || "";
+    // Galería SIN la destacada (para no duplicarla en post_images)
+    const galleryImages = images.filter((img, i) => img && img !== finalFeatured && i !== normalizedFeaturedIdx);
 
     const updated = {
       slug: hotel?.slug || slug,
+      featuredImage: finalFeatured || undefined,
       es: {
         name: nameEs,
         subtitle: subtitleEs,
@@ -184,7 +206,7 @@ export default function EditPostPage({
       phone: phone ? `tel:${phone.replace(/[^+\d]/g, "")}` : "",
       address,
       photosCredit,
-      images: orderedImages,
+      images: galleryImages,
       categories,
     };
     const normalized = normalizePost(updated as any);
@@ -212,7 +234,12 @@ export default function EditPostPage({
         console.log("[Admin Edit] PUT response", data);
         // Actualizar estado local de imágenes si cambió
         if (Array.isArray(normalized.images)) {
-          setImages(normalized.images);
+          // Después de guardar, reconstruir lista local combinando featured + galería
+          const nextFeatured = normalized.featuredImage || finalFeatured;
+          const nextGallery = normalized.images.filter((img: string) => img !== nextFeatured);
+          const rebuilt = nextFeatured ? [nextFeatured, ...nextGallery] : nextGallery;
+          setImages(rebuilt);
+          setFeaturedImage(nextFeatured || "");
           setFeaturedIndex(0);
         }
         return data;
@@ -810,12 +837,4 @@ function moveImageFactory(
   };
 }
 
-function removeImageFactory(
-  images: string[],
-  setImages: (imgs: string[]) => void
-): (index: number) => void {
-  return (index: number) => {
-    const arr = images.filter((_, i) => i !== index);
-    setImages(arr);
-  };
-}
+// removeImageFactory ya no se usa; la lógica de eliminación ajusta featuredIndex in-line

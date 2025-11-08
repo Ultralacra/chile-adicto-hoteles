@@ -176,62 +176,81 @@ export async function PUT(
     const postId = rows[0].id;
     console.log("[PUT posts] step=fetch_post_id id", postId);
 
-    // 2) Actualizar tabla posts (campos top-level)
-    const featured = normalized.featuredImage || normalized.images?.[0] || null;
-    // Intentar PATCH posts con degradación si alguna columna no existe
+    // 2) Actualizar tabla posts (campos top-level) solo para claves provistas
     {
-      const patchData: Record<string, any> = {
-        featured_image: featured,
-        website: normalized.website || null,
-        website_display: normalized.website_display || null,
-        instagram: normalized.instagram || null,
-        instagram_display: normalized.instagram_display || null,
-        email: normalized.email || null,
-        phone: normalized.phone || null,
-        address: normalized.address || null,
-        photos_credit: normalized.photosCredit || null,
-        hours: normalized.hours || null,
-        reservation_link: normalized.reservationLink || null,
-        reservation_policy: normalized.reservationPolicy || null,
-        interesting_fact: normalized.interestingFact || null,
-      };
-      const tryPatch = async () => {
-        step = "patch_posts";
-        await serviceRest(`/posts?id=eq.${postId}`, {
-          method: "PATCH",
-          body: JSON.stringify(patchData),
-        });
-      };
-      try {
-        await tryPatch();
-      } catch (e: any) {
-        // Si falta alguna columna, eliminarla y reintentar hasta 8 veces
-        let attempts = 0;
-        let lastErr = e;
-        while (attempts < 8) {
-          const msg = String(lastErr?.message || "");
-          const m = msg.match(/column\s+[^.]*\.?([a-zA-Z0-9_]+)\s+does not exist/i);
-          if (!m) break;
-          const col = m[1];
-          if (col && col in patchData) {
-            delete patchData[col];
-          } else {
-            // intentar mapear con posts.<col>
-            const m2 = msg.match(/posts\.([a-zA-Z0-9_]+)/i);
-            const col2 = m2?.[1];
-            if (!col2 || !(col2 in patchData)) break;
-            delete patchData[col2];
-          }
-          attempts++;
-          try {
-            await tryPatch();
-            lastErr = null;
-            break;
-          } catch (err2: any) {
-            lastErr = err2;
-          }
+      const provided = new Set(Object.keys(body || {}));
+      const patchData: Record<string, any> = {};
+      const setIfProvided = (key: string, value: any) => {
+        if (provided.has(key)) {
+          patchData[
+            key === "featuredImage"
+              ? "featured_image"
+              : key === "website_display"
+              ? "website_display"
+              : key === "instagram_display"
+              ? "instagram_display"
+              : key === "photosCredit"
+              ? "photos_credit"
+              : key === "reservationLink"
+              ? "reservation_link"
+              : key === "reservationPolicy"
+              ? "reservation_policy"
+              : key === "interestingFact"
+              ? "interesting_fact"
+              : key
+          ] = value ?? null;
         }
-        if (lastErr) throw lastErr;
+      };
+      setIfProvided("featuredImage", normalized.featuredImage);
+      setIfProvided("website", normalized.website);
+      setIfProvided("website_display", normalized.website_display);
+      setIfProvided("instagram", normalized.instagram);
+      setIfProvided("instagram_display", normalized.instagram_display);
+      setIfProvided("email", normalized.email);
+      setIfProvided("phone", normalized.phone);
+      setIfProvided("address", normalized.address);
+      setIfProvided("photosCredit", normalized.photosCredit);
+      setIfProvided("hours", normalized.hours);
+      setIfProvided("reservationLink", normalized.reservationLink);
+      setIfProvided("reservationPolicy", normalized.reservationPolicy);
+      setIfProvided("interestingFact", normalized.interestingFact);
+
+      if (Object.keys(patchData).length > 0) {
+        const tryPatch = async () => {
+          step = "patch_posts";
+          await serviceRest(`/posts?id=eq.${postId}`, {
+            method: "PATCH",
+            body: JSON.stringify(patchData),
+          });
+        };
+        try {
+          await tryPatch();
+        } catch (e: any) {
+          // Si falta alguna columna, eliminarla y reintentar hasta 8 veces
+          let attempts = 0;
+          let lastErr = e;
+          while (attempts < 8) {
+            const msg = String(lastErr?.message || "");
+            const m = msg.match(/column\s+[^.]*\.?([a-zA-Z0-9_]+)\s+does not exist/i);
+            if (!m) break;
+            const col = m[1];
+            for (const k of Object.keys(patchData)) {
+              if (k === col || k.endsWith(`.${col}`) || col === k) {
+                delete patchData[k];
+                break;
+              }
+            }
+            attempts++;
+            try {
+              await tryPatch();
+              lastErr = null;
+              break;
+            } catch (err2: any) {
+              lastErr = err2;
+            }
+          }
+          if (lastErr) throw lastErr;
+        }
       }
     }
 

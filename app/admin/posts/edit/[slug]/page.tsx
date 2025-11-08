@@ -140,9 +140,11 @@ export default function EditPostPage({
     }
     setImages(initialImgs);
     // Marcar índice de la featured si existe
-    const idx = hotel.featuredImage ? initialImgs.indexOf(hotel.featuredImage) : -1;
+    const idx = hotel.featuredImage
+      ? initialImgs.indexOf(hotel.featuredImage)
+      : -1;
     setFeaturedIndex(idx >= 0 ? idx : 0);
-    setFeaturedImage(hotel.featuredImage || (initialImgs[0] || ""));
+    setFeaturedImage(hotel.featuredImage || initialImgs[0] || "");
     setCategories(
       Array.isArray(hotel.categories) && hotel.categories.length
         ? hotel.categories.map((c: any) => String(c).toUpperCase())
@@ -181,7 +183,9 @@ export default function EditPostPage({
     );
     const finalFeatured = images[normalizedFeaturedIdx] || featuredImage || "";
     // Galería SIN la destacada (para no duplicarla en post_images)
-    const galleryImages = images.filter((img, i) => img && img !== finalFeatured && i !== normalizedFeaturedIdx);
+    const galleryImages = images.filter(
+      (img, i) => img && img !== finalFeatured && i !== normalizedFeaturedIdx
+    );
 
     const updated = {
       slug: hotel?.slug || slug,
@@ -236,8 +240,12 @@ export default function EditPostPage({
         if (Array.isArray(normalized.images)) {
           // Después de guardar, reconstruir lista local combinando featured + galería
           const nextFeatured = normalized.featuredImage || finalFeatured;
-          const nextGallery = normalized.images.filter((img: string) => img !== nextFeatured);
-          const rebuilt = nextFeatured ? [nextFeatured, ...nextGallery] : nextGallery;
+          const nextGallery = normalized.images.filter(
+            (img: string) => img !== nextFeatured
+          );
+          const rebuilt = nextFeatured
+            ? [nextFeatured, ...nextGallery]
+            : nextGallery;
           setImages(rebuilt);
           setFeaturedImage(nextFeatured || "");
           setFeaturedIndex(0);

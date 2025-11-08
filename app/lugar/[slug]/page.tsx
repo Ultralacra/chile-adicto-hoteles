@@ -169,9 +169,17 @@ export default function LugarPage(props: any) {
             .sort((a, b) => a.idx - b.idx)
             .map((x) => x.s);
 
+          // 6) Fallback: si la galería queda vacía, usar la featured para que siempre haya al menos 1 imagen
+          const galleryWithFallback =
+            gallery.length > 0
+              ? gallery
+              : derivedFeatured
+              ? [derivedFeatured]
+              : [];
+
           return {
             featuredImage: derivedFeatured,
-            galleryImages: gallery,
+            galleryImages: galleryWithFallback,
           };
         })(),
         categories: source[language]?.category

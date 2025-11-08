@@ -54,12 +54,16 @@ async function serviceRest(path: string, init?: RequestInit) {
 }
 
 function mapRowToLegacy(row: any) {
-  const images = Array.isArray(row.images)
+  let images = Array.isArray(row.images)
     ? row.images
         .slice()
         .sort((a: any, b: any) => (a.position ?? 0) - (b.position ?? 0))
         .map((x: any) => x.url)
     : [];
+  // Fallback: si no hay post_images, exponer al menos la featured_image como galería
+  if ((!images || images.length === 0) && row.featured_image) {
+    images = [row.featured_image];
+  }
   const locs = Array.isArray(row.locations)
     ? row.locations
         .slice()

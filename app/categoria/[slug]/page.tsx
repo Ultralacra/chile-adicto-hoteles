@@ -254,9 +254,55 @@ export default function CategoryPage({ params }: { params: any }) {
     };
   }, [isRestaurantsPage, language]);
 
+  // Override de descripciones ES/EN para slugs específicos (p. ej., PRIMA BAR)
+  const enrichedHotels = (filteredHotels || []).map((h) => {
+    if (String(h.slug) === "prima-bar") {
+      const descES = [
+        "Creación del reconocido chef chileno Kurt Schmidt, una figura clave en la escena gastronómica local. Schmidt es conocido por su trabajo en el aclamado 99 Restaurante, que se posicionó en la lista 'Latin America's 50 Best Restaurants'. Con Prima Bar, el chef expande su visión, fusionando su experiencia culinaria con una profunda pasión por la música y el diseño.",
+        "Inaugurado originalmente en Providencia, Prima Bar se mudó a su ubicación actual en la CV Galería en Vitacura y evolucionó en un 'listening bar'. Este concepto único, pionero en Chile, integra la experiencia auditiva —con una banda sonora curada a base de vinilos— a la comida y la coctelería, invitando a los comensales a un espacio de disfrute sensorial completo.",
+        "La propuesta culinaria es un reflejo de la visión de Schmidt: una cocina de autor, fresca y moderna, con un enfoque en la producción artesanal e ingredientes de todo Chile. El menú, diseñado para compartir, se inspira en una versión moderna de las tapas. La carta de cócteles sigue la misma filosofía, con creaciones originales e inspiradas también en la música y algunos de sus referentes.",
+        "Prima Bar ha consolidado su reputación a nivel internacional, siendo destacado por el prestigioso ranking de 'The World's 50 Best Discovery', una lista que reconoce bares y restaurantes que ofrecen experiencias culinarias excepcionales alrededor del mundo.",
+      ];
+      const descEN = [
+        "Created by renowned Chilean chef Kurt Schmidt, a key figure in the country’s contemporary gastronomic scene. Schmidt is best known for his work at the acclaimed 99 Restaurant, which earned a place on the Latin America’s 50 Best Restaurants list. With Prima Bar, the chef expands his creative vision, blending his culinary expertise with a deep passion for music and design.",
+        "Originally opened in Providencia, Prima Bar later moved to its current location inside CV Galería in Vitacura, evolving into a true listening bar. This unique concept — a pioneer in Chile — merges sound and taste, pairing a curated vinyl soundtrack with fine dining and mixology, offering guests a fully immersive sensory experience.",
+        "The culinary proposal reflects Schmidt’s philosophy: author-driven cuisine, fresh and modern, with an emphasis on artisanal production and ingredients sourced from across Chile. The menu, designed for sharing, takes inspiration from a contemporary interpretation of tapas. The cocktail list follows the same creative spirit, featuring original recipes influenced by music and iconic artists.",
+        "Prima Bar has achieved international recognition, earning a spot on the prestigious The World’s 50 Best Discovery list — a distinction reserved for venues that deliver outstanding culinary and bar experiences worldwide.",
+      ];
+      return {
+        ...h,
+        es: { ...(h.es || {}), description: descES },
+        en: { ...(h.en || {}), description: descEN },
+      };
+    }
+    if (
+      String(h.slug) === "the-singular" ||
+      String(h.slug) === "restaurante-the-singular"
+    ) {
+      const descES = [
+        "Ubicado en el histórico barrio Lastarria, el restaurante del Hotel The Singular aspira a ser un referente de la alta cocina chilena, fusionando tradición y modernidad. Su propuesta es un viaje culinario de norte a sur, resaltando la riqueza de los ingredientes locales con una ejecución técnica inspirada en la gastronomía francesa.",
+        "La dirección de la cocina está a cargo del chef Hernán Basso, un profesional formado en Buenos Aires que ha dejado su huella en los fogones de The Singular Patagonia desde 2011. Su cocina es un homenaje a los sabores y productos chilenos, que interpreta con precisión y un toque vanguardista. La visión detrás de The Singular es de la familia Sahli, cuyo legado en la hotelería chilena se remonta al histórico Hotel Crillón. Con este proyecto buscaban crear un espacio que reflejara el lujo, la elegancia y la historia local.",
+        "El menú del restaurante ofrece una selección de platos que destacan por su audacia y equilibrio. La calidad de su gastronomía y el impecable servicio le han valido múltiples galardones, incluyendo el reconocimiento en la lista de los 'Mejores Hoteles de Lujo en Chile' por Condé Nast Traveler y los 'World Travel Awards', consolidándolo como un destino culinario de primer nivel.",
+        "Para completar la experiencia, el hotel cuenta con un Rooftop Bar considerado una de las mejores terrazas de Santiago. Este espacio ofrece vistas panorámicas del Cerro San Cristóbal y el Parque Forestal. Es el lugar ideal para disfrutar de una carta de coctelería de autor, vinos chilenos y tapas en un ambiente lounge, especialmente al atardecer.",
+      ];
+      const descEN = [
+        "Located in the historic Barrio Lastarria, the restaurant at The Singular Hotel Santiago seeks to be a true benchmark of Chilean haute cuisine, blending tradition and modernity. Its culinary proposal is a journey from north to south, highlighting the richness of local ingredients executed with technical precision and a French-inspired touch.",
+        "The kitchen is led by Chef Hernán Basso, a Buenos Aires–trained professional who has made his mark at The Singular Patagonia since 2011. His cuisine pays homage to Chilean flavors and ingredients, interpreted with precision and a touch of innovation. The vision behind The Singular comes from the Sahli family, whose legacy in Chilean hospitality dates back to the historic Hotel Crillón. With this project, they set out to create a space that reflects luxury, elegance, and local heritage.",
+        "The menu offers a refined selection of dishes known for their boldness and balance. The quality of the cuisine and impeccable service have earned the restaurant multiple distinctions, including mentions among Chile’s Best Luxury Hotels by Condé Nast Traveler and awards from the World Travel Awards, establishing it as a culinary destination of excellence.",
+        "To complete the experience, the hotel features a Rooftop Bar, considered one of Santiago’s best terraces. With panoramic views of Cerro San Cristóbal and Parque Forestal, it’s the ideal spot to enjoy signature cocktails, Chilean wines, and gourmet tapas in an elegant lounge atmosphere—especially at sunset.",
+      ];
+      return {
+        ...h,
+        es: { ...(h.es || {}), description: descES },
+        en: { ...(h.en || {}), description: descEN },
+      };
+    }
+    return h;
+  });
+
   // Apply comuna filter if selectedComuna is set (match in descriptions or address)
   const finalHotels = selectedComuna
-    ? filteredHotels.filter((h) => {
+    ? enrichedHotels.filter((h) => {
         // Construir un texto de búsqueda que incluya:
         // - descripciones ES/EN
         // - dirección principal
@@ -275,7 +321,7 @@ export default function CategoryPage({ params }: { params: any }) {
         const haystack = parts.join(" ").toUpperCase();
         return haystack.includes(String(selectedComuna).toUpperCase());
       })
-    : filteredHotels;
+    : enrichedHotels;
 
   return (
     <div className="min-h-screen bg-white">

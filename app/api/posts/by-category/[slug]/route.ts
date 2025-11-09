@@ -95,8 +95,22 @@ export async function GET(req: Request, { params }: { params: { slug: string } }
     let rows: any[] | null = await fetchFromSupabase(`/posts?select=${encodeURIComponent(select)}`);
     if (!rows) return NextResponse.json([], { status: 200 });
 
-    // Filtrar por slug de categoría
-    rows = rows.filter((r: any) => (r.category_links || []).some((c: any) => (c.category?.slug || "") === params.slug));
+    // Filtrar por slug de categoría. Fallback: si no hay mapeo, usar category de traducciones.
+    const slugTarget = params.slug.toLowerCase().trim();
+    const matchesTranslationCategory = (r: any) => {
+      const translations = Array.isArray(r.translations) ? r.translations : [];
+      return translations.some((t: any) => {
+        if (!t?.category) return false;
+        const cat = String(t.category).toLowerCase().trim();
+        // Normalizar espacios a guiones para casos futuros ("Alta Cocina" -> "alta-cocina")
+        const catSlug = cat.replace(/\s+/g, "-");
+        return cat === slugTarget || catSlug === slugTarget;
+      });
+    };
+    rows = rows.filter((r: any) => {
+      const mapped = (r.category_links || []).some((c: any) => (c.category?.slug || "") === slugTarget);
+      return mapped || matchesTranslationCategory(r);
+    });
 
     const qc = q.trim().toLowerCase();
     if (qc) {

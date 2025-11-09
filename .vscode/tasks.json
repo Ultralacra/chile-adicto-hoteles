@@ -11,6 +11,17 @@
 			"isBackground": false,
 			"problemMatcher": [],
 			"group": "build"
+		},
+		{
+			"label": "crear-the-singular",
+			"type": "shell",
+			"command": "node",
+			"args": [
+				"scripts/create-the-singular.mjs"
+			],
+			"isBackground": false,
+			"problemMatcher": [],
+			"group": "build"
 		}
 	]
 }

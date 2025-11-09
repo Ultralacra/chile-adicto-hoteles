@@ -167,6 +167,8 @@ export async function PUT(
         { status: 400 }
       );
     }
+    // Conjunto de campos explícitamente provistos (para actualizaciones parciales seguras)
+    const provided = new Set<string>(Object.keys(body || {}));
     // 1) Obtener post.id por slug
     step = "fetch_post_id";
     const rows: any[] = await serviceRest(`/posts?slug=eq.${encodeURIComponent(params.slug)}&select=id`);
@@ -178,7 +180,6 @@ export async function PUT(
 
     // 2) Actualizar tabla posts (campos top-level) solo para claves provistas
     {
-      const provided = new Set(Object.keys(body || {}));
       const patchData: Record<string, any> = {};
       const setIfProvided = (key: string, value: any) => {
         if (provided.has(key)) {
@@ -322,42 +323,47 @@ export async function PUT(
       }
     }
 
-    // 4) Reemplazar imágenes
-    await serviceRest(`/post_images?post_id=eq.${postId}`, { method: "DELETE" });
-    step = "delete_images";
-    const imagesPayload = (normalized.images || []).map((url, idx) => ({
-      post_id: postId,
-      url,
-      position: idx,
-    }));
-    if (imagesPayload.length > 0) {
-      step = "insert_images";
-      await serviceRest(`/post_images`, {
-        method: "POST",
-        body: JSON.stringify(imagesPayload),
-      });
-    }
-
-    // 5) Reemplazar categorías (mapear por label_es)
-    try {
-      const cats: any[] = await serviceRest(`/categories?select=id,slug,label_es,label_en`);
-      const wanted = new Set(
-        (normalized.categories || []).map((c) => String(c).toUpperCase())
-      );
-      const catIds = cats
-        .filter((r) => wanted.has(String(r.label_es || r.slug || "").toUpperCase()))
-        .map((r) => r.id);
-      await serviceRest(`/post_category_map?post_id=eq.${postId}`, { method: "DELETE" });
-      step = "delete_category_map";
-      if (catIds.length > 0) {
-        step = "insert_category_map";
-        await serviceRest(`/post_category_map`, {
+    // 4) Reemplazar imágenes SOLO si se proporcionó el campo 'images'
+    if (provided.has("images")) {
+      await serviceRest(`/post_images?post_id=eq.${postId}`, { method: "DELETE" });
+      step = "delete_images";
+      const imagesPayload = (normalized.images || []).map((url, idx) => ({
+        post_id: postId,
+        url,
+        position: idx,
+      }));
+      if (imagesPayload.length > 0) {
+        step = "insert_images";
+        await serviceRest(`/post_images`, {
           method: "POST",
-          body: JSON.stringify(catIds.map((id: number) => ({ post_id: postId, category_id: id }))),
+          body: JSON.stringify(imagesPayload),
         });
       }
-    } catch (e) {
-      console.warn("[PUT posts] Categorías: continuidad tras fallo en mapeo", e);
+    }
+
+    // 5) Reemplazar categorías (mapear por label_es o slug) SOLO si se proporcionó 'categories'
+    if (provided.has("categories")) {
+      try {
+        const cats: any[] = await serviceRest(`/categories?select=id,slug,label_es,label_en`);
+        const wanted = new Set((normalized.categories || []).map((c) => String(c).toUpperCase()));
+        const catIds = cats
+          .filter((r: any) => wanted.has(String(r.label_es || r.slug || "").toUpperCase()))
+          .map((r: any) => r.id);
+        await serviceRest(`/post_category_map?post_id=eq.${postId}`, { method: "DELETE" });
+        step = "delete_category_map";
+        if (catIds.length > 0) {
+          step = "insert_category_map";
+          console.log("[PUT posts] insert_category_map postId=%s catIds=%o wanted=%o", postId, catIds, Array.from(wanted));
+          await serviceRest(`/post_category_map`, {
+            method: "POST",
+            body: JSON.stringify(catIds.map((id: number) => ({ post_id: postId, category_id: id }))),
+          });
+        } else {
+          console.warn("[PUT posts] No category IDs matched for provided categories", Array.from(wanted));
+        }
+      } catch (e) {
+        console.warn("[PUT posts] Categorías: continuidad tras fallo en mapeo", e);
+      }
     }
 
     return NextResponse.json({ ok: true }, { status: 200 });

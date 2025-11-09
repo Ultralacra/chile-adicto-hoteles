@@ -89,7 +89,7 @@ export default function Page() {
 
         <div className="py-2">
           {/* Layout: slider ocupa 2 columnas (lg:col-span-2) y banner 1 columna (lg:col-span-1) */}
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-0 lg:gap-6 items-start">
             {/* Slider: ocupa 2 columnas en lg */}
             <div className="w-full lg:col-span-2">
               <div className="w-full h-[600px] md:h-[520px] lg:h-[437px] overflow-hidden">
@@ -106,12 +106,13 @@ export default function Page() {
                     "/categoria/paseos-fuera-de-santiago", // Fuera de Stgo
                     "/categoria/restaurantes", // Restaurantes (al final como en el menú)
                   ]}
+                  dotBottom={2}
                 />
               </div>
             </div>
 
-            {/* Banner: ocupa 1 columna en lg - imagen escala hacia abajo y fondo negro */}
-            <div className="hidden lg:block w-full h-[437px] relative bg-black">
+            {/* Banner: ahora visible también en móvil (debajo del slider). Mantiene estilo en desktop */}
+            <div className="block w-full h-[437px] relative bg-black -mt-3 lg:mt-0">
               <Link href={currentBanner.href} className="block w-full h-full">
                 <img
                   src={currentBanner.src}

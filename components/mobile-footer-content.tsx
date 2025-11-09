@@ -2,8 +2,38 @@
 
 import Image from "next/image";
 import Link from "next/link";
+import { usePathname, useSearchParams } from "next/navigation";
 
 export function MobileFooterContent() {
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+
+  // Comunas para la categoría restaurantes (mismo set que desktop)
+  const communes = [
+    "Vitacura",
+    "Las Condes",
+    "Santiago",
+    "Lo Barnechea",
+    "Providencia",
+    "Alto Jahuel",
+    "La Reina",
+  ];
+
+  const slugify = (str: string) =>
+    str
+      .toLowerCase()
+      .replace(/\s+/g, "-")
+      .replace(/[^a-z0-9-]/g, "");
+
+  const activeComunaParam = searchParams?.get("comuna") || null;
+  const activeComuna = activeComunaParam
+    ? activeComunaParam.replace(/-/g, " ").toLowerCase()
+    : null;
+
+  // Detectar si estamos navegando la categoría restaurantes
+  const isRestaurantsCategory = pathname?.startsWith("/categoria/restaurantes");
+
+  // Reordenar categorías dejando RESTAURANTES al final
   const items = [
     { slug: "todos", label: "TODOS" },
     { slug: "arquitectura", label: "ARQUITECTURA" },
@@ -11,13 +41,12 @@ export function MobileFooterContent() {
     { slug: "iconos", label: "ICONOS" },
     { slug: "mercados", label: "MERCADOS" },
     { slug: "miradores", label: "MIRADORES" },
-    // Slug real es "museos" pero la etiqueta visible es CULTURA
     { slug: "museos", label: "CULTURA" },
-    { slug: "restaurantes", label: "RESTAURANTES" },
     { slug: "palacios", label: "PALACIOS" },
     { slug: "parques", label: "PARQUES" },
-    // Slug real es "paseos-fuera-de-santiago" pero la etiqueta visible es FUERA DE STGO
     { slug: "paseos-fuera-de-santiago", label: "FUERA DE STGO" },
+    // RESTAURANTES al final siempre
+    { slug: "restaurantes", label: "RESTAURANTES" },
   ];
 
   return (
@@ -38,18 +67,49 @@ export function MobileFooterContent() {
       {/* Subtitle divider removed - handled on page content */}
 
       <nav className="mb-12">
-        <ul className="space-y-4 text-center">
-          {items.map((item) => (
-            <li key={item.slug}>
+        {isRestaurantsCategory ? (
+          <ul className="space-y-4 text-center">
+            {/* VOLVER para limpiar filtro de comuna */}
+            <li>
               <Link
-                href={item.slug === "todos" ? "/" : `/categoria/${item.slug}`}
-                className="font-neutra-demi text-[15px] leading-[20px] font-[600] text-white hover:text-gray-300 transition-colors"
+                href="/categoria/restaurantes"
+                className={`font-neutra-demi text-[15px] leading-[20px] font-[600] transition-colors ${
+                  !activeComuna ? "text-[#E40E36]" : "text-white"
+                } hover:text-gray-300`}
               >
-                {item.label}
+                VOLVER
               </Link>
             </li>
-          ))}
-        </ul>
+            {communes.map((c) => {
+              const isActive = activeComuna === c.toLowerCase();
+              return (
+                <li key={c}>
+                  <Link
+                    href={`/categoria/restaurantes?comuna=${slugify(c)}`}
+                    className={`font-neutra-demi text-[15px] leading-[20px] font-[600] transition-colors ${
+                      isActive ? "text-[#E40E36]" : "text-white"
+                    } hover:text-gray-300`}
+                  >
+                    {c.toUpperCase()}
+                  </Link>
+                </li>
+              );
+            })}
+          </ul>
+        ) : (
+          <ul className="space-y-4 text-center">
+            {items.map((item) => (
+              <li key={item.slug}>
+                <Link
+                  href={item.slug === "todos" ? "/" : `/categoria/${item.slug}`}
+                  className="font-neutra-demi text-[15px] leading-[20px] font-[600] text-white hover:text-gray-300 transition-colors"
+                >
+                  {item.label}
+                </Link>
+              </li>
+            ))}
+          </ul>
+        )}
       </nav>
 
       {/* Contact: top divider spans site content width */}

@@ -468,7 +468,7 @@ export function HotelDetail({ hotel }: HotelDetailProps) {
                   <span className="mr-2">{t("WEB", "WEB")}:</span>
                   {hotel.website ? (
                     <a
-                      href={hotel.website}
+                      href={formatWebsiteHref(hotel.website)}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="text-[var(--color-brand-red)] no-underline"
@@ -586,7 +586,7 @@ export function HotelDetail({ hotel }: HotelDetailProps) {
                             <div className="mb-1">
                               <span className="mr-2">{t("WEB", "WEB")}:</span>
                               <a
-                                href={loc.website}
+                                href={formatWebsiteHref(loc.website)}
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 className="text-[var(--color-brand-red)] no-underline"
@@ -766,10 +766,19 @@ function formatWebsiteDisplay(url: string) {
   const withProto = url.startsWith("http") ? url : `https://${url}`;
   try {
     const u = new URL(withProto);
-    return u.host.replace(/^www\./, "").toUpperCase();
+    // Mostrar siempre con WWW. al inicio (en mayúsculas) si no lo tiene ya
+    const host = u.host.toUpperCase();
+    return host.startsWith("WWW.") ? host : `WWW.${host}`;
   } catch (e) {
     return url;
   }
+}
+
+function formatWebsiteHref(url: string) {
+  if (!url) return "#";
+  // Si ya incluye protocolo, retornar tal cual; si no, anteponer https://
+  if (/^https?:\/\//i.test(url)) return url;
+  return `https://${url.replace(/^www\./i, "www.")}`;
 }
 
 function formatMailto(email: string) {

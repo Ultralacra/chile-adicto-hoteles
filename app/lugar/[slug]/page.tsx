@@ -188,6 +188,56 @@ export default function LugarPage(props: any) {
       }
     : null;
 
+  // Bloque estático de Datos Útiles para el post Ambrosía (ES/EN)
+  if (
+    hotel &&
+    resolvedParams.slug ===
+      "ambrosia-restaurante-bistro-dos-versiones-de-un-gran-concepto"
+  ) {
+    hotel.infoHtml =
+      language === "en"
+        ? [
+            // Main restaurant (EN)
+            "<p><strong>AMBROSÍA RESTAURANT</strong></p>",
+            "<p>ADDRESS: PAMPLONA 78, VITACURA</p>",
+            "<p>HOURS: LUNCH: MONDAY TO SUNDAY, 13:00–15:30 HRS</p>",
+            "<p>DINNER: MONDAY TO SATURDAY, 18:30–22:30 HRS</p>",
+            "<p>&nbsp;</p>",
+            // Bistro (EN)
+            "<p><strong>AMBROSÍA BISTRO</strong></p>",
+            "<p>ADDRESS: MERCADO URBANO TOBALABA (MUT), AV. APOQUINDO 2730, 4TH FLOOR, LAS CONDES</p>",
+            "<p>HOURS: MONDAY TO SATURDAY, 12:30–23:00 HRS</p>",
+            "<p>SUNDAY, 12:30–16:30 HRS</p>",
+            "<p>&nbsp;</p>",
+            // Common (EN)
+            "<p><strong>COMMON TO BOTH</strong></p>",
+            '<p>WEBSITE: <a href="https://www.ambrosia.cl" target="_blank" rel="noopener noreferrer">WWW.AMBROSIA.CL</a></p>',
+            '<p>SOCIAL MEDIA: <a href="https://www.instagram.com/ambrosia_rest" target="_blank" rel="noopener noreferrer">@AMBROSIA_REST</a></p>',
+            "<p>RESERVATIONS: HIGHLY RECOMMENDED FOR THE MAIN RESTAURANT IN VITACURA.</p>",
+            "<p>INTERESTING FACT: CHEF CAROLINA BAZÁN WAS AWARDED LATIN AMERICA’S BEST FEMALE CHEF IN 2019.</p>",
+          ].join("")
+        : [
+            // Restaurante principal (ES)
+            "<p><strong>RESTAURANTE AMBROSÍA</strong></p>",
+            "<p>DIRECCIÓN: PAMPLONA 78, VITACURA</p>",
+            "<p>HORARIO: ALMUERZO: LUNES A DOMINGO, 13:00-15:30 HRS</p>",
+            "<p>CENA: LUNES A SÁBADO, 18:30-22:30 HRS</p>",
+            "<p>&nbsp;</p>",
+            // Bistró (ES)
+            "<p><strong>AMBROSÍA BISTRÓ</strong></p>",
+            "<p>DIRECCIÓN: MERCADO URBANO TOBALABA (MUT), AV. APOQUINDO 2730, PISO 4, LAS CONDES</p>",
+            "<p>HORARIO: LUNES A SÁBADO, 12:30-23:00 HRS</p>",
+            "<p>DOMINGO, 12:30-16:30 HRS</p>",
+            "<p>&nbsp;</p>",
+            // Común (ES)
+            "<p><strong>COMÚN A AMBOS</strong></p>",
+            '<p>SITIO WEB: <a href="https://www.ambrosia.cl" target="_blank" rel="noopener noreferrer">WWW.AMBROSIA.CL</a></p>',
+            '<p>REDES SOCIALES: <a href="https://www.instagram.com/ambrosia_rest" target="_blank" rel="noopener noreferrer">@AMBROSIA_REST</a></p>',
+            "<p>RESERVAS: ALTAMENTE RECOMENDABLES PARA EL RESTAURANTE PRINCIPAL EN VITACURA.</p>",
+            "<p>DATO DE INTERÉS: LA CHEF CAROLINA BAZÁN FUE GALARDONADA COMO LA MEJOR CHEF FEMENINA DE LATINOAMÉRICA EN 2019.</p>",
+          ].join("");
+  }
+
   if (!hotel) {
     return (
       <div className="min-h-screen bg-white">

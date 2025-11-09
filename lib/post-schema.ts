@@ -1,6 +1,10 @@
 import { z } from "zod";
 
+// Slug normal permitido: letras/números en minúscula separados por guiones
 const slugRegex = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
+// Compatibilidad con slugs "trashed" heredados de WordPress
+const slugTrashedOnly = /^__trashed$/; // exactamente "__trashed"
+const slugWithTrashedSuffix = /^[a-z0-9]+(?:-[a-z0-9]+)*__trashed$/; // ej: "mi-post__trashed"
 
 // Relajamos la validación: ningún campo de contenido es obligatorio
 export const localizedSchema = z.object({
@@ -16,7 +20,16 @@ export const localizedSchema = z.object({
 });
 
 export const postSchema = z.object({
-  slug: z.string().regex(slugRegex, "slug inválido: usa minusculas y guiones"),
+  // Permitimos: slug estándar o variantes '__trashed' de WordPress
+  slug: z
+    .string()
+    .refine(
+      (s) => slugRegex.test(s) || slugTrashedOnly.test(s) || slugWithTrashedSuffix.test(s),
+      {
+        message:
+          "slug inválido: usa minusculas y guiones (o patrones de WordPress '__trashed')",
+      }
+    ),
   es: localizedSchema.optional(),
   en: localizedSchema.optional(),
   featuredImage: z.string().url().optional(),

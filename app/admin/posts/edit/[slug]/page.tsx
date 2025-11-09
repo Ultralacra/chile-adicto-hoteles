@@ -90,6 +90,25 @@ export default function EditPostPage({
   const [featuredIndex, setFeaturedIndex] = useState(0);
   const [featuredImage, setFeaturedImage] = useState<string>("");
   const moveImage = moveImageFactory(images, setImages);
+  // Estados para drag & drop de la galería
+  const [dragIndex, setDragIndex] = useState<number | null>(null);
+  const [dragOverIndex, setDragOverIndex] = useState<number | null>(null);
+  const reorderImages = (from: number, to: number) => {
+    if (from === to || from < 0 || to < 0) return;
+    setImages((prev) => {
+      const arr = [...prev];
+      const [item] = arr.splice(from, 1);
+      arr.splice(to, 0, item);
+      return arr;
+    });
+    // Ajustar featuredIndex si corresponde
+    setFeaturedIndex((fi) => {
+      if (fi === from) return to; // la destacada se movió
+      if (from < fi && to >= fi) return fi - 1; // elemento antes de featured se movió detrás
+      if (from > fi && to <= fi) return fi + 1; // elemento después de featured se movió delante
+      return fi;
+    });
+  };
   const removeImage = (index: number) => {
     const arr = images.filter((_, i) => i !== index);
     setImages(arr);
@@ -588,11 +607,33 @@ export default function EditPostPage({
               <h3 className="text-sm font-semibold mb-2">Galería</h3>
               <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
                 {images.map((src, idx) => (
-                  <div key={idx} className="relative group">
+                  <div
+                    key={idx}
+                    className="relative group border border-transparent rounded"
+                    draggable
+                    onDragStart={() => setDragIndex(idx)}
+                    onDragOver={(e) => {
+                      e.preventDefault();
+                      setDragOverIndex(idx);
+                    }}
+                    onDrop={() => {
+                      if (dragIndex === null || dragIndex === idx) return;
+                      reorderImages(dragIndex, idx);
+                      setDragIndex(null);
+                      setDragOverIndex(null);
+                    }}
+                    onDragEnd={() => {
+                      setDragIndex(null);
+                      setDragOverIndex(null);
+                    }}
+                    style={{ cursor: "grab" }}
+                  >
                     <img
                       src={src}
                       alt={`img-${idx}`}
-                      className="w-full aspect-[4/3] object-cover border rounded"
+                      className={`w-full aspect-[4/3] object-cover border rounded ${
+                        dragOverIndex === idx ? "ring-2 ring-green-400" : ""
+                      }`}
                     />
                     <div className="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition-colors" />
                     <div className="absolute bottom-1 left-1 right-1 flex gap-1 justify-between opacity-0 group-hover:opacity-100 transition-opacity">
@@ -607,14 +648,14 @@ export default function EditPostPage({
                         <Button
                           size="icon"
                           variant="secondary"
-                          onClick={() => moveImage(idx, -1)}
+                          onClick={() => reorderImages(idx, idx - 1)}
                         >
                           ↑
                         </Button>
                         <Button
                           size="icon"
                           variant="secondary"
-                          onClick={() => moveImage(idx, 1)}
+                          onClick={() => reorderImages(idx, idx + 1)}
                         >
                           ↓
                         </Button>

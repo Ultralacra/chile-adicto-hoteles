@@ -115,7 +115,8 @@ export default function LugarPage(props: any) {
         reservationPolicy: source.reservationPolicy || "",
         interestingFact: source.interestingFact || "",
         // Imagen destacada separada de la galería; si no viene, usamos la primera.
-        // Además, evitamos duplicados comparando por nombre de archivo (ignorando query y mayúsculas).
+        // Mantener el ORDEN de `source.images` tal como viene desde el API (position asc en Supabase).
+        // Evitar duplicados comparando por nombre de archivo (ignorando query y mayúsculas).
         ...(() => {
           const imgs: string[] = Array.isArray(source.images)
             ? source.images.filter((s: string) => !!s)
@@ -135,39 +136,26 @@ export default function LugarPage(props: any) {
             if (portada) derivedFeatured = portada;
           }
 
-          // helper para extraer índice numérico desde el nombre (para orden)
-          const getIndex = (s: string) => {
-            const base = normalizeImageUrl(s).replace(/\.[^.]+$/, "");
-            // Busca el primer grupo de dígitos en el nombre
-            const m = base.match(/(\d{1,4})/);
-            return m ? parseInt(m[1], 10) : NaN;
-          };
-
           // 3) Mantener sin featured si no hay explícita ni 'PORTADA'
 
           const featuredKey = normalizeImageUrl(derivedFeatured);
 
-          // 5) Construir galería:
+          // 5) Construir galería respetando el ORDEN dado por el API:
           //    - excluir featured
-          //    - excluir cualquier imagen cuyo nombre contenga 'PORTADA'
-          //    - incluir SOLO imágenes numeradas (que contengan dígitos)
-          //    - ordenar por el número ascendente
+          //    - NO forzar ordenamiento adicional
+          //    - NO filtrar sólo numeradas: el admin define el orden manualmente
           const seen = new Set<string>();
           const gallery = imgs
             .filter((img) => {
               const key = normalizeImageUrl(img);
               if (!key) return false;
               if (key === featuredKey) return false; // excluir featured
-              if (/portada/i.test(key)) return false; // excluir PORTADA en galería
-              const idx = getIndex(img);
-              if (!Number.isFinite(idx)) return false; // solo numeradas
               if (seen.has(key)) return false; // evitar duplicados
               seen.add(key);
               return true;
             })
-            .map((s) => ({ s, idx: getIndex(s) }))
-            .sort((a, b) => a.idx - b.idx)
-            .map((x) => x.s);
+            // mantener orden tal cual
+            .map((s) => s);
 
           // 6) Fallback: si la galería queda vacía, usar la featured para que siempre haya al menos 1 imagen
           const galleryWithFallback =

@@ -10,7 +10,9 @@ export function normalizePost(input: PostInput): PostInput {
 }
 
 export function validatePost(input: PostInput): ValidationResult {
-  const parsed = postSchema.safeParse(input);
+  // Normalizamos primero para agregar https:// a dominios simples y limpiar datos
+  const normalized = normalizePost(input);
+  const parsed = postSchema.safeParse(normalized);
   if (parsed.success) return { ok: true };
   const issues: ValidationIssue[] = parsed.error.issues.map((i) => ({
     path: i.path.join("."),

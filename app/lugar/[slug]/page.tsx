@@ -9,6 +9,7 @@ import { normalizeImageUrl } from "@/lib/utils";
 import { useLanguage } from "@/contexts/language-context";
 import { useEffect, use, useState } from "react";
 import { Spinner } from "@/components/ui/spinner";
+import { notFound } from "next/navigation";
 
 type ResolvedParams = { slug: string };
 
@@ -17,6 +18,11 @@ export default function LugarPage(props: any) {
 
   // Next.js: params es un Promise en Client Components, usar React.use() para resolverlo
   const resolvedParams = use(props.params as any) as ResolvedParams;
+
+  // Ocultar completamente el post /lugar/w-santiago
+  if (resolvedParams?.slug === "w-santiago") {
+    notFound();
+  }
 
   useEffect(() => {
     window.scrollTo(0, 0);

@@ -35,6 +35,8 @@ export default function Page() {
           const enCat = h.en?.category
             ? String(h.en.category).toUpperCase()
             : null;
+          // Excluir restaurantes y el post w-santiago
+          if (String(h.slug) === "w-santiago") return false;
           return !(
             cats.has("RESTAURANTES") ||
             cats.has("RESTAURANTS") ||

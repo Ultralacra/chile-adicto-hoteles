@@ -385,13 +385,16 @@ export default function CategoryPage({ params }: { params: any }) {
       .toUpperCase()
       .trim();
 
+  const cleanedList = finalHotels.filter(
+    (h: any) => String(h.slug) !== "w-santiago"
+  );
   const finalOrderedHotels = isRestaurantsPage
-    ? finalHotels
+    ? cleanedList
         .slice()
         .sort((a, b) =>
           sortKey(a) < sortKey(b) ? -1 : sortKey(a) > sortKey(b) ? 1 : 0
         )
-    : finalHotels;
+    : cleanedList;
 
   return (
     <Suspense

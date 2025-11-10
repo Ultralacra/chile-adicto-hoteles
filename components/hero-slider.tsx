@@ -30,7 +30,7 @@ type HeroSliderProps = {
   objectFit?: "cover" | "contain"; // cover por defecto; contain para no recortar
   objectPosition?: "center" | "top" | "bottom"; // alineación vertical/horizontal del objeto
   desktopHeight?: number; // alto del slide desktop en px (por defecto 437)
-  mobileHeight?: number; // alto del slide mobile en px (por defecto 550)
+  mobileHeight?: number; // (se ignora en móvil para evitar blancos, mantenido por compat)
   dotActiveClass?: string; // clase tailwind para punto activo
   dotInactiveClass?: string; // clase tailwind para punto inactivo
   dotBottom?: number; // espacio en px desde el fondo para los dots (por defecto 16)
@@ -45,7 +45,7 @@ export function HeroSlider({
   objectFit = "cover",
   objectPosition = "center",
   desktopHeight = 437,
-  mobileHeight = 550,
+  mobileHeight = 550, // no se usa ya en móvil para eliminar el blanco
   dotActiveClass = "bg-[#E40E36] w-3 h-3",
   dotInactiveClass = "bg-white w-2 h-2",
   dotBottom = 16,
@@ -67,19 +67,17 @@ export function HeroSlider({
     (mobileFromApi && mobileFromApi.length ? mobileFromApi : undefined) ??
     mobileImagesDefault;
 
-  // Embla for desktop and mobile instances
+  // Embla para desktop y mobile (como estaba antes)
   const [emblaDesktopRef, emblaDesktopApi] = useEmblaCarousel({ loop: true });
   const [emblaMobileRef, emblaMobileApi] = useEmblaCarousel({ loop: true });
 
   const [selectedIndex, setSelectedIndex] = useState(0);
 
-  // Autoplay
+  // Autoplay (sin cambios)
   useEffect(() => {
     const api = emblaDesktopApi || emblaMobileApi;
     if (!api) return;
-    const play = () => {
-      if (api) api.scrollNext();
-    };
+    const play = () => api.scrollNext();
     const id = setInterval(play, 5000);
     return () => clearInterval(id);
   }, [emblaDesktopApi, emblaMobileApi]);
@@ -89,11 +87,9 @@ export function HeroSlider({
     let cancelled = false;
     async function loadFromApi() {
       try {
-        // Si ya nos pasaron props, no hacemos fetch innecesario
         const needDesktop = !(desktopImages && desktopImages.length);
         const needMobile = !(mobileImages && mobileImages.length);
         if (!needDesktop && !needMobile) return;
-
         const res = await fetch("/api/slider-images", { cache: "no-store" });
         if (!res.ok) return;
         const json = (await res.json()) as {
@@ -101,14 +97,12 @@ export function HeroSlider({
           mobile: string[];
         };
         if (cancelled) return;
-        if (needDesktop && Array.isArray(json.desktop)) {
+        if (needDesktop && Array.isArray(json.desktop))
           setDesktopFromApi(json.desktop);
-        }
-        if (needMobile && Array.isArray(json.mobile)) {
+        if (needMobile && Array.isArray(json.mobile))
           setMobileFromApi(json.mobile);
-        }
-      } catch (e) {
-        // Silencioso: mantenemos defaults
+      } catch {
+        // Silencioso
       }
     }
     loadFromApi();
@@ -145,9 +139,20 @@ export function HeroSlider({
     setSelectedIndex(index);
   };
 
+  // Clases utilitarias
+  const objPosClass =
+    objectPosition === "top"
+      ? "object-top"
+      : objectPosition === "bottom"
+      ? "object-bottom"
+      : "object-center";
+
+  const objFitDesktop =
+    objectFit === "contain" ? "object-contain" : "object-cover";
+
   return (
     <div className="relative w-full overflow-hidden">
-      {/* Desktop Embla */}
+      {/* Desktop Embla — igual que antes, respetando altura fija y espaciado */}
       <div className="hidden md:block">
         <div className="embla" ref={emblaDesktopRef as any}>
           <div className="embla__container flex">
@@ -172,17 +177,7 @@ export function HeroSlider({
                       className={
                         autoHeight
                           ? "w-full h-auto"
-                          : `w-full h-full ${
-                              objectFit === "contain"
-                                ? "object-contain"
-                                : "object-cover"
-                            } ${
-                              objectPosition === "top"
-                                ? "object-top"
-                                : objectPosition === "bottom"
-                                ? "object-bottom"
-                                : "object-center"
-                            }`
+                          : `w-full h-full ${objFitDesktop} ${objPosClass}`
                       }
                     />
                   </Link>
@@ -193,17 +188,7 @@ export function HeroSlider({
                     className={
                       autoHeight
                         ? "w-full h-auto"
-                        : `w-full h-full ${
-                            objectFit === "contain"
-                              ? "object-contain"
-                              : "object-cover"
-                          } ${
-                            objectPosition === "top"
-                              ? "object-top"
-                              : objectPosition === "bottom"
-                              ? "object-bottom"
-                              : "object-center"
-                          }`
+                        : `w-full h-full ${objFitDesktop} ${objPosClass}`
                     }
                   />
                 )}
@@ -213,62 +198,28 @@ export function HeroSlider({
         </div>
       </div>
 
-      {/* Mobile Embla */}
+      {/* Mobile Embla — mismas imágenes de escritorio, ANCHAS y CONTENIDAS (imagen completa, sin recortes) */}
       <div className="md:hidden">
         <div className="embla" ref={emblaMobileRef as any}>
           <div className="embla__container flex">
-            {mobile.map((image, index) => (
-              <div
-                key={`m-${index}`}
-                className="embla__slide min-w-full"
-                style={autoHeight ? undefined : { height: `${mobileHeight}px` }}
-              >
+            {desktop.map((image, index) => (
+              <div key={`m-${index}`} className="embla__slide min-w-full">
                 {slideHrefs?.[index] || slideHref ? (
                   <Link
                     href={(slideHrefs && slideHrefs[index]) || slideHref || "#"}
-                    className={`block w-full ${
-                      autoHeight ? "h-auto" : "h-full"
-                    }`}
+                    className="block w-full"
                   >
                     <img
                       src={image || "/placeholder.svg"}
                       alt={`Slide ${index + 1}`}
-                      className={
-                        autoHeight
-                          ? "w-full h-auto"
-                          : `w-full h-full ${
-                              objectFit === "contain"
-                                ? "object-contain"
-                                : "object-cover"
-                            } ${
-                              objectPosition === "top"
-                                ? "object-top"
-                                : objectPosition === "bottom"
-                                ? "object-bottom"
-                                : "object-center"
-                            }`
-                      }
+                      className={`block w-full h-auto object-contain ${objPosClass}`}
                     />
                   </Link>
                 ) : (
                   <img
                     src={image || "/placeholder.svg"}
                     alt={`Slide ${index + 1}`}
-                    className={
-                      autoHeight
-                        ? "w-full h-auto"
-                        : `w-full h-full ${
-                            objectFit === "contain"
-                              ? "object-contain"
-                              : "object-cover"
-                          } ${
-                            objectPosition === "top"
-                              ? "object-top"
-                              : objectPosition === "bottom"
-                              ? "object-bottom"
-                              : "object-center"
-                          }`
-                    }
+                    className={`block w-full h-auto object-contain ${objPosClass}`}
                   />
                 )}
               </div>
@@ -277,7 +228,7 @@ export function HeroSlider({
         </div>
       </div>
 
-      {/* dots: centered bottom */}
+      {/* dots: centrados abajo */}
       <div
         className="absolute left-0 right-0 z-40 flex justify-center pointer-events-auto"
         style={{ bottom: `${dotBottom}px` }}

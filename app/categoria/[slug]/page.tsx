@@ -377,6 +377,22 @@ export default function CategoryPage({ params }: { params: any }) {
       })
     : enrichedHotels;
 
+  // Ordenar restaurantes alfabéticamente por nombre (según idioma actual)
+  const sortKey = (h: any) =>
+    String(h?.[language]?.name || h?.en?.name || h?.es?.name || "")
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .toUpperCase()
+      .trim();
+
+  const finalOrderedHotels = isRestaurantsPage
+    ? finalHotels
+        .slice()
+        .sort((a, b) =>
+          sortKey(a) < sortKey(b) ? -1 : sortKey(a) > sortKey(b) ? 1 : 0
+        )
+    : finalHotels;
+
   return (
     <Suspense
       fallback={
@@ -479,8 +495,8 @@ export default function CategoryPage({ params }: { params: any }) {
             </div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 mt-4">
-              {finalHotels.length > 0 ? (
-                finalHotels.map((hotel) => (
+              {finalOrderedHotels.length > 0 ? (
+                finalOrderedHotels.map((hotel) => (
                   <HotelCard
                     key={hotel.slug}
                     slug={hotel.slug}

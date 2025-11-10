@@ -43,7 +43,16 @@ export default function Page() {
             enCat === "RESTAURANTES"
           );
         });
-        setHotels(filtered);
+        // Orden aleatorio en Home cada vez que se entra
+        const shuffled = (() => {
+          const arr = filtered.slice();
+          for (let i = arr.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [arr[i], arr[j]] = [arr[j], arr[i]];
+          }
+          return arr;
+        })();
+        setHotels(shuffled);
         setLoading(false);
       })
       .catch(() => {
@@ -92,32 +101,33 @@ export default function Page() {
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-0 lg:gap-6 items-start">
             {/* Slider: ocupa 2 columnas en lg */}
             <div className="w-full lg:col-span-2">
-              <div className="w-full h-[600px] md:h-[520px] lg:h-[437px] overflow-hidden">
+              {/* Volvemos a alturas responsivas como estaba antes */}
+              <div className="w-full md:h-[520px] lg:h-[437px] overflow-visible">
                 <HeroSlider
                   slideHrefs={[
-                    "/categoria/arquitectura", // Arquitectura
-                    "/categoria/barrios", // Barrios
-                    "/categoria/iconos", // Iconos
-                    "/categoria/mercados", // Mercados
-                    "/categoria/miradores", // Miradores
-                    "/categoria/museos", // Museos (Cultura)
-                    "/categoria/palacios", // Palacios
-                    "/categoria/parques", // Parques
-                    "/categoria/paseos-fuera-de-santiago", // Fuera de Stgo
-                    "/categoria/restaurantes", // Restaurantes (al final como en el menú)
+                    "/categoria/arquitectura",
+                    "/categoria/barrios",
+                    "/categoria/iconos",
+                    "/categoria/mercados",
+                    "/categoria/miradores",
+                    "/categoria/museos",
+                    "/categoria/palacios",
+                    "/categoria/parques",
+                    "/categoria/paseos-fuera-de-santiago",
+                    "/categoria/restaurantes",
                   ]}
                   dotBottom={2}
                 />
               </div>
             </div>
 
-            {/* Banner: ahora visible también en móvil (debajo del slider). Mantiene estilo en desktop */}
-            <div className="block w-full h-[437px] relative bg-black -mt-3 lg:mt-0">
+            {/* Banner: separación simétrica arriba y abajo en mobile (mt-6) */}
+            <div className="block w-full h-[437px] relative bg-black mt-6 lg:mt-0">
               <Link href={currentBanner.href} className="block w-full h-full">
                 <img
                   src={currentBanner.src}
                   alt={currentBanner.alt}
-                  className="object-scale-down object-center w-full h-full"
+                  className="object-contain object-center w-full h-full"
                 />
               </Link>
             </div>

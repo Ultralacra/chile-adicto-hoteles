@@ -223,21 +223,35 @@ export default function CategoryPage({ params }: { params: any }) {
           // Formato antiguo: array simple
           setRestaurantSliderImages(normalizeList(payload));
           setRestaurantSlideHrefs(buildHrefsFromFilenames(payload));
-          return;
-        }
-
-        if (payload && typeof payload === "object") {
+        } else if (payload && typeof payload === "object") {
           const byLang =
             (payload as any)[language] ||
             (payload as any)["es"] ||
             (payload as any)["en"];
           setRestaurantSliderImages(normalizeList(byLang));
           setRestaurantSlideHrefs(buildHrefsFromFilenames(byLang));
-          return;
+        } else {
+          setRestaurantSliderImages([]);
+          setRestaurantSlideHrefs([]);
         }
 
-        setRestaurantSliderImages([]);
-        setRestaurantSlideHrefs([]);
+        // Override explícito de hrefs solicitados (orden fijo)
+        const explicitRestaurantSlugs = [
+          "ac-kitchen-la-madurez-de-un-chef-en-movimiento",
+          "ambrosia-restaurante-bistro-dos-versiones-de-un-gran-concepto",
+          "borago-un-viaje-a-la-esencia-de-chile",
+          "copper-room-y-gran-cafe-hotel-debaines-homenajes-necesarios",
+          "cora-bistro-oda-a-la-cocina-chilena",
+          "demencia-un-espectaculo-gastronomico",
+          "fukasawa-esencia-japonesa",
+          "karai-el-sello-del-mejor-del-mundo",
+          "pulperia-santa-elvira-una-joya-de-matta-sur",
+          "tanaka-la-fusion-redefinida",
+          "yum-cha-comer-y-beber-con-te",
+        ];
+        setRestaurantSlideHrefs(
+          explicitRestaurantSlugs.map((slug) => `/lugar/${slug}`)
+        );
       })
       .catch(() => {
         setRestaurantSliderImages([]);

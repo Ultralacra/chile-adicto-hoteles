@@ -221,7 +221,7 @@ export function HotelDetail({ hotel }: HotelDetailProps) {
             viewport width (so images are wider than tall). On large screens keep
             a fixed tall height.
           */}
-            <div className="relative overflow-hidden h-[40vw] md:h-[35vw] lg:h-[600px]">
+            <div className="relative overflow-hidden h-[55vw] md:h-[45vw] lg:h-[640px]">
               {canShowControls && (
                 <>
                   <button
@@ -267,23 +267,7 @@ export function HotelDetail({ hotel }: HotelDetailProps) {
               </div>
             </div>
 
-            {/* Dots navigation placed below the carousel (active red) */}
-            {canShowControls && (
-              <div className="flex items-center justify-center gap-2 mt-3 mb-6">
-                {allImages.map((_, idx) => (
-                  <button
-                    key={idx}
-                    onClick={() => emblaApi?.scrollTo(idx)}
-                    aria-label={`Ir a la imagen ${idx + 1}`}
-                    className={`rounded-full transition-all duration-200 focus:outline-none ${
-                      idx === selectedIndex
-                        ? "bg-[#E40E36] w-3 h-3 ring-2 ring-white"
-                        : "bg-gray-300 w-2 h-2"
-                    }`}
-                  />
-                ))}
-              </div>
-            )}
+            {/* Dots removidos: se dejan solo las flechas del carrusel */}
           </div>
         )}
 

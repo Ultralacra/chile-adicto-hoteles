@@ -1,6 +1,7 @@
 "use client";
 
 import { MobileFooterContent } from "./mobile-footer-content";
+import { Suspense } from "react";
 
 interface MobileMenuProps {
   isOpen: boolean;
@@ -35,7 +36,10 @@ export function MobileMenu({ isOpen, onClose }: MobileMenuProps) {
           </svg>
         </button>
 
-        <MobileFooterContent />
+        {/* useSearchParams en MobileFooterContent requiere Suspense en Next 15 */}
+        <Suspense fallback={null}>
+          <MobileFooterContent onNavigate={onClose} />
+        </Suspense>
       </div>
     </div>
   );

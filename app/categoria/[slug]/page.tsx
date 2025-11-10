@@ -8,7 +8,8 @@ import { HeroSlider } from "@/components/hero-slider";
 import { notFound } from "next/navigation";
 // Dejamos de consumir data.json; consultamos al API
 import { useLanguage } from "@/contexts/language-context";
-import { useEffect, use, useState } from "react";
+import { useEffect, use, useState, Suspense } from "react";
+import { useSearchParams } from "next/navigation";
 import { buildCardExcerpt } from "@/lib/utils";
 import Link from "next/link";
 import { Spinner } from "@/components/ui/spinner";
@@ -123,24 +124,17 @@ export default function CategoryPage({ params }: { params: any }) {
     "La Reina",
   ];
 
+  const searchParams = useSearchParams();
+  const comunaParam = searchParams.get("comuna");
   const [selectedComuna, setSelectedComuna] = useState<string | null>(null);
 
   useEffect(() => {
-    // read comuna from query string, e.g. ?comuna=las-condes
-    try {
-      const params = new URLSearchParams(window.location.search);
-      const c = params.get("comuna");
-      if (c) {
-        // de-slugify: replace - with space and normalize
-        const decoded = c.replace(/-/g, " ");
-        setSelectedComuna(decoded);
-      } else {
-        setSelectedComuna(null);
-      }
-    } catch (e) {
+    if (comunaParam) {
+      setSelectedComuna(comunaParam.replace(/-/g, " "));
+    } else {
       setSelectedComuna(null);
     }
-  }, [slug]);
+  }, [comunaParam, slug]);
 
   // Cargar imágenes del slider de restaurantes desde /public/imagenes-slider/manifest.json
   // Soporta dos formatos de manifest:
@@ -324,120 +318,134 @@ export default function CategoryPage({ params }: { params: any }) {
     : enrichedHotels;
 
   return (
-    <div className="min-h-screen bg-white">
-      <Header />
-
-      <main className="site-inner py-4">
-        {isRestaurantsPage ? (
-          // Submenú de comunas para restaurantes con primer item "VOLVER"
-          <nav className="py-4 hidden lg:block">
-            <ul className="hidden lg:flex flex-nowrap items-center gap-2 text-sm font-medium whitespace-nowrap">
-              {/* VOLVER - limpia filtro y vuelve al listado de restaurantes */}
-              <li className="flex items-center gap-2">
-                <Link
-                  href="/categoria/restaurantes"
-                  className={`font-neutra hover:text-[var(--color-brand-red)] transition-colors tracking-wide text-[15px] leading-[20px] ${
-                    !selectedComuna
-                      ? "text-[var(--color-brand-red)]"
-                      : "text-black"
-                  }`}
-                  onClick={() => setSelectedComuna(null)}
-                >
-                  {t("VOLVER", "BACK")}
-                </Link>
-                <span className="text-black">•</span>
-              </li>
-              {communes.map((c, index) => {
-                const slugified = c.toLowerCase().replace(/\s+/g, "-");
-                const isActive =
-                  selectedComuna &&
-                  selectedComuna.toLowerCase() === c.toLowerCase();
-                return (
-                  <li key={c} className="flex items-center gap-2">
-                    <Link
-                      href={`/categoria/restaurantes?comuna=${slugified}`}
-                      className={`font-neutra hover:text-[var(--color-brand-red)] transition-colors tracking-wide text-[15px] leading-[20px] ${
-                        isActive
-                          ? "text-[var(--color-brand-red)]"
-                          : "text-black"
-                      }`}
-                      onClick={() => setSelectedComuna(c)}
-                    >
-                      {c.toUpperCase()}
-                    </Link>
-                    {index < communes.length - 1 && (
-                      <span className="text-black">•</span>
-                    )}
-                  </li>
-                );
-              })}
-            </ul>
-          </nav>
-        ) : (
-          <div className="hidden lg:block">
-            <CategoryNav activeCategory={slug} compact />
-          </div>
-        )}
-
-        {/* Slider de restaurantes a ancho completo, sin banner, solo cuando no hay comuna seleccionada */}
-        {isRestaurantsPage && !selectedComuna && (
-          <div className="py-2">
-            <div className="w-full overflow-hidden mb-0">
-              <HeroSlider
-                desktopImages={restaurantSliderImages}
-                mobileImages={restaurantSliderImages}
-                // Ver imagen completa sin recortar y mantener el ancho del contenedor
-                autoHeight
-                // keep default desktop height (closer to other sliders)
-                desktopHeight={437}
-                mobileHeight={550}
-                slideHrefs={restaurantSlideHrefs}
-                dotInactiveClass="bg-gray-300 w-2 h-2"
-                dotActiveClass="bg-[#E40E36] w-3 h-3"
-                // mismo espacio para los puntos que en Home
-                dotBottom={16}
-              />
+    <Suspense
+      fallback={
+        <div className="min-h-screen bg-white">
+          <Header />
+          <main className="site-inner py-4">
+            <div className="w-full py-16 grid place-items-center text-gray-500">
+              Cargando…
             </div>
-          </div>
-        )}
+          </main>
+          <Footer activeCategory={slug} />
+        </div>
+      }
+    >
+      <div className="min-h-screen bg-white">
+        <Header />
 
-        {/* Contador oculto por solicitud: se elimina el conteo de posts */}
-
-        {/* Hotel Grid */}
-        {loading ? (
-          <div className="w-full py-16 grid place-items-center text-gray-500">
-            <div className="flex items-center gap-2">
-              <Spinner className="size-5" /> Cargando…
+        <main className="site-inner py-4">
+          {isRestaurantsPage ? (
+            // Submenú de comunas para restaurantes con primer item "VOLVER"
+            <nav className="py-4 hidden lg:block">
+              <ul className="hidden lg:flex flex-nowrap items-center gap-2 text-sm font-medium whitespace-nowrap">
+                {/* VOLVER - limpia filtro y vuelve al listado de restaurantes */}
+                <li className="flex items-center gap-2">
+                  <Link
+                    href="/categoria/restaurantes"
+                    className={`font-neutra hover:text-[var(--color-brand-red)] transition-colors tracking-wide text-[15px] leading-[20px] ${
+                      !selectedComuna
+                        ? "text-[var(--color-brand-red)]"
+                        : "text-black"
+                    }`}
+                    onClick={() => setSelectedComuna(null)}
+                  >
+                    {t("VOLVER", "BACK")}
+                  </Link>
+                  <span className="text-black">•</span>
+                </li>
+                {communes.map((c, index) => {
+                  const slugified = c.toLowerCase().replace(/\s+/g, "-");
+                  const isActive =
+                    selectedComuna &&
+                    selectedComuna.toLowerCase() === c.toLowerCase();
+                  return (
+                    <li key={c} className="flex items-center gap-2">
+                      <Link
+                        href={`/categoria/restaurantes?comuna=${slugified}`}
+                        className={`font-neutra hover:text-[var(--color-brand-red)] transition-colors tracking-wide text-[15px] leading-[20px] ${
+                          isActive
+                            ? "text-[var(--color-brand-red)]"
+                            : "text-black"
+                        }`}
+                        onClick={() => setSelectedComuna(c)}
+                      >
+                        {c.toUpperCase()}
+                      </Link>
+                      {index < communes.length - 1 && (
+                        <span className="text-black">•</span>
+                      )}
+                    </li>
+                  );
+                })}
+              </ul>
+            </nav>
+          ) : (
+            <div className="hidden lg:block">
+              <CategoryNav activeCategory={slug} compact />
             </div>
-          </div>
-        ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 mt-4">
-            {finalHotels.length > 0 ? (
-              finalHotels.map((hotel) => (
-                <HotelCard
-                  key={hotel.slug}
-                  slug={hotel.slug}
-                  name={hotel[language].name}
-                  subtitle={hotel[language].subtitle}
-                  description={buildCardExcerpt(hotel[language].description)}
-                  image={hotel.featuredImage || hotel.images?.[0] || ""}
+          )}
+
+          {/* Slider de restaurantes a ancho completo, sin banner, solo cuando no hay comuna seleccionada */}
+          {isRestaurantsPage && !selectedComuna && (
+            <div className="py-2">
+              <div className="w-full overflow-hidden mb-0">
+                <HeroSlider
+                  desktopImages={restaurantSliderImages}
+                  mobileImages={restaurantSliderImages}
+                  // Ver imagen completa sin recortar y mantener el ancho del contenedor
+                  autoHeight
+                  // keep default desktop height (closer to other sliders)
+                  desktopHeight={437}
+                  mobileHeight={550}
+                  slideHrefs={restaurantSlideHrefs}
+                  dotInactiveClass="bg-gray-300 w-2 h-2"
+                  dotActiveClass="bg-[#E40E36] w-3 h-3"
+                  // mismo espacio para los puntos que en Home
+                  dotBottom={16}
                 />
-              ))
-            ) : (
-              <div className="col-span-full text-center py-12 text-gray-500">
-                <p>
-                  {t(
-                    "No hay hoteles disponibles en esta categoría.",
-                    "No hotels available in this category."
-                  )}
-                </p>
               </div>
-            )}
-          </div>
-        )}
-      </main>
+            </div>
+          )}
 
-      <Footer activeCategory={slug} />
-    </div>
+          {/* Contador oculto por solicitud: se elimina el conteo de posts */}
+
+          {/* Hotel Grid */}
+          {loading ? (
+            <div className="w-full py-16 grid place-items-center text-gray-500">
+              <div className="flex items-center gap-2">
+                <Spinner className="size-5" /> Cargando…
+              </div>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 mt-4">
+              {finalHotels.length > 0 ? (
+                finalHotels.map((hotel) => (
+                  <HotelCard
+                    key={hotel.slug}
+                    slug={hotel.slug}
+                    name={hotel[language].name}
+                    subtitle={hotel[language].subtitle}
+                    description={buildCardExcerpt(hotel[language].description)}
+                    image={hotel.featuredImage || hotel.images?.[0] || ""}
+                  />
+                ))
+              ) : (
+                <div className="col-span-full text-center py-12 text-gray-500">
+                  <p>
+                    {t(
+                      "No hay hoteles disponibles en esta categoría.",
+                      "No hotels available in this category."
+                    )}
+                  </p>
+                </div>
+              )}
+            </div>
+          )}
+        </main>
+
+        <Footer activeCategory={slug} />
+      </div>
+    </Suspense>
   );
 }

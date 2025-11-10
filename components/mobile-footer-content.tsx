@@ -4,7 +4,10 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useSearchParams } from "next/navigation";
 
-export function MobileFooterContent() {
+interface MobileFooterContentProps {
+  onNavigate?: () => void; // cerrar menú al navegar
+}
+export function MobileFooterContent({ onNavigate }: MobileFooterContentProps) {
   const pathname = usePathname();
   const searchParams = useSearchParams();
 
@@ -66,32 +69,38 @@ export function MobileFooterContent() {
 
       {/* Subtitle divider removed - handled on page content */}
 
-      <nav className="mb-12">
+      <nav className="mb-12 space-y-8">
         {isRestaurantsCategory ? (
-          <ul className="space-y-4 text-center">
-            {/* VOLVER para limpiar filtro de comuna */}
-            <li>
+          // SOLO submenú de comunas (como solicitado) sin lista de categorías
+          <ul className="flex flex-wrap justify-center items-center gap-2 text-center">
+            <li className="flex items-center gap-2">
               <Link
                 href="/categoria/restaurantes"
                 className={`font-neutra-demi text-[15px] leading-[20px] font-[600] transition-colors ${
                   !activeComuna ? "text-[#E40E36]" : "text-white"
                 } hover:text-gray-300`}
+                onClick={() => onNavigate?.()}
               >
                 VOLVER
               </Link>
+              <span className="text-white">•</span>
             </li>
-            {communes.map((c) => {
+            {communes.map((c, idx) => {
               const isActive = activeComuna === c.toLowerCase();
               return (
-                <li key={c}>
+                <li key={c} className="flex items-center gap-2">
                   <Link
                     href={`/categoria/restaurantes?comuna=${slugify(c)}`}
                     className={`font-neutra-demi text-[15px] leading-[20px] font-[600] transition-colors ${
                       isActive ? "text-[#E40E36]" : "text-white"
                     } hover:text-gray-300`}
+                    onClick={() => onNavigate?.()}
                   >
                     {c.toUpperCase()}
                   </Link>
+                  {idx < communes.length - 1 && (
+                    <span className="text-white">•</span>
+                  )}
                 </li>
               );
             })}
@@ -103,6 +112,7 @@ export function MobileFooterContent() {
                 <Link
                   href={item.slug === "todos" ? "/" : `/categoria/${item.slug}`}
                   className="font-neutra-demi text-[15px] leading-[20px] font-[600] text-white hover:text-gray-300 transition-colors"
+                  onClick={() => onNavigate?.()}
                 >
                   {item.label}
                 </Link>

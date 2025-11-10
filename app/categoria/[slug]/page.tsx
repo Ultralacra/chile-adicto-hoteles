@@ -136,6 +136,37 @@ export default function CategoryPage({ params }: { params: any }) {
     }
   }, [comunaParam, slug]);
 
+  // Overrides de comuna por slug (prioridad sobre búsqueda por texto)
+  // Permite uno o múltiples match de comuna por slug.
+  const comunaOverrides: Record<string, string | string[]> = {
+    "ceiba-rooftop-bar-sabores-amazonicos": "Lo Barnechea",
+    // Mirai debe aparecer en Las Condes y Santiago
+    "mirai-food-lab": ["Las Condes", "Santiago"],
+  };
+
+  const normalizeComuna = (s: string) =>
+    String(s || "")
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .toUpperCase()
+      .trim();
+
+  // Whitelist explícita para la comuna de Santiago: solo estos slugs deben aparecer
+  const santiagoAllowedSlugs = new Set<string>([
+    "casa-lastarria-nobleza-arquitectonica",
+    "copper-room-y-gran-cafe-hotel-debaines-homenajes-necesarios",
+    "demo-magnolia-honestidad-refrescante",
+    "flama-la-pizza-que-desafia-lo-clasico",
+    "jose-ramon-277-oda-a-lo-mas-sabroso-de-chile",
+    "liguria-lastarria-la-filosofia-cicali",
+    "the-singular",
+    "pulperia-santa-elvira-una-joya-de-matta-sur",
+    "ocean-pacifics-destino-gastronomico-patrimonial",
+    "mirai-food-lab",
+    "bocanariz-la-vitrina-del-vino-chileno",
+    "blue-jar-nunca-decepciona",
+  ]);
+
   // Cargar imágenes del slider de restaurantes desde /public/imagenes-slider/manifest.json
   // Soporta dos formatos de manifest:
   // 1) Array simple de strings ["img1.webp", "img2.webp", ...]
@@ -311,6 +342,21 @@ export default function CategoryPage({ params }: { params: any }) {
   // Apply comuna filter if selectedComuna is set (match in descriptions or address)
   const finalHotels = selectedComuna
     ? enrichedHotels.filter((h) => {
+        const slug = String(h.slug || "");
+        // Si la comuna seleccionada es Santiago, aplicar whitelist estricta
+        if (normalizeComuna(selectedComuna) === normalizeComuna("Santiago")) {
+          return santiagoAllowedSlugs.has(slug);
+        }
+
+        const override = comunaOverrides[slug];
+        if (override) {
+          // Si hay override, debe coincidir con alguna de las comunas declaradas
+          const targets = Array.isArray(override) ? override : [override];
+          return targets.some(
+            (v) => normalizeComuna(v) === normalizeComuna(selectedComuna)
+          );
+        }
+
         // Construir un texto de búsqueda que incluya:
         // - descripciones ES/EN
         // - dirección principal
@@ -326,8 +372,8 @@ export default function CategoryPage({ params }: { params: any }) {
           }
         }
 
-        const haystack = parts.join(" ").toUpperCase();
-        return haystack.includes(String(selectedComuna).toUpperCase());
+        const haystack = normalizeComuna(parts.join(" "));
+        return haystack.includes(normalizeComuna(selectedComuna));
       })
     : enrichedHotels;
 

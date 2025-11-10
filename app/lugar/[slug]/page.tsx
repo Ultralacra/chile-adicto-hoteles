@@ -208,7 +208,7 @@ export default function LugarPage(props: any) {
     hotel.infoHtml =
       language === "en"
         ? [
-            "<p><strong>PRIMA BAR · THE FIRST LISTENING BAR</strong></p>",
+            "<p><strong>PRIMA BAR</strong></p>",
             "<p>ADDRESS: ALONSO DE CÓRDOVA 4355, VITACURA</p>",
             '<p>WEBSITE: <a href="https://www.prima-bar.cl" target="_blank" rel="noopener noreferrer">WWW.PRIMA-BAR.CL</a></p>',
             '<p>SOCIAL MEDIA: <a href="https://www.instagram.com/prima.bar" target="_blank" rel="noopener noreferrer">@PRIMA.BAR</a></p>',
@@ -218,7 +218,7 @@ export default function LugarPage(props: any) {
             "<p>PHOTOGRAPHY: CAROLINA VARGAS</p>",
           ].join("")
         : [
-            "<p><strong>PRIMA BAR · EL PRIMER LISTENING BAR</strong></p>",
+            "<p><strong>PRIMA BAR</strong></p>",
             "<p>DIRECCIÓN: ALONSO DE CÓRDOVA 4355, VITACURA.</p>",
             '<p>SITIO WEB: <a href="https://www.prima-bar.cl" target="_blank" rel="noopener noreferrer">WWW.PRIMA-BAR.CL</a></p>',
             '<p>REDES SOCIALES: <a href="https://www.instagram.com/prima.bar" target="_blank" rel="noopener noreferrer">@PRIMA.BAR</a></p>',
@@ -252,7 +252,7 @@ export default function LugarPage(props: any) {
     hotel.infoHtml =
       language === "en"
         ? [
-            "<p><strong>THE SINGULAR · USEFUL INFORMATION</strong></p>",
+            "<p><strong>THE SINGULAR </strong></p>",
             "<p>ADDRESS: MERCED 294, BARRIO LASTARRIA, SANTIAGO, CHILE</p>",
             '<p>WEBSITE: <a href="https://www.thesingular.com/santiago" target="_blank" rel="noopener noreferrer">WWW.THESINGULAR.COM/SANTIAGO</a></p>',
             '<p>SOCIAL MEDIA: <a href="https://www.instagram.com/thesingularhotels" target="_blank" rel="noopener noreferrer">@THESINGULARHOTELS</a></p>',
@@ -262,7 +262,7 @@ export default function LugarPage(props: any) {
             "<p>INTERESTING FACT: THE SINGULAR SANTIAGO WAS THE BRAND’S FIRST HOTEL IN THE CAPITAL, FOLLOWING THE SUCCESS OF ITS PATAGONIA PROPERTY.</p>",
           ].join("")
         : [
-            "<p><strong>THE SINGULAR · DATOS ÚTILES</strong></p>",
+            "<p><strong>THE SINGULAR</strong></p>",
             "<p>DIRECCIÓN: MERCED 294, BARRIO LASTARRIA, SANTIAGO, CHILE.</p>",
             '<p>SITIO WEB: <a href="https://www.thesingular.com/santiago" target="_blank" rel="noopener noreferrer">WWW.THESINGULAR.COM/SANTIAGO</a></p>',
             '<p>REDES SOCIALES: <a href="https://www.instagram.com/thesingularhotels" target="_blank" rel="noopener noreferrer">@THESINGULARHOTELS</a></p>',

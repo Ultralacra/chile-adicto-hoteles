@@ -153,21 +153,19 @@ export default function LugarPage(props: any) {
           //    - incluir SOLO imágenes numeradas (que contengan dígitos)
           //    - ordenar por el número ascendente
           const seen = new Set<string>();
-          const gallery = imgs
-            .filter((img) => {
-              const key = normalizeImageUrl(img);
-              if (!key) return false;
-              if (key === featuredKey) return false; // excluir featured
-              if (/portada/i.test(key)) return false; // excluir PORTADA en galería
-              const idx = getIndex(img);
-              if (!Number.isFinite(idx)) return false; // solo numeradas
-              if (seen.has(key)) return false; // evitar duplicados
-              seen.add(key);
-              return true;
-            })
-            .map((s) => ({ s, idx: getIndex(s) }))
-            .sort((a, b) => a.idx - b.idx)
-            .map((x) => x.s);
+          // Mantener orden EXACTO entregado por el API (sin reordenar por índice).
+          // Solo filtramos para excluir featured/portada y mantener numeradas, respetando el orden original.
+          const gallery = imgs.filter((img) => {
+            const key = normalizeImageUrl(img);
+            if (!key) return false;
+            if (key === featuredKey) return false; // excluir featured
+            if (/portada/i.test(key)) return false; // excluir PORTADA en galería
+            const idx = getIndex(img);
+            if (!Number.isFinite(idx)) return false; // solo numeradas
+            if (seen.has(key)) return false; // evitar duplicados
+            seen.add(key);
+            return true;
+          });
 
           // 6) Fallback: si la galería queda vacía, usar la featured para que siempre haya al menos 1 imagen
           const galleryWithFallback =

@@ -161,13 +161,14 @@ export default function LugarPage(props: any) {
           const seen = new Set<string>();
           // Mantener orden EXACTO entregado por el API (sin reordenar por índice).
           // Solo filtramos para excluir featured/portada y mantener numeradas, respetando el orden original.
+          // Ajuste: incluir cualquier imagen adicional (no solo numeradas).
+          // Se excluye la featured y cualquier que contenga 'PORTADA' en nombre, manteniendo
+          // el orden original entregado por el API y evitando duplicados.
           const gallery = imgs.filter((img) => {
             const key = normalizeImageUrl(img);
             if (!key) return false;
             if (key === featuredKey) return false; // excluir featured
-            if (/portada/i.test(key)) return false; // excluir PORTADA en galería
-            const idx = getIndex(img);
-            if (!Number.isFinite(idx)) return false; // solo numeradas
+            if (/portada/i.test(key)) return false; // excluir PORTADA explícitas
             if (seen.has(key)) return false; // evitar duplicados
             seen.add(key);
             return true;

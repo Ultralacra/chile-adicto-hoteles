@@ -71,9 +71,9 @@ export function MobileFooterContent({ onNavigate }: MobileFooterContentProps) {
 
       <nav className="mb-12 space-y-8">
         {isRestaurantsCategory ? (
-          // SOLO submenú de comunas (como solicitado) sin lista de categorías
-          <ul className="flex flex-wrap justify-center items-center gap-2 text-center">
-            <li className="flex items-center gap-2">
+          // Submenú de comunas en formato vertical (una debajo de otra)
+          <ul className="space-y-4 text-center">
+            <li>
               <Link
                 href="/categoria/restaurantes"
                 className={`font-neutra-demi text-[15px] leading-[20px] font-[600] transition-colors ${
@@ -83,12 +83,11 @@ export function MobileFooterContent({ onNavigate }: MobileFooterContentProps) {
               >
                 VOLVER
               </Link>
-              <span className="text-white">•</span>
             </li>
-            {communes.map((c, idx) => {
+            {communes.map((c) => {
               const isActive = activeComuna === c.toLowerCase();
               return (
-                <li key={c} className="flex items-center gap-2">
+                <li key={c}>
                   <Link
                     href={`/categoria/restaurantes?comuna=${slugify(c)}`}
                     className={`font-neutra-demi text-[15px] leading-[20px] font-[600] transition-colors ${
@@ -98,9 +97,6 @@ export function MobileFooterContent({ onNavigate }: MobileFooterContentProps) {
                   >
                     {c.toUpperCase()}
                   </Link>
-                  {idx < communes.length - 1 && (
-                    <span className="text-white">•</span>
-                  )}
                 </li>
               );
             })}

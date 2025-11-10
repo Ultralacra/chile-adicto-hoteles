@@ -1,6 +1,7 @@
 "use client";
 
 import { usePathname, useSearchParams } from "next/navigation";
+import { Suspense } from "react";
 import { useEffect } from "react";
 
 declare global {
@@ -11,7 +12,7 @@ declare global {
 
 const GA_MEASUREMENT_ID = "G-LDF4JN0LDG";
 
-export default function GATracker() {
+function GATrackerInner() {
   const pathname = usePathname();
   const searchParams = useSearchParams();
 
@@ -29,4 +30,13 @@ export default function GATracker() {
   }, [pathname, searchParams]);
 
   return null;
+}
+
+export default function GATracker() {
+  // Envolver en Suspense para cumplir requisito de Next 15 cuando se usan hooks de navegación
+  return (
+    <Suspense fallback={null}>
+      <GATrackerInner />
+    </Suspense>
+  );
 }

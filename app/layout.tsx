@@ -46,10 +46,11 @@ export default function RootLayout({
           `}
         </Script>
         <LanguageProvider>
-          <Suspense>
+          {/* Suspense para cualquier hook de navegación dentro de hijos */}
+          <Suspense fallback={null}>
             <GATracker />
+            {children}
           </Suspense>
-          {children}
           <ScrollToTop />
         </LanguageProvider>
         <Analytics />

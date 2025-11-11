@@ -20,9 +20,9 @@ export async function GET() {
 
     // Orden objetivo igual al menú del Home
     const ORDER = [
+      "ICONOS", // solicitado: que ICONOS sea el primero
       "ARQUITECTURA",
       "BARRIOS",
-      "ICONOS",
       "MERCADOS",
       "MIRADORES",
       "CULTURA", // (museos)

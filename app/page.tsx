@@ -106,10 +106,11 @@ export default function Page() {
               {/* Volvemos a alturas responsivas como estaba antes */}
               <div className="w-full md:h-[520px] lg:h-[437px] overflow-visible">
                 <HeroSlider
+                  // Reordenado: iconos primero para alinear con nuevo orden de imágenes
                   slideHrefs={[
+                    "/categoria/iconos",
                     "/categoria/arquitectura",
                     "/categoria/barrios",
-                    "/categoria/iconos",
                     "/categoria/mercados",
                     "/categoria/miradores",
                     "/categoria/museos",
@@ -118,7 +119,8 @@ export default function Page() {
                     "/categoria/paseos-fuera-de-santiago",
                     "/categoria/restaurantes",
                   ]}
-                  dotBottom={2}
+                  // Subimos los puntos en la vista
+                  dotBottom={24}
                 />
               </div>
             </div>

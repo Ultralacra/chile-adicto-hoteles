@@ -4,13 +4,13 @@ import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
 import useEmblaCarousel from "embla-carousel-react";
 
-// Orden alineado con el menú del Home (sin "Todos"):
-// arquitectura, barrios, iconos, mercados, miradores, museos (CULTURA),
-// palacios, parques, paseos-fuera-de-santiago (FUERA DE STGO), restaurantes
+// Reordenado: ICONOS debe ser el primer slide según solicitud.
+// iconos, arquitectura, barrios, mercados, miradores, museos (CULTURA),
+// palacios, parques, paseos-fuera-de-santiago, restaurantes
 const desktopImagesDefault = [
+  "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/09/ICONOS-scaled.webp", // Iconos (primero)
   "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/09/AQI-scaled.webp", // Arquitectura
   "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/09/BARRIOS-scaled.webp", // Barrios
-  "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/09/ICONOS-scaled.webp", // Iconos
   "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/09/MERCADOS-scaled.webp", // Mercados
   "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/09/MIRADORES-scaled.webp", // Miradores
   "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/09/CULTURA-scaled.webp", // Museos (Cultura)
@@ -48,7 +48,7 @@ export function HeroSlider({
   mobileHeight = 550,
   dotActiveClass = "bg-[#E40E36] w-3 h-3",
   dotInactiveClass = "bg-white w-2 h-2",
-  dotBottom = 16,
+  dotBottom = 28,
   slideHref,
   slideHrefs,
   autoHeight = false,

@@ -3,6 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useSearchParams } from "next/navigation";
+import { LanguageSwitcher } from "./language-switcher";
 
 interface MobileFooterContentProps {
   onNavigate?: () => void; // cerrar menú al navegar
@@ -69,7 +70,7 @@ export function MobileFooterContent({ onNavigate }: MobileFooterContentProps) {
 
       {/* Subtitle divider removed - handled on page content */}
 
-      <nav className="mb-12 space-y-8">
+      <nav className="mb-8 space-y-8">
         {isRestaurantsCategory ? (
           // Submenú de comunas en formato vertical (una debajo de otra)
           <ul className="space-y-4 text-center">
@@ -116,6 +117,10 @@ export function MobileFooterContent({ onNavigate }: MobileFooterContentProps) {
             ))}
           </ul>
         )}
+        {/* Language Switcher al final del bloque de navegación */}
+        <div className="pt-6 flex justify-center">
+          <LanguageSwitcher dark />
+        </div>
       </nav>
 
       {/* Contact: top divider spans site content width */}

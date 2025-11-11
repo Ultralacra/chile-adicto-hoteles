@@ -1,11 +1,26 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import Image from "next/image";
 import useEmblaCarousel from "embla-carousel-react";
 import { useLanguage } from "@/contexts/language-context";
 import { CategoryNav } from "@/components/category-nav";
+
+interface LocationInfo {
+  label?: string;
+  address?: string;
+  hours?: string;
+  website?: string;
+  website_display?: string;
+  instagram?: string;
+  instagram_display?: string;
+  reservationLink?: string;
+  reservationPolicy?: string;
+  interestingFact?: string;
+  email?: string;
+  phone?: string;
+}
 
 interface HotelDetailProps {
   hotel: {
@@ -13,87 +28,66 @@ interface HotelDetailProps {
     subtitle: string;
     excerpt: string;
     fullContent: string;
-    infoHtml?: string; // HTML libre para "Datos útiles"
+    infoHtml?: string;
     website?: string;
+    website_display?: string;
     instagram?: string;
+    instagram_display?: string;
     email?: string;
     phone?: string;
     address?: string;
-    locations?: Array<{
-      label?: string;
-      address: string;
-      hours?: string;
-      website?: string;
-      website_display?: string;
-      instagram?: string;
-      instagram_display?: string;
-      reservationLink?: string;
-      reservationPolicy?: string;
-      interestingFact?: string;
-      email?: string;
-      phone?: string;
-    }>;
-    featuredImage: string;
-    galleryImages: string[];
-    website_display?: string;
-    instagram_display?: string;
+    locations?: LocationInfo[];
     photosCredit?: string;
-    categories: string[];
     hours?: string;
     reservationLink?: string;
     reservationPolicy?: string;
     interestingFact?: string;
+    featuredImage?: string;
+    galleryImages?: string[];
+    categories?: string[];
   };
 }
 
 export function HotelDetail({ hotel }: HotelDetailProps) {
+  const { t } = useLanguage();
+  const allImages = [
+    hotel.featuredImage,
+    ...(hotel.galleryImages || []),
+  ].filter((s) => !!s) as string[];
+  const canShowControls = allImages.length > 1;
+  const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true });
+  const [selectedIndex, setSelectedIndex] = useState(0);
   const [isLightboxOpen, setIsLightboxOpen] = useState(false);
   const [lightboxIndex, setLightboxIndex] = useState(0);
-  const { t } = useLanguage();
-
-  const [selectedIndex, setSelectedIndex] = useState(0);
-  const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true });
-
-  // Mostrar solo la galería numerada en el carrusel.
-  // Si no existen numeradas, NO mostrar carrusel (para nunca incluir PORTADA en galería).
-  const allImages =
-    hotel.galleryImages && hotel.galleryImages.length > 0
-      ? hotel.galleryImages
-      : [];
-  const canShowControls = (allImages?.length || 0) > 1;
-
   const [cleanedFullContent, setCleanedFullContent] = useState(
-    hotel.fullContent
+    hotel.fullContent || ""
   );
-  const [address, setAddress] = useState("");
+  const [address, setAddress] = useState<string>(
+    normalizeAddressText(hotel.address || "")
+  );
 
-  // Embla selection handler
-  const onSelect = useCallback(() => {
-    if (!emblaApi) return;
-    setSelectedIndex(emblaApi.selectedScrollSnap());
-  }, [emblaApi]);
-
+  // Embla: actualizar índice seleccionado
   useEffect(() => {
     if (!emblaApi) return;
+    const onSelect = () => setSelectedIndex(emblaApi.selectedScrollSnap());
     emblaApi.on("select", onSelect);
     onSelect();
     return () => {
-      if (emblaApi) emblaApi.off("select", onSelect);
+      emblaApi.off("select", onSelect);
     };
-  }, [emblaApi, onSelect]);
+  }, [emblaApi]);
 
-  // autoplay (pauses when lightbox is open)
+  // Autoplay (pausado si lightbox abierto)
   useEffect(() => {
     if (!emblaApi || isLightboxOpen) return;
     const id = setInterval(() => emblaApi.scrollNext(), 5000);
     return () => clearInterval(id);
   }, [emblaApi, isLightboxOpen]);
 
-  // Limpiar contenido del cuerpo para evitar duplicar datos de contacto que también se muestran abajo
+  // Limpiar contenido para remover duplicados de datos de contacto
   useEffect(() => {
     const html = hotel.fullContent || "";
     let foundAddress = normalizeAddressText(hotel.address || "");
-    // Recolectar dirección si aparece en algún párrafo
     html.replace(/<p[^>]*>[\s\S]*?<\/p>/gi, (p) => {
       const text = p
         .replace(/<[^>]+>/g, " ")
@@ -110,7 +104,6 @@ export function HotelDetail({ hotel }: HotelDetailProps) {
       }
       return p;
     });
-    // Filtro de párrafos que contienen datos de contacto (web, instagram, email, tel, dirección)
     const contactPatterns = [
       /^\s*(direcci[oó]n|address|ubicaci[oó]n)\s*[:\-]?/i,
       /^\s*(web|website|sitio)\s*:?/i,
@@ -131,7 +124,6 @@ export function HotelDetail({ hotel }: HotelDetailProps) {
     (hotel.locations || []).forEach((l) => {
       if (l?.address) addressSet.add(norm(l.address));
     });
-    // Eliminamos cualquier <p> cuyo texto matchee alguno de los patrones
     const processed = html.replace(/<p[^>]*>[\s\S]*?<\/p>/gi, (p) => {
       const text = p
         .replace(/<[^>]+>/g, " ")
@@ -142,7 +134,6 @@ export function HotelDetail({ hotel }: HotelDetailProps) {
       const isContact = isContactLabel || isAddressDuplicate;
       return isContact ? "" : p;
     });
-    // Limpieza inline: eliminar URLs/WWW/emails dentro de párrafos editoriales, manteniendo el resto
     const inlineUrlRe = /https?:\/\/[^\s<>"']+/gi;
     const inlineWwwRe = /\bwww\.[^\s<>"']+/gi;
     const inlineEmailRe = /[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}/gi;
@@ -153,11 +144,11 @@ export function HotelDetail({ hotel }: HotelDetailProps) {
       .replace(/\s{2,}/g, " ");
     setCleanedFullContent(processed2);
     setAddress(foundAddress);
-  }, [hotel.fullContent, hotel.address]);
+  }, [hotel.fullContent, hotel.address, hotel.locations]);
 
   return (
     <>
-      {/* Mostrar submenú de comunas para posts de restaurante */}
+      {/* Submenú comunas (solo restaurantes) */}
       <div className="site-inner py-2">
         <div className="hidden lg:block">
           {(() => {
@@ -166,7 +157,6 @@ export function HotelDetail({ hotel }: HotelDetailProps) {
             const isRestaurant =
               up.includes("RESTAURANTES") || up.includes("RESTAURANTS");
             if (!isRestaurant) return null;
-
             const communes = [
               "Vitacura",
               "Las Condes",
@@ -176,14 +166,13 @@ export function HotelDetail({ hotel }: HotelDetailProps) {
               "Alto Jahuel",
               "La Reina",
             ];
-
             return (
               <nav className="py-4">
                 <ul className="hidden lg:flex flex-nowrap items-center gap-2 text-sm font-medium whitespace-nowrap">
                   <li className="flex items-center gap-2">
                     <a
                       href="/categoria/restaurantes"
-                      className={`font-neutra hover:text-[var(--color-brand-red)] transition-colors tracking-wide text-[15px] leading-[20px] text-black`}
+                      className="font-neutra hover:text-[var(--color-brand-red)] transition-colors tracking-wide text-[15px] leading-[20px] text-black"
                     >
                       {t("VOLVER", "BACK")}
                     </a>
@@ -195,7 +184,7 @@ export function HotelDetail({ hotel }: HotelDetailProps) {
                       <li key={c} className="flex items-center gap-2">
                         <a
                           href={`/categoria/restaurantes?comuna=${slugified}`}
-                          className={`font-neutra hover:text-[var(--color-brand-red)] transition-colors tracking-wide text-[15px] leading-[20px] text-black`}
+                          className="font-neutra hover:text-[var(--color-brand-red)] transition-colors tracking-wide text-[15px] leading-[20px] text-black"
                         >
                           {c.toUpperCase()}
                         </a>
@@ -213,14 +202,8 @@ export function HotelDetail({ hotel }: HotelDetailProps) {
       </div>
 
       <main className="site-inner pt-0 pb-8">
-        {/* Main Image Carousel */}
         {allImages.length > 0 && (
           <div className="mb-4 w-full">
-            {/*
-            Responsive height: on small screens make the carousel height relative to
-            viewport width (so images are wider than tall). On large screens keep
-            a fixed tall height.
-          */}
             <div className="relative overflow-hidden h-[55vw] md:h-[45vw] lg:h-[640px]">
               {canShowControls && (
                 <>
@@ -242,7 +225,6 @@ export function HotelDetail({ hotel }: HotelDetailProps) {
                   </button>
                 </>
               )}
-              {/* Embla root */}
               <div ref={emblaRef} className="h-full">
                 <div className="flex h-full">
                   {allImages.map((src, idx) => (
@@ -266,14 +248,27 @@ export function HotelDetail({ hotel }: HotelDetailProps) {
                 </div>
               </div>
             </div>
-
-            {/* Dots removidos: se dejan solo las flechas del carrusel */}
+            {allImages.length > 1 && (
+              <div className="mt-3 w-full flex justify-center">
+                <div className="flex gap-2">
+                  {allImages.map((_, dotIdx) => (
+                    <button
+                      key={dotIdx}
+                      onClick={() => emblaApi?.scrollTo(dotIdx)}
+                      className={`rounded-full transition-all focus:outline-none ${
+                        dotIdx === selectedIndex
+                          ? "bg-[#E40E36] w-3 h-3"
+                          : "bg-gray-300 w-2 h-2"
+                      }`}
+                      aria-label={`Ir a imagen ${dotIdx + 1}`}
+                    />
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
         )}
 
-        {/* Thumbnail gallery removed per spec - we show only dots+autoplay */}
-
-        {/* Lightbox Modal */}
         {isLightboxOpen && (
           <div
             className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4"
@@ -291,8 +286,6 @@ export function HotelDetail({ hotel }: HotelDetailProps) {
                 fill
                 className="object-contain"
               />
-
-              {/* Close button */}
               <button
                 onClick={() => setIsLightboxOpen(false)}
                 className="absolute top-4 right-4 text-white bg-black/40 p-2 rounded-full"
@@ -300,8 +293,6 @@ export function HotelDetail({ hotel }: HotelDetailProps) {
               >
                 ✕
               </button>
-
-              {/* Prev/Next */}
               <button
                 onClick={() =>
                   setLightboxIndex(
@@ -326,7 +317,6 @@ export function HotelDetail({ hotel }: HotelDetailProps) {
           </div>
         )}
 
-        {/* Keyboard handlers for lightbox navigation */}
         {isLightboxOpen && (
           <KeyboardNavigation
             onClose={() => setIsLightboxOpen(false)}
@@ -339,9 +329,7 @@ export function HotelDetail({ hotel }: HotelDetailProps) {
           />
         )}
 
-        {/* Hotel Information (constrain text content to 1024px) */}
         <div className="max-w-[1024px] mx-auto">
-          {/* Heart Icon and Title (match home card spacing) */}
           <div className="flex items-start gap-[10px] mb-3">
             <div className="flex-shrink-0">
               <Image
@@ -352,11 +340,7 @@ export function HotelDetail({ hotel }: HotelDetailProps) {
               />
             </div>
             <div className="text-left">
-              {
-                // Normalizamos <br> a saltos de línea y separamos en líneas para garantizar
-                // que cada línea reciba el mismo tamaño. Esto maneja entradas con <br> o \n.
-              }
-              <h1 className="font-neutra text-[20px] leading-[24px] mb-[] text-black">
+              <h1 className="font-neutra text-[20px] leading-[24px] text-black">
                 {hotel.name &&
                   hotel.name
                     .replace(/<br\s*\/??>/gi, "\n")
@@ -364,7 +348,7 @@ export function HotelDetail({ hotel }: HotelDetailProps) {
                     .map((line, i) => (
                       <span
                         key={i}
-                        className={`block font-neutra !text-[20px] !leading-[24px] text-black font-[700]`}
+                        className="block font-neutra !text-[20px] !leading-[24px] text-black font-[700]"
                         dangerouslySetInnerHTML={{ __html: line }}
                       />
                     ))}
@@ -375,13 +359,10 @@ export function HotelDetail({ hotel }: HotelDetailProps) {
               />
             </div>
           </div>
-
           <div
             className="prose prose-lg max-w-none mb-8 font-neutra text-black leading-relaxed [&>h3]:text-[15px] [&>h3]:font-[700] [&>h3]:mt-8 [&>h3]:mb-4 [&>h3]:leading-[22px] [&>h3]:lowercase [&>h3]:first-letter:uppercase [&>p]:mb-4 [&>p]:text-[15px] [&>p]:leading-[22px] [&>p]:font-[400] [&_a]:text-[var(--color-brand-red)] [&_a]:no-underline hover:[&_a]:underline [&_.divider]:text-gray-300 [&_.divider]:text-center [&_.divider]:my-8"
             dangerouslySetInnerHTML={{ __html: cleanedFullContent }}
           />
-
-          {/* Divider entre texto y bloque de redes/contacto */}
           <div className="my-5">
             <div
               className="mx-auto h-[3px] w-full bg-transparent"
@@ -391,8 +372,6 @@ export function HotelDetail({ hotel }: HotelDetailProps) {
               }}
             />
           </div>
-
-          {/* Contacto / Redes: si infoHtml está presente, se usa como bloque manual; de lo contrario, se usa el bloque estructurado */}
           <div className="mt-4 mb-8 font-neutra text-black text-[15px] leading-[22px]">
             <h3 className="font-neutra text-[15px] leading-[22px] font-[700] uppercase text-black mb-3">
               {t("DATOS ÚTILES", "USEFUL INFORMATION")}
@@ -404,11 +383,10 @@ export function HotelDetail({ hotel }: HotelDetailProps) {
               />
             ) : (
               <>
-                {/* 1) Dirección / Sucursales */}
                 {hotel.locations && hotel.locations.length > 0 ? (
                   <div className="mb-2">
                     <div className="mr-2 inline-block">
-                      {t("DIRECCIÓN", "ADDRESS")}:
+                      {t("DIRECCIÓN", "ADDRESS")}:{" "}
                     </div>
                     <div className="mt-1">
                       {hotel.locations.map((loc, idx) => (
@@ -420,16 +398,21 @@ export function HotelDetail({ hotel }: HotelDetailProps) {
                               </span>
                               <span className="text-black">
                                 {normalizeAddressText(
-                                  loc.address
+                                  loc.address || ""
                                 ).toUpperCase()}
                               </span>
-                              {loc.hours ? (
-                                <span className="text-black">{` (${loc.hours})`}</span>
-                              ) : null}
+                              {loc.hours && (
+                                <span className="text-black">
+                                  {" "}
+                                  {`(${loc.hours})`}
+                                </span>
+                              )}
                             </>
                           ) : (
                             <span className="text-black">
-                              {normalizeAddressText(loc.address).toUpperCase()}
+                              {normalizeAddressText(
+                                loc.address || ""
+                              ).toUpperCase()}
                             </span>
                           )}
                         </div>
@@ -439,17 +422,17 @@ export function HotelDetail({ hotel }: HotelDetailProps) {
                 ) : (
                   address && (
                     <div className="mb-2">
-                      <span className="mr-2">{t("DIRECCIÓN", "ADDRESS")}:</span>
+                      <span className="mr-2">
+                        {t("DIRECCIÓN", "ADDRESS")}:{" "}
+                      </span>
                       <span className="text-black">
                         {address.toUpperCase()}
                       </span>
                     </div>
                   )
                 )}
-
-                {/* 2) Sitio web */}
                 <div className="mb-2">
-                  <span className="mr-2">{t("WEB", "WEB")}:</span>
+                  <span className="mr-2">{t("WEB", "WEB")}: </span>
                   {hotel.website ? (
                     <a
                       href={formatWebsiteHref(hotel.website)}
@@ -470,11 +453,11 @@ export function HotelDetail({ hotel }: HotelDetailProps) {
                     </span>
                   )}
                 </div>
-
-                {/* 3) Redes Sociales */}
                 {hotel.instagram && (
                   <div className="mb-2">
-                    <span className="mr-2">{t("INSTAGRAM", "INSTAGRAM")}:</span>
+                    <span className="mr-2">
+                      {t("INSTAGRAM", "INSTAGRAM")}:{" "}
+                    </span>
                     <a
                       href={hotel.instagram}
                       target="_blank"
@@ -488,20 +471,16 @@ export function HotelDetail({ hotel }: HotelDetailProps) {
                     </a>
                   </div>
                 )}
-
-                {/* 4) Horario */}
                 {hotel.hours && (
                   <div className="mb-2">
-                    <span className="mr-2">{t("HORARIO", "HOURS")}:</span>
+                    <span className="mr-2">{t("HORARIO", "HOURS")}: </span>
                     <span className="text-black">{hotel.hours}</span>
                   </div>
                 )}
-
-                {/* 5) Reservas */}
                 {(hotel.reservationPolicy || hotel.reservationLink) && (
                   <div className="mb-2">
                     <span className="mr-2">
-                      {t("RESERVAS", "RESERVATIONS")}:
+                      {t("RESERVAS", "RESERVATIONS")}:{" "}
                     </span>
                     {hotel.reservationLink ? (
                       <a
@@ -519,18 +498,14 @@ export function HotelDetail({ hotel }: HotelDetailProps) {
                     )}
                   </div>
                 )}
-
-                {/* 6) Dato de interés */}
                 {hotel.interestingFact && (
                   <div className="mb-2">
                     <span className="mr-2">
-                      {t("DATO DE INTERÉS", "INTERESTING FACT")}:
+                      {t("DATO DE INTERÉS", "INTERESTING FACT")}:{" "}
                     </span>
                     <span className="text-black">{hotel.interestingFact}</span>
                   </div>
                 )}
-
-                {/* 6.1) Bloques por sucursal con datos específicos */}
                 {hotel.locations && hotel.locations.length > 0 && (
                   <div className="mt-5">
                     {hotel.locations.map((loc, idx) => {
@@ -552,11 +527,10 @@ export function HotelDetail({ hotel }: HotelDetailProps) {
                               {String(loc.label)}
                             </div>
                           )}
-                          {/* Dirección de la sucursal (opcionalmente repetir para claridad) */}
                           {loc.address && (
                             <div className="mb-1">
                               <span className="mr-2">
-                                {t("DIRECCIÓN", "ADDRESS")}:
+                                {t("DIRECCIÓN", "ADDRESS")}:{" "}
                               </span>
                               <span className="text-black">
                                 {normalizeAddressText(
@@ -565,10 +539,9 @@ export function HotelDetail({ hotel }: HotelDetailProps) {
                               </span>
                             </div>
                           )}
-                          {/* Sitio web sucursal */}
                           {loc.website && (
                             <div className="mb-1">
-                              <span className="mr-2">{t("WEB", "WEB")}:</span>
+                              <span className="mr-2">{t("WEB", "WEB")}: </span>
                               <a
                                 href={formatWebsiteHref(loc.website)}
                                 target="_blank"
@@ -581,11 +554,10 @@ export function HotelDetail({ hotel }: HotelDetailProps) {
                               </a>
                             </div>
                           )}
-                          {/* Instagram sucursal */}
                           {loc.instagram && (
                             <div className="mb-1">
                               <span className="mr-2">
-                                {t("INSTAGRAM", "INSTAGRAM")}:
+                                {t("INSTAGRAM", "INSTAGRAM")}:{" "}
                               </span>
                               <a
                                 href={loc.instagram}
@@ -600,20 +572,18 @@ export function HotelDetail({ hotel }: HotelDetailProps) {
                               </a>
                             </div>
                           )}
-                          {/* Horario sucursal */}
                           {loc.hours && (
                             <div className="mb-1">
                               <span className="mr-2">
-                                {t("HORARIO", "HOURS")}:
+                                {t("HORARIO", "HOURS")}:{" "}
                               </span>
                               <span className="text-black">{loc.hours}</span>
                             </div>
                           )}
-                          {/* Reservas sucursal */}
                           {(loc.reservationPolicy || loc.reservationLink) && (
                             <div className="mb-1">
                               <span className="mr-2">
-                                {t("RESERVAS", "RESERVATIONS")}:
+                                {t("RESERVAS", "RESERVATIONS")}:{" "}
                               </span>
                               {loc.reservationLink ? (
                                 <a
@@ -631,21 +601,19 @@ export function HotelDetail({ hotel }: HotelDetailProps) {
                               )}
                             </div>
                           )}
-                          {/* Dato de interés sucursal */}
                           {loc.interestingFact && (
                             <div className="mb-1">
                               <span className="mr-2">
-                                {t("DATO DE INTERÉS", "INTERESTING FACT")}:
+                                {t("DATO DE INTERÉS", "INTERESTING FACT")}:{" "}
                               </span>
                               <span className="text-black">
                                 {loc.interestingFact}
                               </span>
                             </div>
                           )}
-                          {/* Contacto sucursal */}
                           {loc.phone && (
                             <div className="mb-1">
-                              <span className="mr-2">{t("TEL", "TEL")}:</span>
+                              <span className="mr-2">{t("TEL", "TEL")}: </span>
                               <a
                                 href={formatTel(loc.phone)}
                                 className="text-[var(--color-brand-red)] no-underline"
@@ -657,7 +625,7 @@ export function HotelDetail({ hotel }: HotelDetailProps) {
                           {loc.email && (
                             <div className="mb-1">
                               <span className="mr-2">
-                                {t("EMAIL", "EMAIL")}:
+                                {t("EMAIL", "EMAIL")}:{" "}
                               </span>
                               <a
                                 href={formatMailto(loc.email)}
@@ -672,11 +640,9 @@ export function HotelDetail({ hotel }: HotelDetailProps) {
                     })}
                   </div>
                 )}
-
-                {/* Teléfono y email (opcionalmente debajo) */}
                 {hotel.phone && (
                   <div className="mb-2">
-                    <span className="mr-2">{t("TEL", "TEL")}:</span>
+                    <span className="mr-2">{t("TEL", "TEL")}: </span>
                     <a
                       href={formatTel(hotel.phone)}
                       className="text-[var(--color-brand-red)] no-underline"
@@ -687,7 +653,7 @@ export function HotelDetail({ hotel }: HotelDetailProps) {
                 )}
                 {hotel.email && (
                   <div className="mb-2">
-                    <span className="mr-2">{t("EMAIL", "EMAIL")}:</span>
+                    <span className="mr-2">{t("EMAIL", "EMAIL")}: </span>
                     <a
                       href={formatMailto(hotel.email)}
                       className="text-[var(--color-brand-red)] no-underline"
@@ -696,12 +662,10 @@ export function HotelDetail({ hotel }: HotelDetailProps) {
                     </a>
                   </div>
                 )}
-
-                {/* Crédito de fotos (si aplica) */}
                 {hotel.photosCredit && (
                   <div className="mb-2 text-[15px] text-black">
                     <span className="mr-2">
-                      {t("FOTOGRAFÍAS", "PHOTOGRAPHS")}:
+                      {t("FOTOGRAFÍAS", "PHOTOGRAPHS")}:{" "}
                     </span>
                     <span>{hotel.photosCredit.toUpperCase()}</span>
                   </div>
@@ -709,8 +673,6 @@ export function HotelDetail({ hotel }: HotelDetailProps) {
               </>
             )}
           </div>
-
-          {/* Links are shown inline inside the description (cleanedFullContent). No duplicate contact block. */}
         </div>
       </main>
     </>

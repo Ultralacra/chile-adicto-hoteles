@@ -49,6 +49,9 @@ export default function NewPostPage() {
   const [instagramDisplay, setInstagramDisplay] = useState("");
   const [email, setEmail] = useState("");
   const [reservationLink, setReservationLink] = useState("");
+  const [reservationPolicy, setReservationPolicy] = useState("");
+  const [hours, setHours] = useState("");
+  const [interestingFact, setInterestingFact] = useState("");
   const [phone, setPhone] = useState("");
   const [address, setAddress] = useState("");
   const [photosCredit, setPhotosCredit] = useState("");
@@ -57,6 +60,23 @@ export default function NewPostPage() {
   const [selectedCategories, setSelectedCategories] = useState<string[]>([
     "TODOS",
   ]);
+
+  // Sucursales / Locations
+  type LocationState = {
+    label?: string;
+    address?: string;
+    hours?: string;
+    website?: string;
+    website_display?: string;
+    instagram?: string;
+    instagram_display?: string;
+    reservationLink?: string;
+    reservationPolicy?: string;
+    interestingFact?: string;
+    email?: string;
+    phone?: string; // input sin "tel:"; se normaliza al guardar
+  };
+  const [locations, setLocations] = useState<LocationState[]>([]);
 
   // Spanish fields
   const [nameEs, setNameEs] = useState("");
@@ -149,6 +169,23 @@ export default function NewPostPage() {
     const descriptionEs = toParagraphs(descriptionEsUnified);
     const descriptionEn = toParagraphs(descriptionEnUnified);
 
+    const sanitizePhone = (p: string) =>
+      p ? `tel:${p.replace(/[^+\d]/g, "")}` : "";
+    const sanitizedLocations = (locations || []).map((l) => ({
+      label: l.label || undefined,
+      address: l.address || undefined,
+      hours: l.hours || undefined,
+      website: l.website || undefined,
+      website_display: l.website_display || undefined,
+      instagram: l.instagram || undefined,
+      instagram_display: l.instagram_display || undefined,
+      reservationLink: l.reservationLink || undefined,
+      reservationPolicy: l.reservationPolicy || undefined,
+      interestingFact: l.interestingFact || undefined,
+      email: l.email || undefined,
+      phone: l.phone ? sanitizePhone(l.phone) : "",
+    }));
+
     const newHotel = {
       slug,
       es: {
@@ -176,10 +213,15 @@ export default function NewPostPage() {
       email,
       phone: phone ? `tel:${phone.replace(/[^+\d]/g, "")}` : "",
       reservationLink,
+      reservationPolicy,
+      hours,
+      interestingFact,
       address,
       photosCredit,
       images: allImages,
       categories: selectedCategories,
+      locations: sanitizedLocations,
+      featuredImage,
     };
 
     const normalized = normalizePost(newHotel as any);
@@ -402,6 +444,24 @@ export default function NewPostPage() {
                   placeholder="https://reservas.ejemplo.com"
                 />
               </div>
+              <div>
+                <Label className="text-sm font-medium">
+                  Política de reservas
+                </Label>
+                <Input
+                  value={reservationPolicy}
+                  onChange={(e) => setReservationPolicy(e.target.value)}
+                  placeholder="Se recomienda / Obligatorio / etc."
+                />
+              </div>
+              <div>
+                <Label className="text-sm font-medium">Horario</Label>
+                <Input
+                  value={hours}
+                  onChange={(e) => setHours(e.target.value)}
+                  placeholder="LUN-DOM 12:00-22:00"
+                />
+              </div>
               <div className="md:col-span-2">
                 <Label className="text-sm font-medium">Dirección</Label>
                 <Textarea
@@ -419,6 +479,257 @@ export default function NewPostPage() {
                   placeholder="@autor / Autor"
                 />
               </div>
+              <div className="md:col-span-2">
+                <Label className="text-sm font-medium">Dato de interés</Label>
+                <Input
+                  value={interestingFact}
+                  onChange={(e) => setInterestingFact(e.target.value)}
+                  placeholder="Reconocimientos, curiosidades, etc."
+                />
+              </div>
+            </div>
+          </Card>
+
+          {/* Sucursales / Locations */}
+          <Card className="p-6">
+            <div className="flex items-center gap-2 mb-4">
+              <MapPin className="text-red-600" size={20} />
+              <h2 className="font-semibold text-lg">Sucursales / Locations</h2>
+            </div>
+            <div className="space-y-4">
+              {locations.map((loc, idx) => (
+                <div key={idx} className="border rounded-lg p-4 space-y-3">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                    <div>
+                      <Label className="text-xs text-gray-600">Etiqueta</Label>
+                      <Input
+                        value={loc.label || ""}
+                        onChange={(e) => {
+                          const v = e.target.value;
+                          setLocations((prev) => {
+                            const arr = [...prev];
+                            arr[idx] = { ...arr[idx], label: v };
+                            return arr;
+                          });
+                        }}
+                        placeholder="Ej: Vitacura, Sucursal Centro, etc."
+                      />
+                    </div>
+                    <div>
+                      <Label className="text-xs text-gray-600">Horario</Label>
+                      <Input
+                        value={loc.hours || ""}
+                        onChange={(e) => {
+                          const v = e.target.value;
+                          setLocations((prev) => {
+                            const arr = [...prev];
+                            arr[idx] = { ...arr[idx], hours: v };
+                            return arr;
+                          });
+                        }}
+                        placeholder="LUN-DOM 12:00-22:00"
+                      />
+                    </div>
+                    <div className="md:col-span-2">
+                      <Label className="text-xs text-gray-600">Dirección</Label>
+                      <Textarea
+                        rows={2}
+                        value={loc.address || ""}
+                        onChange={(e) => {
+                          const v = e.target.value;
+                          setLocations((prev) => {
+                            const arr = [...prev];
+                            arr[idx] = { ...arr[idx], address: v };
+                            return arr;
+                          });
+                        }}
+                      />
+                    </div>
+                    <div>
+                      <Label className="text-xs text-gray-600">Web</Label>
+                      <Input
+                        value={loc.website || ""}
+                        onChange={(e) => {
+                          const v = e.target.value;
+                          setLocations((prev) => {
+                            const arr = [...prev];
+                            arr[idx] = { ...arr[idx], website: v };
+                            return arr;
+                          });
+                        }}
+                        placeholder="https://…"
+                      />
+                    </div>
+                    <div>
+                      <Label className="text-xs text-gray-600">
+                        Web (display)
+                      </Label>
+                      <Input
+                        value={loc.website_display || ""}
+                        onChange={(e) => {
+                          const v = e.target.value;
+                          setLocations((prev) => {
+                            const arr = [...prev];
+                            arr[idx] = { ...arr[idx], website_display: v };
+                            return arr;
+                          });
+                        }}
+                        placeholder="WWW.SITIO.CL"
+                      />
+                    </div>
+                    <div>
+                      <Label className="text-xs text-gray-600">Instagram</Label>
+                      <Input
+                        value={loc.instagram || ""}
+                        onChange={(e) => {
+                          const v = e.target.value;
+                          setLocations((prev) => {
+                            const arr = [...prev];
+                            arr[idx] = { ...arr[idx], instagram: v };
+                            return arr;
+                          });
+                        }}
+                        placeholder="https://instagram.com/… o @handle"
+                      />
+                    </div>
+                    <div>
+                      <Label className="text-xs text-gray-600">
+                        Instagram (display)
+                      </Label>
+                      <Input
+                        value={loc.instagram_display || ""}
+                        onChange={(e) => {
+                          const v = e.target.value;
+                          setLocations((prev) => {
+                            const arr = [...prev];
+                            arr[idx] = { ...arr[idx], instagram_display: v };
+                            return arr;
+                          });
+                        }}
+                        placeholder="@handle"
+                      />
+                    </div>
+                    <div>
+                      <Label className="text-xs text-gray-600">
+                        Reservas (link)
+                      </Label>
+                      <Input
+                        value={loc.reservationLink || ""}
+                        onChange={(e) => {
+                          const v = e.target.value;
+                          setLocations((prev) => {
+                            const arr = [...prev];
+                            arr[idx] = { ...arr[idx], reservationLink: v };
+                            return arr;
+                          });
+                        }}
+                        placeholder="https://…"
+                      />
+                    </div>
+                    <div>
+                      <Label className="text-xs text-gray-600">
+                        Reservas (política)
+                      </Label>
+                      <Input
+                        value={loc.reservationPolicy || ""}
+                        onChange={(e) => {
+                          const v = e.target.value;
+                          setLocations((prev) => {
+                            const arr = [...prev];
+                            arr[idx] = { ...arr[idx], reservationPolicy: v };
+                            return arr;
+                          });
+                        }}
+                        placeholder="Se recomienda / Obligatorio / etc."
+                      />
+                    </div>
+                    <div className="md:col-span-2">
+                      <Label className="text-xs text-gray-600">
+                        Dato de interés
+                      </Label>
+                      <Input
+                        value={loc.interestingFact || ""}
+                        onChange={(e) => {
+                          const v = e.target.value;
+                          setLocations((prev) => {
+                            const arr = [...prev];
+                            arr[idx] = { ...arr[idx], interestingFact: v };
+                            return arr;
+                          });
+                        }}
+                      />
+                    </div>
+                    <div>
+                      <Label className="text-xs text-gray-600">Tel</Label>
+                      <Input
+                        value={loc.phone || ""}
+                        onChange={(e) => {
+                          const v = e.target.value;
+                          setLocations((prev) => {
+                            const arr = [...prev];
+                            arr[idx] = { ...arr[idx], phone: v };
+                            return arr;
+                          });
+                        }}
+                        placeholder="+56 9 …"
+                      />
+                    </div>
+                    <div>
+                      <Label className="text-xs text-gray-600">Email</Label>
+                      <Input
+                        value={loc.email || ""}
+                        onChange={(e) => {
+                          const v = e.target.value;
+                          setLocations((prev) => {
+                            const arr = [...prev];
+                            arr[idx] = { ...arr[idx], email: v };
+                            return arr;
+                          });
+                        }}
+                        placeholder="correo@…"
+                      />
+                    </div>
+                  </div>
+                  <div className="flex justify-end">
+                    <Button
+                      type="button"
+                      variant="destructive"
+                      size="sm"
+                      onClick={() =>
+                        setLocations((prev) => prev.filter((_, i) => i !== idx))
+                      }
+                    >
+                      Eliminar sucursal
+                    </Button>
+                  </div>
+                </div>
+              ))}
+              <Button
+                type="button"
+                variant="outline"
+                className="gap-2"
+                onClick={() =>
+                  setLocations((prev) => [
+                    ...prev,
+                    {
+                      label: "",
+                      address: "",
+                      hours: "",
+                      website: "",
+                      website_display: "",
+                      instagram: "",
+                      instagram_display: "",
+                      reservationLink: "",
+                      reservationPolicy: "",
+                      interestingFact: "",
+                      email: "",
+                      phone: "",
+                    },
+                  ])
+                }
+              >
+                <Plus size={16} /> Agregar sucursal
+              </Button>
             </div>
           </Card>
 

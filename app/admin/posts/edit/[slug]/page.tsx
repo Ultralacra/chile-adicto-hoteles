@@ -65,15 +65,11 @@ export default function EditPostPage({
   const [subtitleEs, setSubtitleEs] = useState("");
   // Descripción: un solo bloque (párrafos separados por línea en blanco)
   const [descriptionUnified, setDescriptionUnified] = useState<string>("");
-  const [infoHtmlEs, setInfoHtmlEs] = useState<string>("");
-  const [rawPasteEs, setRawPasteEs] = useState<string>("");
 
   // Inglés
   const [nameEn, setNameEn] = useState("");
   const [subtitleEn, setSubtitleEn] = useState("");
   const [descriptionUnifiedEn, setDescriptionUnifiedEn] = useState<string>("");
-  const [infoHtmlEn, setInfoHtmlEn] = useState<string>("");
-  const [rawPasteEn, setRawPasteEn] = useState<string>("");
 
   // Contacto editable
   const [website, setWebsite] = useState("");
@@ -84,6 +80,11 @@ export default function EditPostPage({
   const [phone, setPhone] = useState("");
   const [address, setAddress] = useState("");
   const [photosCredit, setPhotosCredit] = useState("");
+  // Operación / reservas
+  const [hours, setHours] = useState("");
+  const [reservationLink, setReservationLink] = useState("");
+  const [reservationPolicy, setReservationPolicy] = useState("");
+  const [interestingFact, setInterestingFact] = useState("");
 
   // Imágenes: mantener arreglo y featured index + featuredImage persistente
   const [images, setImages] = useState<string[]>([]);
@@ -119,27 +120,42 @@ export default function EditPostPage({
     }
   };
   const [categories, setCategories] = useState<string[]>(["TODOS"]);
+  // Sucursales / Locations
+  type LocationState = {
+    label?: string;
+    address?: string;
+    hours?: string;
+    website?: string;
+    website_display?: string;
+    instagram?: string;
+    instagram_display?: string;
+    reservationLink?: string;
+    reservationPolicy?: string;
+    interestingFact?: string;
+    email?: string;
+    phone?: string; // input sin "tel:"; lo formateamos al guardar
+  };
+  const [locations, setLocations] = useState<LocationState[]>([]);
 
   // Cargar datos del hotel en los estados locales cuando llegue
   useEffect(() => {
     if (!hotel) return;
+    // Helpers para convertir entre array de párrafos y HTML para el editor
+    const paragraphsToHtml = (arr: string[] | undefined) => {
+      if (!Array.isArray(arr) || arr.length === 0) return "";
+      return arr
+        .map((p) => `<p>${p}</p>`) // permitimos HTML dentro del párrafo
+        .join("\n");
+    };
     setNameEs(hotel.es?.name || "");
     setSubtitleEs(hotel.es?.subtitle || "");
-    setDescriptionUnified(
-      Array.isArray(hotel.es?.description)
-        ? hotel.es.description.join("\n\n")
-        : ""
-    );
-    setInfoHtmlEs(hotel.es?.infoHtml || "");
+    setDescriptionUnified(paragraphsToHtml(hotel.es?.description));
+    // infoHtml removido del editor
 
     setNameEn(hotel.en?.name || "");
     setSubtitleEn(hotel.en?.subtitle || "");
-    setDescriptionUnifiedEn(
-      Array.isArray(hotel.en?.description)
-        ? hotel.en.description.join("\n\n")
-        : ""
-    );
-    setInfoHtmlEn(hotel.en?.infoHtml || "");
+    setDescriptionUnifiedEn(paragraphsToHtml(hotel.en?.description));
+    // infoHtml removido del editor
 
     setWebsite(hotel.website || "");
     setWebsiteDisplay(hotel.website_display || "");
@@ -149,6 +165,10 @@ export default function EditPostPage({
     setPhone(String(hotel.phone || "").replace(/^tel:/i, ""));
     setAddress(hotel.address || "");
     setPhotosCredit(hotel.photosCredit || "");
+    setHours(hotel.hours || "");
+    setReservationLink(hotel.reservationLink || "");
+    setReservationPolicy(hotel.reservationPolicy || "");
+    setInterestingFact(hotel.interestingFact || "");
 
     let initialImgs: string[] = Array.isArray(hotel.images)
       ? hotel.images.slice()
@@ -169,6 +189,24 @@ export default function EditPostPage({
         ? hotel.categories.map((c: any) => String(c).toUpperCase())
         : ["TODOS"]
     );
+    // locations existentes
+    const locs = Array.isArray(hotel.locations) ? hotel.locations : [];
+    setLocations(
+      locs.map((l: any) => ({
+        label: l?.label || "",
+        address: l?.address || "",
+        hours: l?.hours || "",
+        website: l?.website || "",
+        website_display: l?.website_display || "",
+        instagram: l?.instagram || "",
+        instagram_display: l?.instagram_display || "",
+        reservationLink: l?.reservationLink || "",
+        reservationPolicy: l?.reservationPolicy || "",
+        interestingFact: l?.interestingFact || "",
+        email: l?.email || "",
+        phone: String(l?.phone || "").replace(/^tel:/i, ""),
+      }))
+    );
   }, [hotel]);
 
   const allCategories = categoriesApi;
@@ -186,15 +224,26 @@ export default function EditPostPage({
       alert("No hay post cargado para guardar");
       return;
     }
-    // Extraer solo la parte de contenido (antes del separador ---) y convertir a array de párrafos
-    const descriptionEs = String(descriptionUnified)
-      .split(/\n{2,}/)
-      .map((p) => p.trim())
-      .filter(Boolean);
-    const descriptionEn = String(descriptionUnifiedEn)
-      .split(/\n{2,}/)
-      .map((p) => p.trim())
-      .filter(Boolean);
+    // Convertir HTML del editor a array de párrafos (HTML permitido por párrafo)
+    const htmlToParagraphs = (html: string): string[] => {
+      const container = document.createElement("div");
+      container.innerHTML = html || "";
+      const ps = Array.from(container.querySelectorAll("p"));
+      if (ps.length > 0) {
+        return ps.map((p) => p.innerHTML.trim()).filter(Boolean);
+      }
+      // Fallback: dividir por saltos dobles de línea o <br><br>
+      const cleaned = container.innerHTML
+        .replace(/(?:<br\s*\/?>(\s|&nbsp;)*){2,}/gi, "\n\n")
+        .replace(/<br\s*\/?>(\s|&nbsp;)*/gi, "\n")
+        .replace(/<[^>]+>/g, "");
+      return cleaned
+        .split(/\n{2,}/)
+        .map((s) => s.trim())
+        .filter(Boolean);
+    };
+    const descriptionEs = htmlToParagraphs(String(descriptionUnified));
+    const descriptionEn = htmlToParagraphs(String(descriptionUnifiedEn));
     // Determinar featured final; si no hay imágenes mantener la previa
     const normalizedFeaturedIdx = Math.min(
       Math.max(0, featuredIndex || 0),
@@ -206,6 +255,23 @@ export default function EditPostPage({
       (img, i) => img && img !== finalFeatured && i !== normalizedFeaturedIdx
     );
 
+    const sanitizePhone = (p: string) =>
+      p ? `tel:${p.replace(/[^+\d]/g, "")}` : "";
+    const sanitizedLocations = (locations || []).map((l) => ({
+      label: l.label || undefined,
+      address: l.address || undefined,
+      hours: l.hours || undefined,
+      website: l.website || undefined,
+      website_display: l.website_display || undefined,
+      instagram: l.instagram || undefined,
+      instagram_display: l.instagram_display || undefined,
+      reservationLink: l.reservationLink || undefined,
+      reservationPolicy: l.reservationPolicy || undefined,
+      interestingFact: l.interestingFact || undefined,
+      email: l.email || undefined,
+      phone: l.phone ? sanitizePhone(l.phone) : "",
+    }));
+
     const updated = {
       slug: hotel?.slug || slug,
       featuredImage: finalFeatured || undefined,
@@ -213,13 +279,11 @@ export default function EditPostPage({
         name: nameEs,
         subtitle: subtitleEs,
         description: descriptionEs,
-        infoHtml: infoHtmlEs || undefined,
       },
       en: {
         name: nameEn,
         subtitle: subtitleEn,
         description: descriptionEn,
-        infoHtml: infoHtmlEn || undefined,
       },
       website,
       website_display: websiteDisplay,
@@ -229,11 +293,43 @@ export default function EditPostPage({
       phone: phone ? `tel:${phone.replace(/[^+\d]/g, "")}` : "",
       address,
       photosCredit,
+      hours,
+      reservationLink,
+      reservationPolicy,
+      interestingFact,
       images: galleryImages,
       categories,
+      locations: sanitizedLocations,
     };
     const normalized = normalizePost(updated as any);
-    console.log("[Admin Edit] PUT normalized payload", normalized);
+    // Enviar exactamente las claves top-level que el backend espera para considerar campos "provided".
+    // Si el usuario deja vacío => enviar null para limpiar en DB.
+    const payloadToSend = {
+      slug: normalized.slug,
+      featuredImage: normalized.featuredImage ?? null,
+      es: normalized.es,
+      en: normalized.en,
+      // Enviar cadenas vacías en lugar de null para pasar validación Zod en el API.
+      // La normalización del API convierte "" de URLs a undefined y luego se guarda como NULL en DB.
+      website: website.trim() === "" ? "" : normalized.website,
+      website_display: websiteDisplay.trim() === "" ? "" : websiteDisplay,
+      instagram: instagram.trim() === "" ? "" : instagram,
+      instagram_display: instagramDisplay.trim() === "" ? "" : instagramDisplay,
+      email: email.trim() === "" ? "" : normalized.email,
+      phone: phone.trim() === "" ? "" : normalized.phone,
+      address: address.trim() === "" ? "" : address,
+      photosCredit: photosCredit.trim() === "" ? "" : photosCredit,
+      hours: hours.trim() === "" ? "" : hours,
+      reservationLink:
+        reservationLink.trim() === "" ? "" : normalized.reservationLink,
+      reservationPolicy:
+        reservationPolicy.trim() === "" ? "" : reservationPolicy,
+      interestingFact: interestingFact.trim() === "" ? "" : interestingFact,
+      images: normalized.images, // galería sin destacada
+      categories: normalized.categories,
+      locations: normalized.locations,
+    } as any;
+    console.log("[Admin Edit] PUT payloadToSend", payloadToSend);
     const result = validatePost(normalized as any);
     if (!result.ok) {
       const first = result.issues?.[0];
@@ -246,7 +342,7 @@ export default function EditPostPage({
     fetch(`/api/posts/${encodeURIComponent(slug)}`, {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(normalized),
+      body: JSON.stringify(payloadToSend),
     })
       .then(async (r) => {
         if (!r.ok) {
@@ -271,7 +367,20 @@ export default function EditPostPage({
         }
         return data;
       })
-      .then(() => {
+      .then(async () => {
+        // Refrescar el post desde el servidor para actualizar el estado local y la UI
+        try {
+          const resp = await fetch(`/api/posts/${encodeURIComponent(slug)}`, {
+            cache: "no-store",
+          });
+          if (resp.ok) {
+            const fresh = await resp.json();
+            console.log("[Admin Edit] Refreshed post after save", fresh);
+            setHotel(fresh && fresh.slug ? fresh : null);
+          }
+        } catch (e) {
+          console.warn("No se pudo refrescar post después de guardar", e);
+        }
         alert("Cambios guardados correctamente");
       })
       .catch((e) => {
@@ -283,134 +392,7 @@ export default function EditPostPage({
       });
   };
 
-  // --- Pegado inteligente (idéntico a Nuevo) ---
-  function autoFillFromPaste(lang: "es" | "en", raw: string) {
-    if (!raw || !raw.trim()) return;
-    const blocks = String(raw)
-      .replace(/\r\n/g, "\n")
-      .replace(/\u00A0/g, " ")
-      .trim()
-      .split(/\n{2,}/)
-      .map((b) => b.trim())
-      .filter(Boolean);
-
-    const labelMap =
-      lang === "es"
-        ? {
-            direccion: /^(direcci[oó]n|ubicaci[oó]n)\s*[:\-]?/i,
-            web: /^(web|website|sitio)\s*[:\-]?/i,
-            instagram: /^(instagram)\s*[:\-]?/i,
-            horario: /^(horario|apertura|cierre)\s*[:\-]?/i,
-            reservas: /^(reservas?)\s*[:\-]?/i,
-            dato: /^(dato\s+de\s+inter[eé]s)\s*[:\-]?/i,
-            tel: /^(tel[eé]fono|tel)\s*[:\-]?/i,
-            email: /^(email|mail|correo)\s*[:\-]?/i,
-            fotos: /^(fotos|fotograf[ií]as)\s*[:\-]?/i,
-          }
-        : {
-            direccion: /^(address|location)\s*[:\-]?/i,
-            web: /^(web|website|site)\s*[:\-]?/i,
-            instagram: /^(instagram)\s*[:\-]?/i,
-            horario: /^(hours?)\s*[:\-]?/i,
-            reservas: /^(reservations?)\s*[:\-]?/i,
-            dato: /^(interesting\s+fact)\s*[:\-]?/i,
-            tel: /^(tel|phone)\s*[:\-]?/i,
-            email: /^(email|mail)\s*[:\-]?/i,
-            fotos: /^(photos?)\s*[:\-]?/i,
-          };
-
-    const found: Partial<Record<keyof typeof labelMap, string>> = {};
-    const remaining: string[] = [];
-    for (const b of blocks) {
-      const line = b.split("\n")[0];
-      let matchedKey: keyof typeof labelMap | undefined;
-      for (const key of Object.keys(labelMap) as Array<keyof typeof labelMap>) {
-        if (labelMap[key].test(line)) {
-          matchedKey = key;
-          break;
-        }
-      }
-      if (matchedKey) {
-        const value = b.replace(labelMap[matchedKey], "").trim();
-        if (value) found[matchedKey] = value;
-      } else {
-        remaining.push(b);
-      }
-    }
-    const fmtLink = (val: string) => {
-      const v = val.trim();
-      if (/^https?:\/\//i.test(v))
-        return `<a href="${v}" target="_blank" rel="noopener noreferrer">${v.replace(
-          /^https?:\/\//i,
-          ""
-        )}</a>`;
-      if (/^@/.test(v))
-        return `<a href="https://www.instagram.com/${v.replace(
-          /^@/,
-          ""
-        )}" target="_blank" rel="noopener noreferrer">${v}</a>`;
-      if (/^[\w.-]+\.[a-z]{2,}$/i.test(v))
-        return `<a href="https://${v}" target="_blank" rel="noopener noreferrer">${v}</a>`;
-      return v;
-    };
-    function buildInfoHtmlES() {
-      const parts: string[] = [];
-      if (found.direccion)
-        parts.push(`<p><strong>Dirección:</strong> ${found.direccion}</p>`);
-      if (found.web)
-        parts.push(`<p><strong>Web:</strong> ${fmtLink(found.web)}</p>`);
-      if (found.instagram)
-        parts.push(
-          `<p><strong>Instagram:</strong> ${fmtLink(found.instagram)}</p>`
-        );
-      if (found.horario)
-        parts.push(`<p><strong>Horario:</strong> ${found.horario}</p>`);
-      if (found.reservas)
-        parts.push(
-          `<p><strong>Reservas:</strong> ${fmtLink(found.reservas)}</p>`
-        );
-      if (found.dato)
-        parts.push(`<p><strong>Dato de interés:</strong> ${found.dato}</p>`);
-      if (found.tel) parts.push(`<p><strong>Tel:</strong> ${found.tel}</p>`);
-      if (found.email)
-        parts.push(`<p><strong>Email:</strong> ${found.email}</p>`);
-      if (found.fotos)
-        parts.push(`<p><strong>Fotos:</strong> ${found.fotos}</p>`);
-      return parts.join("\n");
-    }
-    function buildInfoHtmlEN() {
-      const parts: string[] = [];
-      if (found.direccion)
-        parts.push(`<p><strong>Address:</strong> ${found.direccion}</p>`);
-      if (found.web)
-        parts.push(`<p><strong>Web:</strong> ${fmtLink(found.web)}</p>`);
-      if (found.instagram)
-        parts.push(
-          `<p><strong>Instagram:</strong> ${fmtLink(found.instagram)}</p>`
-        );
-      if (found.horario)
-        parts.push(`<p><strong>Hours:</strong> ${found.horario}</p>`);
-      if (found.reservas)
-        parts.push(
-          `<p><strong>Reservations:</strong> ${fmtLink(found.reservas)}</p>`
-        );
-      if (found.dato)
-        parts.push(`<p><strong>Interesting fact:</strong> ${found.dato}</p>`);
-      if (found.tel) parts.push(`<p><strong>Tel:</strong> ${found.tel}</p>`);
-      if (found.email)
-        parts.push(`<p><strong>Email:</strong> ${found.email}</p>`);
-      if (found.fotos)
-        parts.push(`<p><strong>Photos:</strong> ${found.fotos}</p>`);
-      return parts.join("\n");
-    }
-    if (lang === "es") {
-      setDescriptionUnified(remaining.join("\n\n"));
-      setInfoHtmlEs(buildInfoHtmlES());
-    } else {
-      setDescriptionUnifiedEn(remaining.join("\n\n"));
-      setInfoHtmlEn(buildInfoHtmlEN());
-    }
-  }
+  // Pegado inteligente e infoHtml han sido eliminados del editor.
 
   const toggleCategory = (category: string) => {
     if (categories.includes(category)) {
@@ -579,6 +561,282 @@ export default function EditPostPage({
                 placeholder="@usuario / Autor"
               />
             </div>
+            {/* Campos operativos a nivel general (cuando no hay sucursales) */}
+            <div>
+              <Label className="text-xs text-gray-600">HORARIO</Label>
+              <Input
+                value={hours}
+                onChange={(e) => setHours(e.target.value)}
+                placeholder="MARTES A SÁBADO, DE 19:30 A 00:00 HRS"
+              />
+            </div>
+            <div>
+              <Label className="text-xs text-gray-600">RESERVAS (link)</Label>
+              <Input
+                value={reservationLink}
+                onChange={(e) => setReservationLink(e.target.value)}
+                placeholder="https://…"
+              />
+            </div>
+            <div>
+              <Label className="text-xs text-gray-600">
+                RESERVAS (política)
+              </Label>
+              <Input
+                value={reservationPolicy}
+                onChange={(e) => setReservationPolicy(e.target.value)}
+                placeholder="Se recomienda / Obligatorio / etc."
+              />
+            </div>
+            <div className="md:col-span-2">
+              <Label className="text-xs text-gray-600">DATO DE INTERÉS</Label>
+              <Input
+                value={interestingFact}
+                onChange={(e) => setInterestingFact(e.target.value)}
+                placeholder="Dato llamativo o contextual"
+              />
+            </div>
+          </div>
+        </Card>
+
+        {/* Sucursales / Locations */}
+        <Card className="p-6">
+          <div className="flex items-center gap-2 mb-4">
+            <Globe className="text-green-600" size={20} />
+            <h2 className="font-semibold text-lg">Sucursales / Locations</h2>
+          </div>
+          <div className="space-y-4">
+            {locations.map((loc, idx) => (
+              <div key={idx} className="border rounded-lg p-4 space-y-3">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                  <div>
+                    <Label className="text-xs text-gray-600">Etiqueta</Label>
+                    <Input
+                      value={loc.label || ""}
+                      onChange={(e) => {
+                        const v = e.target.value;
+                        setLocations((prev) => {
+                          const arr = [...prev];
+                          arr[idx] = { ...arr[idx], label: v };
+                          return arr;
+                        });
+                      }}
+                      placeholder="Ej: Vitacura, Sucursal Centro, etc."
+                    />
+                  </div>
+                  <div>
+                    <Label className="text-xs text-gray-600">Horario</Label>
+                    <Input
+                      value={loc.hours || ""}
+                      onChange={(e) => {
+                        const v = e.target.value;
+                        setLocations((prev) => {
+                          const arr = [...prev];
+                          arr[idx] = { ...arr[idx], hours: v };
+                          return arr;
+                        });
+                      }}
+                      placeholder="LUN-DOM 12:00-22:00"
+                    />
+                  </div>
+                  <div className="md:col-span-2">
+                    <Label className="text-xs text-gray-600">Dirección</Label>
+                    <Textarea
+                      rows={2}
+                      value={loc.address || ""}
+                      onChange={(e) => {
+                        const v = e.target.value;
+                        setLocations((prev) => {
+                          const arr = [...prev];
+                          arr[idx] = { ...arr[idx], address: v };
+                          return arr;
+                        });
+                      }}
+                    />
+                  </div>
+                  <div>
+                    <Label className="text-xs text-gray-600">Web</Label>
+                    <Input
+                      value={loc.website || ""}
+                      onChange={(e) => {
+                        const v = e.target.value;
+                        setLocations((prev) => {
+                          const arr = [...prev];
+                          arr[idx] = { ...arr[idx], website: v };
+                          return arr;
+                        });
+                      }}
+                      placeholder="https://…"
+                    />
+                  </div>
+                  <div>
+                    <Label className="text-xs text-gray-600">
+                      Web (display)
+                    </Label>
+                    <Input
+                      value={loc.website_display || ""}
+                      onChange={(e) => {
+                        const v = e.target.value;
+                        setLocations((prev) => {
+                          const arr = [...prev];
+                          arr[idx] = { ...arr[idx], website_display: v };
+                          return arr;
+                        });
+                      }}
+                      placeholder="WWW.SITIO.CL"
+                    />
+                  </div>
+                  <div>
+                    <Label className="text-xs text-gray-600">Instagram</Label>
+                    <Input
+                      value={loc.instagram || ""}
+                      onChange={(e) => {
+                        const v = e.target.value;
+                        setLocations((prev) => {
+                          const arr = [...prev];
+                          arr[idx] = { ...arr[idx], instagram: v };
+                          return arr;
+                        });
+                      }}
+                      placeholder="https://instagram.com/… o @handle"
+                    />
+                  </div>
+                  <div>
+                    <Label className="text-xs text-gray-600">
+                      Instagram (display)
+                    </Label>
+                    <Input
+                      value={loc.instagram_display || ""}
+                      onChange={(e) => {
+                        const v = e.target.value;
+                        setLocations((prev) => {
+                          const arr = [...prev];
+                          arr[idx] = { ...arr[idx], instagram_display: v };
+                          return arr;
+                        });
+                      }}
+                      placeholder="@handle"
+                    />
+                  </div>
+                  <div>
+                    <Label className="text-xs text-gray-600">
+                      Reservas (link)
+                    </Label>
+                    <Input
+                      value={loc.reservationLink || ""}
+                      onChange={(e) => {
+                        const v = e.target.value;
+                        setLocations((prev) => {
+                          const arr = [...prev];
+                          arr[idx] = { ...arr[idx], reservationLink: v };
+                          return arr;
+                        });
+                      }}
+                      placeholder="https://…"
+                    />
+                  </div>
+                  <div>
+                    <Label className="text-xs text-gray-600">
+                      Reservas (política)
+                    </Label>
+                    <Input
+                      value={loc.reservationPolicy || ""}
+                      onChange={(e) => {
+                        const v = e.target.value;
+                        setLocations((prev) => {
+                          const arr = [...prev];
+                          arr[idx] = { ...arr[idx], reservationPolicy: v };
+                          return arr;
+                        });
+                      }}
+                      placeholder="Se recomienda / Obligatorio / etc."
+                    />
+                  </div>
+                  <div className="md:col-span-2">
+                    <Label className="text-xs text-gray-600">
+                      Dato de interés
+                    </Label>
+                    <Input
+                      value={loc.interestingFact || ""}
+                      onChange={(e) => {
+                        const v = e.target.value;
+                        setLocations((prev) => {
+                          const arr = [...prev];
+                          arr[idx] = { ...arr[idx], interestingFact: v };
+                          return arr;
+                        });
+                      }}
+                    />
+                  </div>
+                  <div>
+                    <Label className="text-xs text-gray-600">Tel</Label>
+                    <Input
+                      value={loc.phone || ""}
+                      onChange={(e) => {
+                        const v = e.target.value;
+                        setLocations((prev) => {
+                          const arr = [...prev];
+                          arr[idx] = { ...arr[idx], phone: v };
+                          return arr;
+                        });
+                      }}
+                      placeholder="+56 9 …"
+                    />
+                  </div>
+                  <div>
+                    <Label className="text-xs text-gray-600">Email</Label>
+                    <Input
+                      value={loc.email || ""}
+                      onChange={(e) => {
+                        const v = e.target.value;
+                        setLocations((prev) => {
+                          const arr = [...prev];
+                          arr[idx] = { ...arr[idx], email: v };
+                          return arr;
+                        });
+                      }}
+                      placeholder="correo@…"
+                    />
+                  </div>
+                </div>
+                <div className="flex justify-end">
+                  <Button
+                    variant="destructive"
+                    size="sm"
+                    onClick={() =>
+                      setLocations((prev) => prev.filter((_, i) => i !== idx))
+                    }
+                  >
+                    Eliminar sucursal
+                  </Button>
+                </div>
+              </div>
+            ))}
+            <Button
+              variant="outline"
+              className="gap-2"
+              onClick={() =>
+                setLocations((prev) => [
+                  ...prev,
+                  {
+                    label: "",
+                    address: "",
+                    hours: "",
+                    website: "",
+                    website_display: "",
+                    instagram: "",
+                    instagram_display: "",
+                    reservationLink: "",
+                    reservationPolicy: "",
+                    interestingFact: "",
+                    email: "",
+                    phone: "",
+                  },
+                ])
+              }
+            >
+              <Plus size={16} /> Agregar sucursal
+            </Button>
           </div>
         </Card>
 
@@ -729,51 +987,12 @@ export default function EditPostPage({
                   onChange={(v) => setDescriptionUnified(v)}
                 />
                 <p className="text-[11px] text-gray-500 mt-1">
-                  Separa párrafos con una línea en blanco.
+                  Usa la barra superior para dar formato; Enter crea nuevos
+                  párrafos.
                 </p>
               </div>
 
-              {/* Pegado inteligente ES */}
-              <div className="p-3 border rounded bg-gray-50">
-                <Label className="text-xs text-gray-600 mb-1 block">
-                  Pegado inteligente (ES)
-                </Label>
-                <Textarea
-                  rows={5}
-                  value={rawPasteEs}
-                  onChange={(e) => setRawPasteEs(e.target.value)}
-                  placeholder="Pega aquí…"
-                />
-                <div className="flex gap-2 mt-2">
-                  <Button
-                    type="button"
-                    variant="outline"
-                    size="sm"
-                    onClick={() => autoFillFromPaste("es", rawPasteEs)}
-                  >
-                    Formatear y repartir
-                  </Button>
-                  <Button
-                    type="button"
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => setRawPasteEs("")}
-                  >
-                    Limpiar
-                  </Button>
-                </div>
-              </div>
-
-              {/* Datos útiles HTML ES */}
-              <div>
-                <Label className="text-xs text-gray-600">
-                  Datos útiles (HTML)
-                </Label>
-                <AdminRichText value={infoHtmlEs} onChange={setInfoHtmlEs} />
-                <p className="text-[11px] text-gray-500 mt-1">
-                  Si existe, reemplaza el bloque estructurado en la vista.
-                </p>
-              </div>
+              {/* Secciones eliminadas: pegado inteligente + datos útiles HTML */}
             </div>
 
             {/* English */}
@@ -802,52 +1021,11 @@ export default function EditPostPage({
                   onChange={(v) => setDescriptionUnifiedEn(v)}
                 />
                 <p className="text-[11px] text-gray-500 mt-1">
-                  Separate paragraphs with a blank line.
+                  Use the toolbar for formatting; Enter creates new paragraphs.
                 </p>
               </div>
 
-              {/* Smart paste EN */}
-              <div className="p-3 border rounded bg-gray-50">
-                <Label className="text-xs text-gray-600 mb-1 block">
-                  Smart paste (EN)
-                </Label>
-                <Textarea
-                  rows={5}
-                  value={rawPasteEn}
-                  onChange={(e) => setRawPasteEn(e.target.value)}
-                  placeholder="Paste here…"
-                />
-                <div className="flex gap-2 mt-2">
-                  <Button
-                    type="button"
-                    variant="outline"
-                    size="sm"
-                    onClick={() => autoFillFromPaste("en", rawPasteEn)}
-                  >
-                    Format & fill
-                  </Button>
-                  <Button
-                    type="button"
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => setRawPasteEn("")}
-                  >
-                    Clear
-                  </Button>
-                </div>
-              </div>
-
-              {/* Useful info HTML EN */}
-              <div>
-                <Label className="text-xs text-gray-600">
-                  Useful information (HTML)
-                </Label>
-                <AdminRichText value={infoHtmlEn} onChange={setInfoHtmlEn} />
-                <p className="text-[11px] text-gray-500 mt-1">
-                  If present, it replaces the structured block in the detail
-                  view.
-                </p>
-              </div>
+              {/* Secciones eliminadas: smart paste + useful info HTML */}
             </div>
           </div>
         </Card>

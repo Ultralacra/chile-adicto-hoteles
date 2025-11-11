@@ -72,17 +72,27 @@ export function HeroSlider({
   const [emblaMobileRef, emblaMobileApi] = useEmblaCarousel({ loop: true });
 
   const [selectedIndex, setSelectedIndex] = useState(0);
+  const [isMobile, setIsMobile] = useState(false);
 
-  // Autoplay
+  // Detectar breakpoint activo (md: 768px)
   useEffect(() => {
-    const api = emblaDesktopApi || emblaMobileApi;
-    if (!api) return;
-    const play = () => {
-      if (api) api.scrollNext();
+    const check = () => {
+      if (typeof window === "undefined") return;
+      const mq = window.matchMedia("(max-width: 767.98px)");
+      setIsMobile(mq.matches);
     };
-    const id = setInterval(play, 5000);
+    check();
+    window.addEventListener("resize", check);
+    return () => window.removeEventListener("resize", check);
+  }, []);
+
+  // Autoplay solo sobre el carrusel activo
+  useEffect(() => {
+    const api = isMobile ? emblaMobileApi : emblaDesktopApi;
+    if (!api) return;
+    const id = setInterval(() => api.scrollNext(), 5000);
     return () => clearInterval(id);
-  }, [emblaDesktopApi, emblaMobileApi]);
+  }, [isMobile, emblaDesktopApi, emblaMobileApi]);
 
   // Cargar imágenes locales desde API si no se pasaron por props
   useEffect(() => {
@@ -117,31 +127,21 @@ export function HeroSlider({
     };
   }, [desktopImages, mobileImages]);
 
-  // sync selected index from embla
-  const onSelect = useCallback(() => {
-    const api = emblaDesktopApi || emblaMobileApi;
-    if (!api) return;
-    setSelectedIndex(api.selectedScrollSnap());
-  }, [emblaDesktopApi, emblaMobileApi]);
-
+  // Sincronizar selectedIndex solo con el carrusel visible
   useEffect(() => {
-    if (emblaDesktopApi) {
-      emblaDesktopApi.on("select", onSelect);
-      onSelect();
-    }
-    if (emblaMobileApi) {
-      emblaMobileApi.on("select", onSelect);
-      onSelect();
-    }
+    const api = isMobile ? emblaMobileApi : emblaDesktopApi;
+    if (!api) return;
+    const onSelectActive = () => setSelectedIndex(api.selectedScrollSnap());
+    api.on("select", onSelectActive);
+    onSelectActive();
     return () => {
-      if (emblaDesktopApi) emblaDesktopApi.off("select", onSelect);
-      if (emblaMobileApi) emblaMobileApi.off("select", onSelect);
+      api.off("select", onSelectActive);
     };
-  }, [emblaDesktopApi, emblaMobileApi, onSelect]);
+  }, [isMobile, emblaDesktopApi, emblaMobileApi]);
 
   const goToSlide = (index: number) => {
-    if (emblaDesktopApi) emblaDesktopApi.scrollTo(index);
-    if (emblaMobileApi) emblaMobileApi.scrollTo(index);
+    const api = isMobile ? emblaMobileApi : emblaDesktopApi;
+    api?.scrollTo(index);
     setSelectedIndex(index);
   };
 
@@ -283,7 +283,7 @@ export function HeroSlider({
         style={{ bottom: `${dotBottom}px` }}
       >
         <div className="flex gap-2">
-          {desktop.map((_, dotIndex) => (
+          {(isMobile ? mobile : desktop).map((_, dotIndex) => (
             <button
               key={`global-dot-${dotIndex}`}
               onClick={() => goToSlide(dotIndex)}

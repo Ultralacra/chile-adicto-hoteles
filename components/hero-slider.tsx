@@ -36,6 +36,7 @@ type HeroSliderProps = {
   dotBottom?: number; // espacio en px desde el fondo para los dots (por defecto 16)
   slideHref?: string; // si se define, cada slide será un enlace a esta ruta
   slideHrefs?: string[]; // hrefs por slide; tiene prioridad sobre slideHref
+  slideHrefsMobile?: string[]; // hrefs específicos para mobile; si no se provee, cae en slideHrefs
   autoHeight?: boolean; // si true, la altura se adapta a la imagen (w-full h-auto)
 };
 
@@ -51,6 +52,7 @@ export function HeroSlider({
   dotBottom = 28,
   slideHref,
   slideHrefs,
+  slideHrefsMobile,
   autoHeight = false,
 }: HeroSliderProps) {
   // Estado para imágenes obtenidas desde API (si existen en /public/slider-*)
@@ -223,9 +225,16 @@ export function HeroSlider({
                 className="embla__slide min-w-full"
                 style={autoHeight ? undefined : { height: `${mobileHeight}px` }}
               >
-                {slideHrefs?.[index] || slideHref ? (
+                {slideHrefsMobile?.[index] ||
+                slideHrefs?.[index] ||
+                slideHref ? (
                   <Link
-                    href={(slideHrefs && slideHrefs[index]) || slideHref || "#"}
+                    href={
+                      (slideHrefsMobile && slideHrefsMobile[index]) ||
+                      (slideHrefs && slideHrefs[index]) ||
+                      slideHref ||
+                      "#"
+                    }
                     className={`block w-full ${
                       autoHeight ? "h-auto" : "h-full"
                     }`}

@@ -113,16 +113,25 @@ export default function CategoryPage({ params }: { params: any }) {
 
   const isRestaurantsPage = slug === "restaurantes";
 
-  // Communes submenu for restaurantes category
-  const communes = [
-    "Vitacura",
-    "Las Condes",
+  // Comunas dinámicas para restaurantes (derivadas de direcciones/locations y overrides)
+  const possibleCommunes = [
     "Santiago",
-    "Lo Barnechea",
     "Providencia",
-    "Alto Jahuel",
+    "Las Condes",
+    "Vitacura",
+    "Lo Barnechea",
     "La Reina",
+    "Ñuñoa",
+    "Recoleta",
+    "Independencia",
+    "San Miguel",
+    "Estación Central",
+    "Maipú",
+    "La Florida",
+    "Puente Alto",
+    "Alto Jahuel",
   ];
+  const [communes, setCommunes] = useState<string[]>([]);
 
   const searchParams = useSearchParams();
   const comunaParam = searchParams.get("comuna");
@@ -150,6 +159,59 @@ export default function CategoryPage({ params }: { params: any }) {
       .replace(/[\u0300-\u036f]/g, "")
       .toUpperCase()
       .trim();
+  // Derivar lista de comunas encontradas entre los restaurantes cargados
+  useEffect(() => {
+    if (!isRestaurantsPage) {
+      setCommunes([]);
+      return;
+    }
+    const found = new Set<string>();
+    const tryAdd = (raw: string) => {
+      const haystack = normalizeComuna(raw);
+      for (const pc of possibleCommunes) {
+        if (haystack.includes(normalizeComuna(pc))) {
+          found.add(pc);
+        }
+      }
+    };
+    for (const h of filteredHotels as any[]) {
+      const slug = String(h.slug || "");
+      const override = comunaOverrides[slug];
+      if (override) {
+        const arr = Array.isArray(override) ? override : [override];
+        arr.forEach((c) => found.add(c));
+      }
+      if (h.address) tryAdd(h.address);
+      if (Array.isArray(h.locations)) {
+        for (const loc of h.locations) {
+          if (loc?.address) tryAdd(loc.address);
+          if (loc?.label) tryAdd(loc.label);
+        }
+      }
+      if (Array.isArray(h.es?.description)) {
+        tryAdd((h.es.description as string[]).join("\n"));
+      }
+      if (Array.isArray(h.en?.description)) {
+        tryAdd((h.en.description as string[]).join("\n"));
+      }
+    }
+    // Ordenar por el orden de possibleCommunes
+    const ordered = possibleCommunes.filter((c) => found.has(c));
+    // Fallback si no detectamos ninguna: usar set básico conocido
+    setCommunes(
+      ordered.length > 0
+        ? ordered
+        : [
+            "Vitacura",
+            "Las Condes",
+            "Santiago",
+            "Lo Barnechea",
+            "Providencia",
+            "Alto Jahuel",
+            "La Reina",
+          ]
+    );
+  }, [isRestaurantsPage, filteredHotels]);
 
   // Whitelist explícita para la comuna de Santiago: solo estos slugs deben aparecer
   const santiagoAllowedSlugs = new Set<string>([

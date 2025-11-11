@@ -6,6 +6,13 @@ import { useEffect, useState } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import Link from "next/link";
 import { Home, FileText, Plus, Settings, LogOut, Menu, X } from "lucide-react";
+import { Inter } from "next/font/google";
+
+const inter = Inter({
+  subsets: ["latin"],
+  display: "swap",
+  variable: "--font-inter",
+});
 
 export default function AdminLayout({
   children,
@@ -33,7 +40,7 @@ export default function AdminLayout({
 
   // Don't show sidebar on login page
   if (pathname === "/admin/login" || !isAuthenticated) {
-    return <div className="font-neutra">{children}</div>;
+    return <div className={inter.className}>{children}</div>;
   }
 
   const menuItems = [
@@ -44,7 +51,7 @@ export default function AdminLayout({
   ];
 
   return (
-    <div className="min-h-screen bg-gray-100 font-neutra">
+    <div className={`${inter.className} min-h-screen bg-gray-100`}>
       {/* Mobile Header */}
       <div className="lg:hidden bg-white border-b border-gray-200 px-4 py-3 flex items-center justify-between">
         <h1 className="text-xl font-bold">Chile Adicto Admin</h1>

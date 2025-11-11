@@ -9,7 +9,15 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Card } from "@/components/ui/card";
 import AdminRichText from "@/components/admin-rich-text";
-import { ArrowLeft, Save, Tag, Globe, Plus, X } from "lucide-react";
+import { ArrowLeft, Save, Tag, Globe, Plus, X, Code } from "lucide-react";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogFooter,
+} from "@/components/ui/dialog";
 import { normalizePost, validatePost } from "@/lib/post-service";
 import { Spinner } from "@/components/ui/spinner";
 
@@ -120,6 +128,34 @@ export default function EditPostPage({
     }
   };
   const [categories, setCategories] = useState<string[]>(["TODOS"]);
+  // Comunas (admin-only hasta que DB soporte): seleccionables tipo categorías
+  const possibleCommunes = [
+    "Santiago",
+    "Providencia",
+    "Las Condes",
+    "Vitacura",
+    "Lo Barnechea",
+    "La Reina",
+    "Ñuñoa",
+    "Recoleta",
+    "Independencia",
+    "San Miguel",
+    "Estación Central",
+    "Maipú",
+    "La Florida",
+    "Puente Alto",
+    "Alto Jahuel",
+  ];
+  const [communes, setCommunes] = useState<string[]>([]);
+  const [autoDetectedCommunes, setAutoDetectedCommunes] = useState<string[]>(
+    []
+  );
+  const normalizeComuna = (s: string) =>
+    String(s || "")
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .toUpperCase()
+      .trim();
   // Sucursales / Locations
   type LocationState = {
     label?: string;
@@ -136,6 +172,9 @@ export default function EditPostPage({
     phone?: string; // input sin "tel:"; lo formateamos al guardar
   };
   const [locations, setLocations] = useState<LocationState[]>([]);
+  // Vista previa JSON
+  const [previewOpen, setPreviewOpen] = useState(false);
+  const [previewJson, setPreviewJson] = useState<string>("{}");
 
   // Cargar datos del hotel en los estados locales cuando llegue
   useEffect(() => {
@@ -184,10 +223,17 @@ export default function EditPostPage({
       : -1;
     setFeaturedIndex(idx >= 0 ? idx : 0);
     setFeaturedImage(hotel.featuredImage || initialImgs[0] || "");
+    // Unir categorías provenientes de category_links y posibles category en traducciones
+    const mergedCats = [
+      ...(Array.isArray(hotel.categories) ? hotel.categories : []),
+      hotel.es?.category || "",
+      hotel.en?.category || "",
+    ]
+      .map((c: any) => String(c || "").trim())
+      .filter(Boolean)
+      .map((c) => c.toUpperCase());
     setCategories(
-      Array.isArray(hotel.categories) && hotel.categories.length
-        ? hotel.categories.map((c: any) => String(c).toUpperCase())
-        : ["TODOS"]
+      mergedCats.length > 0 ? Array.from(new Set(mergedCats)) : ["TODOS"]
     );
     // locations existentes
     const locs = Array.isArray(hotel.locations) ? hotel.locations : [];
@@ -207,6 +253,45 @@ export default function EditPostPage({
         phone: String(l?.phone || "").replace(/^tel:/i, ""),
       }))
     );
+
+    // Comunas: detección automática desde address/locations/descripciones
+    const found = new Set<string>();
+    const tryAdd = (raw?: string) => {
+      if (!raw) return;
+      const haystack = normalizeComuna(String(raw));
+      for (const pc of possibleCommunes) {
+        if (haystack.includes(normalizeComuna(pc))) {
+          found.add(pc);
+        }
+      }
+    };
+    tryAdd(hotel.address);
+    (Array.isArray(locs) ? locs : []).forEach((l: any) => {
+      tryAdd(l?.address);
+      tryAdd(l?.label);
+    });
+    if (Array.isArray(hotel.es?.description))
+      tryAdd(hotel.es.description.join("\n"));
+    if (Array.isArray(hotel.en?.description))
+      tryAdd(hotel.en.description.join("\n"));
+    const detected = possibleCommunes.filter((c) => found.has(c));
+    setAutoDetectedCommunes(detected);
+
+    // Cargar comunas manuales desde localStorage (si existen)
+    try {
+      const key = `post:communes:${hotel.slug}`;
+      const saved =
+        typeof window !== "undefined" ? window.localStorage.getItem(key) : null;
+      if (saved) {
+        const arr = JSON.parse(saved);
+        if (Array.isArray(arr)) setCommunes(arr.map((s) => String(s)));
+        else setCommunes(detected);
+      } else {
+        setCommunes(detected);
+      }
+    } catch {
+      setCommunes(detected);
+    }
   }, [hotel]);
 
   const allCategories = categoriesApi;
@@ -219,10 +304,9 @@ export default function EditPostPage({
     }
   }, [featuredIndex, images]);
 
-  const handleSave = () => {
+  const buildPayload = () => {
     if (!hotel) {
-      alert("No hay post cargado para guardar");
-      return;
+      return null;
     }
     // Convertir HTML del editor a array de párrafos (HTML permitido por párrafo)
     const htmlToParagraphs = (html: string): string[] => {
@@ -328,7 +412,36 @@ export default function EditPostPage({
       images: normalized.images, // galería sin destacada
       categories: normalized.categories,
       locations: normalized.locations,
+      // Campo provisional solo para vista previa/compatibilidad futura
+      communes: communes,
     } as any;
+    return { payloadToSend, normalized, galleryImages, finalFeatured };
+  };
+
+  const openPreview = () => {
+    const built = buildPayload();
+    if (!built) {
+      alert("No hay post cargado para vista previa");
+      return;
+    }
+    const { payloadToSend } = built;
+    try {
+      setPreviewJson(
+        JSON.stringify(payloadToSend, null, 2).replace(/\n/g, "\n")
+      );
+    } catch (e) {
+      setPreviewJson('{\n  "error": "No se pudo serializar"\n}');
+    }
+    setPreviewOpen(true);
+  };
+
+  const handleSave = () => {
+    const built = buildPayload();
+    if (!built) {
+      alert("No hay post cargado para guardar");
+      return;
+    }
+    const { payloadToSend, normalized, finalFeatured } = built;
     console.log("[Admin Edit] PUT payloadToSend", payloadToSend);
     const result = validatePost(normalized as any);
     if (!result.ok) {
@@ -368,6 +481,13 @@ export default function EditPostPage({
         return data;
       })
       .then(async () => {
+        // Guardar comunas en localStorage tras guardar
+        try {
+          const key = `post:communes:${hotel?.slug || slug}`;
+          if (typeof window !== "undefined") {
+            window.localStorage.setItem(key, JSON.stringify(communes));
+          }
+        } catch {}
         // Refrescar el post desde el servidor para actualizar el estado local y la UI
         try {
           const resp = await fetch(`/api/posts/${encodeURIComponent(slug)}`, {
@@ -443,14 +563,25 @@ export default function EditPostPage({
               {hotel?.es?.name || hotel?.en?.name || slug}
             </p>
           </div>
-          <Button
-            onClick={handleSave}
-            className="bg-green-600 hover:bg-green-700 gap-2 disabled:opacity-60"
-            disabled={saving}
-          >
-            <Save size={20} />
-            {saving ? "Guardando..." : "Guardar cambios"}
-          </Button>
+          <div className="flex gap-2">
+            <Button
+              type="button"
+              variant="outline"
+              onClick={openPreview}
+              className="gap-2"
+              disabled={saving}
+            >
+              <Code size={18} /> Ver JSON
+            </Button>
+            <Button
+              onClick={handleSave}
+              className="bg-green-600 hover:bg-green-700 gap-2 disabled:opacity-60"
+              disabled={saving}
+            >
+              <Save size={20} />
+              {saving ? "Guardando..." : "Guardar cambios"}
+            </Button>
+          </div>
         </div>
 
         {/* Basic Info */}
@@ -484,6 +615,73 @@ export default function EditPostPage({
                   </label>
                 ))}
               </div>
+            </div>
+            <div>
+              <Label className="text-sm font-medium mb-2 block">Comunas</Label>
+              <div className="flex flex-wrap gap-2">
+                {possibleCommunes.map((com) => {
+                  const active = communes.includes(com);
+                  return (
+                    <label
+                      key={com}
+                      className={`px-4 py-2 rounded-lg border-2 cursor-pointer transition-all ${
+                        active
+                          ? "border-blue-600 bg-blue-50 text-blue-700 font-medium"
+                          : "border-gray-200 hover:border-gray-300"
+                      }`}
+                    >
+                      <input
+                        type="checkbox"
+                        checked={active}
+                        onChange={() =>
+                          setCommunes((prev) =>
+                            prev.includes(com)
+                              ? prev.filter((c) => c !== com)
+                              : [...prev, com]
+                          )
+                        }
+                        className="sr-only"
+                      />
+                      {com}
+                    </label>
+                  );
+                })}
+              </div>
+              <div className="mt-2 flex flex-wrap items-center gap-2 text-xs text-gray-600">
+                {autoDetectedCommunes.length > 0 ? (
+                  <>
+                    <span className="uppercase tracking-wide text-gray-500">
+                      Sugeridas:
+                    </span>
+                    {autoDetectedCommunes.map((c) => (
+                      <span
+                        key={c}
+                        className="px-2 py-0.5 rounded bg-gray-100 border text-gray-700"
+                      >
+                        {c}
+                      </span>
+                    ))}
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      className="h-7 ml-1"
+                      onClick={() => setCommunes(autoDetectedCommunes)}
+                    >
+                      Usar sugeridas
+                    </Button>
+                  </>
+                ) : (
+                  <span className="text-gray-500">
+                    No detectadas automáticamente
+                  </span>
+                )}
+              </div>
+              <p className="text-[11px] text-gray-500 mt-1">
+                Nota: las comunas aún no se guardan en la base de datos. Se
+                conservan localmente y se incluyen en el JSON de vista
+                previa/guardado para futura compatibilidad.
+              </p>
             </div>
           </div>
         </Card>
@@ -1044,6 +1242,34 @@ export default function EditPostPage({
             Cancelar
           </Button>
         </div>
+        <Dialog open={previewOpen} onOpenChange={setPreviewOpen}>
+          <DialogContent className="max-w-3xl">
+            <DialogHeader>
+              <DialogTitle>Vista previa JSON (sin enviar)</DialogTitle>
+              <DialogDescription>
+                Esta es la estructura exacta que se enviará al guardar. Úsala
+                para revisar categorías, comunas (locations) y campos vacíos.
+              </DialogDescription>
+            </DialogHeader>
+            <div className="rounded-md border bg-gray-50 p-2 max-h-[60vh] overflow-auto text-xs font-mono">
+              <pre className="whitespace-pre-wrap break-words">
+                {previewJson}
+              </pre>
+            </div>
+            <DialogFooter className="flex gap-2">
+              <Button
+                variant="outline"
+                onClick={() => {
+                  navigator.clipboard.writeText(previewJson).catch(() => {});
+                }}
+                className="gap-2"
+              >
+                Copiar JSON
+              </Button>
+              <Button onClick={() => setPreviewOpen(false)}>Cerrar</Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
       </div>
     </div>
   );

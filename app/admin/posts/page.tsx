@@ -8,13 +8,6 @@ import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
 import { Input } from "@/components/ui/input";
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import {
   Pagination,
   PaginationContent,
   PaginationItem,
@@ -28,6 +21,21 @@ export default function PostsListPage() {
   const router = useRouter();
   const [query, setQuery] = useState("");
   const [category, setCategory] = useState<string>("ALL");
+  const categoryIcons: Record<string, string> = {
+    ALL: "🌐",
+    ARQUITECTURA: "🏛️",
+    BARRIOS: "🧭",
+    ICONOS: "⭐",
+    MERCADOS: "🛒",
+    MIRADORES: "👀",
+    CULTURA: "🎨",
+    MUSEOS: "🎨", // alias
+    PALACIOS: "🏰",
+    PARQUES: "🌳",
+    "PASEOS-FUERA-DE-SANTIAGO": "🚗",
+    "FUERA DE STGO": "🚗",
+    RESTAURANTES: "🍽️",
+  };
   const [page, setPage] = useState(1);
   const [hotelsData, setHotelsData] = useState<any[]>([]);
   const [categoriesApi, setCategoriesApi] = useState<string[]>([]);
@@ -69,10 +77,14 @@ export default function PostsListPage() {
     };
   }, []);
 
-  const allCategories = useMemo(
-    () => ["ALL", ...categoriesApi],
-    [categoriesApi]
-  );
+  const allCategories = useMemo(() => {
+    const base = ["ALL", ...categoriesApi];
+    // Normalizar a mayúsculas únicas
+    const seen = new Set<string>();
+    return base
+      .map((c) => String(c).toUpperCase())
+      .filter((c) => (seen.has(c) ? false : (seen.add(c), true)));
+  }, [categoriesApi]);
 
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
@@ -101,7 +113,7 @@ export default function PostsListPage() {
       return cats.has(category);
     };
     return hotelsData.filter((h) => matchesQuery(h) && matchesCategory(h));
-  }, [query, category]);
+  }, [query, category, hotelsData]);
 
   // Inicializar categoría desde la URL si viene ?category=
   useEffect(() => {
@@ -141,45 +153,68 @@ export default function PostsListPage() {
           </Link>
         </div>
 
-        {/* Filtros */}
-        <div className="bg-white rounded-lg shadow-sm p-4">
-          <div className="flex flex-col md:flex-row gap-3 items-stretch md:items-center">
-            <div className="relative flex-1">
-              <Search
-                className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
-                size={20}
-              />
-              <Input
-                value={query}
-                onChange={(e) => {
-                  setPage(1);
-                  setQuery(e.target.value);
-                }}
-                placeholder="Buscar por nombre, slug, dirección o redes..."
-                className="pl-10"
-              />
-            </div>
-            <div>
-              <Select
-                value={category}
-                onValueChange={(v) => {
-                  setPage(1);
-                  setCategory(v);
-                }}
-              >
-                <SelectTrigger>
-                  <SelectValue placeholder="Categoría" />
-                </SelectTrigger>
-                <SelectContent className="max-h-72">
-                  {allCategories.map((c) => (
-                    <SelectItem key={c} value={c}>
-                      {c}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+        {/* Filtros: búsqueda + grid de categorías tipo iconos */}
+        <div className="bg-white rounded-lg shadow-sm p-4 space-y-4">
+          <div className="relative">
+            <Search
+              className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
+              size={20}
+            />
+            <Input
+              value={query}
+              onChange={(e) => {
+                setPage(1);
+                setQuery(e.target.value);
+              }}
+              placeholder="Buscar por nombre, slug, dirección o redes..."
+              className="pl-10"
+            />
+          </div>
+          <div>
+            <p className="text-xs font-medium text-gray-500 mb-2 uppercase tracking-wide">
+              Filtrar por categoría
+            </p>
+            <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 gap-2">
+              {allCategories.map((c) => {
+                const active = category === c;
+                const icon = categoryIcons[c] || "📁";
+                return (
+                  <button
+                    key={c}
+                    onClick={() => {
+                      setCategory(c);
+                      setPage(1);
+                    }}
+                    className={`group flex flex-col items-center justify-center gap-1 border rounded-md px-2 py-3 transition-all text-xs font-medium tracking-tight hover:shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 ${
+                      active
+                        ? "bg-red-600 text-white border-red-600 shadow"
+                        : "bg-white text-gray-700 border-gray-200 hover:border-gray-300"
+                    }`}
+                    aria-pressed={active}
+                  >
+                    <span className="text-lg leading-none">{icon}</span>
+                    <span className="text-[10px] leading-tight text-center line-clamp-2">
+                      {c.replace(/-/g, " ")}
+                    </span>
+                  </button>
+                );
+              })}
             </div>
           </div>
+          {category !== "ALL" && (
+            <div className="flex flex-wrap items-center gap-2 pt-1">
+              <span className="text-xs text-gray-500">Mostrando:</span>
+              <span className="text-xs font-semibold px-2 py-1 bg-red-50 text-red-700 rounded">
+                {category}
+              </span>
+              <button
+                onClick={() => setCategory("ALL")}
+                className="text-xs text-blue-600 hover:underline"
+              >
+                Quitar filtro
+              </button>
+            </div>
+          )}
         </div>
 
         {/* Posts Grid */}

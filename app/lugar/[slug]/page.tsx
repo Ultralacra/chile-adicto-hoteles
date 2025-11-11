@@ -175,12 +175,10 @@ export default function LugarPage(props: any) {
           });
 
           // 6) Fallback: si la galería queda vacía, usar la featured para que siempre haya al menos 1 imagen
-          const galleryWithFallback =
-            gallery.length > 0
-              ? gallery
-              : derivedFeatured
-              ? [derivedFeatured]
-              : [];
+          // Mantener la portada fuera de la galería SIEMPRE.
+          // Si no hay imágenes adicionales, dejamos la galería vacía
+          // y el componente mostrará solo la portada.
+          const galleryWithFallback = gallery;
 
           return {
             featuredImage: derivedFeatured,

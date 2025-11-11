@@ -50,10 +50,14 @@ interface HotelDetailProps {
 
 export function HotelDetail({ hotel }: HotelDetailProps) {
   const { t } = useLanguage();
-  const allImages = [
-    hotel.featuredImage,
-    ...(hotel.galleryImages || []),
-  ].filter((s) => !!s) as string[];
+  // La galería NO debe incluir la imagen de portada. Si hay imágenes de galería, usamos solo esas.
+  // Si NO hay imágenes de galería, mostramos la portada como único slide.
+  const allImages =
+    hotel.galleryImages && hotel.galleryImages.length > 0
+      ? hotel.galleryImages.filter(Boolean)
+      : hotel.featuredImage
+      ? [hotel.featuredImage]
+      : [];
   const canShowControls = allImages.length > 1;
   const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true });
   const [selectedIndex, setSelectedIndex] = useState(0);

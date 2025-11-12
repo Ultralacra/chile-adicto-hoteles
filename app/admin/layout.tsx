@@ -5,7 +5,16 @@ import type React from "react";
 import { useEffect, useState } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import Link from "next/link";
-import { Home, FileText, Plus, Settings, LogOut, Menu, X } from "lucide-react";
+import {
+  Home,
+  FileText,
+  Plus,
+  Settings,
+  LogOut,
+  Menu,
+  X,
+  Images as ImagesIcon,
+} from "lucide-react";
 import { Inter } from "next/font/google";
 
 const inter = Inter({
@@ -44,17 +53,18 @@ export default function AdminLayout({
   }
 
   const menuItems = [
-    { href: "/admin", icon: Home, label: "Dashboard" },
-    { href: "/admin/posts", icon: FileText, label: "All Posts" },
-    { href: "/admin/posts/new", icon: Plus, label: "Create New" },
-    { href: "/admin/settings", icon: Settings, label: "Settings" },
+    { href: "/admin", icon: Home, label: "Inicio" },
+    { href: "/admin/posts", icon: FileText, label: "Posts" },
+    { href: "/admin/posts/new", icon: Plus, label: "Crear nuevo" },
+    { href: "/admin/images", icon: ImagesIcon, label: "Imágenes" },
+    { href: "/admin/settings", icon: Settings, label: "Configuración" },
   ];
 
   return (
     <div className={`${inter.className} min-h-screen bg-gray-100`}>
       {/* Mobile Header */}
       <div className="lg:hidden bg-white border-b border-gray-200 px-4 py-3 flex items-center justify-between">
-        <h1 className="text-xl font-bold">Chile Adicto Admin</h1>
+        <h1 className="text-xl font-bold">Administrador Chile Adicto</h1>
         <button
           onClick={() => setIsSidebarOpen(!isSidebarOpen)}
           className="p-2 hover:bg-gray-100 rounded-lg"
@@ -71,7 +81,7 @@ export default function AdminLayout({
       >
         <div className="p-6 border-b border-gray-700">
           <h1 className="text-2xl font-bold">Chile Adicto</h1>
-          <p className="text-sm text-gray-400 mt-1">Admin Panel</p>
+          <p className="text-sm text-gray-400 mt-1">Panel de administración</p>
         </div>
 
         <nav className="p-4 space-y-2">
@@ -102,7 +112,7 @@ export default function AdminLayout({
             className="flex items-center gap-3 px-4 py-3 w-full text-gray-300 hover:bg-gray-800 hover:text-white rounded-lg transition-colors"
           >
             <LogOut size={20} />
-            <span className="font-medium">Logout</span>
+            <span className="font-medium">Cerrar sesión</span>
           </button>
         </div>
       </aside>

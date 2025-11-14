@@ -14,6 +14,7 @@ import {
   Menu,
   X,
   Images as ImagesIcon,
+  Sliders,
 } from "lucide-react";
 import { Inter } from "next/font/google";
 
@@ -56,6 +57,7 @@ export default function AdminLayout({
     { href: "/admin", icon: Home, label: "Inicio" },
     { href: "/admin/posts", icon: FileText, label: "Posts" },
     { href: "/admin/posts/new", icon: Plus, label: "Crear nuevo" },
+    { href: "/admin/sliders", icon: Sliders, label: "Sliders" },
     { href: "/admin/images", icon: ImagesIcon, label: "Imágenes" },
     { href: "/admin/settings", icon: Settings, label: "Configuración" },
   ];

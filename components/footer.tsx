@@ -42,7 +42,7 @@ export function Footer({ activeCategory = "todos" }: FooterProps) {
               TODOS
             </a>
             <a
-              href="/categoria/arquitectura"
+              href="/arquitectura"
               className={`font-neutra-demi text-[15px] leading-[20px] font-[600] transition-colors duration-200 ease-in-out hover:text-[#FF0000] uppercase ${
                 activeCategory === "arquitectura"
                   ? "text-[#FF0000]"
@@ -52,7 +52,7 @@ export function Footer({ activeCategory = "todos" }: FooterProps) {
               ARQUITECTURA
             </a>
             <a
-              href="/categoria/barrios"
+              href="/barrios"
               className={`font-neutra-demi text-[15px] leading-[20px] font-[600] transition-colors duration-200 ease-in-out hover:text-[#FF0000] uppercase ${
                 activeCategory === "barrios" ? "text-[#FF0000]" : "text-white"
               }`}
@@ -60,7 +60,7 @@ export function Footer({ activeCategory = "todos" }: FooterProps) {
               BARRIOS
             </a>
             <a
-              href="/categoria/iconos"
+              href="/iconos"
               className={`font-neutra-demi text-[15px] leading-[20px] font-[600] transition-colors duration-200 ease-in-out hover:text-[#FF0000] uppercase ${
                 activeCategory === "iconos" ? "text-[#FF0000]" : "text-white"
               }`}
@@ -68,7 +68,7 @@ export function Footer({ activeCategory = "todos" }: FooterProps) {
               ICONOS
             </a>
             <a
-              href="/categoria/mercados"
+              href="/mercados"
               className={`font-neutra-demi text-[15px] leading-[20px] font-[600] transition-colors duration-200 ease-in-out hover:text-[#FF0000] uppercase ${
                 activeCategory === "mercados" ? "text-[#FF0000]" : "text-white"
               }`}
@@ -76,7 +76,7 @@ export function Footer({ activeCategory = "todos" }: FooterProps) {
               MERCADOS
             </a>
             <a
-              href="/categoria/miradores"
+              href="/miradores"
               className={`font-neutra-demi text-[15px] leading-[20px] font-[600] transition-colors duration-200 ease-in-out hover:text-[#FF0000] uppercase ${
                 activeCategory === "miradores" ? "text-[#FF0000]" : "text-white"
               }`}
@@ -84,7 +84,7 @@ export function Footer({ activeCategory = "todos" }: FooterProps) {
               MIRADORES
             </a>
             <a
-              href="/categoria/cultura"
+              href="/museos"
               className={`font-neutra-demi text-[15px] leading-[20px] font-[600] transition-colors duration-200 ease-in-out hover:text-[#FF0000] uppercase ${
                 activeCategory === "cultura" ? "text-[#FF0000]" : "text-white"
               }`}
@@ -92,7 +92,7 @@ export function Footer({ activeCategory = "todos" }: FooterProps) {
               CULTURA
             </a>
             <a
-              href="/categoria/palacios"
+              href="/palacios"
               className={`font-neutra-demi text-[15px] leading-[20px] font-[600] transition-colors duration-200 ease-in-out hover:text-[#FF0000] uppercase ${
                 activeCategory === "palacios" ? "text-[#FF0000]" : "text-white"
               }`}
@@ -100,7 +100,7 @@ export function Footer({ activeCategory = "todos" }: FooterProps) {
               PALACIOS
             </a>
             <a
-              href="/categoria/parques"
+              href="/parques"
               className={`font-neutra-demi text-[15px] leading-[20px] font-[600] transition-colors duration-200 ease-in-out hover:text-[#FF0000] uppercase ${
                 activeCategory === "parques" ? "text-[#FF0000]" : "text-white"
               }`}
@@ -108,7 +108,7 @@ export function Footer({ activeCategory = "todos" }: FooterProps) {
               PARQUES
             </a>
             <a
-              href="/categoria/fuera-de-stgo"
+              href="/paseos-fuera-de-santiago"
               className={`font-neutra-demi text-[15px] leading-[20px] font-[600] transition-colors duration-200 ease-in-out hover:text-[#FF0000] uppercase ${
                 activeCategory === "fuera-de-stgo"
                   ? "text-[#FF0000]"

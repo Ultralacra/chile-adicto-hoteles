@@ -35,7 +35,7 @@ export function MobileFooterContent({ onNavigate }: MobileFooterContentProps) {
     : null;
 
   // Detectar si estamos navegando la categoría restaurantes
-  const isRestaurantsCategory = pathname?.startsWith("/categoria/restaurantes");
+  const isRestaurantsCategory = pathname?.startsWith("/restaurantes");
 
   // Reordenar categorías dejando RESTAURANTES al final
   const items = [
@@ -76,7 +76,7 @@ export function MobileFooterContent({ onNavigate }: MobileFooterContentProps) {
           <ul className="space-y-4 text-center">
             <li>
               <Link
-                href="/categoria/restaurantes"
+                href="/restaurantes"
                 className={`font-neutra-demi text-[15px] leading-[20px] font-[600] transition-colors ${
                   !activeComuna ? "text-[#E40E36]" : "text-white"
                 } hover:text-gray-300`}
@@ -90,7 +90,7 @@ export function MobileFooterContent({ onNavigate }: MobileFooterContentProps) {
               return (
                 <li key={c}>
                   <Link
-                    href={`/categoria/restaurantes?comuna=${slugify(c)}`}
+                    href={`/restaurantes?comuna=${slugify(c)}`}
                     className={`font-neutra-demi text-[15px] leading-[20px] font-[600] transition-colors ${
                       isActive ? "text-[#E40E36]" : "text-white"
                     } hover:text-gray-300`}
@@ -107,7 +107,7 @@ export function MobileFooterContent({ onNavigate }: MobileFooterContentProps) {
             {items.map((item) => (
               <li key={item.slug}>
                 <Link
-                  href={item.slug === "todos" ? "/" : `/categoria/${item.slug}`}
+                  href={item.slug === "todos" ? "/" : `/${item.slug}`}
                   className="font-neutra-demi text-[15px] leading-[20px] font-[600] text-white hover:text-gray-300 transition-colors"
                   onClick={() => onNavigate?.()}
                 >

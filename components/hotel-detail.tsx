@@ -175,7 +175,7 @@ export function HotelDetail({ hotel }: HotelDetailProps) {
                 <ul className="hidden lg:flex flex-nowrap items-center gap-2 text-sm font-medium whitespace-nowrap">
                   <li className="flex items-center gap-2">
                     <a
-                      href="/categoria/restaurantes"
+                      href="/restaurantes"
                       className="font-neutra hover:text-[var(--color-brand-red)] transition-colors tracking-wide text-[15px] leading-[20px] text-black"
                     >
                       {t("VOLVER", "BACK")}
@@ -187,7 +187,7 @@ export function HotelDetail({ hotel }: HotelDetailProps) {
                     return (
                       <li key={c} className="flex items-center gap-2">
                         <a
-                          href={`/categoria/restaurantes?comuna=${slugified}`}
+                          href={`/restaurantes?comuna=${slugified}`}
                           className="font-neutra hover:text-[var(--color-brand-red)] transition-colors tracking-wide text-[15px] leading-[20px] text-black"
                         >
                           {c.toUpperCase()}

@@ -147,16 +147,16 @@ export default function AdminSlidersList() {
     else if (has("RESTAURANTES") || has("RESTAURANTS")) key = "RESTAURANTES";
     else key = "ICONOS";
     const map: Record<string, string> = {
-      ICONOS: "/categoria/iconos",
-      ARQUITECTURA: "/categoria/arquitectura",
-      BARRIOS: "/categoria/barrios",
-      MERCADOS: "/categoria/mercados",
-      MIRADORES: "/categoria/miradores",
-      CULTURA: "/categoria/museos",
-      PALACIOS: "/categoria/palacios",
-      PARQUES: "/categoria/parques",
-      "FUERA-DE-STGO": "/categoria/paseos-fuera-de-santiago",
-      RESTAURANTES: "/categoria/restaurantes",
+      ICONOS: "/iconos",
+      ARQUITECTURA: "/arquitectura",
+      BARRIOS: "/barrios",
+      MERCADOS: "/mercados",
+      MIRADORES: "/miradores",
+      CULTURA: "/museos",
+      PALACIOS: "/palacios",
+      PARQUES: "/parques",
+      "FUERA-DE-STGO": "/paseos-fuera-de-santiago",
+      RESTAURANTES: "/restaurantes",
     };
     return map[key] || "/";
   };
@@ -215,7 +215,7 @@ export default function AdminSlidersList() {
         .replace(/[^a-z0-9]+/g, "-")
         .replace(/(^-|-$)/g, "");
     }
-    return `/lugar/${match}`;
+    return `/${match}`;
   }
 
   const homeDesktopHrefs = (home?.desktop || []).map((u) => {
@@ -645,7 +645,7 @@ function ImagesGrid({
                     className="flex-1 border rounded px-2 py-1"
                     value={hrefs?.[i] || ""}
                     onChange={(e) => onChangeHref(i, e.target.value)}
-                    placeholder="/categoria/... o /lugar/..."
+                    placeholder="p. ej. /iconos o /mi-post"
                   />
                 </div>
               ) : null}

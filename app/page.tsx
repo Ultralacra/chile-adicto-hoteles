@@ -74,12 +74,12 @@ export default function Page() {
     { href: string; src: string; alt: string }
   > = {
     es: {
-      href: "/categoria/restaurantes",
+      href: "/restaurantes",
       src: "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/WhatsApp-Image-2025-10-28-at-5.15.32-PM.jpeg",
       alt: "Banner Restaurantes (ES)",
     },
     en: {
-      href: "/categoria/restaurantes",
+      href: "/restaurantes",
       src: "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/WhatsApp-Image-2025-10-28-at-5.15.32-PM.jpeg",
       alt: "Restaurants Banner (EN)",
     },
@@ -87,7 +87,7 @@ export default function Page() {
   const currentBanner = bannerByLang[language] || bannerByLang.es;
 
   // Href global del slider de Home: al hacer clic en cualquier slide, ir a Restaurantes
-  const homeSliderHref = "/categoria/restaurantes";
+  const homeSliderHref = "/restaurantes";
 
   return (
     <div className="min-h-screen bg-white">
@@ -108,16 +108,16 @@ export default function Page() {
                 <HeroSlider
                   // Reordenado: iconos primero para alinear con nuevo orden de imágenes
                   slideHrefs={[
-                    "/categoria/iconos",
-                    "/categoria/arquitectura",
-                    "/categoria/barrios",
-                    "/categoria/mercados",
-                    "/categoria/miradores",
-                    "/categoria/museos",
-                    "/categoria/palacios",
-                    "/categoria/parques",
-                    "/categoria/paseos-fuera-de-santiago",
-                    "/categoria/restaurantes",
+                    "/iconos",
+                    "/arquitectura",
+                    "/barrios",
+                    "/mercados",
+                    "/miradores",
+                    "/museos",
+                    "/palacios",
+                    "/parques",
+                    "/paseos-fuera-de-santiago",
+                    "/restaurantes",
                   ]}
                   // Subimos los puntos en la vista
                   dotBottom={24}

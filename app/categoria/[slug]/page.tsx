@@ -315,7 +315,7 @@ export default function CategoryPage({ params }: { params: any }) {
                   .replace(/[^a-z0-9]+/g, "-")
                   .replace(/(^-|-$)/g, "");
               }
-              return `/lugar/${matchSlug}`;
+              return `/${matchSlug}`;
             });
         };
 
@@ -350,7 +350,7 @@ export default function CategoryPage({ params }: { params: any }) {
           "yum-cha-comer-y-beber-con-te",
         ];
         setRestaurantSlideHrefs(
-          explicitRestaurantSlugs.map((slug) => `/lugar/${slug}`)
+          explicitRestaurantSlugs.map((slug) => `/${slug}`)
         );
       })
       .catch(() => {
@@ -413,7 +413,7 @@ export default function CategoryPage({ params }: { params: any }) {
               .replace(/[^a-z0-9]+/g, "-")
               .replace(/(^-|-$)/g, "");
           }
-          return `/lugar/${matchSlug}`;
+          return `/${matchSlug}`;
         });
         setRestaurantMobileHrefs(hrefs);
       })
@@ -556,7 +556,7 @@ export default function CategoryPage({ params }: { params: any }) {
                 {/* VOLVER - limpia filtro y vuelve al listado de restaurantes */}
                 <li className="flex items-center gap-2">
                   <Link
-                    href="/categoria/restaurantes"
+                    href="/restaurantes"
                     className={`font-neutra hover:text-[var(--color-brand-red)] transition-colors tracking-wide text-[15px] leading-[20px] ${
                       !selectedComuna
                         ? "text-[var(--color-brand-red)]"
@@ -576,7 +576,7 @@ export default function CategoryPage({ params }: { params: any }) {
                   return (
                     <li key={c} className="flex items-center gap-2">
                       <Link
-                        href={`/categoria/restaurantes?comuna=${slugified}`}
+                        href={`/restaurantes?comuna=${slugified}`}
                         className={`font-neutra hover:text-[var(--color-brand-red)] transition-colors tracking-wide text-[15px] leading-[20px] ${
                           isActive
                             ? "text-[var(--color-brand-red)]"

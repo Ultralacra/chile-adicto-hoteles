@@ -272,7 +272,7 @@ export default function PostsListPage() {
                   {/* Actions */}
                   <div className="flex gap-2">
                     <Link
-                      href={`/lugar/${hotel.slug}`}
+                      href={`/${hotel.slug}`}
                       target="_blank"
                       className="flex-1"
                     >

@@ -17,7 +17,7 @@ export function HotelCard({
   image,
 }: HotelCardProps) {
   return (
-    <Link href={`/lugar/${slug}`}>
+    <Link href={`/${slug}`}>
       <article className="group cursor-pointer flex flex-col h-full gap-3">
         {/* Image Container */}
         <div className="relative aspect-[386/264] overflow-hidden">

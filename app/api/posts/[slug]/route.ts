@@ -178,7 +178,26 @@ export async function PUT(
     const postId = rows[0].id;
     console.log("[PUT posts] step=fetch_post_id id", postId);
 
-    // 2) Actualizar tabla posts (campos top-level) solo para claves provistas
+    // 2) Cambiar slug si se proporcionó y es distinto
+    if (provided.has("slug") && normalized.slug && normalized.slug !== params.slug) {
+      step = "check_slug_unique";
+      const exists: any[] = await serviceRest(
+        `/posts?slug=eq.${encodeURIComponent(normalized.slug)}&select=id`
+      );
+      if (Array.isArray(exists) && exists.length > 0) {
+        return NextResponse.json(
+          { ok: false, error: "slug_exists" },
+          { status: 409 }
+        );
+      }
+      step = "patch_slug";
+      await serviceRest(`/posts?id=eq.${postId}`, {
+        method: "PATCH",
+        body: JSON.stringify({ slug: normalized.slug }),
+      });
+    }
+
+    // 3) Actualizar tabla posts (campos top-level) solo para claves provistas
     {
       const patchData: Record<string, any> = {};
       const setIfProvided = (key: string, value: any) => {
@@ -255,7 +274,7 @@ export async function PUT(
       }
     }
 
-    // 3) Reemplazar traducciones: PostgREST exige que todos los objetos de un bulk insert tengan las mismas claves.
+    // 4) Reemplazar traducciones: PostgREST exige que todos los objetos de un bulk insert tengan las mismas claves.
     // Unificamos claves (name, subtitle, description, info_html, category) siempre presentes.
     const esT = normalized.es || {} as any;
     const enT = normalized.en || {} as any;
@@ -323,7 +342,7 @@ export async function PUT(
       }
     }
 
-    // 4) Reemplazar imágenes SOLO si se proporcionó el campo 'images'
+    // 5) Reemplazar imágenes SOLO si se proporcionó el campo 'images'
     if (provided.has("images")) {
       await serviceRest(`/post_images?post_id=eq.${postId}`, { method: "DELETE" });
       step = "delete_images";
@@ -341,7 +360,7 @@ export async function PUT(
       }
     }
 
-    // 5) Reemplazar categorías (mapear por label_es o slug) SOLO si se proporcionó 'categories'
+    // 6) Reemplazar categorías (mapear por label_es o slug) SOLO si se proporcionó 'categories'
     if (provided.has("categories")) {
       try {
         const cats: any[] = await serviceRest(`/categories?select=id,slug,label_es,label_en`);
@@ -366,7 +385,7 @@ export async function PUT(
       }
     }
 
-    return NextResponse.json({ ok: true }, { status: 200 });
+    return NextResponse.json({ ok: true, slug: normalized.slug || params.slug }, { status: 200 });
   } catch (err: any) {
     console.error("[PUT /api/posts/[slug]] error final", err);
     const msg = String(err?.message || "bad_request");

@@ -28,6 +28,9 @@ export default function EditPostPage({
 }) {
   const router = useRouter();
   const { slug } = use(params);
+  // Edición de slug
+  const [editSlug, setEditSlug] = useState<string>("");
+  const slugRegex = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [hotel, setHotel] = useState<any | null>(null);
@@ -52,6 +55,7 @@ export default function EditPostPage({
         if (!cancelled) {
           setHotel(p && p.slug ? p : null);
           setCategoriesApi(Array.isArray(c) ? c : []);
+          if (p && p.slug) setEditSlug(p.slug);
         }
       } catch (e) {
         if (!cancelled) {
@@ -208,6 +212,7 @@ export default function EditPostPage({
     setReservationLink(hotel.reservationLink || "");
     setReservationPolicy(hotel.reservationPolicy || "");
     setInterestingFact(hotel.interestingFact || "");
+    setEditSlug(hotel.slug || slug);
 
     let initialImgs: string[] = Array.isArray(hotel.images)
       ? hotel.images.slice()
@@ -357,7 +362,7 @@ export default function EditPostPage({
     }));
 
     const updated = {
-      slug: hotel?.slug || slug,
+      slug: editSlug || hotel?.slug || slug,
       featuredImage: finalFeatured || undefined,
       es: {
         name: nameEs,
@@ -480,19 +485,22 @@ export default function EditPostPage({
         }
         return data;
       })
-      .then(async () => {
+      .then(async (data: any) => {
         // Guardar comunas en localStorage tras guardar
         try {
-          const key = `post:communes:${hotel?.slug || slug}`;
+          const newSlug: string = String(data?.slug || slug);
+          const key = `post:communes:${newSlug}`;
           if (typeof window !== "undefined") {
             window.localStorage.setItem(key, JSON.stringify(communes));
           }
         } catch {}
         // Refrescar el post desde el servidor para actualizar el estado local y la UI
         try {
-          const resp = await fetch(`/api/posts/${encodeURIComponent(slug)}`, {
-            cache: "no-store",
-          });
+          const newSlug: string = String(data?.slug || slug);
+          if (newSlug && newSlug !== slug) {
+            router.replace(`/admin/posts/edit/${encodeURIComponent(newSlug)}`);
+          }
+          const resp = await fetch(`/api/posts/${encodeURIComponent(newSlug)}`,{ cache: "no-store" });
           if (resp.ok) {
             const fresh = await resp.json();
             console.log("[Admin Edit] Refreshed post after save", fresh);
@@ -591,6 +599,38 @@ export default function EditPostPage({
             <h2 className="font-semibold text-lg">Información básica</h2>
           </div>
           <div className="space-y-4">
+            <div>
+              <Label className="text-sm font-medium mb-2 block">Slug</Label>
+              <div className="flex items-center gap-2">
+                <Input
+                  value={editSlug}
+                  onChange={(e) => setEditSlug(e.target.value.toLowerCase())}
+                  placeholder="mi-super-slug"
+                />
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => {
+                    const base = (nameEs || nameEn || "").trim();
+                    if (!base) return;
+                    const s = base
+                      .toLowerCase()
+                      .normalize("NFD")
+                      .replace(/[\u0300-\u036f]/g, "")
+                      .replace(/[^a-z0-9]+/g, "-")
+                      .replace(/(^-|-$)/g, "");
+                    setEditSlug(s);
+                  }}
+                >
+                  Generar
+                </Button>
+              </div>
+              {!slugRegex.test(editSlug || "") && (
+                <p className="text-xs text-red-600 mt-1">
+                  Usa minúsculas, números y guiones. Ej: mi-post-ejemplo
+                </p>
+              )}
+            </div>
             <div>
               <Label className="text-sm font-medium mb-2 block">
                 Categorías <span className="text-red-600">*</span>

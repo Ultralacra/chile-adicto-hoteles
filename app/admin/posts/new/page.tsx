@@ -1,7 +1,9 @@
 "use client";
 
 import type React from "react";
-import { useState } from "react";
+
+import Link from "next/link";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -9,57 +11,81 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Card } from "@/components/ui/card";
 import AdminRichText from "@/components/admin-rich-text";
+import { ArrowLeft, Save, Tag, Globe, Plus, X, Code } from "lucide-react";
 import {
-  ArrowLeft,
-  ImageIcon,
-  Globe,
-  Instagram,
-  LinkIcon,
-  Phone,
-  Tag,
-  MapPin,
-  Star,
-  Plus,
-  X,
-} from "lucide-react";
-import Link from "next/link";
-import { postSchema } from "@/lib/post-schema";
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogFooter,
+} from "@/components/ui/dialog";
 import { normalizePost, validatePost } from "@/lib/post-service";
 import { Spinner } from "@/components/ui/spinner";
 
-const toSlug = (v: string) =>
-  v
-    .toLowerCase()
-    .trim()
-    .replace(/[^a-z0-9\s-]/g, "")
-    .replace(/\s+/g, "-")
-    .replace(/-+/g, "-");
-
 export default function NewPostPage() {
   const router = useRouter();
-  const [activeTab, setActiveTab] = useState<"es" | "en">("es");
   const [creating, setCreating] = useState(false);
+  const [loadingCats, setLoadingCats] = useState(true);
+  const [categoriesApi, setCategoriesApi] = useState<string[]>([]);
 
-  // Form state
-  const [slug, setSlug] = useState("");
-  const [slugTouched, setSlugTouched] = useState(false);
+  // Slug
+  const [editSlug, setEditSlug] = useState<string>("");
+  const slugRegex = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
+
+  // Contacto
   const [website, setWebsite] = useState("");
   const [websiteDisplay, setWebsiteDisplay] = useState("");
   const [instagram, setInstagram] = useState("");
   const [instagramDisplay, setInstagramDisplay] = useState("");
   const [email, setEmail] = useState("");
-  const [reservationLink, setReservationLink] = useState("");
-  const [reservationPolicy, setReservationPolicy] = useState("");
-  const [hours, setHours] = useState("");
-  const [interestingFact, setInterestingFact] = useState("");
   const [phone, setPhone] = useState("");
   const [address, setAddress] = useState("");
   const [photosCredit, setPhotosCredit] = useState("");
-  const [featuredImage, setFeaturedImage] = useState("");
-  const [galleryImages, setGalleryImages] = useState<string[]>([""]);
-  const [selectedCategories, setSelectedCategories] = useState<string[]>([
-    "TODOS",
-  ]);
+  const [hours, setHours] = useState("");
+  const [reservationLink, setReservationLink] = useState("");
+  const [reservationPolicy, setReservationPolicy] = useState("");
+  const [interestingFact, setInterestingFact] = useState("");
+
+  // Contenido ES/EN (bloque único por idioma)
+  const [nameEs, setNameEs] = useState("");
+  const [subtitleEs, setSubtitleEs] = useState("");
+  const [descriptionUnified, setDescriptionUnified] = useState<string>("");
+  const [nameEn, setNameEn] = useState("");
+  const [subtitleEn, setSubtitleEn] = useState("");
+  const [descriptionUnifiedEn, setDescriptionUnifiedEn] = useState<string>(
+    ""
+  );
+
+  // Categorías y comunas
+  const [categories, setCategories] = useState<string[]>(["TODOS"]);
+  const possibleCommunes = [
+    "Santiago",
+    "Providencia",
+    "Las Condes",
+    "Vitacura",
+    "Lo Barnechea",
+    "La Reina",
+    "Ñuñoa",
+    "Recoleta",
+    "Independencia",
+    "San Miguel",
+    "Estación Central",
+    "Maipú",
+    "La Florida",
+    "Puente Alto",
+    "Alto Jahuel",
+  ];
+  const [communes, setCommunes] = useState<string[]>([]);
+  const [autoDetectedCommunes, setAutoDetectedCommunes] = useState<string[]>(
+    []
+  );
+  const normalizeComuna = (s: string) =>
+    String(s || "")
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .toUpperCase()
+      .trim();
 
   // Sucursales / Locations
   type LocationState = {
@@ -74,103 +100,129 @@ export default function NewPostPage() {
     reservationPolicy?: string;
     interestingFact?: string;
     email?: string;
-    phone?: string; // input sin "tel:"; se normaliza al guardar
+    phone?: string;
   };
   const [locations, setLocations] = useState<LocationState[]>([]);
 
-  // Spanish fields
-  const [nameEs, setNameEs] = useState("");
-  const [subtitleEs, setSubtitleEs] = useState("");
-  // Descripción ES: un solo bloque (se guardará dividido por líneas en blanco)
-  const [descriptionEsUnified, setDescriptionEsUnified] = useState<string>("");
-  const [categoryEs, setCategoryEs] = useState("");
-  const [locationEs, setLocationEs] = useState("");
-  const [distanceEs, setDistanceEs] = useState("");
-  const [amenitiesEs, setAmenitiesEs] = useState<string[]>([""]);
+  // Imágenes con destacada y reorden
+  const [images, setImages] = useState<string[]>([]);
+  const [featuredIndex, setFeaturedIndex] = useState(0);
+  const [featuredImage, setFeaturedImage] = useState<string>("");
+  const [dragIndex, setDragIndex] = useState<number | null>(null);
+  const [dragOverIndex, setDragOverIndex] = useState<number | null>(null);
+  const reorderImages = (from: number, to: number) => {
+    if (from === to || from < 0 || to < 0) return;
+    setImages((prev) => {
+      const arr = [...prev];
+      const [item] = arr.splice(from, 1);
+      arr.splice(to, 0, item);
+      return arr;
+    });
+    setFeaturedIndex((fi) => {
+      if (fi === from) return to;
+      if (from < fi && to >= fi) return fi - 1;
+      if (from > fi && to <= fi) return fi + 1;
+      return fi;
+    });
+  };
+  const removeImage = (index: number) => {
+    const arr = images.filter((_, i) => i !== index);
+    setImages(arr);
+    if (index === featuredIndex) setFeaturedIndex(0);
+    else if (index < featuredIndex) setFeaturedIndex(Math.max(0, featuredIndex - 1));
+  };
 
-  // English fields
-  const [nameEn, setNameEn] = useState("");
-  const [subtitleEn, setSubtitleEn] = useState("");
-  // Descripción EN: un solo bloque (se guardará dividido por líneas en blanco)
-  const [descriptionEnUnified, setDescriptionEnUnified] = useState<string>("");
-  const [categoryEn, setCategoryEn] = useState("");
-  const [locationEn, setLocationEn] = useState("");
-  const [distanceEn, setDistanceEn] = useState("");
-  const [amenitiesEn, setAmenitiesEn] = useState<string[]>([""]);
-
-  // Utilidad para convertir bloque único a array de párrafos
-  const toParagraphs = (block: string) =>
-    String(block)
-      .split(/\n{2,}/)
-      .map((p) => p.trim())
-      .filter(Boolean);
-
-  const addAmenityField = (lang: "es" | "en") => {
-    if (lang === "es") {
-      setAmenitiesEs([...amenitiesEs, ""]);
-    } else {
-      setAmenitiesEn([...amenitiesEn, ""]);
+  // Sincronizar featuredImage cuando cambian images/featuredIndex
+  useEffect(() => {
+    if (images.length === 0) return;
+    if (featuredIndex >= 0 && featuredIndex < images.length) {
+      setFeaturedImage(images[featuredIndex]);
     }
-  };
+  }, [featuredIndex, images]);
 
-  const removeAmenityField = (lang: "es" | "en", index: number) => {
-    if (lang === "es") {
-      setAmenitiesEs(amenitiesEs.filter((_, i) => i !== index));
-    } else {
-      setAmenitiesEn(amenitiesEn.filter((_, i) => i !== index));
+  // Cargar categorías del API
+  useEffect(() => {
+    let cancelled = false;
+    async function loadCategories() {
+      setLoadingCats(true);
+      try {
+        const r = await fetch("/api/categories", { cache: "no-store" });
+        const c = r.ok ? await r.json() : [];
+        if (!cancelled) setCategoriesApi(Array.isArray(c) ? c : []);
+      } catch {
+        if (!cancelled) setCategoriesApi([]);
+      } finally {
+        if (!cancelled) setLoadingCats(false);
+      }
     }
-  };
+    loadCategories();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
-  const updateAmenityField = (
-    lang: "es" | "en",
-    index: number,
-    value: string
-  ) => {
-    if (lang === "es") {
-      const newAmenities = [...amenitiesEs];
-      newAmenities[index] = value;
-      setAmenitiesEs(newAmenities);
-    } else {
-      const newAmenities = [...amenitiesEn];
-      newAmenities[index] = value;
-      setAmenitiesEn(newAmenities);
-    }
-  };
+  // Auto-detección de comunas desde campos ingresados
+  useEffect(() => {
+    const found = new Set<string>();
+    const tryAdd = (raw?: string) => {
+      if (!raw) return;
+      const haystack = normalizeComuna(String(raw));
+      for (const pc of possibleCommunes) {
+        if (haystack.includes(normalizeComuna(pc))) found.add(pc);
+      }
+    };
+    tryAdd(address);
+    (Array.isArray(locations) ? locations : []).forEach((l) => {
+      tryAdd(l?.address);
+      tryAdd(l?.label);
+    });
+    // Descripciones como texto plano para heurística simple
+    const plainEs = descriptionUnified.replace(/<[^>]+>/g, " ");
+    const plainEn = descriptionUnifiedEn.replace(/<[^>]+>/g, " ");
+    tryAdd(plainEs);
+    tryAdd(plainEn);
+    setAutoDetectedCommunes(possibleCommunes.filter((c) => found.has(c)));
+  }, [address, locations, descriptionUnified, descriptionUnifiedEn]);
 
-  const addGalleryImage = () => {
-    setGalleryImages([...galleryImages, ""]);
-  };
+  // Vista previa JSON
+  const [previewOpen, setPreviewOpen] = useState(false);
+  const [previewJson, setPreviewJson] = useState<string>("{}");
 
-  const removeGalleryImage = (index: number) => {
-    setGalleryImages(galleryImages.filter((_, i) => i !== index));
-  };
-
-  const updateGalleryImage = (index: number, value: string) => {
-    const newImages = [...galleryImages];
-    newImages[index] = value;
-    setGalleryImages(newImages);
-  };
-
+  const allCategories = categoriesApi;
   const toggleCategory = (category: string) => {
-    if (selectedCategories.includes(category)) {
-      setSelectedCategories(selectedCategories.filter((c) => c !== category));
+    if (categories.includes(category)) {
+      setCategories(categories.filter((c) => c !== category));
     } else {
-      setSelectedCategories([...selectedCategories, category]);
+      setCategories([...categories, category]);
     }
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const buildPayload = () => {
+    // Convertir HTML del editor a array de párrafos
+    const htmlToParagraphs = (html: string): string[] => {
+      const container = document.createElement("div");
+      container.innerHTML = html || "";
+      const ps = Array.from(container.querySelectorAll("p"));
+      if (ps.length > 0) return ps.map((p) => p.innerHTML.trim()).filter(Boolean);
+      const cleaned = container.innerHTML
+        .replace(/(?:<br\s*\/?>(\s|&nbsp;)*){2,}/gi, "\n\n")
+        .replace(/<br\s*\/?>(\s|&nbsp;)*/gi, "\n")
+        .replace(/<[^>]+>/g, "");
+      return cleaned.split(/\n{2,}/).map((s) => s.trim()).filter(Boolean);
+    };
+    const descriptionEs = htmlToParagraphs(String(descriptionUnified));
+    const descriptionEn = htmlToParagraphs(String(descriptionUnifiedEn));
 
-    const allImages = [featuredImage, ...galleryImages].filter(
-      (img) => img.trim() !== ""
+    const normalizedFeaturedIdx = Math.min(
+      Math.max(0, featuredIndex || 0),
+      Math.max(0, images.length - 1)
+    );
+    const finalFeatured = images[normalizedFeaturedIdx] || featuredImage || "";
+    const galleryImages = images.filter(
+      (img, i) => img && img !== finalFeatured && i !== normalizedFeaturedIdx
     );
 
-    const descriptionEs = toParagraphs(descriptionEsUnified);
-    const descriptionEn = toParagraphs(descriptionEnUnified);
-
-    const sanitizePhone = (p: string) =>
-      p ? `tel:${p.replace(/[^+\d]/g, "")}` : "";
+    const sanitizePhone = (p: string) => (p ? `tel:${p.replace(/[^+\d]/g, "")}` : "");
     const sanitizedLocations = (locations || []).map((l) => ({
       label: l.label || undefined,
       address: l.address || undefined,
@@ -186,83 +238,110 @@ export default function NewPostPage() {
       phone: l.phone ? sanitizePhone(l.phone) : "",
     }));
 
-    const newHotel = {
-      slug,
-      es: {
-        name: nameEs,
-        subtitle: subtitleEs,
-        description: descriptionEs,
-        category: categoryEs,
-        location: locationEs,
-        distance: distanceEs,
-        amenities: amenitiesEs.filter((a) => a.trim() !== ""),
-      },
-      en: {
-        name: nameEn,
-        subtitle: subtitleEn,
-        description: descriptionEn,
-        category: categoryEn,
-        location: locationEn,
-        distance: distanceEn,
-        amenities: amenitiesEn.filter((a) => a.trim() !== ""),
-      },
+    const updated = {
+      slug: editSlug,
+      featuredImage: finalFeatured || undefined,
+      es: { name: nameEs, subtitle: subtitleEs, description: descriptionEs },
+      en: { name: nameEn, subtitle: subtitleEn, description: descriptionEn },
       website,
       website_display: websiteDisplay,
       instagram,
       instagram_display: instagramDisplay,
       email,
       phone: phone ? `tel:${phone.replace(/[^+\d]/g, "")}` : "",
-      reservationLink,
-      reservationPolicy,
-      hours,
-      interestingFact,
       address,
       photosCredit,
-      images: allImages,
-      categories: selectedCategories,
+      hours,
+      reservationLink,
+      reservationPolicy,
+      interestingFact,
+      images: galleryImages,
+      categories,
       locations: sanitizedLocations,
-      featuredImage,
-    };
+    } as any;
 
-    const normalized = normalizePost(newHotel as any);
+    const normalized = normalizePost(updated);
+    const payloadToSend = {
+      slug: normalized.slug,
+      featuredImage: normalized.featuredImage ?? null,
+      es: normalized.es,
+      en: normalized.en,
+      website: website.trim() === "" ? "" : normalized.website,
+      website_display: websiteDisplay.trim() === "" ? "" : websiteDisplay,
+      instagram: instagram.trim() === "" ? "" : instagram,
+      instagram_display:
+        instagramDisplay.trim() === "" ? "" : instagramDisplay,
+      email: email.trim() === "" ? "" : normalized.email,
+      phone: phone.trim() === "" ? "" : normalized.phone,
+      address: address.trim() === "" ? "" : address,
+      photosCredit: photosCredit.trim() === "" ? "" : photosCredit,
+      hours: hours.trim() === "" ? "" : hours,
+      reservationLink:
+        reservationLink.trim() === "" ? "" : normalized.reservationLink,
+      reservationPolicy:
+        reservationPolicy.trim() === "" ? "" : reservationPolicy,
+      interestingFact:
+        interestingFact.trim() === "" ? "" : interestingFact,
+      images: normalized.images,
+      categories: normalized.categories,
+      locations: normalized.locations,
+      communes,
+    } as any;
+    return { payloadToSend, normalized, finalFeatured };
+  };
+
+  const openPreview = () => {
+    const built = buildPayload();
+    const { payloadToSend } = built;
+    try {
+      setPreviewJson(JSON.stringify(payloadToSend, null, 2).replace(/\n/g, "\n"));
+    } catch {
+      setPreviewJson('{' + "\n  \"error\": \"No se pudo serializar\"\n" + '}');
+    }
+    setPreviewOpen(true);
+  };
+
+  const handleCreate = () => {
+    if (!editSlug || !slugRegex.test(editSlug)) {
+      alert("Slug inválido. Usa minúsculas, números y guiones.");
+      return;
+    }
+    const { payloadToSend, normalized, finalFeatured } = buildPayload();
     const result = validatePost(normalized as any);
     if (!result.ok) {
       const first = result.issues?.[0];
-      alert(
-        `Error de validación: ${first?.path || ""} - ${first?.message || ""}`
-      );
+      alert(`Error de validación: ${first?.path || ""} - ${first?.message || ""}`);
       return;
     }
-
-    try {
-      setCreating(true);
-      const res = await fetch("/api/posts", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(normalized),
-      });
-      if (!res.ok) {
-        const text = await res.text();
-        throw new Error(text || "Error creando el post");
-      }
-      const data = await res.json();
-      const s = data?.slug || normalized.slug;
-      alert("Post creado correctamente");
-      router.push(`/admin/posts/edit/${s}`);
-    } catch (err: any) {
-      alert(`No se pudo crear el post: ${err?.message || err}`);
-      console.error("[Admin New] create error", err);
-    } finally {
-      setCreating(false);
-    }
-  };
-
-  const handleNameChange = (value: string) => {
-    setNameEs(value);
-    if (!slugTouched) {
-      const s = toSlug(value || "");
-      setSlug(s);
-    }
+    setCreating(true);
+    fetch(`/api/posts`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payloadToSend),
+    })
+      .then(async (r) => {
+        if (!r.ok) {
+          const msg = await r.text();
+          throw new Error(msg || `Error ${r.status}`);
+        }
+        return r.json();
+      })
+      .then(async (data) => {
+        try {
+          const newSlug: string = String(data?.slug || normalized.slug);
+          const key = `post:communes:${newSlug}`;
+          if (typeof window !== "undefined") {
+            window.localStorage.setItem(key, JSON.stringify(communes));
+          }
+          router.replace(`/admin/posts/edit/${encodeURIComponent(newSlug)}`);
+        } catch {}
+        alert("Post creado correctamente");
+      })
+      .catch((e) => {
+        console.error("Create failed", e);
+        alert("No se pudo crear: " + (e?.message || e));
+      })
+      .finally(() => setCreating(false));
   };
 
   return (
@@ -276,6 +355,7 @@ export default function NewPostPage() {
             </div>
           </div>
         )}
+
         {/* Header */}
         <div className="flex items-center gap-4">
           <Link href="/admin/posts">
@@ -283,840 +363,627 @@ export default function NewPostPage() {
               <ArrowLeft size={20} />
             </Button>
           </Link>
-          <div>
-            <h1 className="text-3xl font-bold text-gray-900">
-              Crear nuevo post
-            </h1>
-            <p className="text-gray-600 mt-1">
-              Completa la información del lugar
-            </p>
+          <div className="flex-1">
+            <h1 className="text-3xl font-bold text-gray-900">Crear post</h1>
+            <p className="text-gray-600 mt-1">Completa la información del lugar</p>
           </div>
-        </div>
-
-        <form onSubmit={handleSubmit} className="space-y-6">
-          {/* Basic Information */}
-          <Card className="p-6">
-            <div className="flex items-center gap-2 mb-4">
-              <Tag className="text-red-600" size={20} />
-              <h2 className="font-semibold text-lg">Información básica</h2>
-            </div>
-            <div className="space-y-4">
-              <div>
-                <Label htmlFor="slug" className="text-sm font-medium">
-                  URL del post (slug) <span className="text-red-600">*</span>
-                </Label>
-                <Input
-                  id="slug"
-                  value={slug}
-                  onChange={(e) => {
-                    setSlug(e.target.value);
-                    setSlugTouched(true);
-                  }}
-                  placeholder="hotel-nombre-ejemplo"
-                  className="font-mono text-sm"
-                  required
-                />
-                <p className="text-xs text-gray-500 mt-1">
-                  Se genera automáticamente del nombre. Ejemplo: w-santiago
-                </p>
-              </div>
-
-              <div>
-                <Label className="text-sm font-medium mb-2 block">
-                  Categorías <span className="text-red-600">*</span>
-                </Label>
-                <div className="flex flex-wrap gap-2">
-                  {["TODOS", "SANTIAGO", "NORTE", "CENTRO", "SUR"].map(
-                    (cat) => (
-                      <label
-                        key={cat}
-                        className={`px-4 py-2 rounded-lg border-2 cursor-pointer transition-all ${
-                          selectedCategories.includes(cat)
-                            ? "border-red-600 bg-red-50 text-red-700 font-medium"
-                            : "border-gray-200 hover:border-gray-300"
-                        }`}
-                      >
-                        <input
-                          type="checkbox"
-                          checked={selectedCategories.includes(cat)}
-                          onChange={() => toggleCategory(cat)}
-                          className="sr-only"
-                        />
-                        {cat}
-                      </label>
-                    )
-                  )}
-                </div>
-              </div>
-            </div>
-          </Card>
-
-          {/* Contact & Links */}
-          <Card className="p-6">
-            <div className="flex items-center gap-2 mb-4">
-              <LinkIcon className="text-red-600" size={20} />
-              <h2 className="font-semibold text-lg">Enlaces y contacto</h2>
-            </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <Label
-                  htmlFor="website"
-                  className="text-sm font-medium flex items-center gap-2"
-                >
-                  <Globe size={16} className="text-gray-400" />
-                  Sitio web
-                </Label>
-                <Input
-                  id="website"
-                  value={website}
-                  onChange={(e) => setWebsite(e.target.value)}
-                  placeholder="https://ejemplo.com"
-                />
-              </div>
-              <div>
-                <Label className="text-sm font-medium">WEB (display)</Label>
-                <Input
-                  value={websiteDisplay}
-                  onChange={(e) => setWebsiteDisplay(e.target.value)}
-                  placeholder="ejemplo.com"
-                />
-              </div>
-              <div>
-                <Label
-                  htmlFor="instagram"
-                  className="text-sm font-medium flex items-center gap-2"
-                >
-                  <Instagram size={16} className="text-gray-400" />
-                  Instagram
-                </Label>
-                <Input
-                  id="instagram"
-                  value={instagram}
-                  onChange={(e) => setInstagram(e.target.value)}
-                  placeholder="@cuenta"
-                />
-              </div>
-              <div>
-                <Label className="text-sm font-medium">
-                  Instagram (display)
-                </Label>
-                <Input
-                  value={instagramDisplay}
-                  onChange={(e) => setInstagramDisplay(e.target.value)}
-                  placeholder="@cuenta"
-                />
-              </div>
-              <div>
-                <Label className="text-sm font-medium">Email</Label>
-                <Input
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  placeholder="correo@dominio.cl"
-                />
-              </div>
-              <div>
-                <Label
-                  htmlFor="phone"
-                  className="text-sm font-medium flex items-center gap-2"
-                >
-                  <Phone size={16} className="text-gray-400" />
-                  Teléfono
-                </Label>
-                <Input
-                  id="phone"
-                  value={phone}
-                  onChange={(e) => setPhone(e.target.value)}
-                  placeholder="+569xxxxxxxx"
-                />
-              </div>
-              <div>
-                <Label
-                  htmlFor="reservationLink"
-                  className="text-sm font-medium flex items-center gap-2"
-                >
-                  <Star size={16} className="text-gray-400" />
-                  Link de reserva
-                </Label>
-                <Input
-                  id="reservationLink"
-                  value={reservationLink}
-                  onChange={(e) => setReservationLink(e.target.value)}
-                  placeholder="https://reservas.ejemplo.com"
-                />
-              </div>
-              <div>
-                <Label className="text-sm font-medium">
-                  Política de reservas
-                </Label>
-                <Input
-                  value={reservationPolicy}
-                  onChange={(e) => setReservationPolicy(e.target.value)}
-                  placeholder="Se recomienda / Obligatorio / etc."
-                />
-              </div>
-              <div>
-                <Label className="text-sm font-medium">Horario</Label>
-                <Input
-                  value={hours}
-                  onChange={(e) => setHours(e.target.value)}
-                  placeholder="LUN-DOM 12:00-22:00"
-                />
-              </div>
-              <div className="md:col-span-2">
-                <Label className="text-sm font-medium">Dirección</Label>
-                <Textarea
-                  value={address}
-                  onChange={(e) => setAddress(e.target.value)}
-                  rows={3}
-                  placeholder="Calle 123, Comuna, Ciudad"
-                />
-              </div>
-              <div className="md:col-span-2">
-                <Label className="text-sm font-medium">Crédito fotos</Label>
-                <Input
-                  value={photosCredit}
-                  onChange={(e) => setPhotosCredit(e.target.value)}
-                  placeholder="@autor / Autor"
-                />
-              </div>
-              <div className="md:col-span-2">
-                <Label className="text-sm font-medium">Dato de interés</Label>
-                <Input
-                  value={interestingFact}
-                  onChange={(e) => setInterestingFact(e.target.value)}
-                  placeholder="Reconocimientos, curiosidades, etc."
-                />
-              </div>
-            </div>
-          </Card>
-
-          {/* Sucursales / Locations */}
-          <Card className="p-6">
-            <div className="flex items-center gap-2 mb-4">
-              <MapPin className="text-red-600" size={20} />
-              <h2 className="font-semibold text-lg">Sucursales / Locations</h2>
-            </div>
-            <div className="space-y-4">
-              {locations.map((loc, idx) => (
-                <div key={idx} className="border rounded-lg p-4 space-y-3">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                    <div>
-                      <Label className="text-xs text-gray-600">Etiqueta</Label>
-                      <Input
-                        value={loc.label || ""}
-                        onChange={(e) => {
-                          const v = e.target.value;
-                          setLocations((prev) => {
-                            const arr = [...prev];
-                            arr[idx] = { ...arr[idx], label: v };
-                            return arr;
-                          });
-                        }}
-                        placeholder="Ej: Vitacura, Sucursal Centro, etc."
-                      />
-                    </div>
-                    <div>
-                      <Label className="text-xs text-gray-600">Horario</Label>
-                      <Input
-                        value={loc.hours || ""}
-                        onChange={(e) => {
-                          const v = e.target.value;
-                          setLocations((prev) => {
-                            const arr = [...prev];
-                            arr[idx] = { ...arr[idx], hours: v };
-                            return arr;
-                          });
-                        }}
-                        placeholder="LUN-DOM 12:00-22:00"
-                      />
-                    </div>
-                    <div className="md:col-span-2">
-                      <Label className="text-xs text-gray-600">Dirección</Label>
-                      <Textarea
-                        rows={2}
-                        value={loc.address || ""}
-                        onChange={(e) => {
-                          const v = e.target.value;
-                          setLocations((prev) => {
-                            const arr = [...prev];
-                            arr[idx] = { ...arr[idx], address: v };
-                            return arr;
-                          });
-                        }}
-                      />
-                    </div>
-                    <div>
-                      <Label className="text-xs text-gray-600">Web</Label>
-                      <Input
-                        value={loc.website || ""}
-                        onChange={(e) => {
-                          const v = e.target.value;
-                          setLocations((prev) => {
-                            const arr = [...prev];
-                            arr[idx] = { ...arr[idx], website: v };
-                            return arr;
-                          });
-                        }}
-                        placeholder="https://…"
-                      />
-                    </div>
-                    <div>
-                      <Label className="text-xs text-gray-600">
-                        Web (display)
-                      </Label>
-                      <Input
-                        value={loc.website_display || ""}
-                        onChange={(e) => {
-                          const v = e.target.value;
-                          setLocations((prev) => {
-                            const arr = [...prev];
-                            arr[idx] = { ...arr[idx], website_display: v };
-                            return arr;
-                          });
-                        }}
-                        placeholder="WWW.SITIO.CL"
-                      />
-                    </div>
-                    <div>
-                      <Label className="text-xs text-gray-600">Instagram</Label>
-                      <Input
-                        value={loc.instagram || ""}
-                        onChange={(e) => {
-                          const v = e.target.value;
-                          setLocations((prev) => {
-                            const arr = [...prev];
-                            arr[idx] = { ...arr[idx], instagram: v };
-                            return arr;
-                          });
-                        }}
-                        placeholder="https://instagram.com/… o @handle"
-                      />
-                    </div>
-                    <div>
-                      <Label className="text-xs text-gray-600">
-                        Instagram (display)
-                      </Label>
-                      <Input
-                        value={loc.instagram_display || ""}
-                        onChange={(e) => {
-                          const v = e.target.value;
-                          setLocations((prev) => {
-                            const arr = [...prev];
-                            arr[idx] = { ...arr[idx], instagram_display: v };
-                            return arr;
-                          });
-                        }}
-                        placeholder="@handle"
-                      />
-                    </div>
-                    <div>
-                      <Label className="text-xs text-gray-600">
-                        Reservas (link)
-                      </Label>
-                      <Input
-                        value={loc.reservationLink || ""}
-                        onChange={(e) => {
-                          const v = e.target.value;
-                          setLocations((prev) => {
-                            const arr = [...prev];
-                            arr[idx] = { ...arr[idx], reservationLink: v };
-                            return arr;
-                          });
-                        }}
-                        placeholder="https://…"
-                      />
-                    </div>
-                    <div>
-                      <Label className="text-xs text-gray-600">
-                        Reservas (política)
-                      </Label>
-                      <Input
-                        value={loc.reservationPolicy || ""}
-                        onChange={(e) => {
-                          const v = e.target.value;
-                          setLocations((prev) => {
-                            const arr = [...prev];
-                            arr[idx] = { ...arr[idx], reservationPolicy: v };
-                            return arr;
-                          });
-                        }}
-                        placeholder="Se recomienda / Obligatorio / etc."
-                      />
-                    </div>
-                    <div className="md:col-span-2">
-                      <Label className="text-xs text-gray-600">
-                        Dato de interés
-                      </Label>
-                      <Input
-                        value={loc.interestingFact || ""}
-                        onChange={(e) => {
-                          const v = e.target.value;
-                          setLocations((prev) => {
-                            const arr = [...prev];
-                            arr[idx] = { ...arr[idx], interestingFact: v };
-                            return arr;
-                          });
-                        }}
-                      />
-                    </div>
-                    <div>
-                      <Label className="text-xs text-gray-600">Tel</Label>
-                      <Input
-                        value={loc.phone || ""}
-                        onChange={(e) => {
-                          const v = e.target.value;
-                          setLocations((prev) => {
-                            const arr = [...prev];
-                            arr[idx] = { ...arr[idx], phone: v };
-                            return arr;
-                          });
-                        }}
-                        placeholder="+56 9 …"
-                      />
-                    </div>
-                    <div>
-                      <Label className="text-xs text-gray-600">Email</Label>
-                      <Input
-                        value={loc.email || ""}
-                        onChange={(e) => {
-                          const v = e.target.value;
-                          setLocations((prev) => {
-                            const arr = [...prev];
-                            arr[idx] = { ...arr[idx], email: v };
-                            return arr;
-                          });
-                        }}
-                        placeholder="correo@…"
-                      />
-                    </div>
-                  </div>
-                  <div className="flex justify-end">
-                    <Button
-                      type="button"
-                      variant="destructive"
-                      size="sm"
-                      onClick={() =>
-                        setLocations((prev) => prev.filter((_, i) => i !== idx))
-                      }
-                    >
-                      Eliminar sucursal
-                    </Button>
-                  </div>
-                </div>
-              ))}
-              <Button
-                type="button"
-                variant="outline"
-                className="gap-2"
-                onClick={() =>
-                  setLocations((prev) => [
-                    ...prev,
-                    {
-                      label: "",
-                      address: "",
-                      hours: "",
-                      website: "",
-                      website_display: "",
-                      instagram: "",
-                      instagram_display: "",
-                      reservationLink: "",
-                      reservationPolicy: "",
-                      interestingFact: "",
-                      email: "",
-                      phone: "",
-                    },
-                  ])
-                }
-              >
-                <Plus size={16} /> Agregar sucursal
-              </Button>
-            </div>
-          </Card>
-
-          {/* Images Section */}
-          <Card className="p-6">
-            <div className="flex items-center gap-2 mb-4">
-              <ImageIcon className="text-red-600" size={20} />
-              <h2 className="font-semibold text-lg">Imágenes</h2>
-            </div>
-
-            {/* Featured Image */}
-            <div className="mb-6 p-4 bg-red-50 rounded-lg border-2 border-red-200">
-              <Label
-                htmlFor="featuredImage"
-                className="text-sm font-semibold text-red-900 mb-2 block"
-              >
-                📌 Imagen destacada (portada){" "}
-                <span className="text-red-600">*</span>
-              </Label>
-              <Input
-                id="featuredImage"
-                value={featuredImage}
-                onChange={(e) => setFeaturedImage(e.target.value)}
-                placeholder="URL de la imagen principal"
-                required
-              />
-              <p className="text-xs text-red-700 mt-1">
-                Esta será la imagen principal que se muestra en la lista y
-                portada del post
-              </p>
-            </div>
-
-            {/* Gallery Images */}
-            <div>
-              <Label className="text-sm font-medium mb-2 block">
-                🖼️ Galería de imágenes
-              </Label>
-              <p className="text-xs text-gray-500 mb-3">
-                Imágenes adicionales que se mostrarán en la galería del post
-              </p>
-              <div className="space-y-2">
-                {galleryImages.map((image, index) => (
-                  <div key={index} className="flex gap-2">
-                    <Input
-                      value={image}
-                      onChange={(e) =>
-                        updateGalleryImage(index, e.target.value)
-                      }
-                      placeholder={`URL de imagen ${index + 1}`}
-                    />
-                    {galleryImages.length > 1 && (
-                      <Button
-                        type="button"
-                        variant="outline"
-                        size="icon"
-                        onClick={() => removeGalleryImage(index)}
-                        className="text-red-600 hover:text-red-700 hover:bg-red-50"
-                      >
-                        <X size={16} />
-                      </Button>
-                    )}
-                  </div>
-                ))}
-                <Button
-                  type="button"
-                  variant="outline"
-                  size="sm"
-                  onClick={addGalleryImage}
-                  className="gap-2 bg-transparent"
-                >
-                  <Plus size={16} />
-                  Agregar imagen a galería
-                </Button>
-              </div>
-            </div>
-          </Card>
-
-          {/* Language Content */}
-          <Card className="p-6">
-            <div className="flex items-center gap-2 mb-4">
-              <Globe className="text-red-600" size={20} />
-              <h2 className="font-semibold text-lg">Contenido</h2>
-            </div>
-
-            {/* Language Tabs */}
-            <div className="flex gap-2 mb-6 border-b">
-              <button
-                type="button"
-                onClick={() => setActiveTab("es")}
-                className={`px-6 py-3 font-medium transition-all ${
-                  activeTab === "es"
-                    ? "border-b-2 border-red-600 text-red-600"
-                    : "text-gray-500 hover:text-gray-700"
-                }`}
-              >
-                🇨🇱 Español
-              </button>
-              <button
-                type="button"
-                onClick={() => setActiveTab("en")}
-                className={`px-6 py-3 font-medium transition-all ${
-                  activeTab === "en"
-                    ? "border-b-2 border-red-600 text-red-600"
-                    : "text-gray-500 hover:text-gray-700"
-                }`}
-              >
-                🇺🇸 English
-              </button>
-            </div>
-
-            {activeTab === "es" ? (
-              <div className="space-y-6">
-                <div>
-                  <Label htmlFor="nameEs" className="text-sm font-medium">
-                    Nombre del lugar <span className="text-red-600">*</span>
-                  </Label>
-                  <Input
-                    id="nameEs"
-                    value={nameEs}
-                    onChange={(e) => handleNameChange(e.target.value)}
-                    placeholder="W SANTIAGO"
-                    className="text-lg"
-                    required
-                  />
-                </div>
-
-                <div>
-                  <Label htmlFor="subtitleEs" className="text-sm font-medium">
-                    Subtítulo <span className="text-red-600">*</span>
-                  </Label>
-                  <Input
-                    id="subtitleEs"
-                    value={subtitleEs}
-                    onChange={(e) => setSubtitleEs(e.target.value)}
-                    placeholder="UN LUGAR PARA CONECTAR"
-                    required
-                  />
-                </div>
-
-                <div>
-                  <Label className="text-sm font-medium mb-2 block">
-                    Descripción <span className="text-red-600">*</span>
-                  </Label>
-                  <p className="text-xs text-gray-500 mb-3">
-                    Un solo cuadro. Separa párrafos con una línea en blanco.
-                  </p>
-                  <AdminRichText
-                    value={descriptionEsUnified}
-                    onChange={(v) => setDescriptionEsUnified(v)}
-                  />
-                </div>
-
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div>
-                    <Label htmlFor="categoryEs" className="text-sm font-medium">
-                      Categoría
-                    </Label>
-                    <Input
-                      id="categoryEs"
-                      value={categoryEs}
-                      onChange={(e) => setCategoryEs(e.target.value)}
-                      placeholder="HOTEL, ARQUITECTURA"
-                    />
-                  </div>
-                  <div>
-                    <Label
-                      htmlFor="locationEs"
-                      className="text-sm font-medium flex items-center gap-2"
-                    >
-                      <MapPin size={16} className="text-gray-400" />
-                      Ubicación <span className="text-red-600">*</span>
-                    </Label>
-                    <Input
-                      id="locationEs"
-                      value={locationEs}
-                      onChange={(e) => setLocationEs(e.target.value)}
-                      placeholder="SANTIAGO/BARRIO EL GOLF"
-                      required
-                    />
-                  </div>
-                </div>
-
-                <div>
-                  <Label htmlFor="distanceEs" className="text-sm font-medium">
-                    Zona/Distancia <span className="text-red-600">*</span>
-                  </Label>
-                  <Input
-                    id="distanceEs"
-                    value={distanceEs}
-                    onChange={(e) => setDistanceEs(e.target.value)}
-                    placeholder="EN EL CORAZÓN DE SANTIAGO"
-                    required
-                  />
-                </div>
-
-                <div>
-                  <Label className="text-sm font-medium mb-2 block">
-                    Amenidades <span className="text-red-600">*</span>
-                  </Label>
-                  <div className="space-y-2">
-                    {amenitiesEs.map((amenity, index) => (
-                      <div key={index} className="flex gap-2">
-                        <Input
-                          value={amenity}
-                          onChange={(e) =>
-                            updateAmenityField("es", index, e.target.value)
-                          }
-                          placeholder={`Amenidad ${index + 1}`}
-                          required
-                        />
-                        {amenitiesEs.length > 1 && (
-                          <Button
-                            type="button"
-                            variant="outline"
-                            size="icon"
-                            onClick={() => removeAmenityField("es", index)}
-                            className="text-red-600 hover:text-red-700 hover:bg-red-50"
-                          >
-                            <X size={16} />
-                          </Button>
-                        )}
-                      </div>
-                    ))}
-                    <Button
-                      type="button"
-                      variant="outline"
-                      size="sm"
-                      onClick={() => addAmenityField("es")}
-                      className="gap-2"
-                    >
-                      <Plus size={16} />
-                      Agregar amenidad
-                    </Button>
-                  </div>
-                </div>
-              </div>
-            ) : (
-              <div className="space-y-6">
-                <div>
-                  <Label htmlFor="nameEn" className="text-sm font-medium">
-                    Place Name <span className="text-red-600">*</span>
-                  </Label>
-                  <Input
-                    id="nameEn"
-                    value={nameEn}
-                    onChange={(e) => setNameEn(e.target.value)}
-                    placeholder="W SANTIAGO"
-                    className="text-lg"
-                    required
-                  />
-                </div>
-
-                <div>
-                  <Label htmlFor="subtitleEn" className="text-sm font-medium">
-                    Subtitle <span className="text-red-600">*</span>
-                  </Label>
-                  <Input
-                    id="subtitleEn"
-                    value={subtitleEn}
-                    onChange={(e) => setSubtitleEn(e.target.value)}
-                    placeholder="A PLACE TO CONNECT"
-                    required
-                  />
-                </div>
-
-                <div>
-                  <Label className="text-sm font-medium mb-2 block">
-                    Description <span className="text-red-600">*</span>
-                  </Label>
-                  <p className="text-xs text-gray-500 mb-3">
-                    Single box. Separate paragraphs with a blank line.
-                  </p>
-                  <AdminRichText
-                    value={descriptionEnUnified}
-                    onChange={(v) => setDescriptionEnUnified(v)}
-                  />
-                </div>
-
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div>
-                    <Label htmlFor="categoryEn" className="text-sm font-medium">
-                      Category
-                    </Label>
-                    <Input
-                      id="categoryEn"
-                      value={categoryEn}
-                      onChange={(e) => setCategoryEn(e.target.value)}
-                      placeholder="5-STAR HOTEL"
-                    />
-                  </div>
-                  <div>
-                    <Label
-                      htmlFor="locationEn"
-                      className="text-sm font-medium flex items-center gap-2"
-                    >
-                      <MapPin size={16} className="text-gray-400" />
-                      Location <span className="text-red-600">*</span>
-                    </Label>
-                    <Input
-                      id="locationEn"
-                      value={locationEn}
-                      onChange={(e) => setLocationEn(e.target.value)}
-                      placeholder="SANTIAGO/EL GOLF DISTRICT"
-                      required
-                    />
-                  </div>
-                </div>
-
-                <div>
-                  <Label htmlFor="distanceEn" className="text-sm font-medium">
-                    Area/Distance <span className="text-red-600">*</span>
-                  </Label>
-                  <Input
-                    id="distanceEn"
-                    value={distanceEn}
-                    onChange={(e) => setDistanceEn(e.target.value)}
-                    placeholder="IN THE HEART OF SANTIAGO"
-                    required
-                  />
-                </div>
-
-                <div>
-                  <Label className="text-sm font-medium mb-2 block">
-                    Amenities <span className="text-red-600">*</span>
-                  </Label>
-                  <div className="space-y-2">
-                    {amenitiesEn.map((amenity, index) => (
-                      <div key={index} className="flex gap-2">
-                        <Input
-                          value={amenity}
-                          onChange={(e) =>
-                            updateAmenityField("en", index, e.target.value)
-                          }
-                          placeholder={`Amenity ${index + 1}`}
-                          required
-                        />
-                        {amenitiesEn.length > 1 && (
-                          <Button
-                            type="button"
-                            variant="outline"
-                            size="icon"
-                            onClick={() => removeAmenityField("en", index)}
-                            className="text-red-600 hover:text-red-700 hover:bg-red-50"
-                          >
-                            <X size={16} />
-                          </Button>
-                        )}
-                      </div>
-                    ))}
-                    <Button
-                      type="button"
-                      variant="outline"
-                      size="sm"
-                      onClick={() => addAmenityField("en")}
-                      className="gap-2"
-                    >
-                      <Plus size={16} />
-                      Add amenity
-                    </Button>
-                  </div>
-                </div>
-              </div>
-            )}
-          </Card>
-
-          {/* Submit Actions */}
-          <div className="flex gap-4 sticky bottom-6 bg-white p-4 rounded-lg shadow-lg border">
-            <Button
-              type="submit"
-              size="lg"
-              className="flex-1 bg-red-600 hover:bg-red-700 gap-2 disabled:opacity-60"
-              disabled={creating}
-            >
-              <Plus size={20} />
-              {creating ? "Creando..." : "Crear post"}
-            </Button>
+          <div className="flex gap-2">
             <Button
               type="button"
               variant="outline"
-              size="lg"
-              onClick={() => router.push("/admin/posts")}
+              onClick={openPreview}
+              className="gap-2"
+              disabled={creating}
             >
-              Cancelar
+              <Code size={18} /> Ver JSON
+            </Button>
+            <Button
+              onClick={handleCreate}
+              className="bg-green-600 hover:bg-green-700 gap-2 disabled:opacity-60"
+              disabled={creating}
+            >
+              <Save size={20} />
+              {creating ? "Creando..." : "Crear post"}
             </Button>
           </div>
-        </form>
+        </div>
+
+        {/* Información básica */}
+        <Card className="p-6">
+          <div className="flex items-center gap-2 mb-4">
+            <Tag className="text-green-600" size={20} />
+            <h2 className="font-semibold text-lg">Información básica</h2>
+          </div>
+          <div className="space-y-4">
+            <div>
+              <Label className="text-sm font-medium mb-2 block">Slug</Label>
+              <div className="flex items-center gap-2">
+                <Input
+                  value={editSlug}
+                  onChange={(e) => setEditSlug(e.target.value.toLowerCase())}
+                  placeholder="mi-super-slug"
+                />
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => {
+                    const base = (nameEs || nameEn || "").trim();
+                    if (!base) return;
+                    const s = base
+                      .toLowerCase()
+                      .normalize("NFD")
+                      .replace(/[\u0300-\u036f]/g, "")
+                      .replace(/[^a-z0-9]+/g, "-")
+                      .replace(/(^-|-$)/g, "");
+                    setEditSlug(s);
+                  }}
+                >
+                  Generar
+                </Button>
+              </div>
+              {!slugRegex.test(editSlug || "") && editSlug && (
+                <p className="text-xs text-red-600 mt-1">
+                  Usa minúsculas, números y guiones. Ej: mi-post-ejemplo
+                </p>
+              )}
+            </div>
+            <div>
+              <Label className="text-sm font-medium mb-2 block">Categorías</Label>
+              <div className="flex flex-wrap gap-2">
+                {Array.from(new Set(["TODOS", ...allCategories])).map((cat) => (
+                  <label
+                    key={cat}
+                    className={`px-4 py-2 rounded-lg border-2 cursor-pointer transition-all ${
+                      categories.includes(cat)
+                        ? "border-green-600 bg-green-50 text-green-700 font-medium"
+                        : "border-gray-200 hover:border-gray-300"
+                    }`}
+                  >
+                    <input
+                      type="checkbox"
+                      checked={categories.includes(cat)}
+                      onChange={() => toggleCategory(cat)}
+                      className="sr-only"
+                    />
+                    {cat}
+                  </label>
+                ))}
+              </div>
+              {loadingCats && (
+                <p className="text-xs text-gray-500 mt-1">Cargando categorías…</p>
+              )}
+            </div>
+            <div>
+              <Label className="text-sm font-medium mb-2 block">Comunas</Label>
+              <div className="flex flex-wrap gap-2">
+                {possibleCommunes.map((com) => {
+                  const active = communes.includes(com);
+                  return (
+                    <label
+                      key={com}
+                      className={`px-4 py-2 rounded-lg border-2 cursor-pointer transition-all ${
+                        active
+                          ? "border-blue-600 bg-blue-50 text-blue-700 font-medium"
+                          : "border-gray-200 hover:border-gray-300"
+                      }`}
+                    >
+                      <input
+                        type="checkbox"
+                        checked={active}
+                        onChange={() =>
+                          setCommunes((prev) =>
+                            prev.includes(com)
+                              ? prev.filter((c) => c !== com)
+                              : [...prev, com]
+                          )
+                        }
+                        className="sr-only"
+                      />
+                      {com}
+                    </label>
+                  );
+                })}
+              </div>
+              <div className="mt-2 flex flex-wrap items-center gap-2 text-xs text-gray-600">
+                {autoDetectedCommunes.length > 0 ? (
+                  <>
+                    <span className="uppercase tracking-wide text-gray-500">Sugeridas:</span>
+                    {autoDetectedCommunes.map((c) => (
+                      <span key={c} className="px-2 py-0.5 rounded bg-gray-100 border text-gray-700">
+                        {c}
+                      </span>
+                    ))}
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      className="h-7 ml-1"
+                      onClick={() => setCommunes(autoDetectedCommunes)}
+                    >
+                      Usar sugeridas
+                    </Button>
+                  </>
+                ) : (
+                  <span className="text-gray-500">No detectadas automáticamente</span>
+                )}
+              </div>
+              <p className="text-[11px] text-gray-500 mt-1">
+                Nota: las comunas aún no se guardan en la base de datos. Se conservan localmente
+                y se incluyen en el JSON de vista previa/guardado para futura compatibilidad.
+              </p>
+            </div>
+          </div>
+        </Card>
+
+        {/* Contacto */}
+        <Card className="p-6">
+          <div className="flex items-center gap-2 mb-4">
+            <Globe className="text-green-600" size={20} />
+            <h2 className="font-semibold text-lg">Contacto</h2>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+            <div>
+              <Label className="text-xs text-gray-600">WEB</Label>
+              <Input value={website} onChange={(e) => setWebsite(e.target.value)} placeholder="https://sitio.cl" />
+            </div>
+            <div>
+              <Label className="text-xs text-gray-600">WEB (display)</Label>
+              <Input value={websiteDisplay} onChange={(e) => setWebsiteDisplay(e.target.value)} placeholder="sitio.cl" />
+            </div>
+            <div>
+              <Label className="text-xs text-gray-600">INSTAGRAM</Label>
+              <Input value={instagram} onChange={(e) => setInstagram(e.target.value)} placeholder="https://instagram.com/handle o @handle" />
+            </div>
+            <div>
+              <Label className="text-xs text-gray-600">INSTAGRAM (display)</Label>
+              <Input value={instagramDisplay} onChange={(e) => setInstagramDisplay(e.target.value)} placeholder="@handle" />
+            </div>
+            <div>
+              <Label className="text-xs text-gray-600">EMAIL</Label>
+              <Input value={email} onChange={(e) => setEmail(e.target.value)} placeholder="correo@dominio.cl" />
+            </div>
+            <div>
+              <Label className="text-xs text-gray-600">TEL</Label>
+              <Input value={phone} onChange={(e) => setPhone(e.target.value)} placeholder="+56 9 1234 5678" />
+            </div>
+            <div className="md:col-span-2">
+              <Label className="text-xs text-gray-600">DIRECCIÓN</Label>
+              <Textarea value={address} onChange={(e) => setAddress(e.target.value)} rows={3} />
+            </div>
+            <div className="md:col-span-2">
+              <Label className="text-xs text-gray-600">CRÉDITO FOTOS</Label>
+              <Input value={photosCredit} onChange={(e) => setPhotosCredit(e.target.value)} placeholder="@usuario / Autor" />
+            </div>
+            <div>
+              <Label className="text-xs text-gray-600">HORARIO</Label>
+              <Input value={hours} onChange={(e) => setHours(e.target.value)} placeholder="MARTES A SÁBADO, DE 19:30 A 00:00 HRS" />
+            </div>
+            <div>
+              <Label className="text-xs text-gray-600">RESERVAS (link)</Label>
+              <Input value={reservationLink} onChange={(e) => setReservationLink(e.target.value)} placeholder="https://…" />
+            </div>
+            <div>
+              <Label className="text-xs text-gray-600">RESERVAS (política)</Label>
+              <Input value={reservationPolicy} onChange={(e) => setReservationPolicy(e.target.value)} placeholder="Se recomienda / Obligatorio / etc." />
+            </div>
+            <div className="md:col-span-2">
+              <Label className="text-xs text-gray-600">DATO DE INTERÉS</Label>
+              <Input value={interestingFact} onChange={(e) => setInterestingFact(e.target.value)} placeholder="Dato llamativo o contextual" />
+            </div>
+          </div>
+        </Card>
+
+        {/* Sucursales / Locations */}
+        <Card className="p-6">
+          <div className="flex items-center gap-2 mb-4">
+            <Globe className="text-green-600" size={20} />
+            <h2 className="font-semibold text-lg">Sucursales / Locations</h2>
+          </div>
+          <div className="space-y-4">
+            {locations.map((loc, idx) => (
+              <div key={idx} className="border rounded-lg p-4 space-y-3">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                  <div>
+                    <Label className="text-xs text-gray-600">Etiqueta</Label>
+                    <Input
+                      value={loc.label || ""}
+                      onChange={(e) => {
+                        const v = e.target.value;
+                        setLocations((prev) => {
+                          const arr = [...prev];
+                          arr[idx] = { ...arr[idx], label: v };
+                          return arr;
+                        });
+                      }}
+                      placeholder="Ej: Vitacura, Sucursal Centro, etc."
+                    />
+                  </div>
+                  <div>
+                    <Label className="text-xs text-gray-600">Horario</Label>
+                    <Input
+                      value={loc.hours || ""}
+                      onChange={(e) => {
+                        const v = e.target.value;
+                        setLocations((prev) => {
+                          const arr = [...prev];
+                          arr[idx] = { ...arr[idx], hours: v };
+                          return arr;
+                        });
+                      }}
+                      placeholder="LUN-DOM 12:00-22:00"
+                    />
+                  </div>
+                  <div className="md:col-span-2">
+                    <Label className="text-xs text-gray-600">Dirección</Label>
+                    <Textarea
+                      rows={2}
+                      value={loc.address || ""}
+                      onChange={(e) => {
+                        const v = e.target.value;
+                        setLocations((prev) => {
+                          const arr = [...prev];
+                          arr[idx] = { ...arr[idx], address: v };
+                          return arr;
+                        });
+                      }}
+                    />
+                  </div>
+                  <div>
+                    <Label className="text-xs text-gray-600">Web</Label>
+                    <Input
+                      value={loc.website || ""}
+                      onChange={(e) => {
+                        const v = e.target.value;
+                        setLocations((prev) => {
+                          const arr = [...prev];
+                          arr[idx] = { ...arr[idx], website: v };
+                          return arr;
+                        });
+                      }}
+                      placeholder="https://…"
+                    />
+                  </div>
+                  <div>
+                    <Label className="text-xs text-gray-600">Web (display)</Label>
+                    <Input
+                      value={loc.website_display || ""}
+                      onChange={(e) => {
+                        const v = e.target.value;
+                        setLocations((prev) => {
+                          const arr = [...prev];
+                          arr[idx] = { ...arr[idx], website_display: v };
+                          return arr;
+                        });
+                      }}
+                      placeholder="WWW.SITIO.CL"
+                    />
+                  </div>
+                  <div>
+                    <Label className="text-xs text-gray-600">Instagram</Label>
+                    <Input
+                      value={loc.instagram || ""}
+                      onChange={(e) => {
+                        const v = e.target.value;
+                        setLocations((prev) => {
+                          const arr = [...prev];
+                          arr[idx] = { ...arr[idx], instagram: v };
+                          return arr;
+                        });
+                      }}
+                      placeholder="https://instagram.com/… o @handle"
+                    />
+                  </div>
+                  <div>
+                    <Label className="text-xs text-gray-600">Instagram (display)</Label>
+                    <Input
+                      value={loc.instagram_display || ""}
+                      onChange={(e) => {
+                        const v = e.target.value;
+                        setLocations((prev) => {
+                          const arr = [...prev];
+                          arr[idx] = { ...arr[idx], instagram_display: v };
+                          return arr;
+                        });
+                      }}
+                      placeholder="@handle"
+                    />
+                  </div>
+                  <div>
+                    <Label className="text-xs text-gray-600">Reservas (link)</Label>
+                    <Input
+                      value={loc.reservationLink || ""}
+                      onChange={(e) => {
+                        const v = e.target.value;
+                        setLocations((prev) => {
+                          const arr = [...prev];
+                          arr[idx] = { ...arr[idx], reservationLink: v };
+                          return arr;
+                        });
+                      }}
+                      placeholder="https://…"
+                    />
+                  </div>
+                  <div>
+                    <Label className="text-xs text-gray-600">Reservas (política)</Label>
+                    <Input
+                      value={loc.reservationPolicy || ""}
+                      onChange={(e) => {
+                        const v = e.target.value;
+                        setLocations((prev) => {
+                          const arr = [...prev];
+                          arr[idx] = { ...arr[idx], reservationPolicy: v };
+                          return arr;
+                        });
+                      }}
+                      placeholder="Se recomienda / Obligatorio / etc."
+                    />
+                  </div>
+                  <div className="md:col-span-2">
+                    <Label className="text-xs text-gray-600">Dato de interés</Label>
+                    <Input
+                      value={loc.interestingFact || ""}
+                      onChange={(e) => {
+                        const v = e.target.value;
+                        setLocations((prev) => {
+                          const arr = [...prev];
+                          arr[idx] = { ...arr[idx], interestingFact: v };
+                          return arr;
+                        });
+                      }}
+                    />
+                  </div>
+                  <div>
+                    <Label className="text-xs text-gray-600">Tel</Label>
+                    <Input
+                      value={loc.phone || ""}
+                      onChange={(e) => {
+                        const v = e.target.value;
+                        setLocations((prev) => {
+                          const arr = [...prev];
+                          arr[idx] = { ...arr[idx], phone: v };
+                          return arr;
+                        });
+                      }}
+                      placeholder="+56 9 …"
+                    />
+                  </div>
+                  <div>
+                    <Label className="text-xs text-gray-600">Email</Label>
+                    <Input
+                      value={loc.email || ""}
+                      onChange={(e) => {
+                        const v = e.target.value;
+                        setLocations((prev) => {
+                          const arr = [...prev];
+                          arr[idx] = { ...arr[idx], email: v };
+                          return arr;
+                        });
+                      }}
+                      placeholder="correo@…"
+                    />
+                  </div>
+                </div>
+                <div className="flex justify-end">
+                  <Button
+                    type="button"
+                    variant="destructive"
+                    size="sm"
+                    onClick={() => setLocations((prev) => prev.filter((_, i) => i !== idx))}
+                  >
+                    Eliminar sucursal
+                  </Button>
+                </div>
+              </div>
+            ))}
+            <Button
+              type="button"
+              variant="outline"
+              className="gap-2"
+              onClick={() =>
+                setLocations((prev) => [
+                  ...prev,
+                  {
+                    label: "",
+                    address: "",
+                    hours: "",
+                    website: "",
+                    website_display: "",
+                    instagram: "",
+                    instagram_display: "",
+                    reservationLink: "",
+                    reservationPolicy: "",
+                    interestingFact: "",
+                    email: "",
+                    phone: "",
+                  },
+                ])
+              }
+            >
+              <Plus size={16} /> Agregar sucursal
+            </Button>
+          </div>
+        </Card>
+
+        {/* Imágenes */}
+        <Card className="p-6">
+          <div className="flex items-center gap-2 mb-4">
+            <Globe className="text-green-600" size={20} />
+            <h2 className="font-semibold text-lg">Imágenes</h2>
+          </div>
+          <div className="space-y-4">
+            <div>
+              <h3 className="text-sm font-semibold mb-2">Destacada</h3>
+              {images[featuredIndex] ? (
+                <img
+                  src={images[featuredIndex]}
+                  alt="Destacada"
+                  className="w-full max-w-xl aspect-[16/9] object-cover border rounded"
+                />
+              ) : (
+                <div className="w-full max-w-xl aspect-[16/9] bg-gray-100 border rounded grid place-items-center text-gray-500">
+                  Sin imagen
+                </div>
+              )}
+            </div>
+            <div>
+              <h3 className="text-sm font-semibold mb-2">Galería</h3>
+              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
+                {images.map((src, idx) => (
+                  <div
+                    key={idx}
+                    className="relative group border border-transparent rounded"
+                    draggable
+                    onDragStart={() => setDragIndex(idx)}
+                    onDragOver={(e) => {
+                      e.preventDefault();
+                      setDragOverIndex(idx);
+                    }}
+                    onDrop={() => {
+                      if (dragIndex === null || dragIndex === idx) return;
+                      reorderImages(dragIndex, idx);
+                      setDragIndex(null);
+                      setDragOverIndex(null);
+                    }}
+                    onDragEnd={() => {
+                      setDragIndex(null);
+                      setDragOverIndex(null);
+                    }}
+                    style={{ cursor: "grab" }}
+                  >
+                    <img
+                      src={src}
+                      alt={`img-${idx}`}
+                      className={`w-full aspect-[4/3] object-cover border rounded ${
+                        dragOverIndex === idx ? "ring-2 ring-green-400" : ""
+                      }`}
+                    />
+                    <div className="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition-colors" />
+                    <div className="absolute bottom-1 left-1 right-1 flex gap-1 justify-between opacity-0 group-hover:opacity-100 transition-opacity">
+                      <Button size="sm" variant="secondary" onClick={() => setFeaturedIndex(idx)}>
+                        Destacar
+                      </Button>
+                      <div className="flex gap-1">
+                        <Button size="icon" variant="secondary" onClick={() => reorderImages(idx, idx - 1)}>
+                          ↑
+                        </Button>
+                        <Button size="icon" variant="secondary" onClick={() => reorderImages(idx, idx + 1)}>
+                          ↓
+                        </Button>
+                        <Button size="icon" variant="destructive" onClick={() => removeImage(idx)}>
+                          <X size={14} />
+                        </Button>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+            <div className="flex gap-2 items-center">
+              <Input
+                placeholder="Pega URL de imagen..."
+                onKeyDown={(e) => {
+                  const target = e.target as HTMLInputElement;
+                  if (e.key === "Enter" && target.value.trim()) {
+                    setImages([...images, target.value.trim()]);
+                    target.value = "";
+                  }
+                }}
+              />
+              <Button
+                onClick={() => {
+                  const url = prompt("URL de imagen");
+                  if (url && url.trim()) setImages([...images, url.trim()]);
+                }}
+                variant="outline"
+              >
+                Agregar imagen
+              </Button>
+            </div>
+          </div>
+        </Card>
+
+        {/* Contenido ES/EN */}
+        <Card className="p-6">
+          <div className="flex items-center gap-2 mb-4">
+            <Globe className="text-green-600" size={20} />
+            <h2 className="font-semibold text-lg">Contenido</h2>
+          </div>
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <div className="space-y-3">
+              <h3 className="font-semibold">Español</h3>
+              <div>
+                <Label className="text-xs text-gray-600">Nombre</Label>
+                <Input value={nameEs} onChange={(e) => setNameEs(e.target.value)} />
+              </div>
+              <div>
+                <Label className="text-xs text-gray-600">Subtítulo</Label>
+                <Input value={subtitleEs} onChange={(e) => setSubtitleEs(e.target.value)} />
+              </div>
+              <div>
+                <Label className="text-xs text-gray-600">Descripción (bloque único)</Label>
+                <AdminRichText value={descriptionUnified} onChange={(v) => setDescriptionUnified(v)} />
+                <p className="text-[11px] text-gray-500 mt-1">Usa la barra superior para dar formato; Enter crea nuevos párrafos.</p>
+              </div>
+            </div>
+            <div className="space-y-3">
+              <h3 className="font-semibold">English</h3>
+              <div>
+                <Label className="text-xs text-gray-600">Name</Label>
+                <Input value={nameEn} onChange={(e) => setNameEn(e.target.value)} />
+              </div>
+              <div>
+                <Label className="text-xs text-gray-600">Subtitle</Label>
+                <Input value={subtitleEn} onChange={(e) => setSubtitleEn(e.target.value)} />
+              </div>
+              <div>
+                <Label className="text-xs text-gray-600">Description (single block)</Label>
+                <AdminRichText value={descriptionUnifiedEn} onChange={(v) => setDescriptionUnifiedEn(v)} />
+                <p className="text-[11px] text-gray-500 mt-1">Use the toolbar for formatting; Enter creates new paragraphs.</p>
+              </div>
+            </div>
+          </div>
+        </Card>
+
+        {/* Acciones */}
+        <div className="flex gap-4 sticky bottom-6 bg-white p-4 rounded-lg shadow-lg border">
+          <Button
+            onClick={handleCreate}
+            className="flex-1 bg-green-600 hover:bg-green-700 gap-2 disabled:opacity-60"
+            disabled={creating}
+          >
+            <Save size={20} />
+            {creating ? "Creando..." : "Crear post"}
+          </Button>
+          <Button variant="outline" onClick={() => router.push("/admin/posts")}>Cancelar</Button>
+        </div>
+
+        <Dialog open={previewOpen} onOpenChange={setPreviewOpen}>
+          <DialogContent className="max-w-3xl">
+            <DialogHeader>
+              <DialogTitle>Vista previa JSON (sin enviar)</DialogTitle>
+              <DialogDescription>
+                Esta es la estructura exacta que se enviará al crear.
+              </DialogDescription>
+            </DialogHeader>
+            <div className="rounded-md border bg-gray-50 p-2 max-h-[60vh] overflow-auto text-xs font-mono">
+              <pre className="whitespace-pre-wrap break-words">{previewJson}</pre>
+            </div>
+            <DialogFooter className="flex gap-2">
+              <Button
+                variant="outline"
+                onClick={() => {
+                  navigator.clipboard.writeText(previewJson).catch(() => {});
+                }}
+                className="gap-2"
+              >
+                Copiar JSON
+              </Button>
+              <Button onClick={() => setPreviewOpen(false)}>Cerrar</Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
       </div>
     </div>
   );
 }
+ 

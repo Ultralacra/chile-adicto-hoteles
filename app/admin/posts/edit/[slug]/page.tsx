@@ -500,7 +500,10 @@ export default function EditPostPage({
           if (newSlug && newSlug !== slug) {
             router.replace(`/admin/posts/edit/${encodeURIComponent(newSlug)}`);
           }
-          const resp = await fetch(`/api/posts/${encodeURIComponent(newSlug)}`,{ cache: "no-store" });
+          const resp = await fetch(
+            `/api/posts/${encodeURIComponent(newSlug)}`,
+            { cache: "no-store" }
+          );
           if (resp.ok) {
             const fresh = await resp.json();
             console.log("[Admin Edit] Refreshed post after save", fresh);

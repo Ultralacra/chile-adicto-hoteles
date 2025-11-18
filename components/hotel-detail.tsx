@@ -29,6 +29,7 @@ interface HotelDetailProps {
     excerpt: string;
     fullContent: string;
     infoHtml?: string;
+    infoHtmlNew?: string;
     website?: string;
     website_display?: string;
     instagram?: string;
@@ -377,16 +378,31 @@ export function HotelDetail({ hotel }: HotelDetailProps) {
             />
           </div>
           <div className="mt-4 mb-8 font-neutra text-black text-[15px] leading-[22px]">
-            <h3 className="font-neutra text-[15px] leading-[22px] font-[700] uppercase text-black mb-3">
-              {t("DATOS ÚTILES", "USEFUL INFORMATION")}
-            </h3>
-            {hotel.infoHtml ? (
-              <div
-                className="prose prose-sm md:prose-base max-w-none font-neutra text-black text-[15px] leading-[22px] [&_*]:text-[15px] [&_strong]:font-[700] [&_em]:italic [&_a]:text-[var(--color-brand-red)] [&_a]:no-underline hover:[&_a]:underline"
-                dangerouslySetInnerHTML={{ __html: hotel.infoHtml }}
-              />
+            {hotel.infoHtmlNew ? (
+              <>
+                <h3 className="font-neutra text-[15px] leading-[22px] font-[700] uppercase text-black mb-3">
+                  {t("DATOS ÚTILES", "USEFUL INFORMATION")}
+                </h3>
+                <div
+                  className="prose prose-sm md:prose-base max-w-none font-neutra text-black text-[15px] leading-[22px] [&_*]:text-[15px] [&_strong]:font-[700] [&_em]:italic [&_a]:text-[var(--color-brand-red)] [&_a]:no-underline hover:[&_a]:underline"
+                  dangerouslySetInnerHTML={{ __html: hotel.infoHtmlNew }}
+                />
+              </>
+            ) : hotel.infoHtml ? (
+              <>
+                <h3 className="font-neutra text-[15px] leading-[22px] font-[700] uppercase text-black mb-3">
+                  {t("DATOS ÚTILES", "USEFUL INFORMATION")}
+                </h3>
+                <div
+                  className="prose prose-sm md:prose-base max-w-none font-neutra text-black text-[15px] leading-[22px] [&_*]:text-[15px] [&_strong]:font-[700] [&_em]:italic [&_a]:text-[var(--color-brand-red)] [&_a]:no-underline hover:[&_a]:underline"
+                  dangerouslySetInnerHTML={{ __html: hotel.infoHtml }}
+                />
+              </>
             ) : (
               <>
+                <h3 className="font-neutra text-[15px] leading-[22px] font-[700] uppercase text-black mb-3">
+                  {t("DATOS ÚTILES", "USEFUL INFORMATION")}
+                </h3>
                 {hotel.locations && hotel.locations.length > 0 ? (
                   <div className="mb-2">
                     <div className="mr-2 inline-block">

@@ -82,6 +82,9 @@ function mapRowToLegacy(row: any) {
     : [];
   const trEs = (row.translations || []).find((t: any) => t.lang === "es") || {};
   const trEn = (row.translations || []).find((t: any) => t.lang === "en") || {};
+  const useful = Array.isArray(row.useful) ? row.useful : [];
+  const uEs = useful.find((u: any) => (u.lang || "").toLowerCase() === "es") || {};
+  const uEn = useful.find((u: any) => (u.lang || "").toLowerCase() === "en") || {};
   const categories = Array.isArray(row.category_links)
     ? row.category_links.map((r: any) => r.category?.label_es || r.category?.slug).filter(Boolean)
     : [];
@@ -107,6 +110,7 @@ function mapRowToLegacy(row: any) {
       subtitle: trEs.subtitle || "",
       description: Array.isArray(trEs.description) ? trEs.description : [],
       infoHtml: trEs.info_html || undefined,
+      infoHtmlNew: uEs.html || undefined,
       category: trEs.category || null,
     },
     en: {
@@ -114,6 +118,7 @@ function mapRowToLegacy(row: any) {
       subtitle: trEn.subtitle || "",
       description: Array.isArray(trEn.description) ? trEn.description : [],
       infoHtml: trEn.info_html || undefined,
+      infoHtmlNew: uEn.html || undefined,
       category: trEn.category || null,
     },
     categories,
@@ -128,7 +133,7 @@ export async function GET(req: Request) {
     const categorySlug = url.searchParams.get("categorySlug");
 
     const select =
-      "slug,featured_image,website,instagram,website_display,instagram_display,email,phone,photos_credit,address,hours,reservation_link,reservation_policy,interesting_fact,images:post_images(url,position),locations:post_locations(*),translations:post_translations(*),category_links:post_category_map(category:categories(slug,label_es,label_en))";
+      "slug,featured_image,website,instagram,website_display,instagram_display,email,phone,photos_credit,address,hours,reservation_link,reservation_policy,interesting_fact,images:post_images(url,position),locations:post_locations(*),translations:post_translations(*),useful:post_useful_info(*),category_links:post_category_map(category:categories(slug,label_es,label_en))";
     let rows: any[] | null = await fetchFromSupabase(
       `/posts?select=${encodeURIComponent(select)}`
     );
@@ -233,7 +238,7 @@ export async function POST(req: Request) {
         name: esT.name || "",
         subtitle: esT.subtitle || "",
         description: Array.isArray(esT.description) ? esT.description : [],
-        info_html: esT.infoHtml || null,
+        info_html: null,
         category: esT.category || null,
       },
       {
@@ -242,7 +247,7 @@ export async function POST(req: Request) {
         name: enT.name || "",
         subtitle: enT.subtitle || "",
         description: Array.isArray(enT.description) ? enT.description : [],
-        info_html: enT.infoHtml || null,
+        info_html: null,
         category: enT.category || null,
       },
     ];
@@ -271,6 +276,22 @@ export async function POST(req: Request) {
         }
         if (errCurr) throw errCurr;
       }
+    }
+
+    // Guardar datos útiles en post_useful_info (solo si hay HTML por idioma)
+    const usefulPayload: any[] = [];
+    if (esT.infoHtml && String(esT.infoHtml).trim() !== "") {
+      usefulPayload.push({ post_id: postId, lang: "es", html: String(esT.infoHtml).trim() });
+    }
+    if (enT.infoHtml && String(enT.infoHtml).trim() !== "") {
+      usefulPayload.push({ post_id: postId, lang: "en", html: String(enT.infoHtml).trim() });
+    }
+    if (usefulPayload.length > 0) {
+      await serviceRest(`/post_useful_info`, {
+        method: "POST",
+        body: JSON.stringify(usefulPayload),
+        headers: { Prefer: "return=representation,resolution=merge-duplicates" },
+      });
     }
 
     const imagesPayload = (normalized.images || []).map((url, idx) => ({

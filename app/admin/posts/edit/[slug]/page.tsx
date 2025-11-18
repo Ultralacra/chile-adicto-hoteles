@@ -9,7 +9,17 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Card } from "@/components/ui/card";
 import AdminRichText from "@/components/admin-rich-text";
-import { ArrowLeft, Save, Tag, Globe, Plus, X, Code } from "lucide-react";
+import {
+  ArrowLeft,
+  Save,
+  Tag,
+  Globe,
+  Plus,
+  X,
+  Code,
+  Image as ImageIcon,
+  Printer,
+} from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -77,11 +87,13 @@ export default function EditPostPage({
   const [subtitleEs, setSubtitleEs] = useState("");
   // Descripción: un solo bloque (párrafos separados por línea en blanco)
   const [descriptionUnified, setDescriptionUnified] = useState<string>("");
+  const [infoHtmlEs, setInfoHtmlEs] = useState<string>("");
 
   // Inglés
   const [nameEn, setNameEn] = useState("");
   const [subtitleEn, setSubtitleEn] = useState("");
   const [descriptionUnifiedEn, setDescriptionUnifiedEn] = useState<string>("");
+  const [infoHtmlEn, setInfoHtmlEn] = useState<string>("");
 
   // Contacto editable
   const [website, setWebsite] = useState("");
@@ -102,6 +114,8 @@ export default function EditPostPage({
   const [images, setImages] = useState<string[]>([]);
   const [featuredIndex, setFeaturedIndex] = useState(0);
   const [featuredImage, setFeaturedImage] = useState<string>("");
+  const [uploading, setUploading] = useState(false);
+  const [isDragging, setIsDragging] = useState(false);
   const moveImage = moveImageFactory(images, setImages);
   // Estados para drag & drop de la galería
   const [dragIndex, setDragIndex] = useState<number | null>(null);
@@ -180,9 +194,75 @@ export default function EditPostPage({
   const [previewOpen, setPreviewOpen] = useState(false);
   const [previewJson, setPreviewJson] = useState<string>("{}");
 
+  const uploadFiles = async (files: FileList | File[]) => {
+    const arr = Array.from(files || []);
+    if (arr.length === 0) return;
+    setUploading(true);
+    try {
+      const form = new FormData();
+      for (const f of arr) form.append("files", f);
+      const res = await fetch(`/api/posts/${encodeURIComponent(slug)}/images`, {
+        method: "POST",
+        body: form,
+      });
+      if (!res.ok) throw new Error(await res.text());
+      // Refrescar datos del post para reconstruir la galería con orden correcto
+      const fresh = await fetch(`/api/posts/${encodeURIComponent(slug)}`, {
+        cache: "no-store",
+      }).then((r) => (r.ok ? r.json() : null));
+      if (fresh) {
+        let next: string[] = Array.isArray(fresh.images)
+          ? fresh.images.slice()
+          : [];
+        if (fresh.featuredImage && !next.includes(fresh.featuredImage)) {
+          next = [fresh.featuredImage, ...next];
+        } else if (fresh.featuredImage) {
+          const without = next.filter((u: string) => u !== fresh.featuredImage);
+          next = [fresh.featuredImage, ...without];
+        }
+        setImages(next);
+        setFeaturedImage(fresh.featuredImage || next[0] || "");
+        setFeaturedIndex(0);
+      }
+    } catch (e: any) {
+      console.error(e);
+      alert("No se pudo subir: " + (e?.message || e));
+    } finally {
+      setUploading(false);
+      setIsDragging(false);
+    }
+  };
+
   // Cargar datos del hotel en los estados locales cuando llegue
   useEffect(() => {
     if (!hotel) return;
+    const fixUrl = (u?: string) => {
+      if (!u) return "";
+      const v = String(u).trim();
+      if (!v) return "";
+      return /^https?:\/\//i.test(v) ? v : `https://${v}`;
+    };
+    const igHref = (v?: string) => {
+      const s = String(v || "").trim();
+      if (!s) return "";
+      if (/^https?:\/\//i.test(s)) return s;
+      const handle = s.replace(/^@+/, "");
+      return `https://instagram.com/${handle}`;
+    };
+    const telHref = (v?: string) => {
+      const s = String(v || "")
+        .trim()
+        .replace(/^tel:/i, "");
+      if (!s) return "";
+      return `tel:${s.replace(/[^+\d]/g, "")}`;
+    };
+    const mailHref = (v?: string) => {
+      const s = String(v || "")
+        .trim()
+        .replace(/^mailto:/i, "");
+      if (!s) return "";
+      return `mailto:${s}`;
+    };
     // Helpers para convertir entre array de párrafos y HTML para el editor
     const paragraphsToHtml = (arr: string[] | undefined) => {
       if (!Array.isArray(arr) || arr.length === 0) return "";
@@ -193,12 +273,19 @@ export default function EditPostPage({
     setNameEs(hotel.es?.name || "");
     setSubtitleEs(hotel.es?.subtitle || "");
     setDescriptionUnified(paragraphsToHtml(hotel.es?.description));
-    // infoHtml removido del editor
 
     setNameEn(hotel.en?.name || "");
     setSubtitleEn(hotel.en?.subtitle || "");
     setDescriptionUnifiedEn(paragraphsToHtml(hotel.en?.description));
-    // infoHtml removido del editor
+
+    // Prefiere el bloque nuevo si existe; si no, usa el legacy; si tampoco, queda vacío
+    const esNew = hotel.es?.infoHtmlNew || "";
+    const esLegacy = hotel.es?.infoHtml || "";
+    setInfoHtmlEs(esNew || esLegacy || "");
+
+    const enNew = hotel.en?.infoHtmlNew || "";
+    const enLegacy = hotel.en?.infoHtml || "";
+    setInfoHtmlEn(enNew || enLegacy || "");
 
     setWebsite(hotel.website || "");
     setWebsiteDisplay(hotel.website_display || "");
@@ -368,11 +455,13 @@ export default function EditPostPage({
         name: nameEs,
         subtitle: subtitleEs,
         description: descriptionEs,
+        infoHtml: infoHtmlEs || undefined,
       },
       en: {
         name: nameEn,
         subtitle: subtitleEn,
         description: descriptionEn,
+        infoHtml: infoHtmlEn || undefined,
       },
       website,
       website_display: websiteDisplay,
@@ -438,6 +527,20 @@ export default function EditPostPage({
       setPreviewJson('{\n  "error": "No se pudo serializar"\n}');
     }
     setPreviewOpen(true);
+  };
+
+  const printUseful = () => {
+    const built = buildPayload();
+    if (!built) {
+      alert("No hay post cargado");
+      return;
+    }
+    const { normalized } = built;
+    const esInfo = (normalized as any)?.es?.infoHtml || "";
+    const enInfo = (normalized as any)?.en?.infoHtml || "";
+    console.log("[Datos útiles - ES]\n", esInfo);
+    console.log("[Useful info - EN]\n", enInfo);
+    alert("Datos útiles impresos en la consola (F12)");
   };
 
   const handleSave = () => {
@@ -536,12 +639,12 @@ export default function EditPostPage({
   return (
     <div className="min-h-screen bg-gray-50">
       <div className="w-full px-4 lg:px-8 py-6 space-y-6">
-        {saving && (
+        {(saving || uploading) && (
           <div className="fixed inset-0 z-50 bg-black/30 backdrop-blur-sm grid place-items-center">
             <div className="bg-white rounded-lg shadow-lg p-6 flex items-center gap-3">
               <Spinner className="size-5" />
               <div className="text-gray-700 font-medium">
-                Guardando cambios…
+                {saving ? "Guardando cambios…" : "Subiendo imágenes…"}
               </div>
             </div>
           </div>
@@ -575,6 +678,16 @@ export default function EditPostPage({
             </p>
           </div>
           <div className="flex gap-2">
+            <Button
+              type="button"
+              variant="outline"
+              onClick={printUseful}
+              className="gap-2"
+              disabled={saving}
+              title="Generar y mostrar los Datos útiles en consola"
+            >
+              <Printer size={18} /> Imprimir datos útiles
+            </Button>
             <Button
               type="button"
               variant="outline"
@@ -729,365 +842,45 @@ export default function EditPostPage({
           </div>
         </Card>
 
-        {/* Contacto editable */}
-        <Card className="p-6">
-          <div className="flex items-center gap-2 mb-4">
-            <Globe className="text-green-600" size={20} />
-            <h2 className="font-semibold text-lg">Contacto</h2>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
-            <div>
-              <Label className="text-xs text-gray-600">WEB</Label>
-              <Input
-                value={website}
-                onChange={(e) => setWebsite(e.target.value)}
-                placeholder="https://sitio.cl"
-              />
-            </div>
-            <div>
-              <Label className="text-xs text-gray-600">WEB (display)</Label>
-              <Input
-                value={websiteDisplay}
-                onChange={(e) => setWebsiteDisplay(e.target.value)}
-                placeholder="sitio.cl"
-              />
-            </div>
-            <div>
-              <Label className="text-xs text-gray-600">INSTAGRAM</Label>
-              <Input
-                value={instagram}
-                onChange={(e) => setInstagram(e.target.value)}
-                placeholder="https://instagram.com/handle o @handle"
-              />
-            </div>
-            <div>
-              <Label className="text-xs text-gray-600">
-                INSTAGRAM (display)
-              </Label>
-              <Input
-                value={instagramDisplay}
-                onChange={(e) => setInstagramDisplay(e.target.value)}
-                placeholder="@handle"
-              />
-            </div>
-            <div>
-              <Label className="text-xs text-gray-600">EMAIL</Label>
-              <Input
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder="correo@dominio.cl"
-              />
-            </div>
-            <div>
-              <Label className="text-xs text-gray-600">TEL</Label>
-              <Input
-                value={phone}
-                onChange={(e) => setPhone(e.target.value)}
-                placeholder="+56 9 1234 5678"
-              />
-            </div>
-            <div className="md:col-span-2">
-              <Label className="text-xs text-gray-600">DIRECCIÓN</Label>
-              <Textarea
-                value={address}
-                onChange={(e) => setAddress(e.target.value)}
-                rows={3}
-              />
-            </div>
-            <div className="md:col-span-2">
-              <Label className="text-xs text-gray-600">CRÉDITO FOTOS</Label>
-              <Input
-                value={photosCredit}
-                onChange={(e) => setPhotosCredit(e.target.value)}
-                placeholder="@usuario / Autor"
-              />
-            </div>
-            {/* Campos operativos a nivel general (cuando no hay sucursales) */}
-            <div>
-              <Label className="text-xs text-gray-600">HORARIO</Label>
-              <Input
-                value={hours}
-                onChange={(e) => setHours(e.target.value)}
-                placeholder="MARTES A SÁBADO, DE 19:30 A 00:00 HRS"
-              />
-            </div>
-            <div>
-              <Label className="text-xs text-gray-600">RESERVAS (link)</Label>
-              <Input
-                value={reservationLink}
-                onChange={(e) => setReservationLink(e.target.value)}
-                placeholder="https://…"
-              />
-            </div>
-            <div>
-              <Label className="text-xs text-gray-600">
-                RESERVAS (política)
-              </Label>
-              <Input
-                value={reservationPolicy}
-                onChange={(e) => setReservationPolicy(e.target.value)}
-                placeholder="Se recomienda / Obligatorio / etc."
-              />
-            </div>
-            <div className="md:col-span-2">
-              <Label className="text-xs text-gray-600">DATO DE INTERÉS</Label>
-              <Input
-                value={interestingFact}
-                onChange={(e) => setInterestingFact(e.target.value)}
-                placeholder="Dato llamativo o contextual"
-              />
-            </div>
-          </div>
-        </Card>
+        {/* Contacto oculto por solicitud (se mantiene a nivel de backend para compatibilidad) */}
 
-        {/* Sucursales / Locations */}
-        <Card className="p-6">
-          <div className="flex items-center gap-2 mb-4">
-            <Globe className="text-green-600" size={20} />
-            <h2 className="font-semibold text-lg">Sucursales / Locations</h2>
-          </div>
-          <div className="space-y-4">
-            {locations.map((loc, idx) => (
-              <div key={idx} className="border rounded-lg p-4 space-y-3">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                  <div>
-                    <Label className="text-xs text-gray-600">Etiqueta</Label>
-                    <Input
-                      value={loc.label || ""}
-                      onChange={(e) => {
-                        const v = e.target.value;
-                        setLocations((prev) => {
-                          const arr = [...prev];
-                          arr[idx] = { ...arr[idx], label: v };
-                          return arr;
-                        });
-                      }}
-                      placeholder="Ej: Vitacura, Sucursal Centro, etc."
-                    />
-                  </div>
-                  <div>
-                    <Label className="text-xs text-gray-600">Horario</Label>
-                    <Input
-                      value={loc.hours || ""}
-                      onChange={(e) => {
-                        const v = e.target.value;
-                        setLocations((prev) => {
-                          const arr = [...prev];
-                          arr[idx] = { ...arr[idx], hours: v };
-                          return arr;
-                        });
-                      }}
-                      placeholder="LUN-DOM 12:00-22:00"
-                    />
-                  </div>
-                  <div className="md:col-span-2">
-                    <Label className="text-xs text-gray-600">Dirección</Label>
-                    <Textarea
-                      rows={2}
-                      value={loc.address || ""}
-                      onChange={(e) => {
-                        const v = e.target.value;
-                        setLocations((prev) => {
-                          const arr = [...prev];
-                          arr[idx] = { ...arr[idx], address: v };
-                          return arr;
-                        });
-                      }}
-                    />
-                  </div>
-                  <div>
-                    <Label className="text-xs text-gray-600">Web</Label>
-                    <Input
-                      value={loc.website || ""}
-                      onChange={(e) => {
-                        const v = e.target.value;
-                        setLocations((prev) => {
-                          const arr = [...prev];
-                          arr[idx] = { ...arr[idx], website: v };
-                          return arr;
-                        });
-                      }}
-                      placeholder="https://…"
-                    />
-                  </div>
-                  <div>
-                    <Label className="text-xs text-gray-600">
-                      Web (display)
-                    </Label>
-                    <Input
-                      value={loc.website_display || ""}
-                      onChange={(e) => {
-                        const v = e.target.value;
-                        setLocations((prev) => {
-                          const arr = [...prev];
-                          arr[idx] = { ...arr[idx], website_display: v };
-                          return arr;
-                        });
-                      }}
-                      placeholder="WWW.SITIO.CL"
-                    />
-                  </div>
-                  <div>
-                    <Label className="text-xs text-gray-600">Instagram</Label>
-                    <Input
-                      value={loc.instagram || ""}
-                      onChange={(e) => {
-                        const v = e.target.value;
-                        setLocations((prev) => {
-                          const arr = [...prev];
-                          arr[idx] = { ...arr[idx], instagram: v };
-                          return arr;
-                        });
-                      }}
-                      placeholder="https://instagram.com/… o @handle"
-                    />
-                  </div>
-                  <div>
-                    <Label className="text-xs text-gray-600">
-                      Instagram (display)
-                    </Label>
-                    <Input
-                      value={loc.instagram_display || ""}
-                      onChange={(e) => {
-                        const v = e.target.value;
-                        setLocations((prev) => {
-                          const arr = [...prev];
-                          arr[idx] = { ...arr[idx], instagram_display: v };
-                          return arr;
-                        });
-                      }}
-                      placeholder="@handle"
-                    />
-                  </div>
-                  <div>
-                    <Label className="text-xs text-gray-600">
-                      Reservas (link)
-                    </Label>
-                    <Input
-                      value={loc.reservationLink || ""}
-                      onChange={(e) => {
-                        const v = e.target.value;
-                        setLocations((prev) => {
-                          const arr = [...prev];
-                          arr[idx] = { ...arr[idx], reservationLink: v };
-                          return arr;
-                        });
-                      }}
-                      placeholder="https://…"
-                    />
-                  </div>
-                  <div>
-                    <Label className="text-xs text-gray-600">
-                      Reservas (política)
-                    </Label>
-                    <Input
-                      value={loc.reservationPolicy || ""}
-                      onChange={(e) => {
-                        const v = e.target.value;
-                        setLocations((prev) => {
-                          const arr = [...prev];
-                          arr[idx] = { ...arr[idx], reservationPolicy: v };
-                          return arr;
-                        });
-                      }}
-                      placeholder="Se recomienda / Obligatorio / etc."
-                    />
-                  </div>
-                  <div className="md:col-span-2">
-                    <Label className="text-xs text-gray-600">
-                      Dato de interés
-                    </Label>
-                    <Input
-                      value={loc.interestingFact || ""}
-                      onChange={(e) => {
-                        const v = e.target.value;
-                        setLocations((prev) => {
-                          const arr = [...prev];
-                          arr[idx] = { ...arr[idx], interestingFact: v };
-                          return arr;
-                        });
-                      }}
-                    />
-                  </div>
-                  <div>
-                    <Label className="text-xs text-gray-600">Tel</Label>
-                    <Input
-                      value={loc.phone || ""}
-                      onChange={(e) => {
-                        const v = e.target.value;
-                        setLocations((prev) => {
-                          const arr = [...prev];
-                          arr[idx] = { ...arr[idx], phone: v };
-                          return arr;
-                        });
-                      }}
-                      placeholder="+56 9 …"
-                    />
-                  </div>
-                  <div>
-                    <Label className="text-xs text-gray-600">Email</Label>
-                    <Input
-                      value={loc.email || ""}
-                      onChange={(e) => {
-                        const v = e.target.value;
-                        setLocations((prev) => {
-                          const arr = [...prev];
-                          arr[idx] = { ...arr[idx], email: v };
-                          return arr;
-                        });
-                      }}
-                      placeholder="correo@…"
-                    />
-                  </div>
-                </div>
-                <div className="flex justify-end">
-                  <Button
-                    variant="destructive"
-                    size="sm"
-                    onClick={() =>
-                      setLocations((prev) => prev.filter((_, i) => i !== idx))
-                    }
-                  >
-                    Eliminar sucursal
-                  </Button>
-                </div>
-              </div>
-            ))}
-            <Button
-              variant="outline"
-              className="gap-2"
-              onClick={() =>
-                setLocations((prev) => [
-                  ...prev,
-                  {
-                    label: "",
-                    address: "",
-                    hours: "",
-                    website: "",
-                    website_display: "",
-                    instagram: "",
-                    instagram_display: "",
-                    reservationLink: "",
-                    reservationPolicy: "",
-                    interestingFact: "",
-                    email: "",
-                    phone: "",
-                  },
-                ])
-              }
-            >
-              <Plus size={16} /> Agregar sucursal
-            </Button>
-          </div>
-        </Card>
+        {/* Sucursales ocultas por solicitud (contenido se conserva si ya existe) */}
 
         {/* Imágenes: destacada + galería */}
-        <Card className="p-6">
+        <Card
+          className="p-6"
+          onDragOver={(e) => {
+            e.preventDefault();
+            if (!isDragging) setIsDragging(true);
+          }}
+          onDragEnter={(e) => {
+            e.preventDefault();
+            setIsDragging(true);
+          }}
+          onDragLeave={(e) => {
+            e.preventDefault();
+            setIsDragging(false);
+          }}
+          onDrop={(e) => {
+            e.preventDefault();
+            const files = e.dataTransfer?.files;
+            if (files && files.length > 0) {
+              uploadFiles(files);
+            }
+          }}
+        >
           <div className="flex items-center gap-2 mb-4">
-            <Globe className="text-green-600" size={20} />
+            <ImageIcon className="text-green-600" size={20} />
             <h2 className="font-semibold text-lg">Imágenes</h2>
           </div>
           <div className="space-y-4">
+            {isDragging && (
+              <div className="relative">
+                <div className="absolute inset-0 z-10 border-2 border-dashed border-green-500 bg-green-50/60 rounded flex items-center justify-center text-green-700 font-medium">
+                  Suelta tus imágenes aquí para subirlas…
+                </div>
+              </div>
+            )}
             <div>
               <h3 className="text-sm font-semibold mb-2">Destacada</h3>
               {images[featuredIndex] ? (
@@ -1171,31 +964,29 @@ export default function EditPostPage({
                 ))}
               </div>
             </div>
-            <div className="flex gap-2 items-center">
-              <Input
-                placeholder="Pega URL de imagen..."
-                onKeyDown={(e) => {
-                  const target = e.target as HTMLInputElement;
-                  if (e.key === "Enter" && target.value.trim()) {
-                    setImages([...images, target.value.trim()]);
-                    target.value = "";
-                  }
-                }}
-              />
-              <Button
-                onClick={() => {
-                  const url = prompt("URL de imagen");
-                  if (url && url.trim()) setImages([...images, url.trim()]);
-                }}
-                variant="outline"
-              >
-                Agregar imagen
-              </Button>
+            <div className="flex flex-wrap gap-2 items-center">
+              <label className="inline-flex items-center gap-2">
+                <input
+                  type="file"
+                  multiple
+                  className="hidden"
+                  onChange={(e) => {
+                    const files = e.target.files;
+                    if (files && files.length > 0) uploadFiles(files);
+                  }}
+                />
+                <Button type="button" variant="outline">
+                  Subir archivos
+                </Button>
+              </label>
+              <span className="text-xs text-gray-500">
+                También puedes arrastrar y soltar sobre este bloque.
+              </span>
             </div>
           </div>
         </Card>
 
-        {/* Contenido ES/EN (bloque único por idioma) */}
+        {/* Contenido ES/EN (bloque único por idioma + datos útiles) */}
         <Card className="p-6">
           <div className="flex items-center gap-2 mb-4">
             <Globe className="text-green-600" size={20} />
@@ -1233,6 +1024,21 @@ export default function EditPostPage({
                 </p>
               </div>
 
+              <div>
+                <Label className="text-xs text-gray-600">
+                  Datos útiles (bloque, puedes pegar todo el bloque con títulos
+                  en negrita)
+                </Label>
+                <AdminRichText
+                  value={infoHtmlEs}
+                  onChange={(v) => setInfoHtmlEs(v)}
+                />
+                <p className="text-[11px] text-gray-500 mt-1">
+                  Este bloque se mostrará bajo "Datos útiles". Puedes usar
+                  <strong> negritas</strong> para los títulos.
+                </p>
+              </div>
+
               {/* Secciones eliminadas: pegado inteligente + datos útiles HTML */}
             </div>
 
@@ -1263,6 +1069,20 @@ export default function EditPostPage({
                 />
                 <p className="text-[11px] text-gray-500 mt-1">
                   Use the toolbar for formatting; Enter creates new paragraphs.
+                </p>
+              </div>
+
+              <div>
+                <Label className="text-xs text-gray-600">
+                  Useful info (block, you can paste full block with bold titles)
+                </Label>
+                <AdminRichText
+                  value={infoHtmlEn}
+                  onChange={(v) => setInfoHtmlEn(v)}
+                />
+                <p className="text-[11px] text-gray-500 mt-1">
+                  This block is rendered under "Useful information". You can use
+                  <strong> bold</strong> for the labels.
                 </p>
               </div>
 

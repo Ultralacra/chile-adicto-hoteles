@@ -2,7 +2,6 @@
 
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -13,23 +12,23 @@ import { ArrowLeft, Images as ImagesIcon, Save, Search, X } from "lucide-react";
 type PostLite = {
   slug: string;
   featuredImage?: string | null;
-  images?: string[]; // galería (sin destacada)
+  images?: string[];
   es?: { name?: string };
   en?: { name?: string };
 };
 
 export default function AdminImagesPage() {
-  const router = useRouter();
   const [loading, setLoading] = useState(true);
   const [posts, setPosts] = useState<PostLite[]>([]);
   const [query, setQuery] = useState("");
   const [selectedSlug, setSelectedSlug] = useState<string | null>(null);
   const [selectedPost, setSelectedPost] = useState<PostLite | null>(null);
-  const [images, setImages] = useState<string[]>([]); // lista local incluyendo destacada al inicio
+  const [images, setImages] = useState<string[]>([]);
   const [featuredIndex, setFeaturedIndex] = useState<number>(0);
   const [saving, setSaving] = useState(false);
+  const [uploading, setUploading] = useState(false);
+  const [isDragging, setIsDragging] = useState(false);
 
-  // Cargar lista de posts
   useEffect(() => {
     let cancelled = false;
     setLoading(true);
@@ -45,7 +44,6 @@ export default function AdminImagesPage() {
     };
   }, []);
 
-  // Seleccionar un post y cargar detalles (para obtener featured + imágenes actualizadas)
   useEffect(() => {
     if (!selectedSlug) {
       setSelectedPost(null);
@@ -60,10 +58,8 @@ export default function AdminImagesPage() {
     })
       .then((r) => (r.ok ? r.json() : null))
       .then((row) => {
-        if (cancelled) return;
-        if (!row) return;
+        if (cancelled || !row) return;
         setSelectedPost(row);
-        // Reconstruir lista local con destacada al inicio
         const gal: string[] = Array.isArray(row.images)
           ? row.images.slice()
           : [];
@@ -111,10 +107,45 @@ export default function AdminImagesPage() {
     if (idx === featuredIndex) setFeaturedIndex(0);
   };
 
-  const addImage = (url: string) => {
-    const u = url.trim();
-    if (!u) return;
-    setImages((prev) => [...prev, u]);
+  const handleDropFiles = async (files: FileList | File[]) => {
+    if (!selectedSlug) return alert("Selecciona un post primero");
+    const arr = Array.from(files || []);
+    if (arr.length === 0) return;
+    setUploading(true);
+    try {
+      const form = new FormData();
+      for (const f of arr) form.append("files", f);
+      const res = await fetch(
+        `/api/posts/${encodeURIComponent(selectedSlug)}/images`,
+        {
+          method: "POST",
+          body: form,
+        }
+      );
+      if (!res.ok) throw new Error(await res.text());
+      const fresh = await fetch(
+        `/api/posts/${encodeURIComponent(selectedSlug)}`,
+        { cache: "no-store" }
+      ).then((r) => (r.ok ? r.json() : null));
+      if (fresh) {
+        setSelectedPost(fresh);
+        const gal: string[] = Array.isArray(fresh.images)
+          ? fresh.images.slice()
+          : [];
+        const feat: string | undefined =
+          fresh.featuredImage || gal[0] || undefined;
+        const without = gal.filter((u: string) => u !== feat);
+        const combined = feat ? [feat, ...without] : without;
+        setImages(combined);
+        setFeaturedIndex((fi) => Math.min(fi, combined.length - 1));
+      }
+    } catch (e: any) {
+      console.error(e);
+      alert("No se pudo subir: " + (e?.message || e));
+    } finally {
+      setUploading(false);
+      setIsDragging(false);
+    }
   };
 
   const handleSave = async () => {
@@ -124,10 +155,7 @@ export default function AdminImagesPage() {
       const fi = Math.max(0, Math.min(featuredIndex, images.length - 1));
       const featured = images[fi] || "";
       const gallery = images.filter((_, i) => i !== fi);
-      const payload = {
-        featuredImage: featured || null,
-        images: gallery,
-      };
+      const payload = { featuredImage: featured || null, images: gallery };
       const res = await fetch(
         `/api/posts/${encodeURIComponent(selectedPost.slug)}`,
         {
@@ -137,7 +165,6 @@ export default function AdminImagesPage() {
         }
       );
       if (!res.ok) throw new Error(await res.text());
-      // Refrescar seleccionado
       const fresh = await fetch(
         `/api/posts/${encodeURIComponent(selectedPost.slug)}`,
         { cache: "no-store" }
@@ -178,7 +205,6 @@ export default function AdminImagesPage() {
           </h1>
         </div>
 
-        {/* Panel superior: buscador + contador */}
         <Card className="p-4">
           <div className="flex flex-col md:flex-row md:items-center gap-3">
             <div className="flex-1 flex items-center gap-2">
@@ -196,7 +222,6 @@ export default function AdminImagesPage() {
         </Card>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          {/* Lista de posts */}
           <Card className="p-0 overflow-hidden">
             <div className="border-b p-3 text-sm font-medium">Posts</div>
             <div className="max-h-[60vh] overflow-auto">
@@ -233,14 +258,15 @@ export default function AdminImagesPage() {
             </div>
           </Card>
 
-          {/* Editor de imágenes del post seleccionado */}
           <div className="lg:col-span-2">
             <Card className="p-4">
-              {saving && (
+              {(saving || uploading) && (
                 <div className="fixed inset-0 z-50 bg-black/30 backdrop-blur-sm grid place-items-center">
                   <div className="bg-white rounded-lg shadow-lg p-6 flex items-center gap-3">
                     <Spinner className="size-5" />
-                    <div className="text-gray-700 font-medium">Guardando…</div>
+                    <div className="text-gray-700 font-medium">
+                      {saving ? "Guardando…" : "Subiendo imágenes…"}
+                    </div>
                   </div>
                 </div>
               )}
@@ -249,7 +275,29 @@ export default function AdminImagesPage() {
                   Selecciona un post para administrar sus imágenes.
                 </div>
               ) : (
-                <div className="space-y-4">
+                <div
+                  className="space-y-4"
+                  onDragOver={(e) => {
+                    e.preventDefault();
+                    if (!isDragging) setIsDragging(true);
+                  }}
+                  onDragEnter={(e) => {
+                    e.preventDefault();
+                    setIsDragging(true);
+                  }}
+                  onDragLeave={(e) => {
+                    e.preventDefault();
+                    setIsDragging(false);
+                  }}
+                  onDrop={async (e) => {
+                    e.preventDefault();
+                    const files = e.dataTransfer?.files;
+                    if (files && files.length > 0) {
+                      handleDropFiles(files);
+                    }
+                    setIsDragging(false);
+                  }}
+                >
                   <div>
                     <div className="text-sm text-gray-500">Post</div>
                     <div className="font-semibold">
@@ -257,8 +305,15 @@ export default function AdminImagesPage() {
                         selectedPost.en?.name ||
                         selectedPost.slug}
                     </div>
-                    <div className="text-[11px] text-gray-500">
-                      {selectedPost.slug}
+                    <div className="relative">
+                      {isDragging && (
+                        <div className="absolute inset-0 z-10 border-2 border-dashed border-green-500 bg-green-50/60 rounded flex items-center justify-center text-green-700 font-medium">
+                          Suelta tus imágenes aquí para subirlas…
+                        </div>
+                      )}
+                      <div className="text-[11px] text-gray-500">
+                        {selectedPost.slug}
+                      </div>
                     </div>
                   </div>
 
@@ -338,26 +393,21 @@ export default function AdminImagesPage() {
                     )}
                   </div>
 
-                  <div className="flex gap-2 items-center">
-                    <Input
-                      placeholder="Pega URL de imagen y Enter…"
-                      onKeyDown={(e) => {
-                        const target = e.target as HTMLInputElement;
-                        if (e.key === "Enter" && target.value.trim()) {
-                          addImage(target.value.trim());
-                          target.value = "";
-                        }
-                      }}
-                    />
-                    <Button
-                      variant="outline"
-                      onClick={() => {
-                        const url = prompt("URL de imagen");
-                        if (url && url.trim()) addImage(url.trim());
-                      }}
-                    >
-                      Agregar imagen
-                    </Button>
+                  <div className="flex flex-wrap gap-2 items-center">
+                    <label className="inline-flex items-center gap-2">
+                      <input
+                        type="file"
+                        multiple
+                        className="hidden"
+                        onChange={(e) => {
+                          const files = e.target.files;
+                          if (files && files.length > 0) handleDropFiles(files);
+                        }}
+                      />
+                      <Button type="button" variant="outline">
+                        Subir archivos
+                      </Button>
+                    </label>
                   </div>
 
                   <div className="flex gap-3">

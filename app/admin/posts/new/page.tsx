@@ -11,7 +11,17 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Card } from "@/components/ui/card";
 import AdminRichText from "@/components/admin-rich-text";
-import { ArrowLeft, Save, Tag, Globe, Plus, X, Code } from "lucide-react";
+import {
+  ArrowLeft,
+  Save,
+  Tag,
+  Globe,
+  Plus,
+  X,
+  Code,
+  Image as ImageIcon,
+  Printer,
+} from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -51,11 +61,11 @@ export default function NewPostPage() {
   const [nameEs, setNameEs] = useState("");
   const [subtitleEs, setSubtitleEs] = useState("");
   const [descriptionUnified, setDescriptionUnified] = useState<string>("");
+  const [infoHtmlEs, setInfoHtmlEs] = useState<string>("");
   const [nameEn, setNameEn] = useState("");
   const [subtitleEn, setSubtitleEn] = useState("");
-  const [descriptionUnifiedEn, setDescriptionUnifiedEn] = useState<string>(
-    ""
-  );
+  const [descriptionUnifiedEn, setDescriptionUnifiedEn] = useState<string>("");
+  const [infoHtmlEn, setInfoHtmlEn] = useState<string>("");
 
   // Categorías y comunas
   const [categories, setCategories] = useState<string[]>(["TODOS"]);
@@ -108,6 +118,8 @@ export default function NewPostPage() {
   const [images, setImages] = useState<string[]>([]);
   const [featuredIndex, setFeaturedIndex] = useState(0);
   const [featuredImage, setFeaturedImage] = useState<string>("");
+  const [uploading, setUploading] = useState(false);
+  const [isDragging, setIsDragging] = useState(false);
   const [dragIndex, setDragIndex] = useState<number | null>(null);
   const [dragOverIndex, setDragOverIndex] = useState<number | null>(null);
   const reorderImages = (from: number, to: number) => {
@@ -129,7 +141,8 @@ export default function NewPostPage() {
     const arr = images.filter((_, i) => i !== index);
     setImages(arr);
     if (index === featuredIndex) setFeaturedIndex(0);
-    else if (index < featuredIndex) setFeaturedIndex(Math.max(0, featuredIndex - 1));
+    else if (index < featuredIndex)
+      setFeaturedIndex(Math.max(0, featuredIndex - 1));
   };
 
   // Sincronizar featuredImage cuando cambian images/featuredIndex
@@ -188,6 +201,39 @@ export default function NewPostPage() {
   const [previewOpen, setPreviewOpen] = useState(false);
   const [previewJson, setPreviewJson] = useState<string>("{}");
 
+  const uploadFiles = async (files: FileList | File[]) => {
+    const arr = Array.from(files || []);
+    if (arr.length === 0) return;
+    setUploading(true);
+    try {
+      const form = new FormData();
+      for (const f of arr) form.append("files", f);
+      const res = await fetch(`/api/media/upload`, {
+        method: "POST",
+        body: form,
+      });
+      if (!res.ok) throw new Error(await res.text());
+      const data = await res.json();
+      const urls: string[] = Array.isArray(data?.urls) ? data.urls : [];
+      if (urls.length) {
+        setImages((prev) => {
+          const next = [...prev, ...urls];
+          // Ajustar destacada si no había
+          if (next.length > 0 && featuredIndex >= next.length) {
+            setFeaturedIndex(0);
+          }
+          return next;
+        });
+      }
+    } catch (e: any) {
+      console.error(e);
+      alert("No se pudo subir: " + (e?.message || e));
+    } finally {
+      setUploading(false);
+      setIsDragging(false);
+    }
+  };
+
   const allCategories = categoriesApi;
   const toggleCategory = (category: string) => {
     if (categories.includes(category)) {
@@ -203,12 +249,16 @@ export default function NewPostPage() {
       const container = document.createElement("div");
       container.innerHTML = html || "";
       const ps = Array.from(container.querySelectorAll("p"));
-      if (ps.length > 0) return ps.map((p) => p.innerHTML.trim()).filter(Boolean);
+      if (ps.length > 0)
+        return ps.map((p) => p.innerHTML.trim()).filter(Boolean);
       const cleaned = container.innerHTML
         .replace(/(?:<br\s*\/?>(\s|&nbsp;)*){2,}/gi, "\n\n")
         .replace(/<br\s*\/?>(\s|&nbsp;)*/gi, "\n")
         .replace(/<[^>]+>/g, "");
-      return cleaned.split(/\n{2,}/).map((s) => s.trim()).filter(Boolean);
+      return cleaned
+        .split(/\n{2,}/)
+        .map((s) => s.trim())
+        .filter(Boolean);
     };
     const descriptionEs = htmlToParagraphs(String(descriptionUnified));
     const descriptionEn = htmlToParagraphs(String(descriptionUnifiedEn));
@@ -222,7 +272,8 @@ export default function NewPostPage() {
       (img, i) => img && img !== finalFeatured && i !== normalizedFeaturedIdx
     );
 
-    const sanitizePhone = (p: string) => (p ? `tel:${p.replace(/[^+\d]/g, "")}` : "");
+    const sanitizePhone = (p: string) =>
+      p ? `tel:${p.replace(/[^+\d]/g, "")}` : "";
     const sanitizedLocations = (locations || []).map((l) => ({
       label: l.label || undefined,
       address: l.address || undefined,
@@ -238,11 +289,180 @@ export default function NewPostPage() {
       phone: l.phone ? sanitizePhone(l.phone) : "",
     }));
 
+    // Autogenerar infoHtml si el usuario dejó vacías las cajas pero llenó los campos de contacto
+    const fixUrl = (u?: string) => {
+      if (!u) return "";
+      const v = String(u).trim();
+      if (!v) return "";
+      return /^https?:\/\//i.test(v) ? v : `https://${v}`;
+    };
+    const igHref = (v?: string) => {
+      const s = String(v || "").trim();
+      if (!s) return "";
+      if (/^https?:\/\//i.test(s)) return s;
+      const handle = s.replace(/^@+/, "");
+      return `https://instagram.com/${handle}`;
+    };
+    const telHref = (v?: string) => {
+      const s = String(v || "")
+        .trim()
+        .replace(/^tel:/i, "");
+      if (!s) return "";
+      return `tel:${s.replace(/[^+\d]/g, "")}`;
+    };
+    const mailHref = (v?: string) => {
+      const s = String(v || "")
+        .trim()
+        .replace(/^mailto:/i, "");
+      if (!s) return "";
+      return `mailto:${s}`;
+    };
+
+    const buildInfoEs = (): string => {
+      if (infoHtmlEs && infoHtmlEs.trim() !== "") return infoHtmlEs;
+      const parts: string[] = [];
+      const addr = (address || "").trim();
+      if (addr)
+        parts.push(`<p><strong>DIRECCIÓN:</strong> ${addr.toUpperCase()}</p>`);
+      const web = (website || "").trim();
+      if (web) {
+        const display = (websiteDisplay || web).toUpperCase();
+        const href = fixUrl(web);
+        parts.push(
+          `<p><strong>WEB:</strong> <a href="${href}" target="_blank" rel="noopener noreferrer">${display}</a></p>`
+        );
+      }
+      const ig = (instagram || "").trim();
+      if (ig) {
+        const display = (instagramDisplay || ig).toUpperCase();
+        const href = igHref(ig);
+        parts.push(
+          `<p><strong>INSTAGRAM:</strong> <a href="${href}" target="_blank" rel="noopener noreferrer">${display}</a></p>`
+        );
+      }
+      const hoursText = (hours || "").trim();
+      if (hoursText)
+        parts.push(`<p><strong>HORARIO:</strong> ${hoursText}</p>`);
+      const resPolicy = (reservationPolicy || "").trim();
+      const resLink = (reservationLink || "").trim();
+      if (resPolicy || resLink) {
+        if (resLink) {
+          const href = fixUrl(resLink);
+          const text = (resPolicy || resLink).toString();
+          parts.push(
+            `<p><strong>RESERVAS:</strong> <a href="${href}" target="_blank" rel="noopener noreferrer">${text}</a></p>`
+          );
+        } else {
+          parts.push(`<p><strong>RESERVAS:</strong> ${resPolicy}</p>`);
+        }
+      }
+      const fact = (interestingFact || "").trim();
+      if (fact) parts.push(`<p><strong>DATO DE INTERÉS:</strong> ${fact}</p>`);
+      const tel = (phone || "").trim();
+      if (tel) {
+        const disp = tel.replace(/^tel:/i, "").toUpperCase();
+        const href = telHref(tel);
+        parts.push(
+          `<p><strong>TEL:</strong> <a href="${href}">${disp}</a></p>`
+        );
+      }
+      const mail = (email || "").trim();
+      if (mail) {
+        const disp = mail.replace(/^mailto:/i, "").toUpperCase();
+        const href = mailHref(mail);
+        parts.push(
+          `<p><strong>EMAIL:</strong> <a href="${href}">${disp}</a></p>`
+        );
+      }
+      const credit = (photosCredit || "").trim();
+      if (credit)
+        parts.push(
+          `<p><strong>FOTOGRAFÍAS:</strong> ${credit.toUpperCase()}</p>`
+        );
+      return parts.join("");
+    };
+    const buildInfoEn = (): string => {
+      if (infoHtmlEn && infoHtmlEn.trim() !== "") return infoHtmlEn;
+      const parts: string[] = [];
+      const addr = (address || "").trim();
+      if (addr)
+        parts.push(`<p><strong>ADDRESS:</strong> ${addr.toUpperCase()}</p>`);
+      const web = (website || "").trim();
+      if (web) {
+        const display = (websiteDisplay || web).toUpperCase();
+        const href = fixUrl(web);
+        parts.push(
+          `<p><strong>WEB:</strong> <a href="${href}" target="_blank" rel="noopener noreferrer">${display}</a></p>`
+        );
+      }
+      const ig = (instagram || "").trim();
+      if (ig) {
+        const display = (instagramDisplay || ig).toUpperCase();
+        const href = igHref(ig);
+        parts.push(
+          `<p><strong>INSTAGRAM:</strong> <a href="${href}" target="_blank" rel="noopener noreferrer">${display}</a></p>`
+        );
+      }
+      const hoursText = (hours || "").trim();
+      if (hoursText) parts.push(`<p><strong>HOURS:</strong> ${hoursText}</p>`);
+      const resPolicy = (reservationPolicy || "").trim();
+      const resLink = (reservationLink || "").trim();
+      if (resPolicy || resLink) {
+        if (resLink) {
+          const href = fixUrl(resLink);
+          const text = (resPolicy || resLink).toString();
+          parts.push(
+            `<p><strong>RESERVATIONS:</strong> <a href="${href}" target="_blank" rel="noopener noreferrer">${text}</a></p>`
+          );
+        } else {
+          parts.push(`<p><strong>RESERVATIONS:</strong> ${resPolicy}</p>`);
+        }
+      }
+      const fact = (interestingFact || "").trim();
+      if (fact) parts.push(`<p><strong>INTERESTING FACT:</strong> ${fact}</p>`);
+      const tel = (phone || "").trim();
+      if (tel) {
+        const disp = tel.replace(/^tel:/i, "").toUpperCase();
+        const href = telHref(tel);
+        parts.push(
+          `<p><strong>TEL:</strong> <a href="${href}">${disp}</a></p>`
+        );
+      }
+      const mail = (email || "").trim();
+      if (mail) {
+        const disp = mail.replace(/^mailto:/i, "").toUpperCase();
+        const href = mailHref(mail);
+        parts.push(
+          `<p><strong>EMAIL:</strong> <a href="${href}">${disp}</a></p>`
+        );
+      }
+      const credit = (photosCredit || "").trim();
+      if (credit)
+        parts.push(
+          `<p><strong>PHOTOGRAPHS:</strong> ${credit.toUpperCase()}</p>`
+        );
+      return parts.join("");
+    };
+
     const updated = {
       slug: editSlug,
       featuredImage: finalFeatured || undefined,
-      es: { name: nameEs, subtitle: subtitleEs, description: descriptionEs },
-      en: { name: nameEn, subtitle: subtitleEn, description: descriptionEn },
+      es: {
+        name: nameEs,
+        subtitle: subtitleEs,
+        description: descriptionEs,
+        infoHtml: (infoHtmlEs || "").trim()
+          ? infoHtmlEs
+          : buildInfoEs() || undefined,
+      },
+      en: {
+        name: nameEn,
+        subtitle: subtitleEn,
+        description: descriptionEn,
+        infoHtml: (infoHtmlEn || "").trim()
+          ? infoHtmlEn
+          : buildInfoEn() || undefined,
+      },
       website,
       website_display: websiteDisplay,
       instagram,
@@ -269,8 +489,7 @@ export default function NewPostPage() {
       website: website.trim() === "" ? "" : normalized.website,
       website_display: websiteDisplay.trim() === "" ? "" : websiteDisplay,
       instagram: instagram.trim() === "" ? "" : instagram,
-      instagram_display:
-        instagramDisplay.trim() === "" ? "" : instagramDisplay,
+      instagram_display: instagramDisplay.trim() === "" ? "" : instagramDisplay,
       email: email.trim() === "" ? "" : normalized.email,
       phone: phone.trim() === "" ? "" : normalized.phone,
       address: address.trim() === "" ? "" : address,
@@ -280,8 +499,7 @@ export default function NewPostPage() {
         reservationLink.trim() === "" ? "" : normalized.reservationLink,
       reservationPolicy:
         reservationPolicy.trim() === "" ? "" : reservationPolicy,
-      interestingFact:
-        interestingFact.trim() === "" ? "" : interestingFact,
+      interestingFact: interestingFact.trim() === "" ? "" : interestingFact,
       images: normalized.images,
       categories: normalized.categories,
       locations: normalized.locations,
@@ -294,11 +512,25 @@ export default function NewPostPage() {
     const built = buildPayload();
     const { payloadToSend } = built;
     try {
-      setPreviewJson(JSON.stringify(payloadToSend, null, 2).replace(/\n/g, "\n"));
+      setPreviewJson(
+        JSON.stringify(payloadToSend, null, 2).replace(/\n/g, "\n")
+      );
     } catch {
-      setPreviewJson('{' + "\n  \"error\": \"No se pudo serializar\"\n" + '}');
+      setPreviewJson("{" + '\n  "error": "No se pudo serializar"\n' + "}");
     }
     setPreviewOpen(true);
+  };
+
+  const printUseful = () => {
+    const built = buildPayload();
+    const { normalized } = built;
+    const esInfo = (normalized as any)?.es?.infoHtml || "";
+    const enInfo = (normalized as any)?.en?.infoHtml || "";
+    // Imprimir en consola del navegador
+    console.log("[Datos útiles - ES]\n", esInfo);
+    console.log("[Useful info - EN]\n", enInfo);
+    // Pequeña confirmación en UI
+    alert("Datos útiles impresos en la consola (F12)");
   };
 
   const handleCreate = () => {
@@ -310,7 +542,9 @@ export default function NewPostPage() {
     const result = validatePost(normalized as any);
     if (!result.ok) {
       const first = result.issues?.[0];
-      alert(`Error de validación: ${first?.path || ""} - ${first?.message || ""}`);
+      alert(
+        `Error de validación: ${first?.path || ""} - ${first?.message || ""}`
+      );
       return;
     }
     setCreating(true);
@@ -347,11 +581,13 @@ export default function NewPostPage() {
   return (
     <div className="min-h-screen bg-gray-50">
       <div className="w-full px-4 lg:px-8 py-6 space-y-6">
-        {creating && (
+        {(creating || uploading) && (
           <div className="fixed inset-0 z-50 bg-black/30 backdrop-blur-sm grid place-items-center">
             <div className="bg-white rounded-lg shadow-lg p-6 flex items-center gap-3">
               <Spinner className="size-5" />
-              <div className="text-gray-700 font-medium">Creando post…</div>
+              <div className="text-gray-700 font-medium">
+                {creating ? "Creando post…" : "Subiendo imágenes…"}
+              </div>
             </div>
           </div>
         )}
@@ -365,9 +601,21 @@ export default function NewPostPage() {
           </Link>
           <div className="flex-1">
             <h1 className="text-3xl font-bold text-gray-900">Crear post</h1>
-            <p className="text-gray-600 mt-1">Completa la información del lugar</p>
+            <p className="text-gray-600 mt-1">
+              Completa la información del lugar
+            </p>
           </div>
           <div className="flex gap-2">
+            <Button
+              type="button"
+              variant="outline"
+              onClick={printUseful}
+              className="gap-2"
+              disabled={creating}
+              title="Generar y mostrar los Datos útiles en consola"
+            >
+              <Printer size={18} /> Imprimir datos útiles
+            </Button>
             <Button
               type="button"
               variant="outline"
@@ -428,7 +676,9 @@ export default function NewPostPage() {
               )}
             </div>
             <div>
-              <Label className="text-sm font-medium mb-2 block">Categorías</Label>
+              <Label className="text-sm font-medium mb-2 block">
+                Categorías
+              </Label>
               <div className="flex flex-wrap gap-2">
                 {Array.from(new Set(["TODOS", ...allCategories])).map((cat) => (
                   <label
@@ -450,7 +700,9 @@ export default function NewPostPage() {
                 ))}
               </div>
               {loadingCats && (
-                <p className="text-xs text-gray-500 mt-1">Cargando categorías…</p>
+                <p className="text-xs text-gray-500 mt-1">
+                  Cargando categorías…
+                </p>
               )}
             </div>
             <div>
@@ -487,9 +739,14 @@ export default function NewPostPage() {
               <div className="mt-2 flex flex-wrap items-center gap-2 text-xs text-gray-600">
                 {autoDetectedCommunes.length > 0 ? (
                   <>
-                    <span className="uppercase tracking-wide text-gray-500">Sugeridas:</span>
+                    <span className="uppercase tracking-wide text-gray-500">
+                      Sugeridas:
+                    </span>
                     {autoDetectedCommunes.map((c) => (
-                      <span key={c} className="px-2 py-0.5 rounded bg-gray-100 border text-gray-700">
+                      <span
+                        key={c}
+                        className="px-2 py-0.5 rounded bg-gray-100 border text-gray-700"
+                      >
                         {c}
                       </span>
                     ))}
@@ -504,313 +761,59 @@ export default function NewPostPage() {
                     </Button>
                   </>
                 ) : (
-                  <span className="text-gray-500">No detectadas automáticamente</span>
+                  <span className="text-gray-500">
+                    No detectadas automáticamente
+                  </span>
                 )}
               </div>
               <p className="text-[11px] text-gray-500 mt-1">
-                Nota: las comunas aún no se guardan en la base de datos. Se conservan localmente
-                y se incluyen en el JSON de vista previa/guardado para futura compatibilidad.
+                Nota: las comunas aún no se guardan en la base de datos. Se
+                conservan localmente y se incluyen en el JSON de vista
+                previa/guardado para futura compatibilidad.
               </p>
             </div>
           </div>
         </Card>
 
-        {/* Contacto */}
-        <Card className="p-6">
-          <div className="flex items-center gap-2 mb-4">
-            <Globe className="text-green-600" size={20} />
-            <h2 className="font-semibold text-lg">Contacto</h2>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
-            <div>
-              <Label className="text-xs text-gray-600">WEB</Label>
-              <Input value={website} onChange={(e) => setWebsite(e.target.value)} placeholder="https://sitio.cl" />
-            </div>
-            <div>
-              <Label className="text-xs text-gray-600">WEB (display)</Label>
-              <Input value={websiteDisplay} onChange={(e) => setWebsiteDisplay(e.target.value)} placeholder="sitio.cl" />
-            </div>
-            <div>
-              <Label className="text-xs text-gray-600">INSTAGRAM</Label>
-              <Input value={instagram} onChange={(e) => setInstagram(e.target.value)} placeholder="https://instagram.com/handle o @handle" />
-            </div>
-            <div>
-              <Label className="text-xs text-gray-600">INSTAGRAM (display)</Label>
-              <Input value={instagramDisplay} onChange={(e) => setInstagramDisplay(e.target.value)} placeholder="@handle" />
-            </div>
-            <div>
-              <Label className="text-xs text-gray-600">EMAIL</Label>
-              <Input value={email} onChange={(e) => setEmail(e.target.value)} placeholder="correo@dominio.cl" />
-            </div>
-            <div>
-              <Label className="text-xs text-gray-600">TEL</Label>
-              <Input value={phone} onChange={(e) => setPhone(e.target.value)} placeholder="+56 9 1234 5678" />
-            </div>
-            <div className="md:col-span-2">
-              <Label className="text-xs text-gray-600">DIRECCIÓN</Label>
-              <Textarea value={address} onChange={(e) => setAddress(e.target.value)} rows={3} />
-            </div>
-            <div className="md:col-span-2">
-              <Label className="text-xs text-gray-600">CRÉDITO FOTOS</Label>
-              <Input value={photosCredit} onChange={(e) => setPhotosCredit(e.target.value)} placeholder="@usuario / Autor" />
-            </div>
-            <div>
-              <Label className="text-xs text-gray-600">HORARIO</Label>
-              <Input value={hours} onChange={(e) => setHours(e.target.value)} placeholder="MARTES A SÁBADO, DE 19:30 A 00:00 HRS" />
-            </div>
-            <div>
-              <Label className="text-xs text-gray-600">RESERVAS (link)</Label>
-              <Input value={reservationLink} onChange={(e) => setReservationLink(e.target.value)} placeholder="https://…" />
-            </div>
-            <div>
-              <Label className="text-xs text-gray-600">RESERVAS (política)</Label>
-              <Input value={reservationPolicy} onChange={(e) => setReservationPolicy(e.target.value)} placeholder="Se recomienda / Obligatorio / etc." />
-            </div>
-            <div className="md:col-span-2">
-              <Label className="text-xs text-gray-600">DATO DE INTERÉS</Label>
-              <Input value={interestingFact} onChange={(e) => setInterestingFact(e.target.value)} placeholder="Dato llamativo o contextual" />
-            </div>
-          </div>
-        </Card>
+        {/* Contacto oculto por solicitud (solo se usarán los bloques de Datos útiles) */}
 
-        {/* Sucursales / Locations */}
-        <Card className="p-6">
-          <div className="flex items-center gap-2 mb-4">
-            <Globe className="text-green-600" size={20} />
-            <h2 className="font-semibold text-lg">Sucursales / Locations</h2>
-          </div>
-          <div className="space-y-4">
-            {locations.map((loc, idx) => (
-              <div key={idx} className="border rounded-lg p-4 space-y-3">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                  <div>
-                    <Label className="text-xs text-gray-600">Etiqueta</Label>
-                    <Input
-                      value={loc.label || ""}
-                      onChange={(e) => {
-                        const v = e.target.value;
-                        setLocations((prev) => {
-                          const arr = [...prev];
-                          arr[idx] = { ...arr[idx], label: v };
-                          return arr;
-                        });
-                      }}
-                      placeholder="Ej: Vitacura, Sucursal Centro, etc."
-                    />
-                  </div>
-                  <div>
-                    <Label className="text-xs text-gray-600">Horario</Label>
-                    <Input
-                      value={loc.hours || ""}
-                      onChange={(e) => {
-                        const v = e.target.value;
-                        setLocations((prev) => {
-                          const arr = [...prev];
-                          arr[idx] = { ...arr[idx], hours: v };
-                          return arr;
-                        });
-                      }}
-                      placeholder="LUN-DOM 12:00-22:00"
-                    />
-                  </div>
-                  <div className="md:col-span-2">
-                    <Label className="text-xs text-gray-600">Dirección</Label>
-                    <Textarea
-                      rows={2}
-                      value={loc.address || ""}
-                      onChange={(e) => {
-                        const v = e.target.value;
-                        setLocations((prev) => {
-                          const arr = [...prev];
-                          arr[idx] = { ...arr[idx], address: v };
-                          return arr;
-                        });
-                      }}
-                    />
-                  </div>
-                  <div>
-                    <Label className="text-xs text-gray-600">Web</Label>
-                    <Input
-                      value={loc.website || ""}
-                      onChange={(e) => {
-                        const v = e.target.value;
-                        setLocations((prev) => {
-                          const arr = [...prev];
-                          arr[idx] = { ...arr[idx], website: v };
-                          return arr;
-                        });
-                      }}
-                      placeholder="https://…"
-                    />
-                  </div>
-                  <div>
-                    <Label className="text-xs text-gray-600">Web (display)</Label>
-                    <Input
-                      value={loc.website_display || ""}
-                      onChange={(e) => {
-                        const v = e.target.value;
-                        setLocations((prev) => {
-                          const arr = [...prev];
-                          arr[idx] = { ...arr[idx], website_display: v };
-                          return arr;
-                        });
-                      }}
-                      placeholder="WWW.SITIO.CL"
-                    />
-                  </div>
-                  <div>
-                    <Label className="text-xs text-gray-600">Instagram</Label>
-                    <Input
-                      value={loc.instagram || ""}
-                      onChange={(e) => {
-                        const v = e.target.value;
-                        setLocations((prev) => {
-                          const arr = [...prev];
-                          arr[idx] = { ...arr[idx], instagram: v };
-                          return arr;
-                        });
-                      }}
-                      placeholder="https://instagram.com/… o @handle"
-                    />
-                  </div>
-                  <div>
-                    <Label className="text-xs text-gray-600">Instagram (display)</Label>
-                    <Input
-                      value={loc.instagram_display || ""}
-                      onChange={(e) => {
-                        const v = e.target.value;
-                        setLocations((prev) => {
-                          const arr = [...prev];
-                          arr[idx] = { ...arr[idx], instagram_display: v };
-                          return arr;
-                        });
-                      }}
-                      placeholder="@handle"
-                    />
-                  </div>
-                  <div>
-                    <Label className="text-xs text-gray-600">Reservas (link)</Label>
-                    <Input
-                      value={loc.reservationLink || ""}
-                      onChange={(e) => {
-                        const v = e.target.value;
-                        setLocations((prev) => {
-                          const arr = [...prev];
-                          arr[idx] = { ...arr[idx], reservationLink: v };
-                          return arr;
-                        });
-                      }}
-                      placeholder="https://…"
-                    />
-                  </div>
-                  <div>
-                    <Label className="text-xs text-gray-600">Reservas (política)</Label>
-                    <Input
-                      value={loc.reservationPolicy || ""}
-                      onChange={(e) => {
-                        const v = e.target.value;
-                        setLocations((prev) => {
-                          const arr = [...prev];
-                          arr[idx] = { ...arr[idx], reservationPolicy: v };
-                          return arr;
-                        });
-                      }}
-                      placeholder="Se recomienda / Obligatorio / etc."
-                    />
-                  </div>
-                  <div className="md:col-span-2">
-                    <Label className="text-xs text-gray-600">Dato de interés</Label>
-                    <Input
-                      value={loc.interestingFact || ""}
-                      onChange={(e) => {
-                        const v = e.target.value;
-                        setLocations((prev) => {
-                          const arr = [...prev];
-                          arr[idx] = { ...arr[idx], interestingFact: v };
-                          return arr;
-                        });
-                      }}
-                    />
-                  </div>
-                  <div>
-                    <Label className="text-xs text-gray-600">Tel</Label>
-                    <Input
-                      value={loc.phone || ""}
-                      onChange={(e) => {
-                        const v = e.target.value;
-                        setLocations((prev) => {
-                          const arr = [...prev];
-                          arr[idx] = { ...arr[idx], phone: v };
-                          return arr;
-                        });
-                      }}
-                      placeholder="+56 9 …"
-                    />
-                  </div>
-                  <div>
-                    <Label className="text-xs text-gray-600">Email</Label>
-                    <Input
-                      value={loc.email || ""}
-                      onChange={(e) => {
-                        const v = e.target.value;
-                        setLocations((prev) => {
-                          const arr = [...prev];
-                          arr[idx] = { ...arr[idx], email: v };
-                          return arr;
-                        });
-                      }}
-                      placeholder="correo@…"
-                    />
-                  </div>
-                </div>
-                <div className="flex justify-end">
-                  <Button
-                    type="button"
-                    variant="destructive"
-                    size="sm"
-                    onClick={() => setLocations((prev) => prev.filter((_, i) => i !== idx))}
-                  >
-                    Eliminar sucursal
-                  </Button>
-                </div>
-              </div>
-            ))}
-            <Button
-              type="button"
-              variant="outline"
-              className="gap-2"
-              onClick={() =>
-                setLocations((prev) => [
-                  ...prev,
-                  {
-                    label: "",
-                    address: "",
-                    hours: "",
-                    website: "",
-                    website_display: "",
-                    instagram: "",
-                    instagram_display: "",
-                    reservationLink: "",
-                    reservationPolicy: "",
-                    interestingFact: "",
-                    email: "",
-                    phone: "",
-                  },
-                ])
-              }
-            >
-              <Plus size={16} /> Agregar sucursal
-            </Button>
-          </div>
-        </Card>
+        {/* Sucursales ocultas por solicitud */}
 
         {/* Imágenes */}
-        <Card className="p-6">
+        <Card
+          className="p-6"
+          onDragOver={(e) => {
+            e.preventDefault();
+            if (!isDragging) setIsDragging(true);
+          }}
+          onDragEnter={(e) => {
+            e.preventDefault();
+            setIsDragging(true);
+          }}
+          onDragLeave={(e) => {
+            e.preventDefault();
+            setIsDragging(false);
+          }}
+          onDrop={(e) => {
+            e.preventDefault();
+            const files = e.dataTransfer?.files;
+            if (files && files.length > 0) {
+              uploadFiles(files);
+            }
+          }}
+        >
           <div className="flex items-center gap-2 mb-4">
-            <Globe className="text-green-600" size={20} />
+            <ImageIcon className="text-green-600" size={20} />
             <h2 className="font-semibold text-lg">Imágenes</h2>
           </div>
           <div className="space-y-4">
+            {isDragging && (
+              <div className="relative">
+                <div className="absolute inset-0 z-10 border-2 border-dashed border-green-500 bg-green-50/60 rounded flex items-center justify-center text-green-700 font-medium">
+                  Suelta tus imágenes aquí para subirlas…
+                </div>
+              </div>
+            )}
             <div>
               <h3 className="text-sm font-semibold mb-2">Destacada</h3>
               {images[featuredIndex] ? (
@@ -859,17 +862,33 @@ export default function NewPostPage() {
                     />
                     <div className="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition-colors" />
                     <div className="absolute bottom-1 left-1 right-1 flex gap-1 justify-between opacity-0 group-hover:opacity-100 transition-opacity">
-                      <Button size="sm" variant="secondary" onClick={() => setFeaturedIndex(idx)}>
+                      <Button
+                        size="sm"
+                        variant="secondary"
+                        onClick={() => setFeaturedIndex(idx)}
+                      >
                         Destacar
                       </Button>
                       <div className="flex gap-1">
-                        <Button size="icon" variant="secondary" onClick={() => reorderImages(idx, idx - 1)}>
+                        <Button
+                          size="icon"
+                          variant="secondary"
+                          onClick={() => reorderImages(idx, idx - 1)}
+                        >
                           ↑
                         </Button>
-                        <Button size="icon" variant="secondary" onClick={() => reorderImages(idx, idx + 1)}>
+                        <Button
+                          size="icon"
+                          variant="secondary"
+                          onClick={() => reorderImages(idx, idx + 1)}
+                        >
                           ↓
                         </Button>
-                        <Button size="icon" variant="destructive" onClick={() => removeImage(idx)}>
+                        <Button
+                          size="icon"
+                          variant="destructive"
+                          onClick={() => removeImage(idx)}
+                        >
                           <X size={14} />
                         </Button>
                       </div>
@@ -878,26 +897,24 @@ export default function NewPostPage() {
                 ))}
               </div>
             </div>
-            <div className="flex gap-2 items-center">
-              <Input
-                placeholder="Pega URL de imagen..."
-                onKeyDown={(e) => {
-                  const target = e.target as HTMLInputElement;
-                  if (e.key === "Enter" && target.value.trim()) {
-                    setImages([...images, target.value.trim()]);
-                    target.value = "";
-                  }
-                }}
-              />
-              <Button
-                onClick={() => {
-                  const url = prompt("URL de imagen");
-                  if (url && url.trim()) setImages([...images, url.trim()]);
-                }}
-                variant="outline"
-              >
-                Agregar imagen
-              </Button>
+            <div className="flex flex-wrap gap-2 items-center">
+              <label className="inline-flex items-center gap-2">
+                <input
+                  type="file"
+                  multiple
+                  className="hidden"
+                  onChange={(e) => {
+                    const files = e.target.files;
+                    if (files && files.length > 0) uploadFiles(files);
+                  }}
+                />
+                <Button type="button" variant="outline">
+                  Subir archivos
+                </Button>
+              </label>
+              <span className="text-xs text-gray-500">
+                También puedes arrastrar y soltar sobre este bloque.
+              </span>
             </div>
           </div>
         </Card>
@@ -913,32 +930,86 @@ export default function NewPostPage() {
               <h3 className="font-semibold">Español</h3>
               <div>
                 <Label className="text-xs text-gray-600">Nombre</Label>
-                <Input value={nameEs} onChange={(e) => setNameEs(e.target.value)} />
+                <Input
+                  value={nameEs}
+                  onChange={(e) => setNameEs(e.target.value)}
+                />
               </div>
               <div>
                 <Label className="text-xs text-gray-600">Subtítulo</Label>
-                <Input value={subtitleEs} onChange={(e) => setSubtitleEs(e.target.value)} />
+                <Input
+                  value={subtitleEs}
+                  onChange={(e) => setSubtitleEs(e.target.value)}
+                />
               </div>
               <div>
-                <Label className="text-xs text-gray-600">Descripción (bloque único)</Label>
-                <AdminRichText value={descriptionUnified} onChange={(v) => setDescriptionUnified(v)} />
-                <p className="text-[11px] text-gray-500 mt-1">Usa la barra superior para dar formato; Enter crea nuevos párrafos.</p>
+                <Label className="text-xs text-gray-600">
+                  Descripción (bloque único)
+                </Label>
+                <AdminRichText
+                  value={descriptionUnified}
+                  onChange={(v) => setDescriptionUnified(v)}
+                />
+                <p className="text-[11px] text-gray-500 mt-1">
+                  Usa la barra superior para dar formato; Enter crea nuevos
+                  párrafos.
+                </p>
+              </div>
+              <div>
+                <Label className="text-xs text-gray-600">
+                  Datos útiles (bloque, puedes pegar todo el bloque con títulos
+                  en negrita)
+                </Label>
+                <AdminRichText
+                  value={infoHtmlEs}
+                  onChange={(v) => setInfoHtmlEs(v)}
+                />
+                <p className="text-[11px] text-gray-500 mt-1">
+                  Este bloque se mostrará bajo "Datos útiles". Puedes usar
+                  <strong> negritas</strong> para los títulos.
+                </p>
               </div>
             </div>
             <div className="space-y-3">
               <h3 className="font-semibold">English</h3>
               <div>
                 <Label className="text-xs text-gray-600">Name</Label>
-                <Input value={nameEn} onChange={(e) => setNameEn(e.target.value)} />
+                <Input
+                  value={nameEn}
+                  onChange={(e) => setNameEn(e.target.value)}
+                />
               </div>
               <div>
                 <Label className="text-xs text-gray-600">Subtitle</Label>
-                <Input value={subtitleEn} onChange={(e) => setSubtitleEn(e.target.value)} />
+                <Input
+                  value={subtitleEn}
+                  onChange={(e) => setSubtitleEn(e.target.value)}
+                />
               </div>
               <div>
-                <Label className="text-xs text-gray-600">Description (single block)</Label>
-                <AdminRichText value={descriptionUnifiedEn} onChange={(v) => setDescriptionUnifiedEn(v)} />
-                <p className="text-[11px] text-gray-500 mt-1">Use the toolbar for formatting; Enter creates new paragraphs.</p>
+                <Label className="text-xs text-gray-600">
+                  Description (single block)
+                </Label>
+                <AdminRichText
+                  value={descriptionUnifiedEn}
+                  onChange={(v) => setDescriptionUnifiedEn(v)}
+                />
+                <p className="text-[11px] text-gray-500 mt-1">
+                  Use the toolbar for formatting; Enter creates new paragraphs.
+                </p>
+              </div>
+              <div>
+                <Label className="text-xs text-gray-600">
+                  Useful info (block, you can paste full block with bold titles)
+                </Label>
+                <AdminRichText
+                  value={infoHtmlEn}
+                  onChange={(v) => setInfoHtmlEn(v)}
+                />
+                <p className="text-[11px] text-gray-500 mt-1">
+                  This block is rendered under "Useful information". You can use
+                  <strong> bold</strong> for the labels.
+                </p>
               </div>
             </div>
           </div>
@@ -954,7 +1025,9 @@ export default function NewPostPage() {
             <Save size={20} />
             {creating ? "Creando..." : "Crear post"}
           </Button>
-          <Button variant="outline" onClick={() => router.push("/admin/posts")}>Cancelar</Button>
+          <Button variant="outline" onClick={() => router.push("/admin/posts")}>
+            Cancelar
+          </Button>
         </div>
 
         <Dialog open={previewOpen} onOpenChange={setPreviewOpen}>
@@ -966,7 +1039,9 @@ export default function NewPostPage() {
               </DialogDescription>
             </DialogHeader>
             <div className="rounded-md border bg-gray-50 p-2 max-h-[60vh] overflow-auto text-xs font-mono">
-              <pre className="whitespace-pre-wrap break-words">{previewJson}</pre>
+              <pre className="whitespace-pre-wrap break-words">
+                {previewJson}
+              </pre>
             </div>
             <DialogFooter className="flex gap-2">
               <Button
@@ -986,4 +1061,3 @@ export default function NewPostPage() {
     </div>
   );
 }
- 

@@ -107,6 +107,7 @@ export default function LugarPage(props: any) {
           .map((p: string) => `<p>${p}</p>`)
           .join(""),
         infoHtml: source[language]?.infoHtml || "",
+        infoHtmlNew: source[language]?.infoHtmlNew || "",
         website: source.website || "",
         website_display: source.website_display || "",
         instagram: source.instagram || "",

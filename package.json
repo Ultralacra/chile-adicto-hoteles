@@ -9,7 +9,8 @@
     "start": "next start",
     "db:schema:apply": "node scripts/apply-schema.mjs",
     "db:migrate": "node scripts/migrate-supabase.mjs",
-    "db:migrate:rest": "node scripts/migrate-supabase-http.mjs"
+    "db:migrate:rest": "node scripts/migrate-supabase-http.mjs",
+    "backfill:infohtml": "node scripts/backfill-info-html.mjs"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.10.0",

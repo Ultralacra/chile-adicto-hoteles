@@ -85,6 +85,9 @@ function mapRowToLegacy(row: any) {
     : [];
   const trEs = (row.translations || []).find((t: any) => t.lang === "es") || {};
   const trEn = (row.translations || []).find((t: any) => t.lang === "en") || {};
+  const useful = Array.isArray(row.useful) ? row.useful : [];
+  const uEs = useful.find((u: any) => (u.lang || "").toLowerCase() === "es") || {};
+  const uEn = useful.find((u: any) => (u.lang || "").toLowerCase() === "en") || {};
   const categories = Array.isArray(row.category_links)
     ? row.category_links.map((r: any) => r.category?.label_es || r.category?.slug).filter(Boolean)
     : [];
@@ -110,6 +113,7 @@ function mapRowToLegacy(row: any) {
       subtitle: trEs.subtitle || "",
       description: Array.isArray(trEs.description) ? trEs.description : [],
       infoHtml: trEs.info_html || undefined,
+      infoHtmlNew: uEs.html || undefined,
       category: trEs.category || null,
     },
     en: {
@@ -117,6 +121,7 @@ function mapRowToLegacy(row: any) {
       subtitle: trEn.subtitle || "",
       description: Array.isArray(trEn.description) ? trEn.description : [],
       infoHtml: trEn.info_html || undefined,
+      infoHtmlNew: uEn.html || undefined,
       category: trEn.category || null,
     },
     categories,
@@ -131,7 +136,7 @@ export async function GET(
   try {
     // Intentar Supabase
     const select =
-      "slug,featured_image,website,instagram,website_display,instagram_display,email,phone,photos_credit,address,hours,reservation_link,reservation_policy,interesting_fact,images:post_images(url,position),locations:post_locations(*),translations:post_translations(*),category_links:post_category_map(category:categories(slug,label_es,label_en))";
+      "slug,featured_image,website,instagram,website_display,instagram_display,email,phone,photos_credit,address,hours,reservation_link,reservation_policy,interesting_fact,images:post_images(url,position),locations:post_locations(*),translations:post_translations(*),useful:post_useful_info(*),category_links:post_category_map(category:categories(slug,label_es,label_en))";
     const rows: any[] | null = await fetchFromSupabase(
       `/posts?slug=eq.${encodeURIComponent(params.slug)}&select=${encodeURIComponent(select)}`
     );
@@ -285,7 +290,7 @@ export async function PUT(
         name: esT.name ? String(esT.name).trim() : null,
         subtitle: esT.subtitle ? String(esT.subtitle).trim() : null,
         description: Array.isArray(esT.description) ? esT.description : [],
-        info_html: esT.infoHtml ? String(esT.infoHtml).trim() : null,
+        info_html: null,
         category: esT.category ? String(esT.category).trim() : null,
       },
       {
@@ -294,7 +299,7 @@ export async function PUT(
         name: enT.name ? String(enT.name).trim() : null,
         subtitle: enT.subtitle ? String(enT.subtitle).trim() : null,
         description: Array.isArray(enT.description) ? enT.description : [],
-        info_html: enT.infoHtml ? String(enT.infoHtml).trim() : null,
+        info_html: null,
         category: enT.category ? String(enT.category).trim() : null,
       },
     ];
@@ -339,6 +344,26 @@ export async function PUT(
           }
         }
         if (errCurr) throw errCurr;
+      }
+    }
+
+    // 4b) Upsert de post_useful_info si se proporcionaron bloques HTML
+    {
+      const useful: any[] = [];
+      const providedEs = provided.has("es") && typeof (body?.es?.infoHtml) !== "undefined";
+      const providedEn = provided.has("en") && typeof (body?.en?.infoHtml) !== "undefined";
+      if (providedEs && esT.infoHtml && String(esT.infoHtml).trim() !== "") {
+        useful.push({ post_id: postId, lang: "es", html: String(esT.infoHtml).trim() });
+      }
+      if (providedEn && enT.infoHtml && String(enT.infoHtml).trim() !== "") {
+        useful.push({ post_id: postId, lang: "en", html: String(enT.infoHtml).trim() });
+      }
+      if (useful.length > 0) {
+        await serviceRest(`/post_useful_info`, {
+          method: "POST",
+          body: JSON.stringify(useful),
+          headers: { Prefer: "return=representation,resolution=merge-duplicates" },
+        });
       }
     }
 

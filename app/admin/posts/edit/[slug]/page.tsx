@@ -2,7 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { use, useEffect, useState } from "react";
+import { use, useEffect, useState, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -120,6 +120,7 @@ export default function EditPostPage({
   // Estados para drag & drop de la galería
   const [dragIndex, setDragIndex] = useState<number | null>(null);
   const [dragOverIndex, setDragOverIndex] = useState<number | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const reorderImages = (from: number, to: number) => {
     if (from === to || from < 0 || to < 0) return;
     setImages((prev) => {
@@ -965,20 +966,23 @@ export default function EditPostPage({
               </div>
             </div>
             <div className="flex flex-wrap gap-2 items-center">
-              <label className="inline-flex items-center gap-2">
-                <input
-                  type="file"
-                  multiple
-                  className="hidden"
-                  onChange={(e) => {
-                    const files = e.target.files;
-                    if (files && files.length > 0) uploadFiles(files);
-                  }}
-                />
-                <Button type="button" variant="outline">
-                  Subir archivos
-                </Button>
-              </label>
+              <input
+                ref={fileInputRef}
+                type="file"
+                multiple
+                className="sr-only"
+                onChange={(e) => {
+                  const files = e.target.files;
+                  if (files && files.length > 0) uploadFiles(files);
+                }}
+              />
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => fileInputRef.current?.click()}
+              >
+                Subir archivos
+              </Button>
               <span className="text-xs text-gray-500">
                 También puedes arrastrar y soltar sobre este bloque.
               </span>

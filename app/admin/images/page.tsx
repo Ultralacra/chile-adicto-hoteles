@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -28,6 +28,7 @@ export default function AdminImagesPage() {
   const [saving, setSaving] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     let cancelled = false;
@@ -394,20 +395,23 @@ export default function AdminImagesPage() {
                   </div>
 
                   <div className="flex flex-wrap gap-2 items-center">
-                    <label className="inline-flex items-center gap-2">
-                      <input
-                        type="file"
-                        multiple
-                        className="hidden"
-                        onChange={(e) => {
-                          const files = e.target.files;
-                          if (files && files.length > 0) handleDropFiles(files);
-                        }}
-                      />
-                      <Button type="button" variant="outline">
-                        Subir archivos
-                      </Button>
-                    </label>
+                    <input
+                      ref={fileInputRef}
+                      type="file"
+                      multiple
+                      className="sr-only"
+                      onChange={(e) => {
+                        const files = e.target.files;
+                        if (files && files.length > 0) handleDropFiles(files);
+                      }}
+                    />
+                    <Button
+                      type="button"
+                      variant="outline"
+                      onClick={() => fileInputRef.current?.click()}
+                    >
+                      Subir archivos
+                    </Button>
                   </div>
 
                   <div className="flex gap-3">

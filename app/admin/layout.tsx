@@ -83,7 +83,7 @@ export default function AdminLayout({
       >
         <div className="p-6 border-b border-gray-700">
           <h1 className="text-2xl font-bold">Chile Adicto</h1>
-          <p className="text-sm text-gray-400 mt-1">Panel de administración</p>
+          <p className="text-sm text-gray-400 mt-1">Panel de administración.</p>
         </div>
 
         <nav className="p-4 space-y-2">

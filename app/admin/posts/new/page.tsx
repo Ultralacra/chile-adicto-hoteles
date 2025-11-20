@@ -293,9 +293,39 @@ export default function NewPostPage() {
     // Autogenerar infoHtml si el usuario dejó vacías las cajas pero llenó los campos de contacto
     const fixUrl = (u?: string) => {
       if (!u) return "";
-      const v = String(u).trim();
+      let v = String(u).trim();
       if (!v) return "";
-      return /^https?:\/\//i.test(v) ? v : `https://${v}`;
+      // Quitar comillas envolventes y espacios raros
+      v = v.replace(/^['\"]+|['\"]+$/g, "");
+      // Añadir dos puntos si se omitieron después de http/https
+      v = v
+        .replace(/^(https)(?!:)/i, "https:")
+        .replace(/^(http)(?!:)/i, "http:");
+      // Normalizar un solo slash después del protocolo -> //
+      v = v.replace(/^(https?:)\/(?!\/)/i, (m, proto) => proto + "//");
+      // Si el protocolo está pero hay más de dos barras (https:////) reducir a dos
+      v = v.replace(/^(https?:\/\/)+/i, (m) => m.replace(/\/\/+$/, "//"));
+      // Si falta protocolo pero parece dominio (contiene punto y letras) agregar https://
+      if (!/^(https?:\/\/)/i.test(v) && /[A-Za-z0-9]\.[A-Za-z]/.test(v)) {
+        v = "https://" + v.replace(/^\/+/, "");
+      }
+      // Colapsar repeticiones de protocolo (https://https://example) dejando solo uno
+      v = v.replace(/^(https?:\/\/){2,}/i, (m) =>
+        m.substring(0, m.indexOf("//") + 2)
+      );
+      // Arreglar ocurrencias internas de 'https//'
+      v = v.replace(/https\/{2}(?=[^:])/gi, "https://");
+      // Si queda patrón https://https// (segundo sin colon) convertir a https://
+      v = v.replace(/https:\/\/https\/\//i, "https://");
+      // Limpiar triple slash en path (mantener protocolo + dominio)
+      if (/^https?:\/\//i.test(v)) {
+        try {
+          const urlObj = new URL(v);
+          const cleanPath = urlObj.pathname.replace(/\/{2,}/g, "/");
+          v = urlObj.origin + cleanPath + urlObj.search + urlObj.hash;
+        } catch {}
+      }
+      return v;
     };
     const igHref = (v?: string) => {
       const s = String(v || "").trim();

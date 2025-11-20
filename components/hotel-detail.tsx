@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import Image from "next/image";
 import useEmblaCarousel from "embla-carousel-react";
@@ -70,6 +70,154 @@ export function HotelDetail({ hotel }: HotelDetailProps) {
   const [address, setAddress] = useState<string>(
     normalizeAddressText(hotel.address || "")
   );
+
+  // Log de datos útiles al entrar al post (estado crudo)
+  useEffect(() => {
+    const datos = {
+      hasInfoHtmlNew: !!hotel.infoHtmlNew,
+      hasInfoHtml: !!hotel.infoHtml,
+      website: hotel.website,
+      instagram: hotel.instagram,
+      email: hotel.email,
+      phone: hotel.phone,
+      address: hotel.address,
+      locations: hotel.locations,
+      reservationLink: hotel.reservationLink,
+      reservationPolicy: hotel.reservationPolicy,
+      hours: hotel.hours,
+      interestingFact: hotel.interestingFact,
+      photosCredit: hotel.photosCredit,
+    };
+    console.log("[HotelDetail] Datos útiles (raw):", datos);
+  }, [hotel]);
+
+  // Sanitizar enlaces dentro de infoHtmlNew / infoHtml (corrige comillas y protocolos)
+  const sanitizeInfoHtml = (raw?: string) => {
+    if (!raw) return "";
+    try {
+      const div = document.createElement("div");
+      div.innerHTML = raw;
+      const anchors = div.querySelectorAll("a[href]");
+      anchors.forEach((a) => {
+        let href = a.getAttribute("href") || "";
+        href = href.trim().replace(/^['\"]+|['\"]+$/g, "");
+        // Eliminar backslashes residuales al final (p.ej. ...%5C)
+        href = href.replace(/\\+$/g, "");
+        // Añadir dos puntos si faltan tras http/https
+        href = href
+          .replace(/^(https)(?!:)/i, "https:")
+          .replace(/^(http)(?!:)/i, "http:");
+        // Reparar patrones comunes mal escritos del protocolo
+        href = href
+          // http:s://... o https:s://... -> https://...
+          .replace(/^http:s?:\/\//i, "https://")
+          .replace(/^https:s?:\/\//i, "https://")
+          // Reparación global de http:s:// / https:s:// en cualquier parte
+          .replace(/https?:s?:\/\//gi, (m) =>
+            m.toLowerCase().startsWith("http:s") ||
+            m.toLowerCase().startsWith("https:s")
+              ? "https://"
+              : m
+          )
+          // https//... o http//... -> https://... / http://...
+          .replace(/^https\/\/+/, "https://")
+          .replace(/^http\/\/+/, "http://");
+        // Normalizar un solo slash después de protocolo a dos
+        href = href.replace(/^(https?:)\/(?!\/)/i, (m, proto) => proto + "//");
+        // Arreglar https// o http// en cualquier parte (sin colon)
+        href = href
+          .replace(/https\/\/+?/gi, "https://")
+          .replace(/http\/\/+?/gi, "http://");
+        // Colapsar repeticiones de protocolo
+        href = href.replace(/^(https?:\/\/){2,}/i, (m) =>
+          m.substring(0, m.indexOf("//") + 2)
+        );
+        // Colapsar protocolos duplicados en cualquier lugar (https://https://...)
+        href = href.replace(/https?:\/\/https?:\/\//gi, "https://");
+        // Reparar ocurrencias internas de https// sin colon
+        href = href.replace(/https\/{2}(?=[^:])/gi, "https://");
+        // Reparar mezcla https://https// al inicio
+        href = href.replace(/^https:\/\/https\/{2}/i, "https://");
+        // Colapsar patrón https://https// (segundo sin colon)
+        href = href.replace(/https:\/\/https\/\//i, "https://");
+        // Si aún quedan múltiples protocolos, tomar la última ocurrencia válida
+        const lastHttp = href.toLowerCase().lastIndexOf("http://");
+        const lastHttps = href.toLowerCase().lastIndexOf("https://");
+        const lastIdx = Math.max(lastHttp, lastHttps);
+        if (lastIdx > 0) {
+          href = href.slice(lastIdx);
+        }
+        // Handle instagram tipo @usuario
+        if (/^@/.test(href)) {
+          const handle = href.replace(/^@+/, "");
+          href = `https://instagram.com/${handle}`;
+        }
+        // Instagram parcial sin protocolo
+        if (
+          /^(?:www\.)?instagram\.com\//i.test(href) &&
+          !/^https?:\/\//i.test(href)
+        ) {
+          href = `https://${href}`;
+        }
+        // Dominio sin protocolo
+        if (
+          !/^(https?:\/\/|tel:|mailto:)/i.test(href) &&
+          /[A-Za-z0-9]\.[A-Za-z]/.test(href)
+        ) {
+          href = `https://${href.replace(/^\/+/, "")}`;
+        }
+        // Limpiar path de múltiples slashes
+        if (/^https?:\/\//i.test(href)) {
+          try {
+            const u = new URL(href);
+            const cleanPath = u.pathname.replace(/\/{2,}/g, "/");
+            href = u.origin + cleanPath + u.search + u.hash;
+          } catch {}
+        }
+        // mailto/tel limpieza
+        if (/^mailto:/i.test(href)) {
+          href = `mailto:${href
+            .replace(/^mailto:/i, "")
+            .replace(/['\"\s]/g, "")}`;
+        } else if (/^tel:/i.test(href)) {
+          const num = href.replace(/^tel:/i, "").replace(/[^+\d]/g, "");
+          href = `tel:${num}`;
+        }
+        a.setAttribute("href", href);
+        if (!/^tel:|mailto:/i.test(href)) {
+          a.setAttribute("target", "_blank");
+          a.setAttribute("rel", "noopener noreferrer");
+        }
+      });
+      return div.innerHTML;
+    } catch {
+      return raw;
+    }
+  };
+
+  const infoHtmlNewSanitized = useMemo(
+    () => sanitizeInfoHtml(hotel.infoHtmlNew),
+    [hotel.infoHtmlNew]
+  );
+  const infoHtmlLegacySanitized = useMemo(
+    () => sanitizeInfoHtml(hotel.infoHtml),
+    [hotel.infoHtml]
+  );
+
+  // Log de HTML sanitizado para diagnóstico de URLs
+  useEffect(() => {
+    if (hotel.infoHtmlNew || hotel.infoHtml) {
+      console.log("[HotelDetail] Datos útiles (sanitized)", {
+        infoHtmlNewSanitized,
+        infoHtmlLegacySanitized,
+      });
+    }
+  }, [
+    hotel.infoHtmlNew,
+    hotel.infoHtml,
+    infoHtmlNewSanitized,
+    infoHtmlLegacySanitized,
+  ]);
 
   // Embla: actualizar índice seleccionado
   useEffect(() => {
@@ -385,7 +533,7 @@ export function HotelDetail({ hotel }: HotelDetailProps) {
                 </h3>
                 <div
                   className="prose prose-sm md:prose-base max-w-none font-neutra text-black text-[15px] leading-[22px] [&_*]:text-[15px] [&_strong]:font-[700] [&_em]:italic [&_a]:text-[var(--color-brand-red)] [&_a]:no-underline hover:[&_a]:underline"
-                  dangerouslySetInnerHTML={{ __html: hotel.infoHtmlNew }}
+                  dangerouslySetInnerHTML={{ __html: infoHtmlNewSanitized }}
                 />
               </>
             ) : hotel.infoHtml ? (
@@ -395,7 +543,7 @@ export function HotelDetail({ hotel }: HotelDetailProps) {
                 </h3>
                 <div
                   className="prose prose-sm md:prose-base max-w-none font-neutra text-black text-[15px] leading-[22px] [&_*]:text-[15px] [&_strong]:font-[700] [&_em]:italic [&_a]:text-[var(--color-brand-red)] [&_a]:no-underline hover:[&_a]:underline"
-                  dangerouslySetInnerHTML={{ __html: hotel.infoHtml }}
+                  dangerouslySetInnerHTML={{ __html: infoHtmlLegacySanitized }}
                 />
               </>
             ) : (

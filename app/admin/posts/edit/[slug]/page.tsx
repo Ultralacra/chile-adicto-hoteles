@@ -239,9 +239,30 @@ export default function EditPostPage({
     if (!hotel) return;
     const fixUrl = (u?: string) => {
       if (!u) return "";
-      const v = String(u).trim();
+      let v = String(u).trim();
       if (!v) return "";
-      return /^https?:\/\//i.test(v) ? v : `https://${v}`;
+      v = v.replace(/^['\"]+|['\"]+$/g, "");
+      v = v
+        .replace(/^(https)(?!:)/i, "https:")
+        .replace(/^(http)(?!:)/i, "http:");
+      v = v.replace(/^(https?:)\/(?!\/)/i, (m, proto) => proto + "//");
+      v = v.replace(/^(https?:\/\/)+/i, (m) => m.replace(/\/\/+$/, "//"));
+      if (!/^(https?:\/\/)/i.test(v) && /[A-Za-z0-9]\.[A-Za-z]/.test(v)) {
+        v = "https://" + v.replace(/^\/+/, "");
+      }
+      v = v.replace(/^(https?:\/\/){2,}/i, (m) =>
+        m.substring(0, m.indexOf("//") + 2)
+      );
+      v = v.replace(/https\/{2}(?=[^:])/gi, "https://");
+      v = v.replace(/https:\/\/https\/\//i, "https://");
+      if (/^https?:\/\//i.test(v)) {
+        try {
+          const urlObj = new URL(v);
+          const cleanPath = urlObj.pathname.replace(/\/{2,}/g, "/");
+          v = urlObj.origin + cleanPath + urlObj.search + urlObj.hash;
+        } catch {}
+      }
+      return v;
     };
     const igHref = (v?: string) => {
       const s = String(v || "").trim();

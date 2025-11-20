@@ -227,6 +227,7 @@ export default function CategoryPage({ params }: { params: any }) {
     "mirai-food-lab",
     "bocanariz-la-vitrina-del-vino-chileno",
     "blue-jar-nunca-decepciona",
+    "make-make",
   ]);
 
   // Cargar imágenes del slider de restaurantes desde /public/imagenes-slider/manifest.json

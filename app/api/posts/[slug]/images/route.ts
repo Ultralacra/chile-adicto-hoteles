@@ -15,13 +15,28 @@ async function serviceRest(path: string, init?: RequestInit) {
       "Supabase Service Role no configurado (NEXT_PUBLIC_SUPABASE_URL / SUPABASE_SERVICE_ROLE_KEY)"
     );
   const url = `${base}/rest/v1${path}`;
+  const method = (init?.method || "GET").toUpperCase();
+  const hasBody = !!init?.body;
+  // Construir headers base
+  const baseHeaders: Record<string, string> = {
+    apikey: service,
+    Authorization: `Bearer ${service}`,
+    Prefer: "return=representation",
+  };
+  // Copiar headers usuario preservando casing
+  const userHeaders = { ...(init?.headers || {}) } as Record<string, string>;
+  // Añadir Content-Type JSON si es escritura con body y no viene definido ya
+  const hasContentType = Object.keys(userHeaders).some(
+    (h) => h.toLowerCase() === "content-type"
+  );
+  if (hasBody && method !== "GET" && !hasContentType) {
+    baseHeaders["Content-Type"] = "application/json";
+  }
   const res = await fetch(url, {
     ...init,
     headers: {
-      apikey: service,
-      Authorization: `Bearer ${service}`,
-      Prefer: "return=representation",
-      ...(init?.headers || {}),
+      ...baseHeaders,
+      ...userHeaders,
     },
     cache: "no-store",
   });

@@ -11,7 +11,7 @@ interface FooterProps {
 export function Footer({ activeCategory = "todos" }: FooterProps) {
   const { language } = useLanguage();
   return (
-    <footer className="bg-black text-white pt-[60px] pb-[20px] mt-16">
+    <footer className="bg-black text-white pt-[60px] pb-[20px] mt-8">
       <div className="site-inner">
         {/* Mobile: show MobileFooterContent as primary footer content */}
         <div className="lg:hidden">

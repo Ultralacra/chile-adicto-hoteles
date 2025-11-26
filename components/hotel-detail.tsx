@@ -354,7 +354,7 @@ export function HotelDetail({ hotel }: HotelDetailProps) {
         </div>
       </div>
 
-      <main className="site-inner pt-0 pb-8">
+      <main className="site-inner pt-0 pb-4">
         {allImages.length > 0 && (
           <div className="mb-4 w-full">
             <div className="relative overflow-hidden h-[55vw] md:h-[45vw] lg:h-[640px]">
@@ -525,7 +525,7 @@ export function HotelDetail({ hotel }: HotelDetailProps) {
               }}
             />
           </div>
-          <div className="mt-4 mb-8 font-neutra text-black text-[15px] leading-[22px]">
+          <div className="mt-4 mb-4 font-neutra text-black text-[15px] leading-[22px]">
             {hotel.infoHtmlNew ? (
               <>
                 <h3 className="font-neutra text-[15px] leading-[22px] font-[700] uppercase text-black mb-3">

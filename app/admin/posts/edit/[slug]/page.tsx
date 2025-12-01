@@ -573,8 +573,10 @@ export default function EditPostPage({
     }
     const { payloadToSend, normalized, finalFeatured } = built;
     console.log("[Admin Edit] PUT payloadToSend", payloadToSend);
+    console.log("[Admin Edit] Validating normalized:", normalized);
     const result = validatePost(normalized as any);
     if (!result.ok) {
+      console.error("[Admin Edit] Validation errors:", result.issues);
       const first = result.issues?.[0];
       alert(
         `Error de validación: ${first?.path || ""} - ${first?.message || ""}`

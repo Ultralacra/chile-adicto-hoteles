@@ -186,7 +186,7 @@ export function Footer({ activeCategory = "todos" }: FooterProps) {
                 className="flex-shrink-0"
               >
                 <Image
-                  src="/wecare-blaco-2-footer.svg"
+                  src="/wecare-nuevo-blanco.svg"
                   alt="WE CARE"
                   width={89}
                   height={98}

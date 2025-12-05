@@ -133,7 +133,7 @@ export function Header() {
                 aria-label="We Care - Marca Chile"
               >
                 <Image
-                  src="/wecare.svg"
+                  src="/wecare-nuevo-rojo.svg"
                   alt="We Care"
                   width={100}
                   height={100}

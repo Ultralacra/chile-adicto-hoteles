@@ -106,6 +106,31 @@ export default function Page() {
               {/* Volvemos a alturas responsivas como estaba antes */}
               <div className="w-full md:h-[520px] lg:h-[437px] overflow-visible">
                 <HeroSlider
+                  // Definimos explícitamente las imágenes para asegurar correspondencia con los enlaces
+                  desktopImages={[
+                    "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/09/ICONOS-scaled.webp",
+                    "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/09/AQI-scaled.webp",
+                    "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/09/BARRIOS-scaled.webp",
+                    "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/09/MERCADOS-scaled.webp",
+                    "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/09/MIRADORES-scaled.webp",
+                    "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/09/CULTURA-scaled.webp",
+                    "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/09/PALACIOS-scaled.webp",
+                    "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/09/PARQUES-scaled.webp",
+                    "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/09/FUERA-DE-SGO-scaled.webp",
+                    "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/09/slider-100-scaled.webp",
+                  ]}
+                  mobileImages={[
+                    "/slider-movil/ICONOS.webp",
+                    "/slider-movil/ARQITECTURA.webp",
+                    "/slider-movil/BARRIOS.webp",
+                    "/slider-movil/MERCADOS.webp",
+                    "/slider-movil/MIRADORES.webp",
+                    "/slider-movil/CULTURA.webp",
+                    "/slider-movil/PALACIOS.webp",
+                    "/slider-movil/PARQUES.webp",
+                    "/slider-movil/FUERA-DE-STGO.webp",
+                    "/slider-restaurant-mobil/SL MOVIL.webp",
+                  ]}
                   // Reordenado: iconos primero para alinear con nuevo orden de imágenes
                   slideHrefs={[
                     "/iconos",

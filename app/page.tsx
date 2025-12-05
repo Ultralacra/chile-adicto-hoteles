@@ -109,7 +109,6 @@ export default function Page() {
                   // Reordenado: iconos primero para alinear con nuevo orden de imágenes
                   slideHrefs={[
                     "/iconos",
-                    "/arquitectura",
                     "/barrios",
                     "/mercados",
                     "/miradores",
@@ -117,7 +116,7 @@ export default function Page() {
                     "/palacios",
                     "/parques",
                     "/paseos-fuera-de-santiago",
-                    "/restaurantes",
+                    "/arquitectura",
                   ]}
                   // Subimos los puntos en la vista
                   dotBottom={24}

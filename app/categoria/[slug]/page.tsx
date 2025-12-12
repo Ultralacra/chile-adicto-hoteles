@@ -505,7 +505,7 @@ export default function CategoryPage({ params }: { params: any }) {
         }
 
         // Construir un texto de búsqueda que incluya:
-        // - descripciones ES/EN
+        // - descripciones ES/EN.
         // - dirección principal
         // - todas las direcciones y labels de las sucursales (locations[])
         const parts: string[] = [];

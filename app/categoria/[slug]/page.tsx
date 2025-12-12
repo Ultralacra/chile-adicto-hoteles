@@ -320,23 +320,25 @@ export default function CategoryPage({ params }: { params: any }) {
             });
         };
 
+        // Determinar lista activa según idioma (o fallback)
+        let activeList: unknown = [];
         if (Array.isArray(payload)) {
           // Formato antiguo: array simple
-          setRestaurantSliderImages(normalizeList(payload));
-          setRestaurantSlideHrefs(buildHrefsFromFilenames(payload));
+          activeList = payload;
         } else if (payload && typeof payload === "object") {
-          const byLang =
+          activeList =
             (payload as any)[language] ||
             (payload as any)["es"] ||
             (payload as any)["en"];
-          setRestaurantSliderImages(normalizeList(byLang));
-          setRestaurantSlideHrefs(buildHrefsFromFilenames(byLang));
-        } else {
-          setRestaurantSliderImages([]);
-          setRestaurantSlideHrefs([]);
         }
 
-        // Override explícito de hrefs solicitados (orden fijo)
+        const images = normalizeList(activeList);
+        const derivedHrefs = buildHrefsFromFilenames(activeList);
+        setRestaurantSliderImages(images);
+
+        // Orden fijo “prioritario”, pero sin bloquear nuevas imágenes del manifest.
+        // Si agregas una imagen nueva al manifest (y su restaurante existe), se
+        // añade automáticamente al final sin tocar código.
         const explicitRestaurantSlugs = [
           "ac-kitchen-la-madurez-de-un-chef-en-movimiento",
           "ambrosia-restaurante-bistro-dos-versiones-de-un-gran-concepto",
@@ -349,10 +351,19 @@ export default function CategoryPage({ params }: { params: any }) {
           "pulperia-santa-elvira-una-joya-de-matta-sur",
           "tanaka-la-fusion-redefinida",
           "yum-cha-comer-y-beber-con-te",
+          "casa-las-cujas-deleite-marino",
         ];
-        setRestaurantSlideHrefs(
-          explicitRestaurantSlugs.map((slug) => `/${slug}`)
-        );
+
+        const explicitHrefs = explicitRestaurantSlugs.map((slug) => `/${slug}`);
+        const merged: string[] = [];
+        for (const h of explicitHrefs) {
+          if (h && !merged.includes(h)) merged.push(h);
+        }
+        for (const h of derivedHrefs) {
+          if (h && !merged.includes(h)) merged.push(h);
+        }
+
+        setRestaurantSlideHrefs(merged);
       })
       .catch(() => {
         setRestaurantSliderImages([]);

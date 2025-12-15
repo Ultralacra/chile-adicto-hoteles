@@ -40,7 +40,7 @@ export function MobileFooterContent({ onNavigate }: MobileFooterContentProps) {
   // Reordenar categorías dejando RESTAURANTES al final
   const items = [
     { slug: "todos", label: "TODOS" },
-    { slug: "arquitectura", label: "ARQUITECTURA" },
+    { slug: "arquitectura", label: "ARQ" },
     { slug: "barrios", label: "BARRIOS" },
     { slug: "iconos", label: "ICONOS" },
     { slug: "mercados", label: "MERCADOS" },
@@ -49,6 +49,7 @@ export function MobileFooterContent({ onNavigate }: MobileFooterContentProps) {
     { slug: "palacios", label: "PALACIOS" },
     { slug: "parques", label: "PARQUES" },
     { slug: "paseos-fuera-de-santiago", label: "FUERA DE STGO" },
+    { slug: "ninos", label: "NIÑOS" },
     // RESTAURANTES al final siempre
     { slug: "restaurantes", label: "RESTAURANTES" },
   ];

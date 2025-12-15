@@ -23,6 +23,7 @@ export default function PostsListPage() {
   const [category, setCategory] = useState<string>("ALL");
   const categoryIcons: Record<string, string> = {
     ALL: "🌐",
+    NIÑOS: "🧒",
     ARQUITECTURA: "🏛️",
     BARRIOS: "🧭",
     ICONOS: "⭐",

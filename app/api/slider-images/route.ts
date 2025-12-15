@@ -35,6 +35,7 @@ export async function GET() {
     // Orden objetivo igual al menú del Home
     const ORDER = [
       "ICONOS", // solicitado: que ICONOS sea el primero
+      "NINOS",
       "ARQUITECTURA",
       "BARRIOS",
       "MERCADOS",
@@ -55,6 +56,8 @@ export async function GET() {
     const keyIndex = (filename: string) => {
       const name = norm(filename.replace(/\.[^.]+$/, ""));
       // Heurísticas para mapear nombres levemente distintos
+      if (name.includes("NINOS") || name.includes("NIÑOS"))
+        return ORDER.indexOf("NINOS");
       if (/^(ARQ|ARQU|AQU|AQI)/.test(name) || name.includes("ARQUITECTURA"))
         return ORDER.indexOf("ARQUITECTURA");
       if (name.includes("BARRIOS")) return ORDER.indexOf("BARRIOS");

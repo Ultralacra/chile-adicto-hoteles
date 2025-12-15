@@ -25,6 +25,7 @@ const validCategories = [
   "nosotros",
   "exploraciones-tnf",
   // new categories added
+  "ninos",
   "arquitectura",
   "barrios",
   "iconos",
@@ -60,7 +61,8 @@ export default function CategoryPage({ params }: { params: any }) {
     santiago: "SANTIAGO",
     "exploraciones-tnf": "EXPLORACIONES TNF",
     // new category name mappings
-    arquitectura: "ARQUITECTURA",
+    ninos: "NIÑOS",
+    arquitectura: "ARQ",
     barrios: "BARRIOS",
     iconos: "ICONOS",
     mercados: "MERCADOS",
@@ -78,7 +80,8 @@ export default function CategoryPage({ params }: { params: any }) {
 
   // Candidates: include possible English/Spanish variants for some categories
   const categoryCandidatesMap: { [key: string]: string[] } = {
-    arquitectura: ["ARQUITECTURA", "ARCHITECTURE"],
+    ninos: ["NIÑOS", "NINOS", "KIDS", "CHILDREN"],
+    arquitectura: ["ARQ", "ARQUITECTURA", "ARCHITECTURE"],
     "isla-de-pascua": ["ISLA DE PASCUA", "EASTER ISLAND"],
     museos: ["MUSEOS", "CULTURA", "MUSEUMS", "CULTURE"],
     restaurantes: ["RESTAURANTES", "RESTAURANTS"],
@@ -293,7 +296,8 @@ export default function CategoryPage({ params }: { params: any }) {
               const onlyName = fname.split("/").pop() || fname;
               const noExt = onlyName.replace(/\.[^.]+$/, "");
               const base = noExt.replace(/-(1|2)$/i, ""); // AC KITCHEN-1 -> AC KITCHEN
-              const key = normKey(base); // ackitchen
+              const cleanedBase = base.replace(/^(sld|slm|sl)[ _-]+/i, "");
+              const key = normKey(cleanedBase); // ackitchen
 
               let matchSlug: string | null = null;
               for (const row of restaurantIndex) {
@@ -309,7 +313,7 @@ export default function CategoryPage({ params }: { params: any }) {
 
               if (!matchSlug) {
                 // Fallback: derivar slug del base por si acaso
-                matchSlug = base
+                matchSlug = cleanedBase
                   .normalize("NFD")
                   .replace(/[\u0300-\u036f]/g, "")
                   .toLowerCase()
@@ -378,7 +382,7 @@ export default function CategoryPage({ params }: { params: any }) {
   useEffect(() => {
     if (!isRestaurantsPage) return;
     let cancelled = false;
-    fetch("/api/restaurant-slider-mobile")
+    fetch("/api/restaurant-slider-mobile", { cache: "no-store" })
       .then((r) => (r.ok ? r.json() : { images: [] }))
       .then((json) => {
         if (cancelled) return;
@@ -405,7 +409,8 @@ export default function CategoryPage({ params }: { params: any }) {
         const hrefs = imgs.map((full) => {
           const fname = full.split("/").pop() || full;
           const base = fname.replace(/\.[^.]+$/, "").replace(/-(1|2)$/i, "");
-          const key = normKey(base);
+          const cleanedBase = base.replace(/^(sld|slm|sl)[ _-]+/i, "");
+          const key = normKey(cleanedBase);
           let matchSlug: string | null = null;
           for (const row of restaurantIndex) {
             if (
@@ -418,7 +423,7 @@ export default function CategoryPage({ params }: { params: any }) {
             }
           }
           if (!matchSlug) {
-            matchSlug = base
+            matchSlug = cleanedBase
               .normalize("NFD")
               .replace(/[\u0300-\u036f]/g, "")
               .toLowerCase()

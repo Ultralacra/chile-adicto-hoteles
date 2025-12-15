@@ -42,6 +42,14 @@ export function Footer({ activeCategory = "todos" }: FooterProps) {
               TODOS
             </a>
             <a
+              href="/ninos"
+              className={`font-neutra-demi text-[15px] leading-[20px] font-[600] transition-colors duration-200 ease-in-out hover:text-[#FF0000] uppercase ${
+                activeCategory === "ninos" ? "text-[#FF0000]" : "text-white"
+              }`}
+            >
+              NIÑOS
+            </a>
+            <a
               href="/arquitectura"
               className={`font-neutra-demi text-[15px] leading-[20px] font-[600] transition-colors duration-200 ease-in-out hover:text-[#FF0000] uppercase ${
                 activeCategory === "arquitectura"
@@ -49,7 +57,7 @@ export function Footer({ activeCategory = "todos" }: FooterProps) {
                   : "text-white"
               }`}
             >
-              ARQUITECTURA
+              ARQ
             </a>
             <a
               href="/barrios"

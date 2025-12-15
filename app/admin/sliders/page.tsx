@@ -14,7 +14,9 @@ export default function AdminSlidersList() {
   const [loading, setLoading] = useState(true);
   const [restaurantsPosts, setRestaurantsPosts] = useState<any[]>([]);
   const [saving, setSaving] = useState(false);
-  const [destinations, setDestinations] = useState<Record<string, Record<string, string>>>({});
+  const [destinations, setDestinations] = useState<
+    Record<string, Record<string, string>>
+  >({});
 
   useEffect(() => {
     let cancelled = false;
@@ -95,7 +97,9 @@ export default function AdminSlidersList() {
 
         // Destinos (overrides)
         try {
-          const rDest = await fetch("/api/slider-destinations", { cache: "no-store" });
+          const rDest = await fetch("/api/slider-destinations", {
+            cache: "no-store",
+          });
           const j = rDest.ok ? await rDest.json() : {};
           if (!cancelled) setDestinations(j || {});
         } catch {
@@ -135,7 +139,9 @@ export default function AdminSlidersList() {
     );
     const has = (k: string) => name.includes(k);
     let key: string | null = null;
-    if (/^(ARQ|ARQU|AQU|AQI)/.test(name) || has("ARQUITECTURA")) key = "ARQUITECTURA";
+    if (has("NINOS") || has("NIÑOS")) key = "NINOS";
+    if (/^(ARQ|ARQU|AQU|AQI)/.test(name) || has("ARQUITECTURA"))
+      key = "ARQUITECTURA";
     else if (has("BARRIOS")) key = "BARRIOS";
     else if (has("ICONOS")) key = "ICONOS";
     else if (has("MERCADOS")) key = "MERCADOS";
@@ -143,11 +149,13 @@ export default function AdminSlidersList() {
     else if (has("CULTURA") || has("MUSEOS")) key = "CULTURA";
     else if (has("PALACIOS")) key = "PALACIOS";
     else if (has("PARQUES")) key = "PARQUES";
-    else if (has("FUERA") || has("FUERA-DE-STGO") || has("OUTSIDE")) key = "FUERA-DE-STGO";
+    else if (has("FUERA") || has("FUERA-DE-STGO") || has("OUTSIDE"))
+      key = "FUERA-DE-STGO";
     else if (has("RESTAURANTES") || has("RESTAURANTS")) key = "RESTAURANTES";
     else key = "ICONOS";
     const map: Record<string, string> = {
       ICONOS: "/iconos",
+      NINOS: "/ninos",
       ARQUITECTURA: "/arquitectura",
       BARRIOS: "/barrios",
       MERCADOS: "/mercados",
@@ -202,7 +210,9 @@ export default function AdminSlidersList() {
     const key = norm(base);
     let match: string | null = null;
     for (const row of restaurantsIndex) {
-      if (row.keys.some((k: string) => k.startsWith(key) || key.startsWith(k))) {
+      if (
+        row.keys.some((k: string) => k.startsWith(key) || key.startsWith(k))
+      ) {
         match = row.slug;
         break;
       }
@@ -262,36 +272,40 @@ export default function AdminSlidersList() {
     if (!home) return;
     setHome({ ...home, mobile: moveIn(home.mobile, i, d) });
   };
-  const moveRestDES = (i: number, d: -1 | 1) => setRestDesktopES((p) => moveIn(p, i, d));
-  const moveRestDEN = (i: number, d: -1 | 1) => setRestDesktopEN((p) => moveIn(p, i, d));
-  const moveRestMES = (i: number, d: -1 | 1) => setRestMobile((p) => {
-    // mover solo elementos ES (-1)
-    const idxs = p.map((u, idx) => ({ idx, isES: /-1\./i.test(u) }));
-    const esIdxs = idxs.filter((o) => o.isES).map((o) => o.idx);
-    if (i < 0 || i >= esIdxs.length) return p;
-    const a = p.slice();
-    const from = esIdxs[i];
-    const to = esIdxs[i] + d;
-    if (to < 0 || to >= p.length) return p;
-    const tmp = a[from];
-    a[from] = a[to];
-    a[to] = tmp;
-    return a;
-  });
-  const moveRestMEN = (i: number, d: -1 | 1) => setRestMobile((p) => {
-    // mover solo elementos EN (-2)
-    const idxs = p.map((u, idx) => ({ idx, isEN: /-2\./i.test(u) }));
-    const enIdxs = idxs.filter((o) => o.isEN).map((o) => o.idx);
-    if (i < 0 || i >= enIdxs.length) return p;
-    const a = p.slice();
-    const from = enIdxs[i];
-    const to = enIdxs[i] + d;
-    if (to < 0 || to >= p.length) return p;
-    const tmp = a[from];
-    a[from] = a[to];
-    a[to] = tmp;
-    return a;
-  });
+  const moveRestDES = (i: number, d: -1 | 1) =>
+    setRestDesktopES((p) => moveIn(p, i, d));
+  const moveRestDEN = (i: number, d: -1 | 1) =>
+    setRestDesktopEN((p) => moveIn(p, i, d));
+  const moveRestMES = (i: number, d: -1 | 1) =>
+    setRestMobile((p) => {
+      // mover solo elementos ES (-1)
+      const idxs = p.map((u, idx) => ({ idx, isES: /-1\./i.test(u) }));
+      const esIdxs = idxs.filter((o) => o.isES).map((o) => o.idx);
+      if (i < 0 || i >= esIdxs.length) return p;
+      const a = p.slice();
+      const from = esIdxs[i];
+      const to = esIdxs[i] + d;
+      if (to < 0 || to >= p.length) return p;
+      const tmp = a[from];
+      a[from] = a[to];
+      a[to] = tmp;
+      return a;
+    });
+  const moveRestMEN = (i: number, d: -1 | 1) =>
+    setRestMobile((p) => {
+      // mover solo elementos EN (-2)
+      const idxs = p.map((u, idx) => ({ idx, isEN: /-2\./i.test(u) }));
+      const enIdxs = idxs.filter((o) => o.isEN).map((o) => o.idx);
+      if (i < 0 || i >= enIdxs.length) return p;
+      const a = p.slice();
+      const from = enIdxs[i];
+      const to = enIdxs[i] + d;
+      if (to < 0 || to >= p.length) return p;
+      const tmp = a[from];
+      a[from] = a[to];
+      a[to] = tmp;
+      return a;
+    });
 
   const reorder = (arr: string[], from: number, to: number) => {
     const a = arr.slice();
@@ -308,30 +322,36 @@ export default function AdminSlidersList() {
     if (!home) return;
     setHome({ ...home, mobile: reorder(home.mobile, from, to) });
   };
-  const onReorderRestDES = (from: number, to: number) => setRestDesktopES((p) => reorder(p, from, to));
-  const onReorderRestDEN = (from: number, to: number) => setRestDesktopEN((p) => reorder(p, from, to));
-  const onReorderRestMES = (from: number, to: number) => setRestMobile((p) => {
-    const idxs = p.map((u, idx) => ({ idx, isES: /-1\./i.test(u) }));
-    const esIdxs = idxs.filter((o) => o.isES).map((o) => o.idx);
-    if (from < 0 || from >= esIdxs.length || to < 0 || to >= esIdxs.length) return p;
-    const a = p.slice();
-    const realFrom = esIdxs[from];
-    const realTo = esIdxs[to];
-    const [item] = a.splice(realFrom, 1);
-    a.splice(realTo, 0, item);
-    return a;
-  });
-  const onReorderRestMEN = (from: number, to: number) => setRestMobile((p) => {
-    const idxs = p.map((u, idx) => ({ idx, isEN: /-2\./i.test(u) }));
-    const enIdxs = idxs.filter((o) => o.isEN).map((o) => o.idx);
-    if (from < 0 || from >= enIdxs.length || to < 0 || to >= enIdxs.length) return p;
-    const a = p.slice();
-    const realFrom = enIdxs[from];
-    const realTo = enIdxs[to];
-    const [item] = a.splice(realFrom, 1);
-    a.splice(realTo, 0, item);
-    return a;
-  });
+  const onReorderRestDES = (from: number, to: number) =>
+    setRestDesktopES((p) => reorder(p, from, to));
+  const onReorderRestDEN = (from: number, to: number) =>
+    setRestDesktopEN((p) => reorder(p, from, to));
+  const onReorderRestMES = (from: number, to: number) =>
+    setRestMobile((p) => {
+      const idxs = p.map((u, idx) => ({ idx, isES: /-1\./i.test(u) }));
+      const esIdxs = idxs.filter((o) => o.isES).map((o) => o.idx);
+      if (from < 0 || from >= esIdxs.length || to < 0 || to >= esIdxs.length)
+        return p;
+      const a = p.slice();
+      const realFrom = esIdxs[from];
+      const realTo = esIdxs[to];
+      const [item] = a.splice(realFrom, 1);
+      a.splice(realTo, 0, item);
+      return a;
+    });
+  const onReorderRestMEN = (from: number, to: number) =>
+    setRestMobile((p) => {
+      const idxs = p.map((u, idx) => ({ idx, isEN: /-2\./i.test(u) }));
+      const enIdxs = idxs.filter((o) => o.isEN).map((o) => o.idx);
+      if (from < 0 || from >= enIdxs.length || to < 0 || to >= enIdxs.length)
+        return p;
+      const a = p.slice();
+      const realFrom = enIdxs[from];
+      const realTo = enIdxs[to];
+      const [item] = a.splice(realFrom, 1);
+      a.splice(realTo, 0, item);
+      return a;
+    });
 
   // Editar destinos overrides
   const setDest = (key: string, basename: string, value: string) => {
@@ -346,7 +366,8 @@ export default function AdminSlidersList() {
 
   // Editar URL (solo aplica a Restaurantes Desktop que usan manifest)
   const setUrlAt = (set: "es" | "en", idx: number, value: string) => {
-    if (set === "es") setRestDesktopES((p) => p.map((u, i) => (i === idx ? value : u)));
+    if (set === "es")
+      setRestDesktopES((p) => p.map((u, i) => (i === idx ? value : u)));
     else setRestDesktopEN((p) => p.map((u, i) => (i === idx ? value : u)));
   };
 
@@ -369,8 +390,12 @@ export default function AdminSlidersList() {
         body: JSON.stringify({ es: restDesktopES, en: restDesktopEN }),
       });
       // Rest Mobile: PUT /api/restaurant-slider-mobile con orden por idioma
-      const esOrder = restMobile.filter((u) => /-1\./i.test(u)).map((u) => u.split("/").pop());
-      const enOrder = restMobile.filter((u) => /-2\./i.test(u)).map((u) => u.split("/").pop());
+      const esOrder = restMobile
+        .filter((u) => /-1\./i.test(u))
+        .map((u) => u.split("/").pop());
+      const enOrder = restMobile
+        .filter((u) => /-2\./i.test(u))
+        .map((u) => u.split("/").pop());
       if (esOrder.length)
         await fetch("/api/restaurant-slider-mobile", {
           method: "PUT",
@@ -396,27 +421,55 @@ export default function AdminSlidersList() {
         const setsPayload = [
           {
             key: keyHomeDesktop,
-            items: (home?.desktop || []).map((u, idx) => ({ image_url: u, href: (homeDesktopHrefs[idx] || null), position: idx })),
+            items: (home?.desktop || []).map((u, idx) => ({
+              image_url: u,
+              href: homeDesktopHrefs[idx] || null,
+              position: idx,
+            })),
           },
           {
             key: keyHomeMobile,
-            items: (home?.mobile || []).map((u, idx) => ({ image_url: u, href: (homeMobileHrefs[idx] || null), position: idx })),
+            items: (home?.mobile || []).map((u, idx) => ({
+              image_url: u,
+              href: homeMobileHrefs[idx] || null,
+              position: idx,
+            })),
           },
           {
             key: keyRestDES,
-            items: restDesktopES.map((u, idx) => ({ image_url: u, href: (restDesktopESHrefs[idx] || null), position: idx, lang: "es" })),
+            items: restDesktopES.map((u, idx) => ({
+              image_url: u,
+              href: restDesktopESHrefs[idx] || null,
+              position: idx,
+              lang: "es",
+            })),
           },
           {
             key: keyRestDEN,
-            items: restDesktopEN.map((u, idx) => ({ image_url: u, href: (restDesktopENHrefs[idx] || null), position: idx, lang: "en" })),
+            items: restDesktopEN.map((u, idx) => ({
+              image_url: u,
+              href: restDesktopENHrefs[idx] || null,
+              position: idx,
+              lang: "en",
+            })),
           },
           {
             key: keyRestMES,
-            items: RestMobileES.map((u, idx) => ({ image_url: u, href: (RestMobileESHrefs[idx] || null), position: idx, lang: "es" })),
+            items: RestMobileES.map((u, idx) => ({
+              image_url: u,
+              href: RestMobileESHrefs[idx] || null,
+              position: idx,
+              lang: "es",
+            })),
           },
           {
             key: keyRestMEN,
-            items: RestMobileEN.map((u, idx) => ({ image_url: u, href: (RestMobileENHrefs[idx] || null), position: idx, lang: "en" })),
+            items: RestMobileEN.map((u, idx) => ({
+              image_url: u,
+              href: RestMobileENHrefs[idx] || null,
+              position: idx,
+              lang: "en",
+            })),
           },
         ];
         await fetch("/api/sliders/sync", {
@@ -502,7 +555,9 @@ export default function AdminSlidersList() {
               onMove={(i, d) => moveRestDES(i, d)}
               onReorder={(from, to) => onReorderRestDES(from, to)}
               onChangeUrl={(i, v) => setUrlAt("es", i, v)}
-              onChangeHref={(i, v) => setDest(keyRestDES, baseName(restDesktopES[i] || ""), v)}
+              onChangeHref={(i, v) =>
+                setDest(keyRestDES, baseName(restDesktopES[i] || ""), v)
+              }
             />
           </Card>
 
@@ -516,7 +571,9 @@ export default function AdminSlidersList() {
               onMove={(i, d) => moveRestDEN(i, d)}
               onReorder={(from, to) => onReorderRestDEN(from, to)}
               onChangeUrl={(i, v) => setUrlAt("en", i, v)}
-              onChangeHref={(i, v) => setDest(keyRestDEN, baseName(restDesktopEN[i] || ""), v)}
+              onChangeHref={(i, v) =>
+                setDest(keyRestDEN, baseName(restDesktopEN[i] || ""), v)
+              }
             />
           </Card>
 
@@ -529,7 +586,9 @@ export default function AdminSlidersList() {
               emptyText="Sin imágenes (carpeta -1)"
               onMove={(i, d) => moveRestMES(i, d)}
               onReorder={(from, to) => onReorderRestMES(from, to)}
-              onChangeHref={(i, v) => setDest(keyRestMES, baseName(RestMobileES[i] || ""), v)}
+              onChangeHref={(i, v) =>
+                setDest(keyRestMES, baseName(RestMobileES[i] || ""), v)
+              }
             />
           </Card>
 
@@ -542,7 +601,9 @@ export default function AdminSlidersList() {
               emptyText="Sin imágenes (carpeta -2)"
               onMove={(i, d) => moveRestMEN(i, d)}
               onReorder={(from, to) => onReorderRestMEN(from, to)}
-              onChangeHref={(i, v) => setDest(keyRestMEN, baseName(RestMobileEN[i] || ""), v)}
+              onChangeHref={(i, v) =>
+                setDest(keyRestMEN, baseName(RestMobileEN[i] || ""), v)
+              }
             />
           </Card>
         </div>
@@ -623,10 +684,12 @@ function ImagesGrid({
           <div className="absolute bottom-0 left-0 right-0 bg-black/40 text-white text-[10px] px-1 py-0.5 space-y-0.5">
             <div className="truncate">{u}</div>
             {hrefs?.[i] ? (
-              <div className="truncate text-emerald-200">Destino: {hrefs[i]}</div>
+              <div className="truncate text-emerald-200">
+                Destino: {hrefs[i]}
+              </div>
             ) : null}
           </div>
-          {(onChangeUrl || onChangeHref) ? (
+          {onChangeUrl || onChangeHref ? (
             <div className="absolute inset-x-0 bottom-0 translate-y-full mt-1 text-[11px] space-y-1">
               {onChangeUrl ? (
                 <div className="flex gap-1 items-center">

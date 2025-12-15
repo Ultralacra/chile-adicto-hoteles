@@ -10,7 +10,7 @@ interface CategoryNavProps {
 
 export const categories = [
   { slug: "todos", labelEs: "TODOS", labelEn: "ALL" },
-  { slug: "arquitectura", labelEs: "ARQUITECTURA", labelEn: "Architecture" },
+  { slug: "arquitectura", labelEs: "ARQ", labelEn: "ARQ" },
   { slug: "barrios", labelEs: "BARRIOS", labelEn: "Neighborhoods" },
   { slug: "iconos", labelEs: "ICONOS", labelEn: "Icons" },
   { slug: "mercados", labelEs: "MERCADOS", labelEn: "Markets" },
@@ -25,6 +25,7 @@ export const categories = [
     labelEs: "FUERA DE STGO",
     labelEn: "TRIPS OUTSIDE SANTIAGO",
   },
+  { slug: "ninos", labelEs: "NIÑOS", labelEn: "KIDS" },
   { slug: "restaurantes", labelEs: "RESTAURANTES", labelEn: "Restaurants" },
 ];
 

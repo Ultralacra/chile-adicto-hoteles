@@ -3,6 +3,8 @@ import { promises as fs } from "fs";
 import path from "path";
 
 export const runtime = "nodejs";
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
 
 function isImage(filename: string) {
   const ext = filename.split(".").pop()?.toLowerCase();

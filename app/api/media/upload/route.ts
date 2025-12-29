@@ -7,6 +7,30 @@ function envOrNull(name: string) {
   return v && v.length > 0 ? v : null;
 }
 
+async function tryRegisterInMediaTable(urls: string[]) {
+  try {
+    const base = envOrNull("NEXT_PUBLIC_SUPABASE_URL");
+    const service = envOrNull("SUPABASE_SERVICE_ROLE_KEY");
+    if (!base || !service) return;
+    if (!urls || urls.length === 0) return;
+
+    const res = await fetch(`${base}/rest/v1/media?on_conflict=url`, {
+      method: "POST",
+      headers: {
+        apikey: service,
+        Authorization: `Bearer ${service}`,
+        Prefer: "return=representation,resolution=merge-duplicates",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(urls.map((url) => ({ url }))),
+    });
+    // Si no existe tabla o no hay permisos, no bloqueamos la subida
+    if (!res.ok) return;
+  } catch {
+    // silencioso
+  }
+}
+
 async function uploadToSupabaseStorage(file: Blob, fileName: string): Promise<string> {
   const base = envOrNull("NEXT_PUBLIC_SUPABASE_URL");
   const service = envOrNull("SUPABASE_SERVICE_ROLE_KEY");
@@ -97,6 +121,10 @@ export async function POST(req: Request) {
       const url = await uploadToSupabaseStorage(f, f.name || "file");
       urls.push(url);
     }
+
+    // Opcional: registrar en BD como "media" para que aparezca en el selector
+    await tryRegisterInMediaTable(urls);
+
     return NextResponse.json({ ok: true, urls }, { status: 201 });
   } catch (err: any) {
     const msg = String(err?.message || err);

@@ -27,6 +27,8 @@ const mobileImagesDefault = [...desktopImagesDefault];
 type HeroSliderProps = {
   desktopImages?: string[];
   mobileImages?: string[];
+  sliderKeyDesktop?: string;
+  sliderKeyMobile?: string;
   objectFit?: "cover" | "contain"; // cover por defecto; contain para no recortar
   objectPosition?: "center" | "top" | "bottom"; // alineación vertical/horizontal del objeto
   desktopHeight?: number; // alto del slide desktop en px (por defecto 437)
@@ -37,12 +39,15 @@ type HeroSliderProps = {
   slideHref?: string; // si se define, cada slide será un enlace a esta ruta
   slideHrefs?: string[]; // hrefs por slide; tiene prioridad sobre slideHref
   slideHrefsMobile?: string[]; // hrefs específicos para mobile; si no se provee, cae en slideHrefs
+  preferApiHrefs?: boolean; // si true, los hrefs cargados por API tienen prioridad sobre los props
   autoHeight?: boolean; // si true, la altura se adapta a la imagen (w-full h-auto)
 };
 
 export function HeroSlider({
   desktopImages,
   mobileImages,
+  sliderKeyDesktop,
+  sliderKeyMobile,
   objectFit = "cover",
   objectPosition = "center",
   desktopHeight = 437,
@@ -53,11 +58,20 @@ export function HeroSlider({
   slideHref,
   slideHrefs,
   slideHrefsMobile,
+  preferApiHrefs = false,
   autoHeight = false,
 }: HeroSliderProps) {
   // Estado para imágenes obtenidas desde API (si existen en /public/slider-*)
   const [desktopFromApi, setDesktopFromApi] = useState<string[] | null>(null);
   const [mobileFromApi, setMobileFromApi] = useState<string[] | null>(null);
+  const [desktopHrefsFromApi, setDesktopHrefsFromApi] = useState<
+    string[] | null
+  >(null);
+  const [mobileHrefsFromApi, setMobileHrefsFromApi] = useState<string[] | null>(
+    null
+  );
+  const [desktopLoadedFromDb, setDesktopLoadedFromDb] = useState(false);
+  const [mobileLoadedFromDb, setMobileLoadedFromDb] = useState(false);
 
   // Elegir fuentes en orden de prioridad: props -> API -> defaults
   const desktop =
@@ -101,11 +115,69 @@ export function HeroSlider({
     let cancelled = false;
     async function loadFromApi() {
       try {
+        // Reset del origen en cada carga (para no dejar flags antiguos)
+        setDesktopLoadedFromDb(false);
+        setMobileLoadedFromDb(false);
+
         // Si ya nos pasaron props, no hacemos fetch innecesario
         const needDesktop = !(desktopImages && desktopImages.length);
         const needMobile = !(mobileImages && mobileImages.length);
         if (!needDesktop && !needMobile) return;
 
+        // 1) Preferir sliders desde BD (si se indicó key)
+        const loadSet = async (key: string) => {
+          const res = await fetch(`/api/sliders/${encodeURIComponent(key)}`, {
+            cache: "no-store",
+          });
+          if (!res.ok) return { images: [], hrefs: [] };
+          const json = (await res.json()) as {
+            key?: string;
+            items?: Array<{
+              image_url?: string;
+              href?: string | null;
+              active?: boolean;
+            }>;
+          };
+          const items = Array.isArray(json?.items) ? json.items : [];
+          const activeItems = items.filter((it) => it?.active !== false);
+          const images = activeItems
+            .map((it) => String(it?.image_url || "").trim())
+            .filter(Boolean);
+          const hrefs = activeItems.map((it) =>
+            it?.href ? String(it.href).trim() : ""
+          );
+          return { images, hrefs };
+        };
+
+        const didLoadFromDb = async () => {
+          let used = false;
+          if (needDesktop && sliderKeyDesktop) {
+            const { images, hrefs } = await loadSet(sliderKeyDesktop);
+            if (cancelled) return true;
+            if (images.length) {
+              setDesktopFromApi(images);
+              setDesktopHrefsFromApi(hrefs);
+              setDesktopLoadedFromDb(true);
+              used = true;
+            }
+          }
+          if (needMobile && sliderKeyMobile) {
+            const { images, hrefs } = await loadSet(sliderKeyMobile);
+            if (cancelled) return true;
+            if (images.length) {
+              setMobileFromApi(images);
+              setMobileHrefsFromApi(hrefs);
+              setMobileLoadedFromDb(true);
+              used = true;
+            }
+          }
+          return used;
+        };
+
+        const usedDb = await didLoadFromDb();
+        if (usedDb) return;
+
+        // 2) Fallback legacy: /api/slider-images (carpetas públicas)
         const res = await fetch("/api/slider-images", { cache: "no-store" });
         if (!res.ok) return;
         const json = (await res.json()) as {
@@ -127,7 +199,28 @@ export function HeroSlider({
     return () => {
       cancelled = true;
     };
-  }, [desktopImages, mobileImages]);
+  }, [desktopImages, mobileImages, sliderKeyDesktop, sliderKeyMobile]);
+
+  const hrefForIndex = (index: number, mode: "desktop" | "mobile") => {
+    const apiHrefs =
+      mode === "mobile" ? mobileHrefsFromApi : desktopHrefsFromApi;
+    const apiHref = apiHrefs?.[index] ? String(apiHrefs[index]).trim() : "";
+
+    const loadedFromDb =
+      mode === "mobile" ? mobileLoadedFromDb : desktopLoadedFromDb;
+
+    const propHref =
+      mode === "mobile"
+        ? (slideHrefsMobile && slideHrefsMobile[index]) ||
+          (slideHrefs && slideHrefs[index]) ||
+          slideHref ||
+          ""
+        : (slideHrefs && slideHrefs[index]) || slideHref || "";
+
+    // Si el set vino de BD, no mezclamos con hrefs estáticos (evita enlaces incorrectos si cambió el orden)
+    if (preferApiHrefs) return loadedFromDb ? apiHref : apiHref || propHref;
+    return propHref || apiHref;
+  };
 
   // Sincronizar selectedIndex solo con el carrusel visible
   useEffect(() => {
@@ -161,9 +254,9 @@ export function HeroSlider({
                   autoHeight ? undefined : { height: `${desktopHeight}px` }
                 }
               >
-                {slideHrefs?.[index] || slideHref ? (
+                {hrefForIndex(index, "desktop") ? (
                   <Link
-                    href={(slideHrefs && slideHrefs[index]) || slideHref || "#"}
+                    href={hrefForIndex(index, "desktop")}
                     className={`block w-full ${
                       autoHeight ? "h-auto" : "h-full"
                     }`}
@@ -225,16 +318,9 @@ export function HeroSlider({
                 className="embla__slide min-w-full"
                 style={autoHeight ? undefined : { height: `${mobileHeight}px` }}
               >
-                {slideHrefsMobile?.[index] ||
-                slideHrefs?.[index] ||
-                slideHref ? (
+                {hrefForIndex(index, "mobile") ? (
                   <Link
-                    href={
-                      (slideHrefsMobile && slideHrefsMobile[index]) ||
-                      (slideHrefs && slideHrefs[index]) ||
-                      slideHref ||
-                      "#"
-                    }
+                    href={hrefForIndex(index, "mobile")}
                     className={`block w-full ${
                       autoHeight ? "h-auto" : "h-full"
                     }`}

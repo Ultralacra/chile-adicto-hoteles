@@ -253,10 +253,31 @@ export default function CategoryPage({ params }: { params: any }) {
   useEffect(() => {
     if (!isRestaurantsPage) return;
     let cancelled = false;
-    fetch("/imagenes-slider/manifest.json")
-      .then((r) => (r.ok ? r.json() : []))
-      .then((payload) => {
+    const desktopKey = language === "en" ? "restaurants-desktop-en" : "restaurants-desktop-es";
+
+    // 1) Intentar BD primero (si existe)
+    fetch(`/api/sliders/${encodeURIComponent(desktopKey)}`, { cache: "no-store" })
+      .then((r) => (r.ok ? r.json() : null))
+      .then((db) => {
         if (cancelled) return;
+        const items = Array.isArray(db?.items) ? db.items : [];
+        const activeItems = items.filter((it: any) => it?.active !== false);
+        const imagesFromDb = activeItems
+          .map((it: any) => String(it?.image_url || "").trim())
+          .filter(Boolean);
+        const hrefsFromDb = activeItems.map((it: any) => (it?.href ? String(it.href) : ""));
+
+        if (imagesFromDb.length > 0) {
+          setRestaurantSliderImages(imagesFromDb);
+          setRestaurantSlideHrefs(hrefsFromDb);
+          return;
+        }
+
+        // 2) Fallback: manifest.json (comportamiento actual)
+        return fetch("/imagenes-slider/manifest.json")
+          .then((r) => (r.ok ? r.json() : []))
+          .then((payload) => {
+            if (cancelled) return;
 
         const normalizeList = (list: unknown): string[] => {
           if (!Array.isArray(list)) return [];
@@ -367,7 +388,8 @@ export default function CategoryPage({ params }: { params: any }) {
           if (h && !merged.includes(h)) merged.push(h);
         }
 
-        setRestaurantSlideHrefs(merged);
+            setRestaurantSlideHrefs(merged);
+          });
       })
       .catch(() => {
         setRestaurantSliderImages([]);
@@ -382,57 +404,82 @@ export default function CategoryPage({ params }: { params: any }) {
   useEffect(() => {
     if (!isRestaurantsPage) return;
     let cancelled = false;
-    fetch("/api/restaurant-slider-mobile", { cache: "no-store" })
-      .then((r) => (r.ok ? r.json() : { images: [] }))
-      .then((json) => {
+
+    const mobileKey = language === "en" ? "restaurants-mobile-en" : "restaurants-mobile-es";
+
+    // 1) Intentar BD primero (si existe)
+    fetch(`/api/sliders/${encodeURIComponent(mobileKey)}`, { cache: "no-store" })
+      .then((r) => (r.ok ? r.json() : null))
+      .then((db) => {
         if (cancelled) return;
-        const imgs: string[] = Array.isArray(json.images) ? json.images : [];
-        setRestaurantMobileImages(imgs);
-        // Derivar href por filename intentando matchear slug real igual que manifest
-        const normKey = (str: string) =>
-          String(str || "")
-            .normalize("NFD")
-            .replace(/[\u0300-\u036f]/g, "")
-            .toLowerCase()
-            .replace(/[^a-z0-9]/g, "");
-        const restaurantIndex = (filteredHotels as any[]).map((h) => {
-          const slug = String(h.slug || "");
-          const esName = String(h.es?.name || "");
-          const enName = String(h.en?.name || "");
-          return {
-            slug,
-            keys: [normKey(slug), normKey(esName), normKey(enName)].filter(
-              Boolean
-            ),
-          };
-        });
-        const hrefs = imgs.map((full) => {
-          const fname = full.split("/").pop() || full;
-          const base = fname.replace(/\.[^.]+$/, "").replace(/-(1|2)$/i, "");
-          const cleanedBase = base.replace(/^(sld|slm|sl)[ _-]+/i, "");
-          const key = normKey(cleanedBase);
-          let matchSlug: string | null = null;
-          for (const row of restaurantIndex) {
-            if (
-              row.keys.some(
-                (k: string) => k.startsWith(key) || key.startsWith(k)
-              )
-            ) {
-              matchSlug = row.slug;
-              break;
-            }
-          }
-          if (!matchSlug) {
-            matchSlug = cleanedBase
-              .normalize("NFD")
-              .replace(/[\u0300-\u036f]/g, "")
-              .toLowerCase()
-              .replace(/[^a-z0-9]+/g, "-")
-              .replace(/(^-|-$)/g, "");
-          }
-          return `/${matchSlug}`;
-        });
-        setRestaurantMobileHrefs(hrefs);
+        const items = Array.isArray(db?.items) ? db.items : [];
+        const activeItems = items.filter((it: any) => it?.active !== false);
+        const imagesFromDb = activeItems
+          .map((it: any) => String(it?.image_url || "").trim())
+          .filter(Boolean);
+        const hrefsFromDb = activeItems.map((it: any) => (it?.href ? String(it.href) : ""));
+
+        if (imagesFromDb.length > 0) {
+          setRestaurantMobileImages(imagesFromDb);
+          setRestaurantMobileHrefs(hrefsFromDb);
+          return;
+        }
+
+        // 2) Fallback: carpeta pública vía API actual
+        return fetch("/api/restaurant-slider-mobile", { cache: "no-store" })
+          .then((r) => (r.ok ? r.json() : { images: [] }))
+          .then((json) => {
+            if (cancelled) return;
+            const imgs: string[] = Array.isArray(json.images) ? json.images : [];
+            setRestaurantMobileImages(imgs);
+            // Derivar href por filename intentando matchear slug real igual que manifest
+            const normKey = (str: string) =>
+              String(str || "")
+                .normalize("NFD")
+                .replace(/[\u0300-\u036f]/g, "")
+                .toLowerCase()
+                .replace(/[^a-z0-9]/g, "");
+            const restaurantIndex = (filteredHotels as any[]).map((h) => {
+              const slug = String(h.slug || "");
+              const esName = String(h.es?.name || "");
+              const enName = String(h.en?.name || "");
+              return {
+                slug,
+                keys: [normKey(slug), normKey(esName), normKey(enName)].filter(
+                  Boolean
+                ),
+              };
+            });
+            const hrefs = imgs.map((full) => {
+              const fname = full.split("/").pop() || full;
+              const base = fname
+                .replace(/\.[^.]+$/, "")
+                .replace(/-(1|2)$/i, "");
+              const cleanedBase = base.replace(/^(sld|slm|sl)[ _-]+/i, "");
+              const key = normKey(cleanedBase);
+              let matchSlug: string | null = null;
+              for (const row of restaurantIndex) {
+                if (
+                  row.keys.some(
+                    (k: string) => k.startsWith(key) || key.startsWith(k)
+                  )
+                ) {
+                  matchSlug = row.slug;
+                  break;
+                }
+              }
+              if (!matchSlug) {
+                matchSlug = cleanedBase
+                  .normalize("NFD")
+                  .replace(/[\u0300-\u036f]/g, "")
+                  .toLowerCase()
+                  .replace(/[^a-z0-9]+/g, "-")
+                  .replace(/(^-|-$)/g, "");
+              }
+              return `/${matchSlug}`;
+            });
+            setRestaurantMobileHrefs(hrefs);
+          });
       })
       .catch(() => {
         if (!cancelled) {
@@ -443,7 +490,7 @@ export default function CategoryPage({ params }: { params: any }) {
     return () => {
       cancelled = true;
     };
-  }, [isRestaurantsPage, filteredHotels]);
+  }, [isRestaurantsPage, filteredHotels, language]);
 
   // Override de descripciones ES/EN para slugs específicos (p. ej., PRIMA BAR)
   const enrichedHotels = (filteredHotels || []).map((h) => {

@@ -1,12 +1,101 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Card } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { Spinner } from "@/components/ui/spinner";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from "@/components/ui/carousel";
+
+type CategorySuggestion = {
+  slug: string;
+  label_es?: string | null;
+  label_en?: string | null;
+};
+
+type HrefSuggestionItem = {
+  kind: "category" | "post";
+  slug: string;
+  label: string;
+  href: string;
+};
 
 type HomeResp = { desktop: string[]; mobile: string[] };
 
+type DbSliderItem = {
+  image_url: string;
+  href?: string | null;
+  active?: boolean;
+  position?: number;
+  lang?: string | null;
+};
+
+type DbSliderResp = { key: string; items: DbSliderItem[] };
+
+type MediaListResp = {
+  urls: string[];
+  total?: number;
+  limit?: number;
+  offset?: number;
+  nextOffset?: number | null;
+};
+
 export default function AdminSlidersList() {
+  const dbKeys = useMemo(
+    () => [
+      "home-desktop",
+      "home-mobile",
+      "restaurants-desktop-es",
+      "restaurants-desktop-en",
+      "restaurants-mobile-es",
+      "restaurants-mobile-en",
+    ],
+    []
+  );
+
+  const [dbKey, setDbKey] = useState<string>(dbKeys[0] || "home-desktop");
+  const [dbItems, setDbItems] = useState<DbSliderItem[]>([]);
+  const [dbLoading, setDbLoading] = useState(false);
+  const [dbSaving, setDbSaving] = useState(false);
+  const [mediaUrls, setMediaUrls] = useState<string[]>([]);
+  const [mediaLoading, setMediaLoading] = useState(false);
+  const [mediaLoadingMore, setMediaLoadingMore] = useState(false);
+  const [mediaUploading, setMediaUploading] = useState(false);
+  const [mediaTotal, setMediaTotal] = useState<number | null>(null);
+  const [mediaNextOffset, setMediaNextOffset] = useState<number | null>(0);
+  const [pickerOpen, setPickerOpen] = useState(false);
+  const [pickerForIndex, setPickerForIndex] = useState<number | null>(null);
+  const mediaFileRef = useRef<HTMLInputElement | null>(null);
+  const mediaScrollRef = useRef<HTMLDivElement | null>(null);
+  const mediaSentinelRef = useRef<HTMLDivElement | null>(null);
+  const mediaReqIdRef = useRef(0);
+  const mediaLoadingRef = useRef(false);
+  const mediaLoadingMoreRef = useRef(false);
+  const mediaNextOffsetRef = useRef<number | null>(0);
+  const [categories, setCategories] = useState<CategorySuggestion[]>([]);
+
+  const hrefSuggestAbortRef = useRef<AbortController | null>(null);
+  const hrefSuggestBlurTimerRef = useRef<number | null>(null);
+  const [hrefSuggest, setHrefSuggest] = useState<{
+    index: number | null;
+    query: string;
+    loading: boolean;
+    items: HrefSuggestionItem[];
+  }>({ index: null, query: "", loading: false, items: [] });
+
   const [home, setHome] = useState<HomeResp | null>(null);
   const [restDesktopES, setRestDesktopES] = useState<string[]>([]);
   const [restDesktopEN, setRestDesktopEN] = useState<string[]>([]);
@@ -123,6 +212,364 @@ export default function AdminSlidersList() {
       cancelled = true;
     };
   }, []);
+  useEffect(() => {
+    let cancelled = false;
+    const loadCategories = async () => {
+      try {
+        const res = await fetch("/api/categories?full=1", {
+          cache: "no-store",
+        });
+        const rows = res.ok ? await res.json() : [];
+        const list: CategorySuggestion[] = (Array.isArray(rows) ? rows : [])
+          .map((r: any) => ({
+            slug: String(r?.slug || "").trim(),
+            label_es: r?.label_es ?? null,
+            label_en: r?.label_en ?? null,
+          }))
+          .filter((x: CategorySuggestion) => x.slug);
+        if (!cancelled) setCategories(list);
+      } catch {
+        if (!cancelled) setCategories([]);
+      }
+    };
+    loadCategories();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  useEffect(() => {
+    const idx = hrefSuggest.index;
+    const raw = hrefSuggest.query;
+    const q = String(raw || "").trim();
+
+    if (idx == null) return;
+    if (q.length < 1) {
+      setHrefSuggest((s) => ({ ...s, loading: false, items: [] }));
+      return;
+    }
+
+    const qn = q.toLowerCase();
+    const prettyCategorySlugs = new Set<string>([
+      "iconos",
+      "ninos",
+      "arquitectura",
+      "barrios",
+      "mercados",
+      "miradores",
+      "museos",
+      "palacios",
+      "parques",
+      "paseos-fuera-de-santiago",
+      "restaurantes",
+    ]);
+
+    const categoryMatches: HrefSuggestionItem[] = (categories || [])
+      .filter((c) => {
+        const slug = String(c.slug || "").toLowerCase();
+        const les = String(c.label_es || "").toLowerCase();
+        const len = String(c.label_en || "").toLowerCase();
+        return slug.includes(qn) || les.includes(qn) || len.includes(qn);
+      })
+      .slice(0, 10)
+      .map((c) => {
+        const slug = String(c.slug || "").trim();
+        const label =
+          String(c.label_es || "").trim() ||
+          String(c.label_en || "").trim() ||
+          slug;
+        const href = prettyCategorySlugs.has(slug)
+          ? `/${slug}`
+          : `/categoria/${slug}`;
+        return { kind: "category", slug, label, href };
+      });
+
+    const controller = new AbortController();
+    hrefSuggestAbortRef.current?.abort();
+    hrefSuggestAbortRef.current = controller;
+
+    const handle = window.setTimeout(async () => {
+      try {
+        // Mostramos categorías al tiro; luego completamos con posts
+        setHrefSuggest((s) => ({
+          ...s,
+          loading: true,
+          items: categoryMatches,
+        }));
+        const res = await fetch(`/api/posts?q=${encodeURIComponent(q)}`, {
+          cache: "no-store",
+          signal: controller.signal,
+        });
+        const rows = res.ok ? await res.json() : [];
+        const postMatches: HrefSuggestionItem[] = (
+          Array.isArray(rows) ? rows : []
+        )
+          .map((r: any) => {
+            const slug = String(r?.slug || "").trim();
+            const label =
+              (r?.es?.name ? String(r.es.name) : "") ||
+              (r?.en?.name ? String(r.en.name) : "") ||
+              slug;
+            return {
+              kind: "post",
+              slug,
+              label,
+              href: `/${slug}`,
+            } as HrefSuggestionItem;
+          })
+          .filter((x: HrefSuggestionItem) => x.slug)
+          .slice(0, 10);
+
+        const merged: HrefSuggestionItem[] = [];
+        const seen = new Set<string>();
+        for (const it of [...categoryMatches, ...postMatches]) {
+          const k = `${it.kind}:${it.slug}`;
+          if (seen.has(k)) continue;
+          seen.add(k);
+          merged.push(it);
+          if (merged.length >= 10) break;
+        }
+
+        setHrefSuggest((s) => ({ ...s, loading: false, items: merged }));
+      } catch (e: any) {
+        if (e?.name === "AbortError") return;
+        setHrefSuggest((s) => ({ ...s, loading: false, items: [] }));
+      }
+    }, 200);
+
+    return () => {
+      controller.abort();
+      window.clearTimeout(handle);
+    };
+  }, [hrefSuggest.index, hrefSuggest.query]);
+
+  const MEDIA_PAGE_SIZE = 120;
+
+  const fetchMediaPage = async (opts: {
+    offset: number;
+    append: boolean;
+    refresh?: boolean;
+  }) => {
+    const { offset, append, refresh } = opts;
+    const reqId = ++mediaReqIdRef.current;
+    if (append) {
+      mediaLoadingMoreRef.current = true;
+      setMediaLoadingMore(true);
+    } else {
+      mediaLoadingRef.current = true;
+      setMediaLoading(true);
+    }
+
+    try {
+      const qs = new URLSearchParams();
+      qs.set("limit", String(MEDIA_PAGE_SIZE));
+      qs.set("offset", String(offset));
+      if (refresh) qs.set("refresh", "1");
+      const r = await fetch(`/api/media?${qs.toString()}`, {
+        cache: "no-store",
+      });
+      const j = (r.ok ? await r.json() : null) as MediaListResp | null;
+      if (reqId !== mediaReqIdRef.current) return;
+
+      const urls = Array.isArray(j?.urls) ? j!.urls.map(String) : [];
+      const clean = urls.map((u) => u.trim()).filter(Boolean);
+
+      setMediaTotal(typeof j?.total === "number" ? j.total : null);
+      const next = typeof j?.nextOffset === "number" ? j.nextOffset : null;
+      mediaNextOffsetRef.current = next;
+      setMediaNextOffset(next);
+
+      if (append) {
+        setMediaUrls((prev) => {
+          const set = new Set<string>(prev);
+          for (const u of clean) set.add(u);
+          return Array.from(set).sort((a, b) => a.localeCompare(b));
+        });
+      } else {
+        setMediaUrls(clean);
+      }
+    } catch {
+      if (!append) {
+        setMediaUrls([]);
+        setMediaTotal(null);
+        mediaNextOffsetRef.current = null;
+        setMediaNextOffset(null);
+      }
+    } finally {
+      if (append) {
+        mediaLoadingMoreRef.current = false;
+        setMediaLoadingMore(false);
+      } else {
+        mediaLoadingRef.current = false;
+        setMediaLoading(false);
+      }
+    }
+  };
+
+  const reloadMedia = async (opts?: { refresh?: boolean }) => {
+    await fetchMediaPage({ offset: 0, append: false, refresh: opts?.refresh });
+  };
+
+  const loadMoreMedia = async () => {
+    if (mediaLoadingRef.current || mediaLoadingMoreRef.current) return;
+    const next = mediaNextOffsetRef.current;
+    if (next == null) return;
+    await fetchMediaPage({ offset: next, append: true });
+  };
+
+  // Cargar la primera página solo cuando se abre el picker
+  useEffect(() => {
+    if (!pickerOpen) return;
+    if (mediaUrls.length > 0) return;
+    reloadMedia();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [pickerOpen]);
+
+  // Scroll infinito: cuando el sentinel entra en vista, cargar más
+  useEffect(() => {
+    if (!pickerOpen) return;
+    if (mediaNextOffset == null) return;
+    const root = mediaScrollRef.current;
+    const target = mediaSentinelRef.current;
+    if (!root || !target) return;
+
+    const obs = new IntersectionObserver(
+      (entries) => {
+        const first = entries[0];
+        if (!first?.isIntersecting) return;
+        loadMoreMedia();
+      },
+      {
+        root,
+        rootMargin: "200px",
+        threshold: 0.01,
+      }
+    );
+
+    obs.observe(target);
+    return () => obs.disconnect();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [pickerOpen, mediaNextOffset]);
+
+  const uploadMediaFiles = async (files: FileList | File[]) => {
+    const arr = Array.from(files || []);
+    if (arr.length === 0) return;
+    setMediaUploading(true);
+    try {
+      const form = new FormData();
+      for (const f of arr) form.append("files", f);
+      const res = await fetch(`/api/media/upload`, {
+        method: "POST",
+        body: form,
+      });
+      if (!res.ok) throw new Error(await res.text());
+      const data = await res.json();
+      const urls: string[] = Array.isArray(data?.urls) ? data.urls : [];
+      if (urls.length) {
+        setMediaUrls((prev) => {
+          const set = new Set<string>(prev);
+          for (const u of urls) if (u) set.add(String(u));
+          return Array.from(set).sort((a, b) => a.localeCompare(b));
+        });
+      }
+    } catch (e: any) {
+      alert("No se pudo subir: " + String(e?.message || e));
+    } finally {
+      setMediaUploading(false);
+    }
+  };
+
+  const loadDbSet = async (key: string) => {
+    setDbLoading(true);
+    try {
+      const res = await fetch(`/api/sliders/${encodeURIComponent(key)}?all=1`, {
+        cache: "no-store",
+      });
+      const j = (res.ok ? await res.json() : null) as DbSliderResp | null;
+      const items = Array.isArray(j?.items) ? j!.items : [];
+      const normalized = items
+        .map((it: any, idx: number) => ({
+          image_url: String(it?.image_url || "").trim(),
+          href: it?.href ? String(it.href) : "",
+          active: typeof it?.active === "boolean" ? it.active : true,
+          position: Number.isFinite(it?.position) ? Number(it.position) : idx,
+          lang: it?.lang ? String(it.lang) : null,
+        }))
+        .filter((it) => it.image_url)
+        .sort((a, b) => (a.position ?? 0) - (b.position ?? 0));
+      setDbItems(normalized);
+    } catch {
+      setDbItems([]);
+    } finally {
+      setDbLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    loadDbSet(dbKey);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [dbKey]);
+
+  const updateDbItem = (idx: number, patch: Partial<DbSliderItem>) => {
+    setDbItems((prev) =>
+      prev.map((it, i) => (i === idx ? { ...it, ...patch } : it))
+    );
+  };
+
+  const openPickerFor = (idx: number) => {
+    setPickerForIndex(idx);
+    setPickerOpen(true);
+  };
+
+  const moveDbItem = (idx: number, dir: -1 | 1) => {
+    const j = idx + dir;
+    if (j < 0 || j >= dbItems.length) return;
+    setDbItems((prev) => {
+      const copy = prev.slice();
+      const tmp = copy[idx];
+      copy[idx] = copy[j];
+      copy[j] = tmp;
+      return copy;
+    });
+  };
+
+  const removeDbItem = (idx: number) =>
+    setDbItems((prev) => prev.filter((_, i) => i !== idx));
+
+  const addDbItem = () => {
+    const fallbackImage = mediaUrls[0] || "";
+    setDbItems((prev) => [
+      ...prev,
+      { image_url: fallbackImage, href: "", active: true },
+    ]);
+  };
+
+  const saveDbSet = async () => {
+    setDbSaving(true);
+    try {
+      const payload = {
+        items: dbItems.map((it, idx) => ({
+          image_url: String(it.image_url || "").trim(),
+          href: it.href ? String(it.href).trim() : null,
+          active: it.active !== false,
+          position: idx,
+          lang: it.lang || null,
+        })),
+      };
+      const res = await fetch(`/api/sliders/${encodeURIComponent(dbKey)}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+      if (!res.ok) throw new Error(await res.text());
+      await loadDbSet(dbKey);
+      alert("Slider guardado en la base de datos");
+    } catch (e: any) {
+      alert("No se pudo guardar: " + String(e?.message || e));
+    } finally {
+      setDbSaving(false);
+    }
+  };
 
   const RestMobileES = restMobile.filter((u) => /-1\./i.test(u));
   const RestMobileEN = restMobile.filter((u) => /-2\./i.test(u));
@@ -491,6 +938,375 @@ export default function AdminSlidersList() {
   return (
     <div className="space-y-6">
       <h1 className="text-2xl font-semibold">Sliders</h1>
+
+      <Card className="p-4 space-y-4">
+        <div className="flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
+          <div className="space-y-2">
+            <div className="text-sm font-medium">Editor (Base de Datos)</div>
+            <div className="text-xs text-muted-foreground">
+              Agrega/quita slides, reemplaza imagen usando "Imágenes", y define
+              la ruta destino (href).
+            </div>
+            <div className="space-y-1">
+              <Label htmlFor="sliderKey">Slider</Label>
+              <select
+                id="sliderKey"
+                className="h-9 w-full md:w-[320px] rounded border bg-white px-2 text-sm"
+                value={dbKey}
+                onChange={(e) => setDbKey(e.target.value)}
+              >
+                {dbKeys.map((k) => (
+                  <option key={k} value={k}>
+                    {k}
+                  </option>
+                ))}
+              </select>
+            </div>
+          </div>
+          <div className="flex gap-2">
+            <Button
+              variant="outline"
+              onClick={() => loadDbSet(dbKey)}
+              disabled={dbLoading || dbSaving}
+            >
+              Recargar
+            </Button>
+            <Button
+              variant="outline"
+              onClick={addDbItem}
+              disabled={dbLoading || dbSaving}
+            >
+              Agregar slide
+            </Button>
+            <Button onClick={saveDbSet} disabled={dbSaving || dbLoading}>
+              {dbSaving ? "Guardando…" : "Guardar"}
+            </Button>
+          </div>
+        </div>
+
+        {(dbLoading || mediaLoading) && (
+          <div className="text-sm text-gray-600 flex items-center gap-2">
+            <Spinner className="size-4" /> Cargando{" "}
+            {dbLoading ? "slider" : "imágenes"}…
+          </div>
+        )}
+
+        {dbItems.length === 0 ? (
+          <div className="text-sm text-muted-foreground">
+            No hay slides en la BD para este key.
+          </div>
+        ) : (
+          <div className="space-y-3">
+            {dbItems.map((it, idx) => (
+              <div
+                key={`${dbKey}-${idx}`}
+                className="grid grid-cols-1 md:grid-cols-[160px_1fr] gap-3 border rounded p-3 bg-white"
+              >
+                <div className="w-full aspect-[16/9] bg-gray-100 overflow-hidden rounded">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={it.image_url}
+                    alt={`slide-${idx}`}
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <div className="flex flex-wrap gap-2 items-center justify-between">
+                    <div className="text-sm font-medium">Slide #{idx + 1}</div>
+                    <div className="flex gap-2">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => moveDbItem(idx, -1)}
+                        disabled={idx === 0 || dbSaving}
+                      >
+                        ↑
+                      </Button>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => moveDbItem(idx, +1)}
+                        disabled={idx === dbItems.length - 1 || dbSaving}
+                      >
+                        ↓
+                      </Button>
+                      <Button
+                        variant="destructive"
+                        size="sm"
+                        onClick={() => removeDbItem(idx)}
+                        disabled={dbSaving}
+                      >
+                        Quitar
+                      </Button>
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+                    <div className="space-y-1">
+                      <Label>Imagen (URL)</Label>
+                      <Input
+                        value={it.image_url}
+                        readOnly
+                        placeholder="https://..."
+                      />
+                      <div className="text-[11px] text-muted-foreground">
+                        Se llena al seleccionar desde Imágenes.
+                      </div>
+                    </div>
+
+                    <div className="space-y-1">
+                      <Label>Elegir desde imágenes</Label>
+                      <div className="flex flex-wrap gap-2">
+                        <Button
+                          type="button"
+                          variant="outline"
+                          size="sm"
+                          onClick={() => openPickerFor(idx)}
+                          disabled={dbSaving || mediaLoading}
+                        >
+                          Seleccionar imagen
+                        </Button>
+                        <Button
+                          type="button"
+                          variant="outline"
+                          size="sm"
+                          onClick={() => reloadMedia({ refresh: true })}
+                          disabled={dbSaving || mediaLoading}
+                        >
+                          {mediaLoading ? "Cargando…" : "Refrescar"}
+                        </Button>
+                      </div>
+                      <div className="text-[11px] text-muted-foreground truncate">
+                        {it.image_url || "Sin imagen"}
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+                    <div className="space-y-1">
+                      <Label>Destino (href)</Label>
+                      <div className="relative">
+                        <Input
+                          value={it.href || ""}
+                          onFocus={() => {
+                            if (hrefSuggestBlurTimerRef.current != null) {
+                              window.clearTimeout(
+                                hrefSuggestBlurTimerRef.current
+                              );
+                              hrefSuggestBlurTimerRef.current = null;
+                            }
+                            setHrefSuggest((s) => ({
+                              ...s,
+                              index: idx,
+                              query: String(it.href || "").replace(/^\//, ""),
+                            }));
+                          }}
+                          onBlur={() => {
+                            if (hrefSuggestBlurTimerRef.current != null) {
+                              window.clearTimeout(
+                                hrefSuggestBlurTimerRef.current
+                              );
+                            }
+                            hrefSuggestBlurTimerRef.current = window.setTimeout(
+                              () => {
+                                setHrefSuggest((s) =>
+                                  s.index === idx
+                                    ? {
+                                        ...s,
+                                        index: null,
+                                        items: [],
+                                        loading: false,
+                                      }
+                                    : s
+                                );
+                              },
+                              150
+                            );
+                          }}
+                          onChange={(e) => {
+                            const v = e.target.value;
+                            updateDbItem(idx, { href: v });
+                            setHrefSuggest((s) => ({
+                              ...s,
+                              index: idx,
+                              query: String(v || "").replace(/^\//, ""),
+                            }));
+                          }}
+                          placeholder="/iconos o /mi-post"
+                        />
+
+                        {hrefSuggest.index === idx &&
+                        (hrefSuggest.loading ||
+                          hrefSuggest.items.length > 0) ? (
+                          <div className="absolute z-50 mt-1 w-full rounded border bg-background shadow-sm">
+                            <div className="max-h-56 overflow-auto">
+                              {hrefSuggest.loading ? (
+                                <div className="px-3 py-2 text-xs text-muted-foreground">
+                                  Buscando…
+                                </div>
+                              ) : null}
+                              {hrefSuggest.items.map((p) => {
+                                const kindLabel =
+                                  p.kind === "category" ? "Categoría" : "Post";
+                                return (
+                                  <button
+                                    key={`${p.kind}:${p.slug}`}
+                                    type="button"
+                                    className="w-full text-left px-3 py-2 text-sm hover:bg-muted"
+                                    onMouseDown={(ev) => ev.preventDefault()}
+                                    onClick={() => {
+                                      updateDbItem(idx, { href: p.href });
+                                      setHrefSuggest((s) => ({
+                                        ...s,
+                                        index: null,
+                                        items: [],
+                                        loading: false,
+                                      }));
+                                    }}
+                                    title={p.href}
+                                  >
+                                    <div className="flex items-center justify-between gap-2">
+                                      <div className="font-medium truncate">
+                                        {p.label}
+                                      </div>
+                                      <div className="text-[11px] text-muted-foreground shrink-0">
+                                        {kindLabel}
+                                      </div>
+                                    </div>
+                                    <div className="text-[11px] text-muted-foreground truncate">
+                                      {p.href}
+                                    </div>
+                                  </button>
+                                );
+                              })}
+                            </div>
+                          </div>
+                        ) : null}
+                      </div>
+                    </div>
+                    <div className="flex items-end gap-2">
+                      <label className="flex items-center gap-2 text-sm">
+                        <input
+                          type="checkbox"
+                          checked={it.active !== false}
+                          onChange={(e) =>
+                            updateDbItem(idx, { active: e.target.checked })
+                          }
+                        />
+                        Activo
+                      </label>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+
+        <Dialog
+          open={pickerOpen}
+          onOpenChange={(open) => {
+            setPickerOpen(open);
+            if (!open) setPickerForIndex(null);
+          }}
+        >
+          <DialogContent className="sm:max-w-6xl max-h-[85vh] overflow-hidden">
+            <DialogHeader>
+              <DialogTitle>Seleccionar imagen</DialogTitle>
+            </DialogHeader>
+
+            <div className="flex flex-wrap items-center gap-2">
+              <input
+                ref={mediaFileRef}
+                type="file"
+                className="hidden"
+                accept="image/*"
+                multiple
+                onChange={(e) => {
+                  const files = e.target.files;
+                  if (!files) return;
+                  uploadMediaFiles(files).finally(() => {
+                    if (mediaFileRef.current) mediaFileRef.current.value = "";
+                  });
+                }}
+              />
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => mediaFileRef.current?.click()}
+                disabled={mediaUploading || dbSaving}
+              >
+                {mediaUploading ? "Subiendo…" : "Subir imágenes"}
+              </Button>
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => reloadMedia({ refresh: true })}
+                disabled={mediaLoading || mediaUploading}
+              >
+                {mediaLoading ? "Cargando…" : "Recargar lista"}
+              </Button>
+              <div className="text-xs text-muted-foreground">
+                Mostrando {mediaUrls.length}
+                {typeof mediaTotal === "number" ? ` de ${mediaTotal}` : ""}
+                {mediaLoadingMore ? " · Cargando más…" : ""}
+              </div>
+            </div>
+
+            {mediaUrls.length === 0 && mediaLoading ? (
+              <div className="text-sm text-muted-foreground">Cargando…</div>
+            ) : mediaUrls.length === 0 ? (
+              <div className="text-sm text-muted-foreground">
+                No hay imágenes disponibles.
+              </div>
+            ) : (
+              <div
+                ref={mediaScrollRef}
+                className="max-h-[65vh] overflow-auto pr-1"
+              >
+                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-2">
+                  {mediaUrls.map((u) => (
+                    <button
+                      type="button"
+                      key={u}
+                      onClick={() => {
+                        if (pickerForIndex == null) return;
+                        updateDbItem(pickerForIndex, { image_url: u });
+                        setPickerOpen(false);
+                        setPickerForIndex(null);
+                      }}
+                      title={u}
+                      className="border rounded overflow-hidden text-left hover:bg-muted"
+                    >
+                      <div className="w-full aspect-[4/3] bg-gray-100 overflow-hidden">
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img
+                          src={u}
+                          alt="media"
+                          className="w-full h-full object-cover"
+                          loading="lazy"
+                        />
+                      </div>
+                      <div className="px-2 py-1 text-[10px] text-muted-foreground truncate">
+                        {u}
+                      </div>
+                    </button>
+                  ))}
+                </div>
+
+                <div ref={mediaSentinelRef} className="h-8" />
+
+                {mediaNextOffset == null ? (
+                  <div className="py-3 text-xs text-muted-foreground">
+                    Fin de la lista.
+                  </div>
+                ) : null}
+              </div>
+            )}
+          </DialogContent>
+        </Dialog>
+      </Card>
+
       <p className="text-sm text-muted-foreground">
         Vista de todos los sliders actuales (solo lectura). Se muestran los
         orígenes existentes del proyecto.
@@ -637,85 +1453,90 @@ function ImagesGrid({
     );
   }
   return (
-    <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-      {urls.map((u, i) => (
-        <div
-          key={i}
-          className="relative w-full pb-[56%] bg-gray-100 overflow-hidden rounded group"
-          draggable={!!onReorder}
-          onDragStart={(e) => {
-            e.dataTransfer.setData("text/plain", String(i));
-          }}
-          onDragOver={(e) => {
-            if (onReorder) e.preventDefault();
-          }}
-          onDrop={(e) => {
-            if (!onReorder) return;
-            e.preventDefault();
-            const fromStr = e.dataTransfer.getData("text/plain");
-            const from = parseInt(fromStr, 10);
-            if (Number.isFinite(from)) onReorder(from, i);
-          }}
-        >
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            src={u}
-            alt={`img-${i}`}
-            className="absolute inset-0 w-full h-full object-cover"
-          />
-          {onMove ? (
-            <div className="absolute top-1 right-1 flex gap-1 opacity-0 group-hover:opacity-100 transition">
-              <button
-                className="px-1.5 py-0.5 text-[11px] rounded bg-white/90 hover:bg-white shadow"
-                onClick={() => onMove(i, -1)}
-                title="Subir"
-              >
-                ↑
-              </button>
-              <button
-                className="px-1.5 py-0.5 text-[11px] rounded bg-white/90 hover:bg-white shadow"
-                onClick={() => onMove(i, +1)}
-                title="Bajar"
-              >
-                ↓
-              </button>
-            </div>
-          ) : null}
-          <div className="absolute bottom-0 left-0 right-0 bg-black/40 text-white text-[10px] px-1 py-0.5 space-y-0.5">
-            <div className="truncate">{u}</div>
-            {hrefs?.[i] ? (
-              <div className="truncate text-emerald-200">
-                Destino: {hrefs[i]}
+    <div className="relative">
+      <Carousel opts={{ align: "start", dragFree: true }} className="w-full">
+        <CarouselContent>
+          {urls.map((u, i) => (
+            <CarouselItem
+              key={i}
+              className="basis-1/2 sm:basis-1/3 lg:basis-1/4"
+            >
+              <div className="border rounded overflow-hidden bg-white group">
+                <div className="relative w-full h-24 bg-gray-100 overflow-hidden">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={u}
+                    alt={`img-${i}`}
+                    className="absolute inset-0 w-full h-full object-cover"
+                    loading="lazy"
+                  />
+                  {onMove ? (
+                    <div className="absolute top-1 right-1 flex gap-1 opacity-0 group-hover:opacity-100 transition">
+                      <button
+                        className="px-1.5 py-0.5 text-[11px] rounded bg-white/90 hover:bg-white shadow"
+                        onClick={() => onMove(i, -1)}
+                        title="Subir"
+                        type="button"
+                      >
+                        ↑
+                      </button>
+                      <button
+                        className="px-1.5 py-0.5 text-[11px] rounded bg-white/90 hover:bg-white shadow"
+                        onClick={() => onMove(i, +1)}
+                        title="Bajar"
+                        type="button"
+                      >
+                        ↓
+                      </button>
+                    </div>
+                  ) : null}
+                </div>
+
+                <div className="px-2 py-1 bg-black/40 text-white text-[10px] space-y-0.5">
+                  <div className="truncate">{u}</div>
+                  {hrefs?.[i] ? (
+                    <div className="truncate text-emerald-200">
+                      Destino: {hrefs[i]}
+                    </div>
+                  ) : null}
+                </div>
+
+                {onChangeUrl || onChangeHref ? (
+                  <div className="px-2 py-2 text-[11px] space-y-1 bg-white">
+                    {onChangeUrl ? (
+                      <div className="flex gap-1 items-center">
+                        <span className="min-w-[60px] text-gray-500">
+                          Imagen:
+                        </span>
+                        <input
+                          className="flex-1 border rounded px-2 py-1"
+                          value={u}
+                          onChange={(e) => onChangeUrl(i, e.target.value)}
+                        />
+                      </div>
+                    ) : null}
+                    {onChangeHref ? (
+                      <div className="flex gap-1 items-center">
+                        <span className="min-w-[60px] text-gray-500">
+                          Destino:
+                        </span>
+                        <input
+                          className="flex-1 border rounded px-2 py-1"
+                          value={hrefs?.[i] || ""}
+                          onChange={(e) => onChangeHref(i, e.target.value)}
+                          placeholder="p. ej. /iconos o /mi-post"
+                        />
+                      </div>
+                    ) : null}
+                  </div>
+                ) : null}
               </div>
-            ) : null}
-          </div>
-          {onChangeUrl || onChangeHref ? (
-            <div className="absolute inset-x-0 bottom-0 translate-y-full mt-1 text-[11px] space-y-1">
-              {onChangeUrl ? (
-                <div className="flex gap-1 items-center">
-                  <span className="min-w-[60px] text-gray-500">Imagen:</span>
-                  <input
-                    className="flex-1 border rounded px-2 py-1"
-                    value={u}
-                    onChange={(e) => onChangeUrl(i, e.target.value)}
-                  />
-                </div>
-              ) : null}
-              {onChangeHref ? (
-                <div className="flex gap-1 items-center">
-                  <span className="min-w-[60px] text-gray-500">Destino:</span>
-                  <input
-                    className="flex-1 border rounded px-2 py-1"
-                    value={hrefs?.[i] || ""}
-                    onChange={(e) => onChangeHref(i, e.target.value)}
-                    placeholder="p. ej. /iconos o /mi-post"
-                  />
-                </div>
-              ) : null}
-            </div>
-          ) : null}
-        </div>
-      ))}
+            </CarouselItem>
+          ))}
+        </CarouselContent>
+        <CarouselPrevious className="!left-2" />
+        <CarouselNext className="!right-2" />
+      </Carousel>
     </div>
   );
 }

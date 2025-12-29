@@ -86,9 +86,6 @@ export default function Page() {
   };
   const currentBanner = bannerByLang[language] || bannerByLang.es;
 
-  // Href global del slider de Home: al hacer clic en cualquier slide, ir a Restaurantes
-  const homeSliderHref = "/restaurantes";
-
   return (
     <div className="min-h-screen bg-white">
       <Header />
@@ -106,6 +103,8 @@ export default function Page() {
               {/* Volvemos a alturas responsivas como estaba antes */}
               <div className="w-full md:h-[520px] lg:h-[437px] overflow-visible">
                 <HeroSlider
+                  sliderKeyDesktop="home-desktop"
+                  sliderKeyMobile="home-mobile"
                   // Reordenado: iconos primero para alinear con nuevo orden de imágenes
                   slideHrefs={[
                     "/iconos",
@@ -118,6 +117,7 @@ export default function Page() {
                     "/paseos-fuera-de-santiago",
                     "/arquitectura",
                   ]}
+                  preferApiHrefs
                   // Subimos los puntos en la vista
                   dotBottom={24}
                 />

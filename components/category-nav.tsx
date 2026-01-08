@@ -27,7 +27,7 @@ const fallbackCategories = [
     labelEn: "TRIPS OUTSIDE SANTIAGO",
   },
   { slug: "ninos", labelEs: "NIÑOS", labelEn: "KIDS" },
-  { slug: "restaurantes", labelEs: "RESTAURANTES", labelEn: "Restaurants" },
+  { slug: "restaurantes", labelEs: "RESTOS", labelEn: "REST" },
 ];
 
 type ApiCategoryRow = {
@@ -73,6 +73,12 @@ export function CategoryNav({
           .map((r) => {
             const slug = String(r.slug);
             const fallback = fallbackCategories.find((c) => c.slug === slug);
+
+            // Overrides solo en front
+            if (slug === "restaurantes") {
+              return { slug, labelEs: "RESTOS", labelEn: "REST" };
+            }
+
             return {
               slug,
               labelEs: String(
@@ -84,15 +90,27 @@ export function CategoryNav({
             };
           });
 
-        // Asegurar orden estable y RESTAURANTES al final como estaba
+        // Asegurar orden estable:
+        // - "todos" primero
+        // - "restaurantes" cerca del final
+        // - "tienda/tiendas" siempre al final
         const todos = mapped.find((x) => x.slug === "todos");
         const rest = mapped.filter((x) => x.slug !== "todos");
         const restaurants = rest.filter((x) => x.slug === "restaurantes");
-        const others = rest.filter((x) => x.slug !== "restaurantes");
+        const tienda = rest.filter(
+          (x) => x.slug === "tienda" || x.slug === "tiendas"
+        );
+        const others = rest.filter(
+          (x) =>
+            x.slug !== "restaurantes" &&
+            x.slug !== "tienda" &&
+            x.slug !== "tiendas"
+        );
         const finalList = [
           todos || fallbackCategories[0],
           ...others,
           ...restaurants,
+          ...tienda,
         ];
 
         if (!cancelled && finalList.length) setItems(finalList);
@@ -120,7 +138,7 @@ export function CategoryNav({
           <li key={category.slug} className="flex items-center gap-2">
             <Link
               href={hrefFor(category.slug)}
-              className={`font-neutra hover:text-[var(--color-brand-red)] transition-colors tracking-wide text-[15px] leading-[20px] ${
+              className={`font-neutra hover:text-[var(--color-brand-red)] transition-colors tracking-wide text-[14px] leading-[19px] ${
                 activeCategory === category.slug
                   ? "text-[var(--color-brand-red)] font-normal"
                   : "text-black font-normal"

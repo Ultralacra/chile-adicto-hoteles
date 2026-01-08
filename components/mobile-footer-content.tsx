@@ -5,6 +5,7 @@ import Link from "next/link";
 import { usePathname, useSearchParams } from "next/navigation";
 import { LanguageSwitcher } from "./language-switcher";
 import { useEffect, useMemo, useState } from "react";
+import { useLanguage } from "@/contexts/language-context";
 
 interface MobileFooterContentProps {
   onNavigate?: () => void; // cerrar menú al navegar
@@ -12,10 +13,12 @@ interface MobileFooterContentProps {
 export function MobileFooterContent({ onNavigate }: MobileFooterContentProps) {
   const pathname = usePathname();
   const searchParams = useSearchParams();
+  const { language } = useLanguage();
 
   type ApiCategoryRow = {
     slug: string;
     label_es: string | null;
+    label_en?: string | null;
     show_in_menu?: boolean | null;
   };
 
@@ -48,19 +51,23 @@ export function MobileFooterContent({ onNavigate }: MobileFooterContentProps) {
 
   // Fallback hardcodeado (mismo orden histórico)
   const fallbackItems = [
-    { slug: "todos", label: "TODOS" },
-    { slug: "arquitectura", label: "ARQ" },
-    { slug: "barrios", label: "BARRIOS" },
-    { slug: "iconos", label: "ICONOS" },
-    { slug: "mercados", label: "MERCADOS" },
-    { slug: "miradores", label: "MIRADORES" },
-    { slug: "museos", label: "CULTURA" },
-    { slug: "palacios", label: "PALACIOS" },
-    { slug: "parques", label: "PARQUES" },
-    { slug: "paseos-fuera-de-santiago", label: "FUERA DE STGO" },
-    { slug: "ninos", label: "NIÑOS" },
-    // RESTAURANTES al final siempre
-    { slug: "restaurantes", label: "RESTAURANTES" },
+    { slug: "todos", labelEs: "TODOS", labelEn: "ALL" },
+    { slug: "arquitectura", labelEs: "ARQ", labelEn: "ARQ" },
+    { slug: "barrios", labelEs: "BARRIOS", labelEn: "NEIGHBORHOODS" },
+    { slug: "iconos", labelEs: "ICONOS", labelEn: "ICONS" },
+    { slug: "mercados", labelEs: "MERCADOS", labelEn: "MARKETS" },
+    { slug: "miradores", labelEs: "MIRADORES", labelEn: "VIEWPOINTS" },
+    { slug: "museos", labelEs: "CULTURA", labelEn: "MUSEUMS" },
+    { slug: "palacios", labelEs: "PALACIOS", labelEn: "PALACES" },
+    { slug: "parques", labelEs: "PARQUES", labelEn: "PARKS" },
+    {
+      slug: "paseos-fuera-de-santiago",
+      labelEs: "FUERA DE STGO",
+      labelEn: "TRIPS OUTSIDE SANTIAGO",
+    },
+    { slug: "ninos", labelEs: "NIÑOS", labelEn: "KIDS" },
+    // RESTAURANTES truncado en front
+    { slug: "restaurantes", labelEs: "RESTOS", labelEn: "REST" },
   ];
 
   const [items, setItems] = useState(fallbackItems);
@@ -105,17 +112,39 @@ export function MobileFooterContent({ onNavigate }: MobileFooterContentProps) {
           .map((r) => {
             const slug = String(r.slug);
             const fallback = fallbackItems.find((x) => x.slug === slug);
-            const label = String(
-              r.label_es || fallback?.label || slug.toUpperCase()
+
+            // Overrides solo en front
+            if (slug === "restaurantes") {
+              return { slug, labelEs: "RESTOS", labelEn: "REST" };
+            }
+
+            const labelEs = String(
+              r.label_es || fallback?.labelEs || slug.toUpperCase()
             ).toUpperCase();
-            return { slug, label };
+            const labelEn = String(
+              r.label_en || fallback?.labelEn || slug
+            ).toUpperCase();
+            return { slug, labelEs, labelEn };
           })
           // nunca dependemos de que venga "todos" desde la BD
           .filter((x) => x.slug !== "todos");
 
         const restaurants = mapped.filter((x) => x.slug === "restaurantes");
-        const others = mapped.filter((x) => x.slug !== "restaurantes");
-        const finalList = [fallbackItems[0], ...others, ...restaurants];
+        const tienda = mapped.filter(
+          (x) => x.slug === "tienda" || x.slug === "tiendas"
+        );
+        const others = mapped.filter(
+          (x) =>
+            x.slug !== "restaurantes" &&
+            x.slug !== "tienda" &&
+            x.slug !== "tiendas"
+        );
+        const finalList = [
+          fallbackItems[0],
+          ...others,
+          ...restaurants,
+          ...tienda,
+        ];
 
         if (!cancelled && finalList.length) setItems(finalList);
       } catch {
@@ -152,7 +181,7 @@ export function MobileFooterContent({ onNavigate }: MobileFooterContentProps) {
             <li>
               <Link
                 href="/restaurantes"
-                className={`font-neutra-demi text-[15px] leading-[20px] font-[600] transition-colors ${
+                className={`font-neutra-demi text-[14px] leading-[19px] font-[600] transition-colors ${
                   !activeComuna ? "text-[#E40E36]" : "text-white"
                 } hover:text-gray-300`}
                 onClick={() => onNavigate?.()}
@@ -166,7 +195,7 @@ export function MobileFooterContent({ onNavigate }: MobileFooterContentProps) {
                 <li key={c}>
                   <Link
                     href={`/restaurantes?comuna=${slugify(c)}`}
-                    className={`font-neutra-demi text-[15px] leading-[20px] font-[600] transition-colors ${
+                    className={`font-neutra-demi text-[14px] leading-[19px] font-[600] transition-colors ${
                       isActive ? "text-[#E40E36]" : "text-white"
                     } hover:text-gray-300`}
                     onClick={() => onNavigate?.()}
@@ -183,10 +212,10 @@ export function MobileFooterContent({ onNavigate }: MobileFooterContentProps) {
               <li key={item.slug}>
                 <Link
                   href={hrefFor(item.slug)}
-                  className="font-neutra-demi text-[15px] leading-[20px] font-[600] text-white hover:text-gray-300 transition-colors"
+                  className="font-neutra-demi text-[14px] leading-[19px] font-[600] text-white hover:text-gray-300 transition-colors"
                   onClick={() => onNavigate?.()}
                 >
-                  {item.label}
+                  {language === "es" ? item.labelEs : item.labelEn}
                 </Link>
               </li>
             ))}

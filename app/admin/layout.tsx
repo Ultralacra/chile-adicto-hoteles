@@ -65,7 +65,9 @@ export default function AdminLayout({
   ];
 
   return (
-    <div className={`${inter.className} min-h-screen bg-gray-100 overflow-x-hidden`}>
+    <div
+      className={`${inter.className} min-h-screen bg-gray-100 overflow-x-hidden`}
+    >
       {/* Mobile Header */}
       <div className="lg:hidden bg-white border-b border-gray-200 px-4 py-3 flex items-center justify-between">
         <h1 className="text-xl font-bold">Administrador Chile Adicto</h1>

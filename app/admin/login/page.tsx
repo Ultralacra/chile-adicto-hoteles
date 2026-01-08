@@ -5,7 +5,6 @@ import type React from "react"
 import { useState } from "react"
 import { useRouter } from "next/navigation"
 import { useLanguage } from "@/contexts/language-context"
-import Image from "next/image"
 
 export default function AdminLoginPage() {
   const router = useRouter()
@@ -31,13 +30,13 @@ export default function AdminLoginPage() {
       <div className="max-w-md w-full space-y-8">
         {/* Logo */}
         <div className="text-center">
-          <Image
-            src="/logo-best-espanol-blanco-footer.jpg"
-            alt="Chile Adicto"
-            width={200}
-            height={80}
-            className="mx-auto mb-8"
-          />
+          <div className="mx-auto mb-8 flex justify-center">
+            <img
+              src="/logo-best-espanol.svg"
+              alt="Chile Adicto"
+              className="h-16 w-auto"
+            />
+          </div>
           <h2 className="text-3xl font-bold uppercase text-[var(--color-brand-black)]">
             {language === "es" ? "Acceso Administrativo" : "Admin Access"}
           </h2>

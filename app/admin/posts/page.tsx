@@ -21,6 +21,7 @@ export default function PostsListPage() {
   const router = useRouter();
   const [query, setQuery] = useState("");
   const [category, setCategory] = useState<string>("ALL");
+  const [selectedComuna, setSelectedComuna] = useState<string | null>(null);
   const categoryIcons: Record<string, string> = {
     ALL: "🌐",
     NIÑOS: "🧒",
@@ -42,6 +43,92 @@ export default function PostsListPage() {
   const [categoriesApi, setCategoriesApi] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);
   const pageSize = 12;
+
+  // Comunas dinámicas para restaurantes (derivadas de direcciones/locations y overrides)
+  const possibleCommunes = [
+    "Santiago",
+    "Providencia",
+    "Las Condes",
+    "Vitacura",
+    "Lo Barnechea",
+    "La Reina",
+    "Ñuñoa",
+    "Recoleta",
+    "Independencia",
+    "San Miguel",
+    "Estación Central",
+    "Maipú",
+    "La Florida",
+    "Puente Alto",
+    "Alto Jahuel",
+  ];
+  const comunaOverrides: Record<string, string | string[]> = {
+    "ceiba-rooftop-bar-sabores-amazonicos": "Lo Barnechea",
+    "ceiba-roof-top-renace-en-lo-barnechea": ["Lo Barnechea", "Santiago"],
+    "casaluz-una-brillante-luz-en-barrio-italia": "Providencia",
+    "anima-el-reino-de-lo-esencial": "Providencia",
+    // Mirai debe aparecer en Las Condes y Santiago
+    "mirai-food-lab": ["Las Condes", "Santiago"],
+  };
+  const santiagoAllowedSlugs = new Set<string>([
+    "casa-lastarria-nobleza-arquitectonica",
+    "copper-room-y-gran-cafe-hotel-debaines-homenajes-necesarios",
+    "demo-magnolia-honestidad-refrescante",
+    "flama-la-pizza-que-desafia-lo-clasico",
+    "jose-ramon-277-oda-a-lo-mas-sabroso-de-chile",
+    "liguria-lastarria-la-filosofia-cicali",
+    "the-singular",
+    "pulperia-santa-elvira-una-joya-de-matta-sur",
+    "ocean-pacifics-destino-gastronomico-patrimonial",
+    "mirai-food-lab",
+    "bocanariz-la-vitrina-del-vino-chileno",
+    "blue-jar-nunca-decepciona",
+    "make-make",
+    "ceiba-roof-top-renace-en-lo-barnechea",
+  ]);
+  const normalizeComuna = (s: string) =>
+    String(s || "")
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .toUpperCase()
+      .trim();
+  const detectCommunesForRestaurant = (h: any): string[] => {
+    const found = new Set<string>();
+    const slug = String(h?.slug || "");
+
+    const override = comunaOverrides[slug];
+    if (override) {
+      const arr = Array.isArray(override) ? override : [override];
+      arr.forEach((c) => found.add(c));
+    }
+
+    const tryAdd = (raw?: string) => {
+      if (!raw) return;
+      const haystack = normalizeComuna(String(raw));
+      for (const pc of possibleCommunes) {
+        if (haystack.includes(normalizeComuna(pc))) {
+          found.add(pc);
+        }
+      }
+    };
+
+    tryAdd(h?.address);
+    if (Array.isArray(h?.locations)) {
+      for (const loc of h.locations) {
+        tryAdd(loc?.address);
+        tryAdd(loc?.label);
+      }
+    }
+    if (Array.isArray(h?.es?.description)) tryAdd(h.es.description.join("\n"));
+    if (Array.isArray(h?.en?.description)) tryAdd(h.en.description.join("\n"));
+
+    // Control fino: Santiago solo si está en whitelist
+    if (found.has("Santiago") && !santiagoAllowedSlugs.has(slug)) {
+      found.delete("Santiago");
+    }
+
+    return possibleCommunes.filter((c) => found.has(c));
+  };
 
   // Cargar posts y categorías desde la API
   useEffect(() => {
@@ -113,8 +200,35 @@ export default function PostsListPage() {
       if (h.en?.category) cats.add(String(h.en.category).toUpperCase());
       return cats.has(category);
     };
-    return hotelsData.filter((h) => matchesQuery(h) && matchesCategory(h));
-  }, [query, category, hotelsData]);
+
+    const matchesComuna = (h: any) => {
+      if (category !== "RESTAURANTES") return true;
+      if (!selectedComuna) return true;
+      const comms = detectCommunesForRestaurant(h);
+      return comms.includes(selectedComuna);
+    };
+
+    return hotelsData.filter(
+      (h) => matchesQuery(h) && matchesCategory(h) && matchesComuna(h)
+    );
+  }, [query, category, hotelsData, selectedComuna]);
+
+  const availableRestaurantCommunes = useMemo(() => {
+    if (category !== "RESTAURANTES") return [] as string[];
+    const restaurantsOnly = hotelsData.filter((h) => {
+      const cats = new Set<string>([
+        ...(h.categories || []).map((c: string) => String(c).toUpperCase()),
+      ]);
+      if (h.es?.category) cats.add(String(h.es.category).toUpperCase());
+      if (h.en?.category) cats.add(String(h.en.category).toUpperCase());
+      return cats.has("RESTAURANTES");
+    });
+    const found = new Set<string>();
+    for (const h of restaurantsOnly) {
+      detectCommunesForRestaurant(h).forEach((c) => found.add(c));
+    }
+    return possibleCommunes.filter((c) => found.has(c));
+  }, [category, hotelsData]);
 
   // Inicializar categoría desde la URL si viene ?category=
   useEffect(() => {
@@ -124,10 +238,20 @@ export default function PostsListPage() {
       );
       const c = params.get("category");
       if (c) setCategory(c.toUpperCase());
+
+      const comuna = params.get("comuna");
+      if (comuna) setSelectedComuna(comuna.replace(/-/g, " "));
     } catch (err) {
       // no-op in environments without window
     }
   }, []);
+
+  useEffect(() => {
+    // Si cambias de categoría y no es restaurantes, limpiar comuna
+    if (category !== "RESTAURANTES" && selectedComuna) {
+      setSelectedComuna(null);
+    }
+  }, [category, selectedComuna]);
 
   // Paginación
   const totalPages = Math.max(1, Math.ceil(filtered.length / pageSize));
@@ -184,6 +308,7 @@ export default function PostsListPage() {
                     key={c}
                     onClick={() => {
                       setCategory(c);
+                      if (c !== "RESTAURANTES") setSelectedComuna(null);
                       setPage(1);
                     }}
                     className={`group flex flex-col items-center justify-center gap-1 border rounded-md px-2 py-3 transition-all text-xs font-medium tracking-tight hover:shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 ${
@@ -202,6 +327,66 @@ export default function PostsListPage() {
               })}
             </div>
           </div>
+
+          {category === "RESTAURANTES" && (
+            <div className="pt-2">
+              <p className="text-xs font-medium text-gray-500 mb-2 uppercase tracking-wide">
+                Filtrar por comuna (Restaurantes)
+              </p>
+              <div className="flex flex-wrap gap-2">
+                <button
+                  onClick={() => {
+                    setSelectedComuna(null);
+                    setPage(1);
+                  }}
+                  className={`border rounded-md px-3 py-2 text-xs font-medium transition-all focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 ${
+                    !selectedComuna
+                      ? "bg-red-600 text-white border-red-600 shadow"
+                      : "bg-white text-gray-700 border-gray-200 hover:border-gray-300"
+                  }`}
+                  aria-pressed={!selectedComuna}
+                >
+                  TODAS
+                </button>
+                {availableRestaurantCommunes.map((com) => {
+                  const active = selectedComuna === com;
+                  return (
+                    <button
+                      key={com}
+                      onClick={() => {
+                        setSelectedComuna(com);
+                        setPage(1);
+                      }}
+                      className={`border rounded-md px-3 py-2 text-xs font-medium transition-all focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 ${
+                        active
+                          ? "bg-red-600 text-white border-red-600 shadow"
+                          : "bg-white text-gray-700 border-gray-200 hover:border-gray-300"
+                      }`}
+                      aria-pressed={active}
+                    >
+                      {com}
+                    </button>
+                  );
+                })}
+              </div>
+
+              {selectedComuna && (
+                <div className="flex flex-wrap items-center gap-2 pt-2">
+                  <span className="text-xs text-gray-500">Comuna:</span>
+                  <span className="text-xs font-semibold px-2 py-1 bg-red-50 text-red-700 rounded">
+                    {selectedComuna}
+                  </span>
+                  <button
+                    onClick={() => setSelectedComuna(null)}
+                    className="text-xs text-blue-600 hover:underline"
+                  >
+                    Quitar comuna
+                  </button>
+                </div>
+              )}
+            </div>
+          )}
+
           {category !== "ALL" && (
             <div className="flex flex-wrap items-center gap-2 pt-1">
               <span className="text-xs text-gray-500">Mostrando:</span>

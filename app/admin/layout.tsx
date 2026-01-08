@@ -65,7 +65,7 @@ export default function AdminLayout({
   ];
 
   return (
-    <div className={`${inter.className} min-h-screen bg-gray-100`}>
+    <div className={`${inter.className} min-h-screen bg-gray-100 overflow-x-hidden`}>
       {/* Mobile Header */}
       <div className="lg:hidden bg-white border-b border-gray-200 px-4 py-3 flex items-center justify-between">
         <h1 className="text-xl font-bold">Administrador Chile Adicto</h1>
@@ -131,7 +131,7 @@ export default function AdminLayout({
 
       {/* Main Content */}
       <main className="lg:ml-64 min-h-screen">
-        <div className="p-6">{children}</div>
+        <div className="p-6 max-w-6xl mx-auto w-full">{children}</div>
       </main>
     </div>
   );

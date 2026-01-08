@@ -128,6 +128,7 @@ export default function CategoryPage({ params }: { params: any }) {
   // Permite uno o múltiples match de comuna por slug.
   const comunaOverrides: Record<string, string | string[]> = {
     "ceiba-rooftop-bar-sabores-amazonicos": "Lo Barnechea",
+    "ceiba-roof-top-renace-en-lo-barnechea": ["Lo Barnechea", "Santiago"],
     "casaluz-una-brillante-luz-en-barrio-italia": "Providencia",
     "anima-el-reino-de-lo-esencial": "Providencia",
     // Mirai debe aparecer en Las Condes y Santiago
@@ -209,6 +210,7 @@ export default function CategoryPage({ params }: { params: any }) {
     "bocanariz-la-vitrina-del-vino-chileno",
     "blue-jar-nunca-decepciona",
     "make-make",
+    "ceiba-roof-top-renace-en-lo-barnechea",
   ]);
 
   // Cargar imágenes del slider de restaurantes desde /public/imagenes-slider/manifest.json

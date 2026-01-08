@@ -141,15 +141,35 @@ export async function GET(req: Request) {
     if (rows) {
       if (category || categorySlug) {
         const catU = category ? category.toUpperCase() : null;
+        const slugTarget = categorySlug ? categorySlug.toLowerCase().trim() : null;
+
+        const matchesTranslationCategorySlug = (r: any) => {
+          if (!slugTarget) return false;
+          const translations = Array.isArray(r.translations) ? r.translations : [];
+          return translations.some((t: any) => {
+            if (!t?.category) return false;
+            const cat = String(t.category).toLowerCase().trim();
+            const catSlug = cat.replace(/\s+/g, "-");
+            return cat === slugTarget || catSlug === slugTarget;
+          });
+        };
+
         rows = rows.filter((r: any) => {
           const matchByLabel = catU
-            ? (r.translations || []).some((t: any) => (t.category || "").toUpperCase() === catU) ||
-              (r.category_links || []).some((c: any) => (c.category?.label_es || "").toUpperCase() === catU)
+            ? (r.translations || []).some(
+                (t: any) => (t.category || "").toUpperCase() === catU
+              ) ||
+              (r.category_links || []).some(
+                (c: any) => (c.category?.label_es || "").toUpperCase() === catU
+              )
             : false;
-          const matchBySlug = categorySlug
-            ? (r.category_links || []).some((c: any) => (c.category?.slug || "") === categorySlug)
+          const matchBySlug = slugTarget
+            ? (r.category_links || []).some(
+                (c: any) => String(c.category?.slug || "") === slugTarget
+              ) || matchesTranslationCategorySlug(r)
             : false;
-          return (catU ? matchByLabel : false) || (categorySlug ? matchBySlug : false);
+
+          return (catU ? matchByLabel : false) || (slugTarget ? matchBySlug : false);
         });
       }
       const qc = q.trim().toLowerCase();

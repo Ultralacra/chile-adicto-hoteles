@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useSearchParams } from "next/navigation";
 import { LanguageSwitcher } from "./language-switcher";
+import { useEffect, useMemo, useState } from "react";
 
 interface MobileFooterContentProps {
   onNavigate?: () => void; // cerrar menú al navegar
@@ -11,6 +12,12 @@ interface MobileFooterContentProps {
 export function MobileFooterContent({ onNavigate }: MobileFooterContentProps) {
   const pathname = usePathname();
   const searchParams = useSearchParams();
+
+  type ApiCategoryRow = {
+    slug: string;
+    label_es: string | null;
+    show_in_menu?: boolean | null;
+  };
 
   // Comunas para la categoría restaurantes (mismo set que desktop)
   const communes = [
@@ -35,10 +42,12 @@ export function MobileFooterContent({ onNavigate }: MobileFooterContentProps) {
     : null;
 
   // Detectar si estamos navegando la categoría restaurantes
-  const isRestaurantsCategory = pathname?.startsWith("/restaurantes");
+  const isRestaurantsCategory =
+    pathname?.startsWith("/restaurantes") ||
+    pathname?.startsWith("/categoria/restaurantes");
 
-  // Reordenar categorías dejando RESTAURANTES al final
-  const items = [
+  // Fallback hardcodeado (mismo orden histórico)
+  const fallbackItems = [
     { slug: "todos", label: "TODOS" },
     { slug: "arquitectura", label: "ARQ" },
     { slug: "barrios", label: "BARRIOS" },
@@ -53,6 +62,71 @@ export function MobileFooterContent({ onNavigate }: MobileFooterContentProps) {
     // RESTAURANTES al final siempre
     { slug: "restaurantes", label: "RESTAURANTES" },
   ];
+
+  const [items, setItems] = useState(fallbackItems);
+
+  const prettySlugs = useMemo(
+    () =>
+      new Set([
+        "iconos",
+        "ninos",
+        "arquitectura",
+        "barrios",
+        "mercados",
+        "miradores",
+        "museos",
+        "palacios",
+        "parques",
+        "paseos-fuera-de-santiago",
+        "restaurantes",
+      ]),
+    []
+  );
+
+  const hrefFor = (slug: string) => {
+    if (slug === "todos") return "/";
+    if (slug === "restaurantes") return "/restaurantes";
+    return prettySlugs.has(slug) ? `/${slug}` : `/categoria/${slug}`;
+  };
+
+  useEffect(() => {
+    let cancelled = false;
+    async function load() {
+      try {
+        const res = await fetch("/api/categories?full=1&nav=1", {
+          cache: "no-store",
+        });
+        const json = res.ok ? await res.json() : [];
+        const rows: ApiCategoryRow[] = Array.isArray(json) ? json : [];
+
+        // Mapear categorías (si el slug no tiene rewrite, igual funciona con /categoria/<slug>)
+        const mapped = rows
+          .filter((r) => r && r.slug)
+          .map((r) => {
+            const slug = String(r.slug);
+            const fallback = fallbackItems.find((x) => x.slug === slug);
+            const label = String(
+              r.label_es || fallback?.label || slug.toUpperCase()
+            ).toUpperCase();
+            return { slug, label };
+          })
+          // nunca dependemos de que venga "todos" desde la BD
+          .filter((x) => x.slug !== "todos");
+
+        const restaurants = mapped.filter((x) => x.slug === "restaurantes");
+        const others = mapped.filter((x) => x.slug !== "restaurantes");
+        const finalList = [fallbackItems[0], ...others, ...restaurants];
+
+        if (!cancelled && finalList.length) setItems(finalList);
+      } catch {
+        // fallback
+      }
+    }
+    load();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   return (
     <div>
@@ -108,7 +182,7 @@ export function MobileFooterContent({ onNavigate }: MobileFooterContentProps) {
             {items.map((item) => (
               <li key={item.slug}>
                 <Link
-                  href={item.slug === "todos" ? "/" : `/${item.slug}`}
+                  href={hrefFor(item.slug)}
                   className="font-neutra-demi text-[15px] leading-[20px] font-[600] text-white hover:text-gray-300 transition-colors"
                   onClick={() => onNavigate?.()}
                 >

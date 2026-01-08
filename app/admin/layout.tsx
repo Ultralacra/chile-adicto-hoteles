@@ -15,6 +15,7 @@ import {
   X,
   Images as ImagesIcon,
   Sliders,
+  Tag,
 } from "lucide-react";
 import { Inter } from "next/font/google";
 
@@ -57,6 +58,7 @@ export default function AdminLayout({
     { href: "/admin", icon: Home, label: "Inicio" },
     { href: "/admin/posts", icon: FileText, label: "Posts" },
     { href: "/admin/posts/new", icon: Plus, label: "Crear nuevo" },
+    { href: "/admin/categories", icon: Tag, label: "Categorías" },
     { href: "/admin/sliders", icon: Sliders, label: "Sliders" },
     { href: "/admin/images", icon: ImagesIcon, label: "Imágenes" },
     { href: "/admin/settings", icon: Settings, label: "Configuración" },
@@ -77,7 +79,7 @@ export default function AdminLayout({
 
       {/* Sidebar */}
       <aside
-        className={`fixed top-0 left-0 h-full w-64 bg-[var(--color-brand-black)] text-white transform transition-transform duration-300 z-50 ${
+        className={`fixed top-0 left-0 h-full w-64 bg-[var(--color-brand-black)] text-white transform transition-transform duration-300 z-50 flex flex-col ${
           isSidebarOpen ? "translate-x-0" : "-translate-x-full"
         } lg:translate-x-0`}
       >
@@ -86,7 +88,7 @@ export default function AdminLayout({
           <p className="text-sm text-gray-400 mt-1">Panel de administración.</p>
         </div>
 
-        <nav className="p-4 space-y-2">
+        <nav className="p-4 space-y-2 flex-1 overflow-y-auto">
           {menuItems.map((item) => {
             const Icon = item.icon;
             const isActive = pathname === item.href;
@@ -108,7 +110,7 @@ export default function AdminLayout({
           })}
         </nav>
 
-        <div className="absolute bottom-0 left-0 right-0 p-4 border-t border-gray-700">
+        <div className="p-4 border-t border-gray-700">
           <button
             onClick={handleLogout}
             className="flex items-center gap-3 px-4 py-3 w-full text-gray-300 hover:bg-gray-800 hover:text-white rounded-lg transition-colors"

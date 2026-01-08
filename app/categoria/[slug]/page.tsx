@@ -14,29 +14,8 @@ import { buildCardExcerpt } from "@/lib/utils";
 import Link from "next/link";
 import { Spinner } from "@/components/ui/spinner";
 
-const validCategories = [
-  "norte",
-  "centro",
-  "sur",
-  "isla-de-pascua",
-  "santiago",
-  "guia-impresa",
-  "prensa",
-  "nosotros",
-  "exploraciones-tnf",
-  // new categories added
-  "ninos",
-  "arquitectura",
-  "barrios",
-  "iconos",
-  "mercados",
-  "miradores",
-  "museos",
-  "restaurantes",
-  "palacios",
-  "parques",
-  "paseos-fuera-de-santiago",
-];
+// Antes se validaba contra una lista fija, pero ahora el menú y las categorías
+// se administran desde la BD. No hacemos 404 por slug desconocido.
 
 type ResolvedParams = { slug: string };
 
@@ -48,10 +27,6 @@ export default function CategoryPage({ params }: { params: any }) {
   useEffect(() => {
     window.scrollTo(0, 0);
   }, [slug]);
-
-  if (!validCategories.includes(slug)) {
-    notFound();
-  }
 
   const categoryMap: { [key: string]: string } = {
     norte: "NORTE",
@@ -74,6 +49,7 @@ export default function CategoryPage({ params }: { params: any }) {
     parques: "PARQUES",
     // Mostrar FUERA DE STGO aunque el slug sea paseos-fuera-de-santiago
     "paseos-fuera-de-santiago": "FUERA DE STGO",
+    tiendas: "TIENDAS",
   };
 
   const categoryName = categoryMap[slug] || slug.toUpperCase();
@@ -152,6 +128,8 @@ export default function CategoryPage({ params }: { params: any }) {
   // Permite uno o múltiples match de comuna por slug.
   const comunaOverrides: Record<string, string | string[]> = {
     "ceiba-rooftop-bar-sabores-amazonicos": "Lo Barnechea",
+    "casaluz-una-brillante-luz-en-barrio-italia": "Providencia",
+    "anima-el-reino-de-lo-esencial": "Providencia",
     // Mirai debe aparecer en Las Condes y Santiago
     "mirai-food-lab": ["Las Condes", "Santiago"],
   };
@@ -253,10 +231,13 @@ export default function CategoryPage({ params }: { params: any }) {
   useEffect(() => {
     if (!isRestaurantsPage) return;
     let cancelled = false;
-    const desktopKey = language === "en" ? "restaurants-desktop-en" : "restaurants-desktop-es";
+    const desktopKey =
+      language === "en" ? "restaurants-desktop-en" : "restaurants-desktop-es";
 
     // 1) Intentar BD primero (si existe)
-    fetch(`/api/sliders/${encodeURIComponent(desktopKey)}`, { cache: "no-store" })
+    fetch(`/api/sliders/${encodeURIComponent(desktopKey)}`, {
+      cache: "no-store",
+    })
       .then((r) => (r.ok ? r.json() : null))
       .then((db) => {
         if (cancelled) return;
@@ -265,7 +246,9 @@ export default function CategoryPage({ params }: { params: any }) {
         const imagesFromDb = activeItems
           .map((it: any) => String(it?.image_url || "").trim())
           .filter(Boolean);
-        const hrefsFromDb = activeItems.map((it: any) => (it?.href ? String(it.href) : ""));
+        const hrefsFromDb = activeItems.map((it: any) =>
+          it?.href ? String(it.href) : ""
+        );
 
         if (imagesFromDb.length > 0) {
           setRestaurantSliderImages(imagesFromDb);
@@ -279,114 +262,116 @@ export default function CategoryPage({ params }: { params: any }) {
           .then((payload) => {
             if (cancelled) return;
 
-        const normalizeList = (list: unknown): string[] => {
-          if (!Array.isArray(list)) return [];
-          return list
-            .map((s) => String(s || "").trim())
-            .filter(Boolean)
-            .map((s) => (s.startsWith("/") ? s : `/imagenes-slider/${s}`));
-        };
+            const normalizeList = (list: unknown): string[] => {
+              if (!Array.isArray(list)) return [];
+              return list
+                .map((s) => String(s || "").trim())
+                .filter(Boolean)
+                .map((s) => (s.startsWith("/") ? s : `/imagenes-slider/${s}`));
+            };
 
-        // Normalizador y matching inteligente contra data.json para que el href
-        // coincida con el slug real del restaurante.
-        const normKey = (str: string) =>
-          String(str || "")
-            .normalize("NFD")
-            .replace(/[\u0300-\u036f]/g, "")
-            .toLowerCase()
-            .replace(/[^a-z0-9]/g, "");
+            // Normalizador y matching inteligente contra data.json para que el href
+            // coincida con el slug real del restaurante.
+            const normKey = (str: string) =>
+              String(str || "")
+                .normalize("NFD")
+                .replace(/[\u0300-\u036f]/g, "")
+                .toLowerCase()
+                .replace(/[^a-z0-9]/g, "");
 
-        const restaurantIndex = (filteredHotels as any[]).map((h) => {
-          const slug = String(h.slug || "");
-          const esName = String(h.es?.name || "");
-          const enName = String(h.en?.name || "");
-          return {
-            slug,
-            keys: [normKey(slug), normKey(esName), normKey(enName)].filter(
-              Boolean
-            ),
-          };
-        });
-
-        const buildHrefsFromFilenames = (list: unknown): string[] => {
-          if (!Array.isArray(list)) return [];
-          return list
-            .map((s) => String(s || "").trim())
-            .filter(Boolean)
-            .map((fname) => {
-              const onlyName = fname.split("/").pop() || fname;
-              const noExt = onlyName.replace(/\.[^.]+$/, "");
-              const base = noExt.replace(/-(1|2)$/i, ""); // AC KITCHEN-1 -> AC KITCHEN
-              const cleanedBase = base.replace(/^(sld|slm|sl)[ _-]+/i, "");
-              const key = normKey(cleanedBase); // ackitchen
-
-              let matchSlug: string | null = null;
-              for (const row of restaurantIndex) {
-                if (
-                  row.keys.some(
-                    (k: string) => k.startsWith(key) || key.startsWith(k)
-                  )
-                ) {
-                  matchSlug = row.slug;
-                  break;
-                }
-              }
-
-              if (!matchSlug) {
-                // Fallback: derivar slug del base por si acaso
-                matchSlug = cleanedBase
-                  .normalize("NFD")
-                  .replace(/[\u0300-\u036f]/g, "")
-                  .toLowerCase()
-                  .replace(/[^a-z0-9]+/g, "-")
-                  .replace(/(^-|-$)/g, "");
-              }
-              return `/${matchSlug}`;
+            const restaurantIndex = (filteredHotels as any[]).map((h) => {
+              const slug = String(h.slug || "");
+              const esName = String(h.es?.name || "");
+              const enName = String(h.en?.name || "");
+              return {
+                slug,
+                keys: [normKey(slug), normKey(esName), normKey(enName)].filter(
+                  Boolean
+                ),
+              };
             });
-        };
 
-        // Determinar lista activa según idioma (o fallback)
-        let activeList: unknown = [];
-        if (Array.isArray(payload)) {
-          // Formato antiguo: array simple
-          activeList = payload;
-        } else if (payload && typeof payload === "object") {
-          activeList =
-            (payload as any)[language] ||
-            (payload as any)["es"] ||
-            (payload as any)["en"];
-        }
+            const buildHrefsFromFilenames = (list: unknown): string[] => {
+              if (!Array.isArray(list)) return [];
+              return list
+                .map((s) => String(s || "").trim())
+                .filter(Boolean)
+                .map((fname) => {
+                  const onlyName = fname.split("/").pop() || fname;
+                  const noExt = onlyName.replace(/\.[^.]+$/, "");
+                  const base = noExt.replace(/-(1|2)$/i, ""); // AC KITCHEN-1 -> AC KITCHEN
+                  const cleanedBase = base.replace(/^(sld|slm|sl)[ _-]+/i, "");
+                  const key = normKey(cleanedBase); // ackitchen
 
-        const images = normalizeList(activeList);
-        const derivedHrefs = buildHrefsFromFilenames(activeList);
-        setRestaurantSliderImages(images);
+                  let matchSlug: string | null = null;
+                  for (const row of restaurantIndex) {
+                    if (
+                      row.keys.some(
+                        (k: string) => k.startsWith(key) || key.startsWith(k)
+                      )
+                    ) {
+                      matchSlug = row.slug;
+                      break;
+                    }
+                  }
 
-        // Orden fijo “prioritario”, pero sin bloquear nuevas imágenes del manifest.
-        // Si agregas una imagen nueva al manifest (y su restaurante existe), se
-        // añade automáticamente al final sin tocar código.
-        const explicitRestaurantSlugs = [
-          "ac-kitchen-la-madurez-de-un-chef-en-movimiento",
-          "ambrosia-restaurante-bistro-dos-versiones-de-un-gran-concepto",
-          "borago-un-viaje-a-la-esencia-de-chile",
-          "copper-room-y-gran-cafe-hotel-debaines-homenajes-necesarios",
-          "cora-bistro-oda-a-la-cocina-chilena",
-          "demencia-un-espectaculo-gastronomico",
-          "fukasawa-esencia-japonesa",
-          "karai-el-sello-del-mejor-del-mundo",
-          "pulperia-santa-elvira-una-joya-de-matta-sur",
-          "tanaka-la-fusion-redefinida",
-          "yum-cha-comer-y-beber-con-te",
-          "casa-las-cujas-deleite-marino",
-        ];
+                  if (!matchSlug) {
+                    // Fallback: derivar slug del base por si acaso
+                    matchSlug = cleanedBase
+                      .normalize("NFD")
+                      .replace(/[\u0300-\u036f]/g, "")
+                      .toLowerCase()
+                      .replace(/[^a-z0-9]+/g, "-")
+                      .replace(/(^-|-$)/g, "");
+                  }
+                  return `/${matchSlug}`;
+                });
+            };
 
-        const explicitHrefs = explicitRestaurantSlugs.map((slug) => `/${slug}`);
-        const merged: string[] = [];
-        for (const h of explicitHrefs) {
-          if (h && !merged.includes(h)) merged.push(h);
-        }
-        for (const h of derivedHrefs) {
-          if (h && !merged.includes(h)) merged.push(h);
-        }
+            // Determinar lista activa según idioma (o fallback)
+            let activeList: unknown = [];
+            if (Array.isArray(payload)) {
+              // Formato antiguo: array simple
+              activeList = payload;
+            } else if (payload && typeof payload === "object") {
+              activeList =
+                (payload as any)[language] ||
+                (payload as any)["es"] ||
+                (payload as any)["en"];
+            }
+
+            const images = normalizeList(activeList);
+            const derivedHrefs = buildHrefsFromFilenames(activeList);
+            setRestaurantSliderImages(images);
+
+            // Orden fijo “prioritario”, pero sin bloquear nuevas imágenes del manifest.
+            // Si agregas una imagen nueva al manifest (y su restaurante existe), se
+            // añade automáticamente al final sin tocar código.
+            const explicitRestaurantSlugs = [
+              "ac-kitchen-la-madurez-de-un-chef-en-movimiento",
+              "ambrosia-restaurante-bistro-dos-versiones-de-un-gran-concepto",
+              "borago-un-viaje-a-la-esencia-de-chile",
+              "copper-room-y-gran-cafe-hotel-debaines-homenajes-necesarios",
+              "cora-bistro-oda-a-la-cocina-chilena",
+              "demencia-un-espectaculo-gastronomico",
+              "fukasawa-esencia-japonesa",
+              "karai-el-sello-del-mejor-del-mundo",
+              "pulperia-santa-elvira-una-joya-de-matta-sur",
+              "tanaka-la-fusion-redefinida",
+              "yum-cha-comer-y-beber-con-te",
+              "casa-las-cujas-deleite-marino",
+            ];
+
+            const explicitHrefs = explicitRestaurantSlugs.map(
+              (slug) => `/${slug}`
+            );
+            const merged: string[] = [];
+            for (const h of explicitHrefs) {
+              if (h && !merged.includes(h)) merged.push(h);
+            }
+            for (const h of derivedHrefs) {
+              if (h && !merged.includes(h)) merged.push(h);
+            }
 
             setRestaurantSlideHrefs(merged);
           });
@@ -405,10 +390,13 @@ export default function CategoryPage({ params }: { params: any }) {
     if (!isRestaurantsPage) return;
     let cancelled = false;
 
-    const mobileKey = language === "en" ? "restaurants-mobile-en" : "restaurants-mobile-es";
+    const mobileKey =
+      language === "en" ? "restaurants-mobile-en" : "restaurants-mobile-es";
 
     // 1) Intentar BD primero (si existe)
-    fetch(`/api/sliders/${encodeURIComponent(mobileKey)}`, { cache: "no-store" })
+    fetch(`/api/sliders/${encodeURIComponent(mobileKey)}`, {
+      cache: "no-store",
+    })
       .then((r) => (r.ok ? r.json() : null))
       .then((db) => {
         if (cancelled) return;
@@ -417,7 +405,9 @@ export default function CategoryPage({ params }: { params: any }) {
         const imagesFromDb = activeItems
           .map((it: any) => String(it?.image_url || "").trim())
           .filter(Boolean);
-        const hrefsFromDb = activeItems.map((it: any) => (it?.href ? String(it.href) : ""));
+        const hrefsFromDb = activeItems.map((it: any) =>
+          it?.href ? String(it.href) : ""
+        );
 
         if (imagesFromDb.length > 0) {
           setRestaurantMobileImages(imagesFromDb);
@@ -430,7 +420,9 @@ export default function CategoryPage({ params }: { params: any }) {
           .then((r) => (r.ok ? r.json() : { images: [] }))
           .then((json) => {
             if (cancelled) return;
-            const imgs: string[] = Array.isArray(json.images) ? json.images : [];
+            const imgs: string[] = Array.isArray(json.images)
+              ? json.images
+              : [];
             setRestaurantMobileImages(imgs);
             // Derivar href por filename intentando matchear slug real igual que manifest
             const normKey = (str: string) =>

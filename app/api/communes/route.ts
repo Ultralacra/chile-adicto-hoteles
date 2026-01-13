@@ -120,11 +120,30 @@ export async function GET(req: Request) {
       })
       .filter(Boolean) as CommuneRow[];
 
+    const hiddenNavSlugs = new Set(["independencia"]);
+    // Menú histórico de restaurantes (lo que se mostraba antes), sin agregar comunas nuevas.
+    const restaurantMenuSlugs = new Set([
+      "vitacura",
+      "las-condes",
+      "santiago",
+      "lo-barnechea",
+      "providencia",
+      "alto-jahuel",
+      "la-reina",
+    ]);
+
     const filtered = nav && !includeHidden
-      ? normalized.filter((r) => r.show_in_menu !== false)
+      ? normalized.filter((r) => {
+          const slug = String(r.slug || "").trim().toLowerCase();
+          if (!slug) return false;
+          if (r.show_in_menu === false) return false;
+          if (hiddenNavSlugs.has(slug)) return false;
+          return restaurantMenuSlugs.has(slug);
+        })
       : normalized;
 
-    if (full) return NextResponse.json(filtered, { status: 200 });
+    // Si es navegación (nav=1) o modo full/includeHidden, devolvemos filas con slug/label.
+    if (full || nav || includeHidden) return NextResponse.json(filtered, { status: 200 });
 
     // Compat simple: lista de labels en mayúsculas
     return NextResponse.json(

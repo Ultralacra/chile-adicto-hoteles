@@ -67,6 +67,17 @@ export async function POST(req: Request) {
     const communesRows: any[] | null = await anonRest(
       "/communes?select=slug,label,show_in_menu,menu_order&order=menu_order.asc,label.asc"
     );
+    const hiddenNavSlugs = new Set(["independencia"]);
+    const restaurantMenuSlugs = new Set([
+      "vitacura",
+      "las-condes",
+      "santiago",
+      "lo-barnechea",
+      "providencia",
+      "alto-jahuel",
+      "la-reina",
+    ]);
+
     const communes = Array.isArray(communesRows)
       ? communesRows
           .map((r: any) => ({
@@ -75,7 +86,12 @@ export async function POST(req: Request) {
             show_in_menu: r.show_in_menu ?? true,
             menu_order: Number.isFinite(Number(r.menu_order)) ? Number(r.menu_order) : 0,
           }))
-          .filter((r: any) => r.slug)
+          .filter((r: any) => {
+            const slug = String(r.slug || "").trim().toLowerCase();
+            if (!slug) return false;
+            if (hiddenNavSlugs.has(slug)) return false;
+            return restaurantMenuSlugs.has(slug);
+          })
       : [];
 
     if (slugs.length === 0) {

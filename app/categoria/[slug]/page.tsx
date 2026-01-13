@@ -252,6 +252,9 @@ export default function CategoryPage({ params }: { params: any }) {
       .replace(/[\u0300-\u036f]/g, "")
       .toUpperCase()
       .trim();
+
+  const isHiddenRestaurantCommuneLabel = (label: string) =>
+    normalizeComuna(label) === "INDEPENDENCIA";
   // Derivar lista de comunas encontradas entre los restaurantes cargados
   useEffect(() => {
     if (!isRestaurantsPage) {
@@ -264,7 +267,7 @@ export default function CategoryPage({ params }: { params: any }) {
       const labels = dbCommunes
         .filter((c) => c && c.slug && c.show_in_menu !== false)
         .map((c) => communeLabelFromRow(c))
-        .filter(Boolean);
+        .filter((x) => x && !isHiddenRestaurantCommuneLabel(String(x)));
       if (labels.length > 0) {
         setCommunes(labels);
         return;
@@ -307,7 +310,9 @@ export default function CategoryPage({ params }: { params: any }) {
       }
     }
     // Ordenar por el orden de possibleCommunes
-    const ordered = possibleCommunes.filter((c) => found.has(c));
+    const ordered = possibleCommunes
+      .filter((c) => found.has(c))
+      .filter((c) => !isHiddenRestaurantCommuneLabel(String(c)));
     // Fallback si no detectamos ninguna: usar set básico conocido
     setCommunes(
       ordered.length > 0

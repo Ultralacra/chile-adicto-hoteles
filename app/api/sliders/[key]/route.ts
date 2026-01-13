@@ -70,7 +70,8 @@ type SliderItem = {
 
 export async function GET(req: Request, { params }: { params: { key: string } }) {
 	try {
-		const key = String(params?.key || "").trim();
+		const ctx = (await (params as any)) as { key?: string };
+		const key = String(ctx?.key || "").trim();
 		if (!key) return NextResponse.json({ key: "", items: [] }, { status: 200 });
 
 		const inferredLang = key.endsWith("-es")
@@ -108,7 +109,7 @@ export async function GET(req: Request, { params }: { params: { key: string } })
 		return NextResponse.json({ key, items }, { status: 200 });
 	} catch (err: any) {
 		return NextResponse.json(
-			{ key: params?.key || "", items: [], error: "internal_error", message: String(err?.message || err) },
+			{ key: "", items: [], error: "internal_error", message: String(err?.message || err) },
 			{ status: 200 }
 		);
 	}
@@ -116,7 +117,8 @@ export async function GET(req: Request, { params }: { params: { key: string } })
 
 export async function PUT(req: Request, { params }: { params: { key: string } }) {
 	try {
-		const key = String(params?.key || "").trim();
+		const ctx = (await (params as any)) as { key?: string };
+		const key = String(ctx?.key || "").trim();
 		if (!key) return NextResponse.json({ ok: false, error: "missing_key" }, { status: 400 });
 		const inferredLang = key.endsWith("-es")
 			? "es"

@@ -22,32 +22,59 @@ export function MobileFooterContent({ onNavigate }: MobileFooterContentProps) {
     show_in_menu?: boolean | null;
   };
 
-  // Comunas para la categoría restaurantes (mismo set que desktop)
-  const communes = [
-    "Vitacura",
-    "Las Condes",
-    "Santiago",
-    "Lo Barnechea",
-    "Providencia",
-    "Alto Jahuel",
-    "La Reina",
+  type ApiCommuneRow = {
+    slug: string;
+    label: string | null;
+    show_in_menu?: boolean | null;
+    menu_order?: number | null;
+  };
+
+  const fallbackCommunes = [
+    { slug: "vitacura", label: "Vitacura" },
+    { slug: "las-condes", label: "Las Condes" },
+    { slug: "santiago", label: "Santiago" },
+    { slug: "lo-barnechea", label: "Lo Barnechea" },
+    { slug: "providencia", label: "Providencia" },
+    { slug: "alto-jahuel", label: "Alto Jahuel" },
+    { slug: "la-reina", label: "La Reina" },
   ];
 
-  const slugify = (str: string) =>
-    str
-      .toLowerCase()
-      .replace(/\s+/g, "-")
-      .replace(/[^a-z0-9-]/g, "");
+  const [restaurantCommunes, setRestaurantCommunes] =
+    useState(fallbackCommunes);
 
   const activeComunaParam = searchParams?.get("comuna") || null;
-  const activeComuna = activeComunaParam
-    ? activeComunaParam.replace(/-/g, " ").toLowerCase()
+  const activeComunaSlug = activeComunaParam
+    ? String(activeComunaParam).trim().toLowerCase()
     : null;
 
   // Detectar si estamos navegando la categoría restaurantes
   const isRestaurantsCategory =
     pathname?.startsWith("/restaurantes") ||
     pathname?.startsWith("/categoria/restaurantes");
+
+  useEffect(() => {
+    if (!isRestaurantsCategory) return;
+    let cancelled = false;
+    fetch("/api/communes?nav=1", { cache: "no-store" })
+      .then((r) => (r.ok ? r.json() : []))
+      .then((rows) => {
+        if (cancelled) return;
+        const list: ApiCommuneRow[] = Array.isArray(rows) ? rows : [];
+        const mapped = list
+          .filter((x) => x && x.slug && x.show_in_menu !== false)
+          .map((x) => ({
+            slug: String(x.slug),
+            label: String(x.label || String(x.slug).replace(/-/g, " ")),
+          }))
+          .filter((x) => x.slug);
+        if (mapped.length > 0) setRestaurantCommunes(mapped);
+        else setRestaurantCommunes(fallbackCommunes);
+      })
+      .catch(() => !cancelled && setRestaurantCommunes(fallbackCommunes));
+    return () => {
+      cancelled = true;
+    };
+  }, [isRestaurantsCategory]);
 
   // Fallback hardcodeado (mismo orden histórico)
   const fallbackItems = [
@@ -182,25 +209,26 @@ export function MobileFooterContent({ onNavigate }: MobileFooterContentProps) {
               <Link
                 href="/restaurantes"
                 className={`font-neutra-demi text-[14px] leading-[19px] font-[600] transition-colors ${
-                  !activeComuna ? "text-[#E40E36]" : "text-white"
+                  !activeComunaSlug ? "text-[#E40E36]" : "text-white"
                 } hover:text-gray-300`}
                 onClick={() => onNavigate?.()}
               >
                 VOLVER
               </Link>
             </li>
-            {communes.map((c) => {
-              const isActive = activeComuna === c.toLowerCase();
+            {restaurantCommunes.map((c) => {
+              const isActive =
+                !!activeComunaSlug && activeComunaSlug === c.slug.toLowerCase();
               return (
-                <li key={c}>
+                <li key={c.slug}>
                   <Link
-                    href={`/restaurantes?comuna=${slugify(c)}`}
+                    href={`/restaurantes?comuna=${c.slug}`}
                     className={`font-neutra-demi text-[14px] leading-[19px] font-[600] transition-colors ${
                       isActive ? "text-[#E40E36]" : "text-white"
                     } hover:text-gray-300`}
                     onClick={() => onNavigate?.()}
                   >
-                    {c.toUpperCase()}
+                    {String(c.label).toUpperCase()}
                   </Link>
                 </li>
               );

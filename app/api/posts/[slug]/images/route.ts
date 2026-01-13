@@ -133,7 +133,8 @@ export async function POST(
 ) {
   let step = "start";
   try {
-    const slug = params.slug;
+    const ctx = (await (params as any)) as { slug?: string };
+    const slug = String(ctx?.slug || "").trim();
     // 1) Resolver post.id
     step = "lookup_post";
     const postRows: any[] = await serviceRest(

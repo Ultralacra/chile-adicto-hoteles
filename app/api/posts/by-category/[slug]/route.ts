@@ -88,6 +88,9 @@ function mapRowToLegacy(row: any) {
 // GET /api/posts/by-category/[slug]
 export async function GET(req: Request, { params }: { params: { slug: string } }) {
   try {
+    const ctx = (await (params as any)) as { slug?: string };
+    const categorySlug = String(ctx?.slug || "").trim();
+
     const url = new URL(req.url);
     const q = url.searchParams.get("q") || "";
     const select =
@@ -96,7 +99,7 @@ export async function GET(req: Request, { params }: { params: { slug: string } }
     if (!rows) return NextResponse.json([], { status: 200 });
 
     // Filtrar por slug de categoría. Fallback: si no hay mapeo, usar category de traducciones.
-    const slugTarget = params.slug.toLowerCase().trim();
+    const slugTarget = categorySlug.toLowerCase().trim();
     const matchesTranslationCategory = (r: any) => {
       const translations = Array.isArray(r.translations) ? r.translations : [];
       return translations.some((t: any) => {

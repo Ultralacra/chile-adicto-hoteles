@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo, useRef } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import Image from "next/image";
 import useEmblaCarousel from "embla-carousel-react";
@@ -60,16 +60,73 @@ export function HotelDetail({ hotel }: HotelDetailProps) {
       ? [hotel.featuredImage]
       : [];
   const canShowControls = allImages.length > 1;
-  const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true });
+  // Slider manual: sin swipe/drag (solo flechas). Con loop para volver de la última a la primera.
+  const [emblaRef, emblaApi] = useEmblaCarousel({
+    loop: true,
+    draggable: false,
+  });
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [isLightboxOpen, setIsLightboxOpen] = useState(false);
   const [lightboxIndex, setLightboxIndex] = useState(0);
+  const lightboxOpenIndexRef = useRef(0);
+  const [lightboxEmblaRef, lightboxEmblaApi] = useEmblaCarousel({
+    loop: true,
+    draggable: false,
+  });
   const [cleanedFullContent, setCleanedFullContent] = useState(
     hotel.fullContent || ""
   );
   const [address, setAddress] = useState<string>(
     normalizeAddressText(hotel.address || "")
   );
+
+  const fallbackRestaurantCommunes = useMemo(
+    () => [
+      { slug: "vitacura", label: "Vitacura" },
+      { slug: "las-condes", label: "Las Condes" },
+      { slug: "santiago", label: "Santiago" },
+      { slug: "lo-barnechea", label: "Lo Barnechea" },
+      { slug: "providencia", label: "Providencia" },
+      { slug: "alto-jahuel", label: "Alto Jahuel" },
+      { slug: "la-reina", label: "La Reina" },
+    ],
+    []
+  );
+  const [restaurantCommunes, setRestaurantCommunes] = useState(
+    fallbackRestaurantCommunes
+  );
+
+  useEffect(() => {
+    const cats = hotel?.categories || [];
+    const up = (cats || []).map((c) => String(c).toUpperCase());
+    const isRestaurant =
+      up.includes("RESTAURANTES") || up.includes("RESTAURANTS");
+    if (!isRestaurant) return;
+
+    let cancelled = false;
+    fetch("/api/communes?nav=1", { cache: "no-store" })
+      .then((r) => (r.ok ? r.json() : []))
+      .then((rows) => {
+        if (cancelled) return;
+        const list = Array.isArray(rows) ? rows : [];
+        const mapped = list
+          .filter((x: any) => x && x.slug && x.show_in_menu !== false)
+          .map((x: any) => ({
+            slug: String(x.slug),
+            label: String(x.label || String(x.slug).replace(/-/g, " ")),
+          }))
+          .filter((x: any) => x.slug);
+        if (mapped.length > 0) setRestaurantCommunes(mapped);
+        else setRestaurantCommunes(fallbackRestaurantCommunes);
+      })
+      .catch(
+        () => !cancelled && setRestaurantCommunes(fallbackRestaurantCommunes)
+      );
+
+    return () => {
+      cancelled = true;
+    };
+  }, [hotel?.categories, fallbackRestaurantCommunes]);
 
   // Log de datos útiles al entrar al post (estado crudo)
   useEffect(() => {
@@ -230,12 +287,28 @@ export function HotelDetail({ hotel }: HotelDetailProps) {
     };
   }, [emblaApi]);
 
-  // Autoplay (pausado si lightbox abierto)
+  // Lightbox carousel: mantener índice sincronizado
   useEffect(() => {
-    if (!emblaApi || isLightboxOpen) return;
-    const id = setInterval(() => emblaApi.scrollNext(), 5000);
-    return () => clearInterval(id);
-  }, [emblaApi, isLightboxOpen]);
+    if (!lightboxEmblaApi || !isLightboxOpen) return;
+    const onSelect = () =>
+      setLightboxIndex(lightboxEmblaApi.selectedScrollSnap());
+    lightboxEmblaApi.on("select", onSelect);
+    onSelect();
+    return () => {
+      lightboxEmblaApi.off("select", onSelect);
+    };
+  }, [lightboxEmblaApi, isLightboxOpen]);
+
+  // Al abrir el lightbox, ir al slide correcto
+  useEffect(() => {
+    if (!isLightboxOpen || !lightboxEmblaApi) return;
+    const target = lightboxOpenIndexRef.current || 0;
+    // Al abrir: saltar directo al índice (sin animación). Luego las flechas animan normal.
+    lightboxEmblaApi.scrollTo(target, true);
+    setLightboxIndex(target);
+  }, [isLightboxOpen, lightboxEmblaApi]);
+
+  // Sin autoplay: el slider avanza solo con flechas o swipe
 
   // Limpiar contenido para remover duplicados de datos de contacto
   useEffect(() => {
@@ -310,15 +383,6 @@ export function HotelDetail({ hotel }: HotelDetailProps) {
             const isRestaurant =
               up.includes("RESTAURANTES") || up.includes("RESTAURANTS");
             if (!isRestaurant) return null;
-            const communes = [
-              "Vitacura",
-              "Las Condes",
-              "Santiago",
-              "Lo Barnechea",
-              "Providencia",
-              "Alto Jahuel",
-              "La Reina",
-            ];
             return (
               <nav className="py-4">
                 <ul className="hidden lg:flex flex-nowrap items-center gap-2 text-sm font-medium whitespace-nowrap">
@@ -331,17 +395,16 @@ export function HotelDetail({ hotel }: HotelDetailProps) {
                     </a>
                     <span className="text-black">•</span>
                   </li>
-                  {communes.map((c, index) => {
-                    const slugified = c.toLowerCase().replace(/\s+/g, "-");
+                  {restaurantCommunes.map((c, index) => {
                     return (
-                      <li key={c} className="flex items-center gap-2">
+                      <li key={c.slug} className="flex items-center gap-2">
                         <a
-                          href={`/restaurantes?comuna=${slugified}`}
+                          href={`/restaurantes?comuna=${c.slug}`}
                           className="font-neutra hover:text-[var(--color-brand-red)] transition-colors tracking-wide text-[15px] leading-[20px] text-black"
                         >
-                          {c.toUpperCase()}
+                          {String(c.label).toUpperCase()}
                         </a>
-                        {index < communes.length - 1 && (
+                        {index < restaurantCommunes.length - 1 && (
                           <span className="text-black">•</span>
                         )}
                       </li>
@@ -378,20 +441,28 @@ export function HotelDetail({ hotel }: HotelDetailProps) {
                   </button>
                 </>
               )}
-              <div ref={emblaRef} className="h-full">
+              <div
+                ref={emblaRef}
+                className="h-full select-none touch-pan-y"
+                onPointerDown={(e) => e.preventDefault()}
+                onTouchStart={(e) => e.preventDefault()}
+              >
                 <div className="flex h-full">
                   {allImages.map((src, idx) => (
                     <div
                       key={idx}
-                      className="relative min-w-full h-full flex-shrink-0"
+                      className="relative min-w-full h-full flex-shrink-0 bg-black"
                     >
                       <Image
                         src={src || "/placeholder.svg"}
                         alt={`${hotel.name} ${idx + 1}`}
                         fill
                         priority={idx === 0}
+                        draggable={false}
                         className="object-cover cursor-pointer"
+                        onDragStart={(e) => e.preventDefault()}
                         onClick={() => {
+                          lightboxOpenIndexRef.current = idx;
                           setLightboxIndex(idx);
                           setIsLightboxOpen(true);
                         }}
@@ -403,17 +474,15 @@ export function HotelDetail({ hotel }: HotelDetailProps) {
             </div>
             {allImages.length > 1 && (
               <div className="mt-3 w-full flex justify-center">
-                <div className="flex gap-2">
+                <div className="flex gap-2" aria-hidden="true">
                   {allImages.map((_, dotIdx) => (
-                    <button
+                    <span
                       key={dotIdx}
-                      onClick={() => emblaApi?.scrollTo(dotIdx)}
-                      className={`rounded-full transition-all focus:outline-none ${
+                      className={`rounded-full transition-all ${
                         dotIdx === selectedIndex
                           ? "bg-[#E40E36] w-3 h-3"
                           : "bg-gray-300 w-2 h-2"
                       }`}
-                      aria-label={`Ir a imagen ${dotIdx + 1}`}
                     />
                   ))}
                 </div>
@@ -433,12 +502,30 @@ export function HotelDetail({ hotel }: HotelDetailProps) {
               className="relative w-full max-w-6xl h-[80vh]"
               onClick={(e) => e.stopPropagation()}
             >
-              <Image
-                src={allImages[lightboxIndex] || "/placeholder.svg"}
-                alt={`Imagen ${lightboxIndex + 1}`}
-                fill
-                className="object-contain"
-              />
+              <div
+                ref={lightboxEmblaRef}
+                className="h-full overflow-hidden select-none touch-pan-y"
+                onPointerDown={(e) => e.preventDefault()}
+                onTouchStart={(e) => e.preventDefault()}
+              >
+                <div className="flex h-full">
+                  {allImages.map((src, idx) => (
+                    <div
+                      key={idx}
+                      className="relative min-w-full h-full flex-shrink-0"
+                    >
+                      <Image
+                        src={src || "/placeholder.svg"}
+                        alt={`Imagen ${idx + 1}`}
+                        fill
+                        draggable={false}
+                        className="object-contain"
+                        onDragStart={(e) => e.preventDefault()}
+                      />
+                    </div>
+                  ))}
+                </div>
+              </div>
               <button
                 onClick={() => setIsLightboxOpen(false)}
                 className="absolute top-4 right-4 text-white bg-black/40 p-2 rounded-full"
@@ -447,20 +534,14 @@ export function HotelDetail({ hotel }: HotelDetailProps) {
                 ✕
               </button>
               <button
-                onClick={() =>
-                  setLightboxIndex(
-                    (i) => (i - 1 + allImages.length) % allImages.length
-                  )
-                }
+                onClick={() => lightboxEmblaApi?.scrollPrev()}
                 className="absolute left-4 top-1/2 -translate-y-1/2 text-white bg-black/30 p-2 rounded-full"
                 aria-label="Imagen previa"
               >
                 <ChevronLeft className="w-6 h-6" />
               </button>
               <button
-                onClick={() =>
-                  setLightboxIndex((i) => (i + 1) % allImages.length)
-                }
+                onClick={() => lightboxEmblaApi?.scrollNext()}
                 className="absolute right-4 top-1/2 -translate-y-1/2 text-white bg-black/30 p-2 rounded-full"
                 aria-label="Imagen siguiente"
               >
@@ -471,15 +552,7 @@ export function HotelDetail({ hotel }: HotelDetailProps) {
         )}
 
         {isLightboxOpen && (
-          <KeyboardNavigation
-            onClose={() => setIsLightboxOpen(false)}
-            onPrev={() =>
-              setLightboxIndex(
-                (i) => (i - 1 + allImages.length) % allImages.length
-              )
-            }
-            onNext={() => setLightboxIndex((i) => (i + 1) % allImages.length)}
-          />
+          <KeyboardNavigation onClose={() => setIsLightboxOpen(false)} />
         )}
 
         <div className="max-w-[1024px] mx-auto">
@@ -847,25 +920,15 @@ export function HotelDetail({ hotel }: HotelDetailProps) {
   );
 }
 
-function KeyboardNavigation({
-  onClose,
-  onPrev,
-  onNext,
-}: {
-  onClose: () => void;
-  onPrev: () => void;
-  onNext: () => void;
-}) {
+function KeyboardNavigation({ onClose }: { onClose: () => void }) {
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
       if (e.key === "Escape") onClose();
-      if (e.key === "ArrowLeft") onPrev();
-      if (e.key === "ArrowRight") onNext();
     };
 
     window.addEventListener("keydown", handler);
     return () => window.removeEventListener("keydown", handler);
-  }, [onClose, onPrev, onNext]);
+  }, [onClose]);
 
   return null;
 }

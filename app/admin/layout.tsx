@@ -16,6 +16,7 @@ import {
   Images as ImagesIcon,
   Sliders,
   Tag,
+  MapPin,
 } from "lucide-react";
 import { Inter } from "next/font/google";
 
@@ -59,6 +60,7 @@ export default function AdminLayout({
     { href: "/admin/posts", icon: FileText, label: "Posts" },
     { href: "/admin/posts/new", icon: Plus, label: "Crear nuevo" },
     { href: "/admin/categories", icon: Tag, label: "Categorías" },
+    { href: "/admin/communes", icon: MapPin, label: "Comunas" },
     { href: "/admin/sliders", icon: Sliders, label: "Sliders" },
     { href: "/admin/images", icon: ImagesIcon, label: "Imágenes" },
     { href: "/admin/settings", icon: Settings, label: "Configuración" },

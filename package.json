@@ -10,7 +10,9 @@
     "db:schema:apply": "node scripts/apply-schema.mjs",
     "db:migrate": "node scripts/migrate-supabase.mjs",
     "db:migrate:rest": "node scripts/migrate-supabase-http.mjs",
-    "backfill:infohtml": "node scripts/backfill-info-html.mjs"
+    "backfill:infohtml": "node scripts/backfill-info-html.mjs",
+    "db:backup:rest": "node scripts/backup-supabase-rest.mjs",
+    "db:seed:communes:restaurantes": "node scripts/seed-communes-restaurantes.mjs"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.10.0",

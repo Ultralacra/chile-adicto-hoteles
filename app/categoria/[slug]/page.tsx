@@ -19,6 +19,13 @@ import { Spinner } from "@/components/ui/spinner";
 
 type ResolvedParams = { slug: string };
 
+type ApiCommuneRow = {
+  slug: string;
+  label: string | null;
+  show_in_menu?: boolean | null;
+  menu_order?: number | null;
+};
+
 export default function CategoryPage({ params }: { params: any }) {
   const resolvedParams = use(params as any) as ResolvedParams;
   const { slug } = resolvedParams;
@@ -111,18 +118,115 @@ export default function CategoryPage({ params }: { params: any }) {
     "Alto Jahuel",
   ];
   const [communes, setCommunes] = useState<string[]>([]);
+  const [dbCommunes, setDbCommunes] = useState<ApiCommuneRow[]>([]);
+  const [dbPostCommuneMap, setDbPostCommuneMap] = useState<
+    Record<string, string[]>
+  >({});
 
   const searchParams = useSearchParams();
   const comunaParam = searchParams.get("comuna");
   const [selectedComuna, setSelectedComuna] = useState<string | null>(null);
 
+  const communeLabelFromRow = (r: ApiCommuneRow) => {
+    const label = String(r?.label || "").trim();
+    if (label) return label;
+    return String(r?.slug || "")
+      .replace(/-/g, " ")
+      .trim();
+  };
+
   useEffect(() => {
-    if (comunaParam) {
-      setSelectedComuna(comunaParam.replace(/-/g, " "));
-    } else {
+    if (!comunaParam) {
       setSelectedComuna(null);
+      return;
     }
-  }, [comunaParam, slug]);
+
+    const param = String(comunaParam || "")
+      .trim()
+      .toLowerCase();
+    const match = dbCommunes.find(
+      (c) =>
+        String(c.slug || "")
+          .trim()
+          .toLowerCase() === param
+    );
+    if (match) {
+      setSelectedComuna(communeLabelFromRow(match));
+      return;
+    }
+    setSelectedComuna(comunaParam.replace(/-/g, " "));
+  }, [comunaParam, slug, dbCommunes]);
+
+  // Cargar comunas desde BD para el submenú (fallback a heurística si no existe tabla)
+  useEffect(() => {
+    if (!isRestaurantsPage) {
+      setDbCommunes([]);
+      return;
+    }
+    let cancelled = false;
+    fetch("/api/communes?nav=1", { cache: "no-store" })
+      .then((r) => (r.ok ? r.json() : []))
+      .then((rows) => {
+        if (cancelled) return;
+        const list: ApiCommuneRow[] = Array.isArray(rows) ? rows : [];
+        setDbCommunes(list.filter((x) => x && x.slug));
+      })
+      .catch(() => !cancelled && setDbCommunes([]));
+    return () => {
+      cancelled = true;
+    };
+  }, [isRestaurantsPage]);
+
+  // Cargar mapeo postSlug -> [commune_slug] para el filtro (si existe en BD)
+  useEffect(() => {
+    if (!isRestaurantsPage) {
+      setDbPostCommuneMap({});
+      return;
+    }
+    const slugs = (filteredHotels as any[])
+      .map((h) => String(h?.slug || "").trim())
+      .filter(Boolean);
+    if (slugs.length === 0) {
+      setDbPostCommuneMap({});
+      return;
+    }
+
+    let cancelled = false;
+    fetch("/api/communes/map", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ slugs }),
+      cache: "no-store",
+    })
+      .then((r) => (r.ok ? r.json() : null))
+      .then((data) => {
+        if (cancelled) return;
+        const map = data?.map;
+        const communesRows = data?.communes;
+        if (Array.isArray(communesRows) && communesRows.length > 0) {
+          setDbCommunes(
+            communesRows
+              .filter((x: any) => x && x.slug)
+              .map((x: any) => ({
+                slug: String(x.slug),
+                label: x.label ?? null,
+                show_in_menu: x.show_in_menu ?? true,
+                menu_order: x.menu_order ?? 0,
+              }))
+          );
+        }
+        if (map && typeof map === "object") {
+          setDbPostCommuneMap(map as Record<string, string[]>);
+        } else {
+          setDbPostCommuneMap({});
+        }
+      })
+      .catch(() => !cancelled && setDbPostCommuneMap({}));
+
+    return () => {
+      cancelled = true;
+    };
+  }, [isRestaurantsPage, filteredHotels]);
 
   // Overrides de comuna por slug (prioridad sobre búsqueda por texto)
   // Permite uno o múltiples match de comuna por slug.
@@ -154,6 +258,19 @@ export default function CategoryPage({ params }: { params: any }) {
       setCommunes([]);
       return;
     }
+
+    // Si hay comunas en BD, usamos esas para el submenú (respeta show_in_menu)
+    if (dbCommunes.length > 0) {
+      const labels = dbCommunes
+        .filter((c) => c && c.slug && c.show_in_menu !== false)
+        .map((c) => communeLabelFromRow(c))
+        .filter(Boolean);
+      if (labels.length > 0) {
+        setCommunes(labels);
+        return;
+      }
+    }
+
     const found = new Set<string>();
     const tryAdd = (raw: string) => {
       const haystack = normalizeComuna(raw);
@@ -206,6 +323,17 @@ export default function CategoryPage({ params }: { params: any }) {
           ]
     );
   }, [isRestaurantsPage, filteredHotels]);
+
+  const selectedComunaSlug = selectedComuna
+    ? (() => {
+        const norm = normalizeComuna(selectedComuna);
+        const match = dbCommunes.find(
+          (c) => normalizeComuna(communeLabelFromRow(c)) === norm
+        );
+        if (match) return String(match.slug || "").trim();
+        return String(selectedComuna).trim().toLowerCase().replace(/\s+/g, "-");
+      })()
+    : null;
 
   // Whitelist explícita para la comuna de Santiago: solo estos slugs deben aparecer
   const santiagoAllowedSlugs = new Set<string>([
@@ -563,6 +691,14 @@ export default function CategoryPage({ params }: { params: any }) {
           return santiagoAllowedSlugs.has(slug);
         }
 
+        // Si tenemos mapeo desde BD, usarlo como señal primaria
+        if (selectedComunaSlug) {
+          const mapped = dbPostCommuneMap?.[slug] || [];
+          if (Array.isArray(mapped) && mapped.includes(selectedComunaSlug)) {
+            return true;
+          }
+        }
+
         const addition = comunaAdditions[slug];
         if (addition) {
           const targets = Array.isArray(addition) ? addition : [addition];
@@ -661,10 +797,17 @@ export default function CategoryPage({ params }: { params: any }) {
                   <span className="text-black">•</span>
                 </li>
                 {communes.map((c, index) => {
-                  const slugified = c.toLowerCase().replace(/\s+/g, "-");
+                  const match = dbCommunes.find(
+                    (row) =>
+                      normalizeComuna(communeLabelFromRow(row)) ===
+                      normalizeComuna(c)
+                  );
+                  const slugified = match
+                    ? String(match.slug || "").trim()
+                    : c.toLowerCase().replace(/\s+/g, "-");
                   const isActive =
-                    selectedComuna &&
-                    selectedComuna.toLowerCase() === c.toLowerCase();
+                    !!selectedComuna &&
+                    normalizeComuna(selectedComuna) === normalizeComuna(c);
                   return (
                     <li key={c} className="flex items-center gap-2">
                       <Link

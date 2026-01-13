@@ -134,11 +134,14 @@ export async function GET(
   { params }: { params: { slug: string } }
 ) {
   try {
+    const ctx = (await (params as any)) as { slug?: string };
+    const slug = String(ctx?.slug || "").trim();
+
     // Intentar Supabase
     const select =
       "slug,featured_image,website,instagram,website_display,instagram_display,email,phone,photos_credit,address,hours,reservation_link,reservation_policy,interesting_fact,images:post_images(url,position),locations:post_locations(*),translations:post_translations(*),useful:post_useful_info(*),category_links:post_category_map(category:categories(slug,label_es,label_en))";
     const rows: any[] | null = await fetchFromSupabase(
-      `/posts?slug=eq.${encodeURIComponent(params.slug)}&select=${encodeURIComponent(select)}`
+      `/posts?slug=eq.${encodeURIComponent(slug)}&select=${encodeURIComponent(select)}`
     );
     if (rows && rows.length > 0) {
       const mapped = mapRowToLegacy(rows[0]);
@@ -160,6 +163,9 @@ export async function PUT(
 ) {
   let step = "start";
   try {
+    const ctx = (await (params as any)) as { slug?: string };
+    const slugParam = String(ctx?.slug || "").trim();
+
     const body = await req.json();
     console.log("[PUT posts] step=start body keys", Object.keys(body || {}));
     const normalized = normalizePost(body);
@@ -176,7 +182,7 @@ export async function PUT(
     const provided = new Set<string>(Object.keys(body || {}));
     // 1) Obtener post.id por slug
     step = "fetch_post_id";
-    const rows: any[] = await serviceRest(`/posts?slug=eq.${encodeURIComponent(params.slug)}&select=id`);
+    const rows: any[] = await serviceRest(`/posts?slug=eq.${encodeURIComponent(slugParam)}&select=id`);
     if (!rows || rows.length === 0) {
       return NextResponse.json({ error: "not_found" }, { status: 404 });
     }
@@ -184,7 +190,7 @@ export async function PUT(
     console.log("[PUT posts] step=fetch_post_id id", postId);
 
     // 2) Cambiar slug si se proporcionó y es distinto
-    if (provided.has("slug") && normalized.slug && normalized.slug !== params.slug) {
+    if (provided.has("slug") && normalized.slug && normalized.slug !== slugParam) {
       step = "check_slug_unique";
       const exists: any[] = await serviceRest(
         `/posts?slug=eq.${encodeURIComponent(normalized.slug)}&select=id`
@@ -410,7 +416,7 @@ export async function PUT(
       }
     }
 
-    return NextResponse.json({ ok: true, slug: normalized.slug || params.slug }, { status: 200 });
+    return NextResponse.json({ ok: true, slug: normalized.slug || slugParam }, { status: 200 });
   } catch (err: any) {
     console.error("[PUT /api/posts/[slug]] error final", err);
     const msg = String(err?.message || "bad_request");
@@ -430,7 +436,9 @@ export async function DELETE(
   { params }: { params: { slug: string } }
 ) {
   try {
-    console.log("[DELETE POST]", params.slug);
+    const ctx = (await (params as any)) as { slug?: string };
+    const slug = String(ctx?.slug || "").trim();
+    console.log("[DELETE POST]", slug);
     // Sin persistencia: solo confirmación
     return NextResponse.json({ ok: true }, { status: 200 });
   } catch (err: any) {

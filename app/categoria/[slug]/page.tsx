@@ -704,13 +704,21 @@ export default function CategoryPage({ params }: { params: any }) {
                       ? restaurantMobileImages
                       : restaurantMobileImages.length > 0
                       ? language === "es"
-                        ? restaurantMobileImages.filter((img) => /-1\./i.test(img))
-                        : restaurantMobileImages.filter((img) => /-2\./i.test(img))
+                        ? restaurantMobileImages.filter((img) =>
+                            /-1\./i.test(img)
+                          )
+                        : restaurantMobileImages.filter((img) =>
+                            /-2\./i.test(img)
+                          )
                       : restaurantDesktopLoadedFromDb
                       ? restaurantSliderImages
                       : language === "es"
-                      ? restaurantSliderImages.filter((img) => /-1\./i.test(img))
-                      : restaurantSliderImages.filter((img) => /-2\./i.test(img))
+                      ? restaurantSliderImages.filter((img) =>
+                          /-1\./i.test(img)
+                        )
+                      : restaurantSliderImages.filter((img) =>
+                          /-2\./i.test(img)
+                        )
                   }
                   slideHrefsMobile={
                     restaurantMobileLoadedFromDb

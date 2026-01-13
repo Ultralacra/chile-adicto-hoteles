@@ -423,7 +423,9 @@ export default function AdminSlidersList() {
     try {
       const qs = new URLSearchParams();
       if (opts?.refresh) qs.set("refresh", "1");
-      const r = await fetch(`/api/media?${qs.toString()}`, { cache: "no-store" });
+      const r = await fetch(`/api/media?${qs.toString()}`, {
+        cache: "no-store",
+      });
       const j = (r.ok ? await r.json() : null) as MediaListResp | null;
       if (reqId !== mediaReqIdRef.current) return;
 

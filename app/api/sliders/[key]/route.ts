@@ -73,6 +73,12 @@ export async function GET(req: Request, { params }: { params: { key: string } })
 		const key = String(params?.key || "").trim();
 		if (!key) return NextResponse.json({ key: "", items: [] }, { status: 200 });
 
+		const inferredLang = key.endsWith("-es")
+			? "es"
+			: key.endsWith("-en")
+			? "en"
+			: null;
+
 		if (!canUseAnon() && !canUseService()) {
 			return NextResponse.json({ key, items: [], warning: "supabase_not_configured" }, { status: 200 });
 		}
@@ -94,7 +100,7 @@ export async function GET(req: Request, { params }: { params: { key: string } })
 				href: r.href ? String(r.href) : null,
 				position: Number.isFinite(r.position) ? Number(r.position) : undefined,
 				active: typeof r.active === "boolean" ? r.active : true,
-				lang: r.lang ? String(r.lang) : null,
+				lang: inferredLang || (r.lang ? String(r.lang) : null),
 			}))
 			.filter((it) => it.image_url)
 			.filter((it) => (all ? true : it.active !== false));
@@ -112,6 +118,11 @@ export async function PUT(req: Request, { params }: { params: { key: string } })
 	try {
 		const key = String(params?.key || "").trim();
 		if (!key) return NextResponse.json({ ok: false, error: "missing_key" }, { status: 400 });
+		const inferredLang = key.endsWith("-es")
+			? "es"
+			: key.endsWith("-en")
+			? "en"
+			: null;
 		if (!canUseService()) {
 			return NextResponse.json(
 				{ ok: false, error: "service_role_missing", message: "SUPABASE_SERVICE_ROLE_KEY no configurado" },
@@ -128,7 +139,7 @@ export async function PUT(req: Request, { params }: { params: { key: string } })
 				href: it?.href ? String(it.href).trim() : null,
 				position: Number.isFinite(it?.position) ? Number(it.position) : idx,
 				active: typeof it?.active === "boolean" ? it.active : true,
-				lang: it?.lang ? String(it.lang).trim() : null,
+				lang: inferredLang || (it?.lang ? String(it.lang).trim() : null),
 			}))
 			.filter((p: any) => p.image_url);
 

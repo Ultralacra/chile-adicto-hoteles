@@ -235,6 +235,8 @@ export default function CategoryPage({ params }: { params: any }) {
   const [restaurantSlideHrefs, setRestaurantSlideHrefs] = useState<string[]>(
     []
   );
+  const [restaurantDesktopLoadedFromDb, setRestaurantDesktopLoadedFromDb] =
+    useState(false);
   // Imágenes móviles específicas (EN primera, ES segunda) para restaurantes
   const [restaurantMobileImages, setRestaurantMobileImages] = useState<
     string[]
@@ -242,6 +244,8 @@ export default function CategoryPage({ params }: { params: any }) {
   const [restaurantMobileHrefs, setRestaurantMobileHrefs] = useState<string[]>(
     []
   );
+  const [restaurantMobileLoadedFromDb, setRestaurantMobileLoadedFromDb] =
+    useState(false);
   useEffect(() => {
     if (!isRestaurantsPage) return;
     let cancelled = false;
@@ -267,10 +271,12 @@ export default function CategoryPage({ params }: { params: any }) {
         if (imagesFromDb.length > 0) {
           setRestaurantSliderImages(imagesFromDb);
           setRestaurantSlideHrefs(hrefsFromDb);
+          setRestaurantDesktopLoadedFromDb(true);
           return;
         }
 
         // 2) Fallback: manifest.json (comportamiento actual)
+        setRestaurantDesktopLoadedFromDb(false);
         return fetch("/imagenes-slider/manifest.json")
           .then((r) => (r.ok ? r.json() : []))
           .then((payload) => {
@@ -393,6 +399,7 @@ export default function CategoryPage({ params }: { params: any }) {
       .catch(() => {
         setRestaurantSliderImages([]);
         setRestaurantSlideHrefs([]);
+        setRestaurantDesktopLoadedFromDb(false);
       });
     return () => {
       cancelled = true;
@@ -426,10 +433,12 @@ export default function CategoryPage({ params }: { params: any }) {
         if (imagesFromDb.length > 0) {
           setRestaurantMobileImages(imagesFromDb);
           setRestaurantMobileHrefs(hrefsFromDb);
+          setRestaurantMobileLoadedFromDb(true);
           return;
         }
 
         // 2) Fallback: carpeta pública vía API actual
+        setRestaurantMobileLoadedFromDb(false);
         return fetch("/api/restaurant-slider-mobile", { cache: "no-store" })
           .then((r) => (r.ok ? r.json() : { images: [] }))
           .then((json) => {
@@ -491,6 +500,7 @@ export default function CategoryPage({ params }: { params: any }) {
         if (!cancelled) {
           setRestaurantMobileImages([]);
           setRestaurantMobileHrefs([]);
+          setRestaurantMobileLoadedFromDb(false);
         }
       });
     return () => {
@@ -689,24 +699,23 @@ export default function CategoryPage({ params }: { params: any }) {
                 <HeroSlider
                   desktopImages={restaurantSliderImages}
                   mobileImages={
-                    restaurantMobileImages.length > 0
+                    // Si vienen desde BD (key ya es -es/-en), NO filtrar por sufijo.
+                    restaurantMobileLoadedFromDb
+                      ? restaurantMobileImages
+                      : restaurantMobileImages.length > 0
                       ? language === "es"
-                        ? restaurantMobileImages.filter((img) =>
-                            /-1\./i.test(img)
-                          )
-                        : restaurantMobileImages.filter((img) =>
-                            /-2\./i.test(img)
-                          )
+                        ? restaurantMobileImages.filter((img) => /-1\./i.test(img))
+                        : restaurantMobileImages.filter((img) => /-2\./i.test(img))
+                      : restaurantDesktopLoadedFromDb
+                      ? restaurantSliderImages
                       : language === "es"
-                      ? restaurantSliderImages.filter((img) =>
-                          /-1\./i.test(img)
-                        )
-                      : restaurantSliderImages.filter((img) =>
-                          /-2\./i.test(img)
-                        )
+                      ? restaurantSliderImages.filter((img) => /-1\./i.test(img))
+                      : restaurantSliderImages.filter((img) => /-2\./i.test(img))
                   }
                   slideHrefsMobile={
-                    restaurantMobileHrefs.length > 0
+                    restaurantMobileLoadedFromDb
+                      ? restaurantMobileHrefs
+                      : restaurantMobileHrefs.length > 0
                       ? language === "es"
                         ? restaurantMobileHrefs.filter((_, i) =>
                             /-1\./i.test(restaurantMobileImages[i] || "")

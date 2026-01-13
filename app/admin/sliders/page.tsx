@@ -86,6 +86,7 @@ export default function AdminSlidersList() {
   const mediaLoadingRef = useRef(false);
   const mediaLoadingMoreRef = useRef(false);
   const mediaNextOffsetRef = useRef<number | null>(0);
+  const mediaAllLoadedRef = useRef(false);
   const [categories, setCategories] = useState<CategorySuggestion[]>([]);
 
   const hrefSuggestAbortRef = useRef<AbortController | null>(null);
@@ -408,7 +409,37 @@ export default function AdminSlidersList() {
   };
 
   const reloadMedia = async (opts?: { refresh?: boolean }) => {
+    mediaAllLoadedRef.current = false;
     await fetchMediaPage({ offset: 0, append: false, refresh: opts?.refresh });
+  };
+
+  const fetchMediaAll = async (opts?: { refresh?: boolean }) => {
+    // Traer TODO el listado (sin paginación) para que el buscador encuentre imágenes
+    // aunque no estén en la primera página.
+    const reqId = ++mediaReqIdRef.current;
+    mediaAllLoadedRef.current = true;
+    mediaLoadingRef.current = true;
+    setMediaLoading(true);
+    try {
+      const qs = new URLSearchParams();
+      if (opts?.refresh) qs.set("refresh", "1");
+      const r = await fetch(`/api/media?${qs.toString()}`, { cache: "no-store" });
+      const j = (r.ok ? await r.json() : null) as MediaListResp | null;
+      if (reqId !== mediaReqIdRef.current) return;
+
+      const urls = Array.isArray(j?.urls) ? j!.urls.map(String) : [];
+      const clean = urls.map((u) => u.trim()).filter(Boolean);
+
+      setMediaTotal(typeof j?.total === "number" ? j.total : null);
+      mediaNextOffsetRef.current = null;
+      setMediaNextOffset(null);
+      setMediaUrls(clean);
+    } catch {
+      // no-op
+    } finally {
+      mediaLoadingRef.current = false;
+      setMediaLoading(false);
+    }
   };
 
   const loadMoreMedia = async () => {
@@ -522,6 +553,7 @@ export default function AdminSlidersList() {
   const openPickerFor = (idx: number) => {
     setPickerForIndex(idx);
     setMediaQuery("");
+    mediaAllLoadedRef.current = false;
     setPickerOpen(true);
   };
 
@@ -537,15 +569,50 @@ export default function AdminSlidersList() {
     }
   };
 
+  const pickerSelectedUrl = useMemo(() => {
+    if (pickerForIndex == null) return "";
+    return String(dbItems?.[pickerForIndex]?.image_url || "").trim();
+  }, [pickerForIndex, dbItems]);
+
   const filteredMediaUrls = useMemo(() => {
     const q = mediaQuery.trim().toLowerCase();
-    if (!q) return mediaUrls;
-    return mediaUrls.filter((u) => {
-      const name = getMediaName(u).toLowerCase();
-      const full = String(u || "").toLowerCase();
-      return name.includes(q) || full.includes(q);
-    });
-  }, [mediaQuery, mediaUrls]);
+    const base = !q
+      ? mediaUrls
+      : mediaUrls.filter((u) => {
+          const name = getMediaName(u).toLowerCase();
+          const full = String(u || "").toLowerCase();
+          return name.includes(q) || full.includes(q);
+        });
+
+    const selected = pickerSelectedUrl;
+    if (!selected) return base;
+
+    const selName = getMediaName(selected).toLowerCase();
+    const selFull = selected.toLowerCase();
+    const matches = !q || selName.includes(q) || selFull.includes(q);
+    if (!matches) return base;
+
+    if (base.includes(selected)) {
+      return [selected, ...base.filter((u) => u !== selected)];
+    }
+    // Si la imagen actual no viene en la lista (p.ej. URL antigua), igual mostrarla primero.
+    return [selected, ...base];
+  }, [mediaQuery, mediaUrls, pickerSelectedUrl]);
+
+  // Si el usuario escribe en el buscador, cargamos la lista completa una sola vez
+  // para que el filtrado encuentre cualquier imagen.
+  useEffect(() => {
+    if (!pickerOpen) return;
+    const q = mediaQuery.trim();
+    if (!q) return;
+    if (mediaAllLoadedRef.current) return;
+
+    const t = window.setTimeout(() => {
+      fetchMediaAll();
+    }, 250);
+    return () => window.clearTimeout(t);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [pickerOpen, mediaQuery]);
 
   const moveDbItem = (idx: number, dir: -1 | 1) => {
     const j = idx + dir;
@@ -573,13 +640,18 @@ export default function AdminSlidersList() {
   const saveDbSet = async () => {
     setDbSaving(true);
     try {
+      const inferredLang = dbKey.endsWith("-es")
+        ? "es"
+        : dbKey.endsWith("-en")
+        ? "en"
+        : null;
       const payload = {
         items: dbItems.map((it, idx) => ({
           image_url: String(it.image_url || "").trim(),
           href: it.href ? String(it.href).trim() : null,
           active: it.active !== false,
           position: idx,
-          lang: it.lang || null,
+          lang: inferredLang || it.lang || null,
         })),
       };
       const res = await fetch(`/api/sliders/${encodeURIComponent(dbKey)}`, {
@@ -1233,7 +1305,10 @@ export default function AdminSlidersList() {
           open={pickerOpen}
           onOpenChange={(open) => {
             setPickerOpen(open);
-            if (!open) setPickerForIndex(null);
+            if (!open) {
+              setPickerForIndex(null);
+              mediaAllLoadedRef.current = false;
+            }
           }}
         >
           <DialogContent className="sm:max-w-6xl max-h-[85vh] overflow-hidden">
@@ -1288,7 +1363,7 @@ export default function AdminSlidersList() {
                 Limpiar
               </Button>
               <div className="text-xs text-muted-foreground">
-                Mostrando {filteredMediaUrls.length} de {mediaUrls.length}
+                Mostrando {filteredMediaUrls.length}
                 {typeof mediaTotal === "number" ? ` de ${mediaTotal}` : ""}
                 {mediaLoadingMore ? " · Cargando más…" : ""}
               </div>
@@ -1323,7 +1398,9 @@ export default function AdminSlidersList() {
                         setPickerForIndex(null);
                       }}
                       title={u}
-                      className="border rounded overflow-hidden text-left hover:bg-muted"
+                      className={`border rounded overflow-hidden text-left hover:bg-muted ${
+                        u === pickerSelectedUrl ? "ring-2 ring-green-500" : ""
+                      }`}
                     >
                       <div className="w-full aspect-[4/3] bg-gray-100 overflow-hidden">
                         {/* eslint-disable-next-line @next/next/no-img-element */}

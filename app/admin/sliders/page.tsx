@@ -76,6 +76,7 @@ export default function AdminSlidersList() {
   const [mediaUploading, setMediaUploading] = useState(false);
   const [mediaTotal, setMediaTotal] = useState<number | null>(null);
   const [mediaNextOffset, setMediaNextOffset] = useState<number | null>(0);
+  const [mediaQuery, setMediaQuery] = useState("");
   const [pickerOpen, setPickerOpen] = useState(false);
   const [pickerForIndex, setPickerForIndex] = useState<number | null>(null);
   const mediaFileRef = useRef<HTMLInputElement | null>(null);
@@ -429,6 +430,8 @@ export default function AdminSlidersList() {
   useEffect(() => {
     if (!pickerOpen) return;
     if (mediaNextOffset == null) return;
+    // Evita disparar carga masiva mientras se está filtrando/buscando.
+    if (mediaQuery.trim()) return;
     const root = mediaScrollRef.current;
     const target = mediaSentinelRef.current;
     if (!root || !target) return;
@@ -449,7 +452,7 @@ export default function AdminSlidersList() {
     obs.observe(target);
     return () => obs.disconnect();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [pickerOpen, mediaNextOffset]);
+  }, [pickerOpen, mediaNextOffset, mediaQuery]);
 
   const uploadMediaFiles = async (files: FileList | File[]) => {
     const arr = Array.from(files || []);
@@ -518,8 +521,31 @@ export default function AdminSlidersList() {
 
   const openPickerFor = (idx: number) => {
     setPickerForIndex(idx);
+    setMediaQuery("");
     setPickerOpen(true);
   };
+
+  const getMediaName = (url: string) => {
+    const clean = String(url || "")
+      .split("#")[0]
+      .split("?")[0];
+    const last = clean.split("/").pop() || clean;
+    try {
+      return decodeURIComponent(last);
+    } catch {
+      return last;
+    }
+  };
+
+  const filteredMediaUrls = useMemo(() => {
+    const q = mediaQuery.trim().toLowerCase();
+    if (!q) return mediaUrls;
+    return mediaUrls.filter((u) => {
+      const name = getMediaName(u).toLowerCase();
+      const full = String(u || "").toLowerCase();
+      return name.includes(q) || full.includes(q);
+    });
+  }, [mediaQuery, mediaUrls]);
 
   const moveDbItem = (idx: number, dir: -1 | 1) => {
     const j = idx + dir;
@@ -1246,8 +1272,23 @@ export default function AdminSlidersList() {
               >
                 {mediaLoading ? "Cargando…" : "Recargar lista"}
               </Button>
+
+              <Input
+                value={mediaQuery}
+                onChange={(e) => setMediaQuery(e.target.value)}
+                placeholder="Buscar por nombre de imagen…"
+                className="h-9 w-full sm:w-[320px]"
+              />
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => setMediaQuery("")}
+                disabled={!mediaQuery.trim()}
+              >
+                Limpiar
+              </Button>
               <div className="text-xs text-muted-foreground">
-                Mostrando {mediaUrls.length}
+                Mostrando {filteredMediaUrls.length} de {mediaUrls.length}
                 {typeof mediaTotal === "number" ? ` de ${mediaTotal}` : ""}
                 {mediaLoadingMore ? " · Cargando más…" : ""}
               </div>
@@ -1264,8 +1305,14 @@ export default function AdminSlidersList() {
                 ref={mediaScrollRef}
                 className="max-h-[65vh] overflow-auto pr-1"
               >
+                {filteredMediaUrls.length === 0 ? (
+                  <div className="py-6 text-sm text-muted-foreground">
+                    No hay resultados
+                    {mediaQuery.trim() ? ` para "${mediaQuery.trim()}"` : ""}.
+                  </div>
+                ) : null}
                 <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-2">
-                  {mediaUrls.map((u) => (
+                  {filteredMediaUrls.map((u) => (
                     <button
                       type="button"
                       key={u}
@@ -1288,7 +1335,7 @@ export default function AdminSlidersList() {
                         />
                       </div>
                       <div className="px-2 py-1 text-[10px] text-muted-foreground truncate">
-                        {u}
+                        {getMediaName(u)}
                       </div>
                     </button>
                   ))}

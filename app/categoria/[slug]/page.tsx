@@ -135,6 +135,12 @@ export default function CategoryPage({ params }: { params: any }) {
     "mirai-food-lab": ["Las Condes", "Santiago"],
   };
 
+  // Comunas adicionales por slug (ADITIVO):
+  // Se usa para “aparece también en…” sin perder coincidencias por texto.
+  const comunaAdditions: Record<string, string | string[]> = {
+    "bloody-mary-kitchen-bar-el-tomate-como-hilo-conductor-pero-no-el-limite": "Vitacura",
+  };
+
   const normalizeComuna = (s: string) =>
     String(s || "")
       .normalize("NFD")
@@ -161,6 +167,11 @@ export default function CategoryPage({ params }: { params: any }) {
       const override = comunaOverrides[slug];
       if (override) {
         const arr = Array.isArray(override) ? override : [override];
+        arr.forEach((c) => found.add(c));
+      }
+      const addition = comunaAdditions[slug];
+      if (addition) {
+        const arr = Array.isArray(addition) ? addition : [addition];
         arr.forEach((c) => found.add(c));
       }
       if (h.address) tryAdd(h.address);
@@ -539,6 +550,18 @@ export default function CategoryPage({ params }: { params: any }) {
         // Si la comuna seleccionada es Santiago, aplicar whitelist estricta
         if (normalizeComuna(selectedComuna) === normalizeComuna("Santiago")) {
           return santiagoAllowedSlugs.has(slug);
+        }
+
+        const addition = comunaAdditions[slug];
+        if (addition) {
+          const targets = Array.isArray(addition) ? addition : [addition];
+          if (
+            targets.some(
+              (v) => normalizeComuna(v) === normalizeComuna(selectedComuna)
+            )
+          ) {
+            return true;
+          }
         }
 
         const override = comunaOverrides[slug];

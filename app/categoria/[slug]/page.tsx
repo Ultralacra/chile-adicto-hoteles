@@ -138,7 +138,8 @@ export default function CategoryPage({ params }: { params: any }) {
   // Comunas adicionales por slug (ADITIVO):
   // Se usa para “aparece también en…” sin perder coincidencias por texto.
   const comunaAdditions: Record<string, string | string[]> = {
-    "bloody-mary-kitchen-bar-el-tomate-como-hilo-conductor-pero-no-el-limite": "Vitacura",
+    "bloody-mary-kitchen-bar-el-tomate-como-hilo-conductor-pero-no-el-limite":
+      "Vitacura",
   };
 
   const normalizeComuna = (s: string) =>

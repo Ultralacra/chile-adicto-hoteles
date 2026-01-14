@@ -16,9 +16,11 @@ import {
   PaginationPrevious,
 } from "@/components/ui/pagination";
 import { Spinner } from "@/components/ui/spinner";
+import { useAdminApi } from "@/hooks/use-admin-api";
 
 export default function PostsListPage() {
   const router = useRouter();
+  const { fetchWithSite, currentSite } = useAdminApi();
   const [query, setQuery] = useState("");
   const [category, setCategory] = useState<string>("ALL");
   const [selectedComuna, setSelectedComuna] = useState<string | null>(null);
@@ -137,8 +139,8 @@ export default function PostsListPage() {
       setLoading(true);
       try {
         const [pRes, cRes] = await Promise.all([
-          fetch("/api/posts", { cache: "no-store" }),
-          fetch("/api/categories", { cache: "no-store" }),
+          fetchWithSite("/api/posts"),
+          fetchWithSite("/api/categories"),
         ]);
         const p = pRes.ok ? await pRes.json() : [];
         const c = cRes.ok ? await cRes.json() : [];
@@ -163,7 +165,7 @@ export default function PostsListPage() {
     return () => {
       cancelled = true;
     };
-  }, []);
+  }, [fetchWithSite, currentSite]);
 
   const allCategories = useMemo(() => {
     const base = ["ALL", ...categoriesApi];

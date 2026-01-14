@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { getCurrentSiteId } from "@/lib/site-utils";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -80,6 +81,7 @@ type CommuneRow = {
 
 export async function GET(req: Request) {
   try {
+    const siteId = await getCurrentSiteId(req);
     const url = new URL(req.url);
     const full = url.searchParams.get("full") === "1";
     const nav = url.searchParams.get("nav") === "1";
@@ -87,16 +89,16 @@ export async function GET(req: Request) {
 
     // Intentar leer columnas extendidas (menu_order/show_in_menu) si existen.
     const extendedWithOrder: any[] | null = await anonRest(
-      "/communes?select=slug,label,show_in_menu,menu_order&order=menu_order.asc,label.asc"
+      `/communes?select=slug,label,show_in_menu,menu_order&site=eq.${siteId}&order=menu_order.asc,label.asc`
     );
     const extendedNoOrder: any[] | null = extendedWithOrder
       ? null
       : await anonRest(
-          "/communes?select=slug,label,show_in_menu&order=label.asc"
+          `/communes?select=slug,label,show_in_menu&site=eq.${siteId}&order=label.asc`
         );
     const basic: any[] | null = extendedWithOrder || extendedNoOrder
       ? null
-      : await anonRest("/communes?select=slug,label&order=label.asc");
+      : await anonRest(`/communes?select=slug,label&site=eq.${siteId}&order=label.asc`);
 
     const rows: any[] | null = extendedWithOrder || extendedNoOrder || basic;
     if (!rows) return NextResponse.json([], { status: 200 });
@@ -160,6 +162,7 @@ export async function GET(req: Request) {
 export async function POST(req: Request) {
   try {
     requireAdminKey(req);
+    const siteId = await getCurrentSiteId(req);
     const body = await req.json();
     const input = Array.isArray(body) ? body : [body];
 
@@ -176,6 +179,7 @@ export async function POST(req: Request) {
         return {
           slug,
           label: label || slug,
+          site: siteId,
           ...(hasShowInMenu
             ? { show_in_menu: Boolean(x?.show_in_menu ?? x?.showInMenu) }
             : {}),
@@ -193,7 +197,7 @@ export async function POST(req: Request) {
       );
     }
 
-    const created = await serviceRest(`/communes?on_conflict=slug`, {
+    const created = await serviceRest(`/communes?on_conflict=slug,site`, {
       method: "POST",
       headers: {
         Prefer: "return=representation,resolution=merge-duplicates",
@@ -218,13 +222,14 @@ export async function PUT(req: Request) {
 export async function DELETE(req: Request) {
   try {
     requireAdminKey(req);
+    const siteId = await getCurrentSiteId(req);
     const url = new URL(req.url);
     const slug = String(url.searchParams.get("slug") || "").trim();
     if (!slug) {
       return NextResponse.json({ ok: false, message: "Falta slug" }, { status: 400 });
     }
 
-    await serviceRest(`/communes?slug=eq.${encodeURIComponent(slug)}`, {
+    await serviceRest(`/communes?slug=eq.${encodeURIComponent(slug)}&site=eq.${siteId}`, {
       method: "DELETE",
       headers: { Prefer: "return=representation" },
     });

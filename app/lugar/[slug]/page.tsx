@@ -10,11 +10,13 @@ import { useLanguage } from "@/contexts/language-context";
 import { useEffect, use, useState } from "react";
 import { Spinner } from "@/components/ui/spinner";
 import { notFound } from "next/navigation";
+import { useSiteApi } from "@/hooks/use-site-api";
 
 type ResolvedParams = { slug: string };
 
 export default function LugarPage(props: any) {
   const { language, t } = useLanguage();
+  const { fetchWithSite } = useSiteApi();
 
   // Next.js: params es un Promise en Client Components, usar React.use() para resolverlo
   const resolvedParams = use(props.params as any) as ResolvedParams;
@@ -34,7 +36,7 @@ export default function LugarPage(props: any) {
     let cancelled = false;
     if (!resolvedParams?.slug) return;
     setLoading(true);
-    fetch(`/api/posts/${encodeURIComponent(resolvedParams.slug)}`)
+    fetchWithSite(`/api/posts/${encodeURIComponent(resolvedParams.slug)}`)
       .then((r) => (r.ok ? r.json() : null))
       .then((row) => {
         if (!cancelled) setArquitecturaEntry(row);
@@ -44,7 +46,7 @@ export default function LugarPage(props: any) {
     return () => {
       cancelled = true;
     };
-  }, [resolvedParams?.slug]);
+  }, [resolvedParams?.slug, fetchWithSite]);
 
   if (loading) {
     return (

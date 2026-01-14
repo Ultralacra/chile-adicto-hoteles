@@ -6,6 +6,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Spinner } from "@/components/ui/spinner";
+import { useAdminApi } from "@/hooks/use-admin-api";
+import { useSiteContext } from "@/contexts/site-context";
 import {
   Dialog,
   DialogContent,
@@ -54,6 +56,8 @@ type MediaListResp = {
 };
 
 export default function AdminSlidersList() {
+  const { fetchWithSite, currentSite } = useAdminApi();
+  const { isChanging } = useSiteContext();
   const dbKeys = useMemo(
     () => [
       "home-desktop",
@@ -115,7 +119,7 @@ export default function AdminSlidersList() {
       setLoading(true);
       try {
         // Home: usa API existente
-        const rHome = await fetch("/api/slider-images", { cache: "no-store" });
+        const rHome = await fetchWithSite("/api/slider-images", { cache: "no-store" });
         const jHome = rHome.ok
           ? ((await rHome.json()) as HomeResp)
           : { desktop: [], mobile: [] };
@@ -161,7 +165,7 @@ export default function AdminSlidersList() {
 
         // Restaurantes Mobile: carpeta pública listada por API (si existe)
         try {
-          const rMob = await fetch("/api/restaurant-slider-mobile", {
+          const rMob = await fetchWithSite("/api/restaurant-slider-mobile", {
             cache: "no-store",
           });
           if (rMob.ok) {
@@ -177,7 +181,7 @@ export default function AdminSlidersList() {
 
         // Posts de restaurantes (para derivar href destino de cada imagen)
         try {
-          const rPosts = await fetch("/api/posts?categorySlug=restaurantes", {
+          const rPosts = await fetchWithSite("/api/posts?categorySlug=restaurantes", {
             cache: "no-store",
           });
           const rows = rPosts.ok ? await rPosts.json() : [];
@@ -188,7 +192,7 @@ export default function AdminSlidersList() {
 
         // Destinos (overrides)
         try {
-          const rDest = await fetch("/api/slider-destinations", {
+          const rDest = await fetchWithSite("/api/slider-destinations", {
             cache: "no-store",
           });
           const j = rDest.ok ? await rDest.json() : {};

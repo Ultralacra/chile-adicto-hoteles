@@ -2,6 +2,7 @@
 import { NextResponse } from "next/server";
 import { postSchema } from "@/lib/post-schema";
 import { normalizePost } from "@/lib/post-normalize";
+import { getCurrentSiteId } from "@/lib/site-utils";
 
 function envOrNull(name: string) {
   const v = process.env[name];
@@ -127,15 +128,16 @@ function mapRowToLegacy(row: any) {
 
 export async function GET(req: Request) {
   try {
+    const siteId = await getCurrentSiteId(req);
     const url = new URL(req.url);
     const q = url.searchParams.get("q") || "";
     const category = url.searchParams.get("category");
     const categorySlug = url.searchParams.get("categorySlug");
 
     const select =
-      "slug,featured_image,website,instagram,website_display,instagram_display,email,phone,photos_credit,address,hours,reservation_link,reservation_policy,interesting_fact,images:post_images(url,position),locations:post_locations(*),translations:post_translations(*),useful:post_useful_info(*),category_links:post_category_map(category:categories(slug,label_es,label_en))";
+      "slug,featured_image,website,instagram,website_display,instagram_display,email,phone,photos_credit,address,hours,reservation_link,reservation_policy,interesting_fact,site,images:post_images(url,position),locations:post_locations(*),translations:post_translations(*),useful:post_useful_info(*),category_links:post_category_map(category:categories(slug,label_es,label_en))";
     let rows: any[] | null = await fetchFromSupabase(
-      `/posts?select=${encodeURIComponent(select)}`
+      `/posts?select=${encodeURIComponent(select)}&site=eq.${siteId}`
     );
 
     if (rows) {
@@ -204,6 +206,7 @@ export async function GET(req: Request) {
 
 export async function POST(req: Request) {
   try {
+    const siteId = await getCurrentSiteId(req);
     const body = await req.json();
     const normalized = normalizePost(body);
     const parsed = postSchema.safeParse(normalized);
@@ -215,7 +218,7 @@ export async function POST(req: Request) {
     }
 
     const existing: any[] = await serviceRest(
-      `/posts?slug=eq.${encodeURIComponent(normalized.slug)}&select=id`
+      `/posts?slug=eq.${encodeURIComponent(normalized.slug)}&site=eq.${siteId}&select=id`
     );
     if (Array.isArray(existing) && existing.length > 0) {
       return NextResponse.json(
@@ -230,6 +233,7 @@ export async function POST(req: Request) {
       body: JSON.stringify([
         {
           slug: normalized.slug,
+          site: siteId,
           featured_image: featured,
           website: normalized.website || null,
           website_display: normalized.website_display || null,

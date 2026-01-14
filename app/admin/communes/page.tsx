@@ -1,6 +1,8 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import { useAdminApi } from "@/hooks/use-admin-api";
+import { useSiteContext } from "@/contexts/site-context";
 
 type CommuneRow = {
   slug: string;
@@ -28,6 +30,8 @@ type PostSearchItem = {
 };
 
 export default function AdminCommunesPage() {
+  const { fetchWithSite } = useAdminApi();
+  const { currentSite } = useSiteContext();
   const [communes, setCommunes] = useState<CommuneRow[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -70,7 +74,7 @@ export default function AdminCommunesPage() {
     setLoading(true);
     setError(null);
     try {
-      const res = await fetch("/api/communes?full=1&includeHidden=1", {
+      const res = await fetchWithSite("/api/communes?full=1&includeHidden=1", {
         cache: "no-store",
       });
       const json = res.ok ? await res.json() : [];
@@ -96,7 +100,7 @@ export default function AdminCommunesPage() {
     setExporting(true);
     setError(null);
     try {
-      const res = await fetch("/api/communes?full=1&includeHidden=1", {
+      const res = await fetchWithSite("/api/communes?full=1&includeHidden=1", {
         cache: "no-store",
       });
       const json = res.ok ? await res.json() : [];
@@ -120,7 +124,7 @@ export default function AdminCommunesPage() {
         if (!slug) continue;
         const label = String(c?.label || "").trim();
 
-        const dRes = await fetch(`/api/communes/${encodeURIComponent(slug)}`, {
+        const dRes = await fetchWithSite(`/api/communes/${encodeURIComponent(slug)}`, {
           cache: "no-store",
         });
         const detail = (
@@ -188,7 +192,7 @@ export default function AdminCommunesPage() {
   const loadDetail = async (slugToLoad: string) => {
     setLoadingDetail(true);
     try {
-      const res = await fetch(
+      const res = await fetchWithSite(
         `/api/communes/${encodeURIComponent(slugToLoad)}`,
         {
           cache: "no-store",
@@ -204,7 +208,7 @@ export default function AdminCommunesPage() {
   useEffect(() => {
     loadCommunes();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [fetchWithSite, currentSite]);
 
   useEffect(() => {
     if (!detailSlug) {
@@ -251,7 +255,7 @@ export default function AdminCommunesPage() {
         show_in_menu: Boolean(showInMenu),
         menu_order: Number(menuOrder) || 0,
       };
-      const res = await fetch("/api/communes", {
+      const res = await fetchWithSite("/api/communes", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
@@ -278,7 +282,7 @@ export default function AdminCommunesPage() {
     setDeletingSlug(row.slug);
     setError(null);
     try {
-      const res = await fetch(
+      const res = await fetchWithSite(
         `/api/communes?slug=${encodeURIComponent(row.slug)}`,
         {
           method: "DELETE",
@@ -301,7 +305,7 @@ export default function AdminCommunesPage() {
   const searchPosts = async (q: string) => {
     setSearchingPosts(true);
     try {
-      const res = await fetch(
+      const res = await fetchWithSite(
         `/api/posts/search?q=${encodeURIComponent(q)}&limit=30`,
         {
           cache: "no-store",
@@ -335,7 +339,7 @@ export default function AdminCommunesPage() {
     setAddingPostSlug(postSlug);
     setError(null);
     try {
-      const res = await fetch(
+      const res = await fetchWithSite(
         `/api/communes/${encodeURIComponent(detailSlug)}`,
         {
           method: "POST",
@@ -361,7 +365,7 @@ export default function AdminCommunesPage() {
     setRemovingPostSlug(postSlug);
     setError(null);
     try {
-      const res = await fetch(
+      const res = await fetchWithSite(
         `/api/communes/${encodeURIComponent(
           detailSlug
         )}?postSlug=${encodeURIComponent(postSlug)}`,

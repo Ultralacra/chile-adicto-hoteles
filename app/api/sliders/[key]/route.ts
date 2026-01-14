@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { getCurrentSiteId } from "@/lib/site-utils";
 
 export const runtime = "nodejs";
 
@@ -70,6 +71,7 @@ type SliderItem = {
 
 export async function GET(req: Request, { params }: { params: { key: string } }) {
 	try {
+		const siteId = await getCurrentSiteId(req);
 		const ctx = (await (params as any)) as { key?: string };
 		const key = String(ctx?.key || "").trim();
 		if (!key) return NextResponse.json({ key: "", items: [] }, { status: 200 });
@@ -90,7 +92,7 @@ export async function GET(req: Request, { params }: { params: { key: string } })
 		const rows = (await supabaseRest(
 			`/sliders?set_key=eq.${encodeURIComponent(
 				key
-			)}&select=set_key,image_url,href,position,active,lang&order=position.asc`,
+			)}&site=eq.${siteId}&select=set_key,image_url,href,position,active,lang&order=position.asc`,
 			undefined,
 			canUseService() ? "service" : "anon"
 		)) as any[];
@@ -117,6 +119,7 @@ export async function GET(req: Request, { params }: { params: { key: string } })
 
 export async function PUT(req: Request, { params }: { params: { key: string } }) {
 	try {
+		const siteId = await getCurrentSiteId(req);
 		const ctx = (await (params as any)) as { key?: string };
 		const key = String(ctx?.key || "").trim();
 		if (!key) return NextResponse.json({ ok: false, error: "missing_key" }, { status: 400 });
@@ -137,6 +140,7 @@ export async function PUT(req: Request, { params }: { params: { key: string } })
 		const payload = itemsIn
 			.map((it: any, idx: number) => ({
 				set_key: key,
+				site: siteId,
 				image_url: String(it?.image_url || "").trim(),
 				href: it?.href ? String(it.href).trim() : null,
 				position: Number.isFinite(it?.position) ? Number(it.position) : idx,
@@ -145,8 +149,8 @@ export async function PUT(req: Request, { params }: { params: { key: string } })
 			}))
 			.filter((p: any) => p.image_url);
 
-		// Reemplazo total del set
-		await supabaseRest(`/sliders?set_key=eq.${encodeURIComponent(key)}`, { method: "DELETE" }, "service");
+		// Reemplazo total del set para este sitio
+		await supabaseRest(`/sliders?set_key=eq.${encodeURIComponent(key)}&site=eq.${siteId}`, { method: "DELETE" }, "service");
 		if (payload.length > 0) {
 			await supabaseRest(`/sliders`, { method: "POST", body: JSON.stringify(payload) }, "service");
 		}

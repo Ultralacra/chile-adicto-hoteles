@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { getCurrentSiteId } from "@/lib/site-utils";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -78,6 +79,7 @@ function normalizeSlug(input: string) {
 // - includeHidden=1: (admin) incluye también ocultas
 export async function GET(req: Request) {
   try {
+    const siteId = await getCurrentSiteId(req);
     const url = new URL(req.url);
     const full = url.searchParams.get("full") === "1";
     const nav = url.searchParams.get("nav") === "1";
@@ -86,17 +88,17 @@ export async function GET(req: Request) {
     // Intentar leer columnas extendidas. En algunos entornos puede existir
     // show_in_menu pero NO menu_order (o viceversa). Probamos en cascada.
     const extendedWithOrder: any[] | null = await fetchFromSupabase(
-      "/categories?select=slug,label_es,label_en,show_in_menu,menu_order&order=menu_order.asc,slug.asc"
+      `/categories?select=slug,label_es,label_en,show_in_menu,menu_order,site&site=eq.${siteId}&order=menu_order.asc,slug.asc`
     );
     const extendedNoOrder: any[] | null = extendedWithOrder
       ? null
       : await fetchFromSupabase(
-          "/categories?select=slug,label_es,label_en,show_in_menu&order=slug.asc"
+          `/categories?select=slug,label_es,label_en,show_in_menu,site&site=eq.${siteId}&order=slug.asc`
         );
     const basic: any[] | null = extendedWithOrder || extendedNoOrder
       ? null
       : await fetchFromSupabase(
-          "/categories?select=slug,label_es,label_en&order=slug.asc"
+          `/categories?select=slug,label_es,label_en,site&site=eq.${siteId}&order=slug.asc`
         );
     const rows: any[] | null = extendedWithOrder || extendedNoOrder || basic;
 
@@ -153,6 +155,7 @@ export async function GET(req: Request) {
 export async function POST(req: Request) {
   try {
     requireAdminKey(req);
+    const siteId = await getCurrentSiteId(req);
     const body = await req.json();
     const input = Array.isArray(body) ? body : [body];
     const rows = input
@@ -166,6 +169,7 @@ export async function POST(req: Request) {
           typeof x?.show_in_menu === "boolean" || typeof x?.showInMenu === "boolean";
         return {
           slug,
+          site: siteId,
           label_es: labelEs || null,
           label_en: labelEn || null,
           ...(hasShowInMenu
@@ -182,7 +186,7 @@ export async function POST(req: Request) {
       );
     }
 
-    const created = await serviceRest(`/categories?on_conflict=slug`, {
+    const created = await serviceRest(`/categories?on_conflict=slug,site`, {
       method: "POST",
       headers: {
         Prefer: "return=representation,resolution=merge-duplicates",

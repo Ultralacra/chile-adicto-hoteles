@@ -4,8 +4,12 @@ import { FileText, Plus, TrendingUp } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 import { Spinner } from "@/components/ui/spinner";
+import { useAdminApi } from "@/hooks/use-admin-api";
+import { useSiteContext } from "@/contexts/site-context";
 
 export default function AdminDashboard() {
+  const { fetchWithSite, currentSite } = useAdminApi();
+  const { isChanging } = useSiteContext();
   const [posts, setPosts] = useState<any[]>([]);
   const [categories, setCategories] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);
@@ -16,8 +20,8 @@ export default function AdminDashboard() {
       setLoading(true);
       try {
         const [pRes, cRes] = await Promise.all([
-          fetch("/api/posts", { cache: "no-store" }),
-          fetch("/api/categories", { cache: "no-store" }),
+          fetchWithSite("/api/posts", { cache: "no-store" }),
+          fetchWithSite("/api/categories", { cache: "no-store" }),
         ]);
         const p = pRes.ok ? await pRes.json() : [];
         const c = cRes.ok ? await cRes.json() : [];
@@ -38,7 +42,7 @@ export default function AdminDashboard() {
     return () => {
       cancelled = true;
     };
-  }, []);
+  }, [fetchWithSite, currentSite]);
 
   const totalPosts = posts.length;
   const postsByCategory = useMemo(() => {

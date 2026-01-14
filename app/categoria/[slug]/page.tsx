@@ -13,6 +13,7 @@ import { useSearchParams } from "next/navigation";
 import { buildCardExcerpt } from "@/lib/utils";
 import Link from "next/link";
 import { Spinner } from "@/components/ui/spinner";
+import { useSiteApi } from "@/hooks/use-site-api";
 
 // Antes se validaba contra una lista fija, pero ahora el menú y las categorías
 // se administran desde la BD. No hacemos 404 por slug desconocido.
@@ -30,6 +31,7 @@ export default function CategoryPage({ params }: { params: any }) {
   const resolvedParams = use(params as any) as ResolvedParams;
   const { slug } = resolvedParams;
   const { language, t } = useLanguage();
+  const { fetchWithSite } = useSiteApi();
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -85,7 +87,7 @@ export default function CategoryPage({ params }: { params: any }) {
     let cancelled = false;
     setLoading(true);
     // Preferimos filtrar por slug de categoría en el backend
-    fetch(`/api/posts?categorySlug=${encodeURIComponent(slug)}`)
+    fetchWithSite(`/api/posts?categorySlug=${encodeURIComponent(slug)}`)
       .then((r) => (r.ok ? r.json() : []))
       .then((rows) => {
         if (!cancelled) setFilteredHotels(Array.isArray(rows) ? rows : []);
@@ -95,7 +97,7 @@ export default function CategoryPage({ params }: { params: any }) {
     return () => {
       cancelled = true;
     };
-  }, [slug]);
+  }, [slug, fetchWithSite]);
 
   const isRestaurantsPage = slug === "restaurantes";
 
@@ -164,7 +166,7 @@ export default function CategoryPage({ params }: { params: any }) {
       return;
     }
     let cancelled = false;
-    fetch("/api/communes?nav=1", { cache: "no-store" })
+    fetchWithSite("/api/communes?nav=1", { cache: "no-store" })
       .then((r) => (r.ok ? r.json() : []))
       .then((rows) => {
         if (cancelled) return;
@@ -175,7 +177,7 @@ export default function CategoryPage({ params }: { params: any }) {
     return () => {
       cancelled = true;
     };
-  }, [isRestaurantsPage]);
+  }, [isRestaurantsPage, fetchWithSite]);
 
   // Cargar mapeo postSlug -> [commune_slug] para el filtro (si existe en BD)
   useEffect(() => {
@@ -192,7 +194,7 @@ export default function CategoryPage({ params }: { params: any }) {
     }
 
     let cancelled = false;
-    fetch("/api/communes/map", {
+    fetchWithSite("/api/communes/map", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ slugs }),
@@ -226,7 +228,7 @@ export default function CategoryPage({ params }: { params: any }) {
     return () => {
       cancelled = true;
     };
-  }, [isRestaurantsPage, filteredHotels]);
+  }, [isRestaurantsPage, filteredHotels, fetchWithSite]);
 
   // Overrides de comuna por slug (prioridad sobre búsqueda por texto)
   // Permite uno o múltiples match de comuna por slug.
@@ -386,7 +388,7 @@ export default function CategoryPage({ params }: { params: any }) {
       language === "en" ? "restaurants-desktop-en" : "restaurants-desktop-es";
 
     // 1) Intentar BD primero (si existe)
-    fetch(`/api/sliders/${encodeURIComponent(desktopKey)}`, {
+    fetchWithSite(`/api/sliders/${encodeURIComponent(desktopKey)}`, {
       cache: "no-store",
     })
       .then((r) => (r.ok ? r.json() : null))
@@ -537,7 +539,7 @@ export default function CategoryPage({ params }: { params: any }) {
     return () => {
       cancelled = true;
     };
-  }, [isRestaurantsPage, language]);
+  }, [isRestaurantsPage, language, fetchWithSite]);
 
   // Cargar carpeta específica móvil de restaurantes (sin afectar desktop)
   useEffect(() => {
@@ -548,7 +550,7 @@ export default function CategoryPage({ params }: { params: any }) {
       language === "en" ? "restaurants-mobile-en" : "restaurants-mobile-es";
 
     // 1) Intentar BD primero (si existe)
-    fetch(`/api/sliders/${encodeURIComponent(mobileKey)}`, {
+    fetchWithSite(`/api/sliders/${encodeURIComponent(mobileKey)}`, {
       cache: "no-store",
     })
       .then((r) => (r.ok ? r.json() : null))
@@ -572,7 +574,7 @@ export default function CategoryPage({ params }: { params: any }) {
 
         // 2) Fallback: carpeta pública vía API actual
         setRestaurantMobileLoadedFromDb(false);
-        return fetch("/api/restaurant-slider-mobile", { cache: "no-store" })
+        return fetchWithSite("/api/restaurant-slider-mobile", { cache: "no-store" })
           .then((r) => (r.ok ? r.json() : { images: [] }))
           .then((json) => {
             if (cancelled) return;
@@ -639,7 +641,7 @@ export default function CategoryPage({ params }: { params: any }) {
     return () => {
       cancelled = true;
     };
-  }, [isRestaurantsPage, filteredHotels, language]);
+  }, [isRestaurantsPage, filteredHotels, language, fetchWithSite]);
 
   // Override de descripciones ES/EN para slugs específicos (p. ej., PRIMA BAR)
   const enrichedHotels = (filteredHotels || []).map((h) => {

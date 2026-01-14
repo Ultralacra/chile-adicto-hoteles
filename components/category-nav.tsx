@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 import { useLanguage } from "@/contexts/language-context";
+import { useSiteApi } from "@/hooks/use-site-api";
 
 interface CategoryNavProps {
   activeCategory?: string;
@@ -57,13 +58,14 @@ export function CategoryNav({
   compact = false,
 }: CategoryNavProps) {
   const { language } = useLanguage();
+  const { fetchWithSite } = useSiteApi();
   const [items, setItems] = useState(fallbackCategories);
 
   useEffect(() => {
     let cancelled = false;
     async function load() {
       try {
-        const res = await fetch("/api/categories?full=1&nav=1", {
+        const res = await fetchWithSite("/api/categories?full=1&nav=1", {
           cache: "no-store",
         });
         const json = res.ok ? await res.json() : [];
@@ -122,7 +124,7 @@ export function CategoryNav({
     return () => {
       cancelled = true;
     };
-  }, []);
+  }, [fetchWithSite]);
 
   const hrefFor = (slug: string) => {
     if (slug === "todos") return "/";

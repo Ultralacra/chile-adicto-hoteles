@@ -1,6 +1,8 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import { useAdminApi } from "@/hooks/use-admin-api";
+import { useSiteContext } from "@/contexts/site-context";
 
 type CategoryRow = {
   slug: string;
@@ -10,6 +12,8 @@ type CategoryRow = {
 };
 
 export default function AdminCategoriesPage() {
+  const { fetchWithSite } = useAdminApi();
+  const { currentSite } = useSiteContext();
   const [categories, setCategories] = useState<CategoryRow[]>([]);
   const [loadingCats, setLoadingCats] = useState(false);
   const [catsError, setCatsError] = useState<string | null>(null);
@@ -40,7 +44,7 @@ export default function AdminCategoriesPage() {
     setLoadingCats(true);
     setCatsError(null);
     try {
-      const res = await fetch("/api/categories?full=1&includeHidden=1", {
+      const res = await fetchWithSite("/api/categories?full=1&includeHidden=1", {
         cache: "no-store",
       });
       const json = res.ok ? await res.json() : [];
@@ -56,7 +60,7 @@ export default function AdminCategoriesPage() {
   useEffect(() => {
     loadCategories();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [fetchWithSite, currentSite]);
 
   const resetForm = () => {
     setSelectedSlug(null);
@@ -91,7 +95,7 @@ export default function AdminCategoriesPage() {
         label_en: labelEn.trim() || null,
         show_in_menu: Boolean(showInMenu),
       };
-      const res = await fetch("/api/categories", {
+      const res = await fetchWithSite("/api/categories", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
@@ -117,7 +121,7 @@ export default function AdminCategoriesPage() {
     setDeletingSlug(row.slug);
     setCatsError(null);
     try {
-      const res = await fetch(
+      const res = await fetchWithSite(
         `/api/categories?slug=${encodeURIComponent(row.slug)}`,
         { method: "DELETE" }
       );

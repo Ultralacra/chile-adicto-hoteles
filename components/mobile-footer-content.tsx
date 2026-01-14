@@ -6,6 +6,7 @@ import { usePathname, useSearchParams } from "next/navigation";
 import { LanguageSwitcher } from "./language-switcher";
 import { useEffect, useMemo, useState } from "react";
 import { useLanguage } from "@/contexts/language-context";
+import { useSiteApi } from "@/hooks/use-site-api";
 
 interface MobileFooterContentProps {
   onNavigate?: () => void; // cerrar menú al navegar
@@ -14,6 +15,7 @@ export function MobileFooterContent({ onNavigate }: MobileFooterContentProps) {
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const { language } = useLanguage();
+  const { fetchWithSite } = useSiteApi();
 
   type ApiCategoryRow = {
     slug: string;
@@ -74,7 +76,7 @@ export function MobileFooterContent({ onNavigate }: MobileFooterContentProps) {
     return () => {
       cancelled = true;
     };
-  }, [isRestaurantsCategory]);
+  }, [isRestaurantsCategory, fetchWithSite]);
 
   // Fallback hardcodeado (mismo orden histórico)
   const fallbackItems = [
@@ -127,7 +129,7 @@ export function MobileFooterContent({ onNavigate }: MobileFooterContentProps) {
     let cancelled = false;
     async function load() {
       try {
-        const res = await fetch("/api/categories?full=1&nav=1", {
+        const res = await fetchWithSite("/api/categories?full=1&nav=1", {
           cache: "no-store",
         });
         const json = res.ok ? await res.json() : [];
@@ -182,7 +184,7 @@ export function MobileFooterContent({ onNavigate }: MobileFooterContentProps) {
     return () => {
       cancelled = true;
     };
-  }, []);
+  }, [fetchWithSite]);
 
   return (
     <div>

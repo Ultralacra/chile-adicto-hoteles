@@ -11,16 +11,18 @@ import { buildCardExcerpt } from "@/lib/utils";
 import { useEffect, useState } from "react";
 import { Spinner } from "@/components/ui/spinner";
 import { useLanguage } from "@/contexts/language-context";
+import { useSiteApi } from "@/hooks/use-site-api";
 
 export default function Page() {
   const { language } = useLanguage();
+  const { fetchWithSite } = useSiteApi();
   const [hotels, setHotels] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     let cancelled = false;
     setLoading(true);
-    fetch("/api/posts")
+    fetchWithSite("/api/posts")
       .then((r) => (r.ok ? r.json() : []))
       .then((rows) => {
         if (cancelled) return;
@@ -66,7 +68,7 @@ export default function Page() {
     return () => {
       cancelled = true;
     };
-  }, []);
+  }, [fetchWithSite]);
 
   // Banner por idioma (ES/EN): reemplazar las URLs cuando tengas las versiones en ambos idiomas
   const bannerByLang: Record<

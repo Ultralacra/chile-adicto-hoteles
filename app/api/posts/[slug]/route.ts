@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { postSchema } from "@/lib/post-schema";
 import { normalizePost } from "@/lib/post-normalize";
+import { getCurrentSiteId } from "@/lib/site-utils";
 
 function envOrNull(name: string) {
   const v = process.env[name];
@@ -134,14 +135,15 @@ export async function GET(
   { params }: { params: { slug: string } }
 ) {
   try {
+    const siteId = await getCurrentSiteId(_req);
     const ctx = (await (params as any)) as { slug?: string };
     const slug = String(ctx?.slug || "").trim();
 
     // Intentar Supabase
     const select =
-      "slug,featured_image,website,instagram,website_display,instagram_display,email,phone,photos_credit,address,hours,reservation_link,reservation_policy,interesting_fact,images:post_images(url,position),locations:post_locations(*),translations:post_translations(*),useful:post_useful_info(*),category_links:post_category_map(category:categories(slug,label_es,label_en))";
+      "slug,featured_image,website,instagram,website_display,instagram_display,email,phone,photos_credit,address,hours,reservation_link,reservation_policy,interesting_fact,site,images:post_images(url,position),locations:post_locations(*),translations:post_translations(*),useful:post_useful_info(*),category_links:post_category_map(category:categories(slug,label_es,label_en))";
     const rows: any[] | null = await fetchFromSupabase(
-      `/posts?slug=eq.${encodeURIComponent(slug)}&select=${encodeURIComponent(select)}`
+      `/posts?slug=eq.${encodeURIComponent(slug)}&site=eq.${siteId}&select=${encodeURIComponent(select)}`
     );
     if (rows && rows.length > 0) {
       const mapped = mapRowToLegacy(rows[0]);
@@ -163,6 +165,7 @@ export async function PUT(
 ) {
   let step = "start";
   try {
+    const siteId = await getCurrentSiteId(req);
     const ctx = (await (params as any)) as { slug?: string };
     const slugParam = String(ctx?.slug || "").trim();
 
@@ -180,9 +183,9 @@ export async function PUT(
     }
     // Conjunto de campos explícitamente provistos (para actualizaciones parciales seguras)
     const provided = new Set<string>(Object.keys(body || {}));
-    // 1) Obtener post.id por slug
+    // 1) Obtener post.id por slug y site
     step = "fetch_post_id";
-    const rows: any[] = await serviceRest(`/posts?slug=eq.${encodeURIComponent(slugParam)}&select=id`);
+    const rows: any[] = await serviceRest(`/posts?slug=eq.${encodeURIComponent(slugParam)}&site=eq.${siteId}&select=id`);
     if (!rows || rows.length === 0) {
       return NextResponse.json({ error: "not_found" }, { status: 404 });
     }
@@ -193,7 +196,7 @@ export async function PUT(
     if (provided.has("slug") && normalized.slug && normalized.slug !== slugParam) {
       step = "check_slug_unique";
       const exists: any[] = await serviceRest(
-        `/posts?slug=eq.${encodeURIComponent(normalized.slug)}&select=id`
+        `/posts?slug=eq.${encodeURIComponent(normalized.slug)}&site=eq.${siteId}&select=id`
       );
       if (Array.isArray(exists) && exists.length > 0) {
         return NextResponse.json(
@@ -436,10 +439,22 @@ export async function DELETE(
   { params }: { params: { slug: string } }
 ) {
   try {
+    const siteId = await getCurrentSiteId(_req);
     const ctx = (await (params as any)) as { slug?: string };
     const slug = String(ctx?.slug || "").trim();
-    console.log("[DELETE POST]", slug);
-    // Sin persistencia: solo confirmación
+    console.log("[DELETE POST]", slug, "site:", siteId);
+    
+    // Verificar que el post exista y pertenezca al sitio actual
+    const rows: any[] = await serviceRest(`/posts?slug=eq.${encodeURIComponent(slug)}&site=eq.${siteId}&select=id`);
+    if (!rows || rows.length === 0) {
+      return NextResponse.json({ error: "not_found" }, { status: 404 });
+    }
+    
+    const postId = rows[0].id;
+    
+    // Eliminar el post (las relaciones se eliminarán en cascada si está configurado)
+    await serviceRest(`/posts?id=eq.${postId}`, { method: "DELETE" });
+    
     return NextResponse.json({ ok: true }, { status: 200 });
   } catch (err: any) {
     console.error("[DELETE /api/posts/[slug]] error", err);

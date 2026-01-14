@@ -6,6 +6,7 @@ import Image from "next/image";
 import useEmblaCarousel from "embla-carousel-react";
 import { useLanguage } from "@/contexts/language-context";
 import { CategoryNav } from "@/components/category-nav";
+import { useSiteApi } from "@/hooks/use-site-api";
 
 interface LocationInfo {
   label?: string;
@@ -51,6 +52,7 @@ interface HotelDetailProps {
 
 export function HotelDetail({ hotel }: HotelDetailProps) {
   const { t } = useLanguage();
+  const { fetchWithSite } = useSiteApi();
   // La galería NO debe incluir la imagen de portada. Si hay imágenes de galería, usamos solo esas.
   // Si NO hay imágenes de galería, mostramos la portada como único slide.
   const allImages =
@@ -104,7 +106,7 @@ export function HotelDetail({ hotel }: HotelDetailProps) {
     if (!isRestaurant) return;
 
     let cancelled = false;
-    fetch("/api/communes?nav=1", { cache: "no-store" })
+    fetchWithSite("/api/communes?nav=1", { cache: "no-store" })
       .then((r) => (r.ok ? r.json() : []))
       .then((rows) => {
         if (cancelled) return;
@@ -126,7 +128,7 @@ export function HotelDetail({ hotel }: HotelDetailProps) {
     return () => {
       cancelled = true;
     };
-  }, [hotel?.categories, fallbackRestaurantCommunes]);
+  }, [hotel?.categories, fallbackRestaurantCommunes, fetchWithSite]);
 
   // Log de datos útiles al entrar al post (estado crudo)
   useEffect(() => {

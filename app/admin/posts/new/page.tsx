@@ -11,6 +11,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Card } from "@/components/ui/card";
 import AdminRichText from "@/components/admin-rich-text";
+import { useAdminApi } from "@/hooks/use-admin-api";
 import {
   ArrowLeft,
   Save,
@@ -35,6 +36,7 @@ import { Spinner } from "@/components/ui/spinner";
 
 export default function NewPostPage() {
   const router = useRouter();
+  const { fetchWithSite } = useAdminApi();
   const [creating, setCreating] = useState(false);
   const [loadingCats, setLoadingCats] = useState(true);
   const [categoriesApi, setCategoriesApi] = useState<string[]>([]);
@@ -69,23 +71,8 @@ export default function NewPostPage() {
 
   // Categorías y comunas
   const [categories, setCategories] = useState<string[]>(["TODOS"]);
-  const possibleCommunes = [
-    "Santiago",
-    "Providencia",
-    "Las Condes",
-    "Vitacura",
-    "Lo Barnechea",
-    "La Reina",
-    "Ñuñoa",
-    "Recoleta",
-    "Independencia",
-    "San Miguel",
-    "Estación Central",
-    "Maipú",
-    "La Florida",
-    "Puente Alto",
-    "Alto Jahuel",
-  ];
+  const [possibleCommunes, setPossibleCommunes] = useState<string[]>([]);
+  const [loadingCommunes, setLoadingCommunes] = useState(true);
   const [communes, setCommunes] = useState<string[]>([]);
   const [autoDetectedCommunes, setAutoDetectedCommunes] = useState<string[]>(
     []
@@ -160,7 +147,7 @@ export default function NewPostPage() {
     async function loadCategories() {
       setLoadingCats(true);
       try {
-        const r = await fetch("/api/categories", { cache: "no-store" });
+        const r = await fetchWithSite("/api/categories", { cache: "no-store" });
         const c = r.ok ? await r.json() : [];
         if (!cancelled) setCategoriesApi(Array.isArray(c) ? c : []);
       } catch {
@@ -173,7 +160,33 @@ export default function NewPostPage() {
     return () => {
       cancelled = true;
     };
-  }, []);
+  }, [fetchWithSite]);
+
+  // Cargar comunas del API
+  useEffect(() => {
+    let cancelled = false;
+    async function loadCommunes() {
+      setLoadingCommunes(true);
+      try {
+        const r = await fetchWithSite("/api/communes?full=1&includeHidden=1", { cache: "no-store" });
+        const data = r.ok ? await r.json() : [];
+        if (!cancelled) {
+          const communesList = Array.isArray(data)
+            ? data.map((c: any) => String(c.label || c.slug || "").trim()).filter(Boolean)
+            : [];
+          setPossibleCommunes(communesList);
+        }
+      } catch {
+        if (!cancelled) setPossibleCommunes([]);
+      } finally {
+        if (!cancelled) setLoadingCommunes(false);
+      }
+    }
+    loadCommunes();
+    return () => {
+      cancelled = true;
+    };
+  }, [fetchWithSite]);
 
   // Auto-detección de comunas desde campos ingresados
   useEffect(() => {

@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
 import useEmblaCarousel from "embla-carousel-react";
+import { useSiteApi } from "@/hooks/use-site-api";
 
 // Reordenado: ICONOS debe ser el primer slide según solicitud.
 // iconos, arquitectura, barrios, mercados, miradores, museos (CULTURA),
@@ -61,6 +62,7 @@ export function HeroSlider({
   preferApiHrefs = false,
   autoHeight = false,
 }: HeroSliderProps) {
+  const { fetchWithSite } = useSiteApi();
   // Estado para imágenes obtenidas desde API (si existen en /public/slider-*)
   const [desktopFromApi, setDesktopFromApi] = useState<string[] | null>(null);
   const [mobileFromApi, setMobileFromApi] = useState<string[] | null>(null);
@@ -126,7 +128,7 @@ export function HeroSlider({
 
         // 1) Preferir sliders desde BD (si se indicó key)
         const loadSet = async (key: string) => {
-          const res = await fetch(`/api/sliders/${encodeURIComponent(key)}`, {
+          const res = await fetchWithSite(`/api/sliders/${encodeURIComponent(key)}`, {
             cache: "no-store",
           });
           if (!res.ok) return { images: [], hrefs: [] };
@@ -178,7 +180,7 @@ export function HeroSlider({
         if (usedDb) return;
 
         // 2) Fallback legacy: /api/slider-images (carpetas públicas)
-        const res = await fetch("/api/slider-images", { cache: "no-store" });
+        const res = await fetchWithSite("/api/slider-images", { cache: "no-store" });
         if (!res.ok) return;
         const json = (await res.json()) as {
           desktop: string[];
@@ -199,7 +201,7 @@ export function HeroSlider({
     return () => {
       cancelled = true;
     };
-  }, [desktopImages, mobileImages, sliderKeyDesktop, sliderKeyMobile]);
+  }, [desktopImages, mobileImages, sliderKeyDesktop, sliderKeyMobile, fetchWithSite]);
 
   const hrefForIndex = (index: number, mode: "desktop" | "mobile") => {
     const apiHrefs =

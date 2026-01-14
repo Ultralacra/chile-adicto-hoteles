@@ -9,6 +9,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Card } from "@/components/ui/card";
 import AdminRichText from "@/components/admin-rich-text";
+import { useAdminApi } from "@/hooks/use-admin-api";
 import {
   ArrowLeft,
   Save,
@@ -37,6 +38,7 @@ export default function EditPostPage({
   params: Promise<{ slug: string }>;
 }) {
   const router = useRouter();
+  const { fetchWithSite } = useAdminApi();
   const { slug } = use(params);
   // Edición de slug
   const [editSlug, setEditSlug] = useState<string>("");
@@ -51,26 +53,36 @@ export default function EditPostPage({
     async function load() {
       setLoading(true);
       try {
-        const [pRes, cRes] = await Promise.all([
-          fetch(`/api/posts/${encodeURIComponent(slug)}`, {
+        const [pRes, cRes, commRes] = await Promise.all([
+          fetchWithSite(`/api/posts/${encodeURIComponent(slug)}`, {
             cache: "no-store",
           }),
-          fetch("/api/categories", { cache: "no-store" }),
+          fetchWithSite("/api/categories", { cache: "no-store" }),
+          fetchWithSite("/api/communes?full=1&includeHidden=1", { cache: "no-store" }),
         ]);
         const p = pRes.ok ? await pRes.json() : null;
         const c = cRes.ok ? await cRes.json() : [];
+        const comm = commRes.ok ? await commRes.json() : [];
         // Debug: imprimir lo cargado
         console.log("[Admin Edit] GET post", p);
         console.log("[Admin Edit] GET categories", c);
+        console.log("[Admin Edit] GET communes", comm);
         if (!cancelled) {
           setHotel(p && p.slug ? p : null);
           setCategoriesApi(Array.isArray(c) ? c : []);
+          const communesList = Array.isArray(comm)
+            ? comm.map((co: any) => String(co.label || co.slug || "").trim()).filter(Boolean)
+            : [];
+          setPossibleCommunes(communesList);
+          setLoadingCommunes(false);
           if (p && p.slug) setEditSlug(p.slug);
         }
       } catch (e) {
         if (!cancelled) {
           setHotel(null);
           setCategoriesApi([]);
+          setPossibleCommunes([]);
+          setLoadingCommunes(false);
         }
       } finally {
         if (!cancelled) setLoading(false);
@@ -80,7 +92,7 @@ export default function EditPostPage({
     return () => {
       cancelled = true;
     };
-  }, [slug]);
+  }, [slug, fetchWithSite]);
 
   // Local editable state (pre-filled)
   const [nameEs, setNameEs] = useState("");
@@ -148,23 +160,8 @@ export default function EditPostPage({
   };
   const [categories, setCategories] = useState<string[]>(["TODOS"]);
   // Comunas (admin-only hasta que DB soporte): seleccionables tipo categorías
-  const possibleCommunes = [
-    "Santiago",
-    "Providencia",
-    "Las Condes",
-    "Vitacura",
-    "Lo Barnechea",
-    "La Reina",
-    "Ñuñoa",
-    "Recoleta",
-    "Independencia",
-    "San Miguel",
-    "Estación Central",
-    "Maipú",
-    "La Florida",
-    "Puente Alto",
-    "Alto Jahuel",
-  ];
+  const [possibleCommunes, setPossibleCommunes] = useState<string[]>([]);
+  const [loadingCommunes, setLoadingCommunes] = useState(true);
   const [communes, setCommunes] = useState<string[]>([]);
   const [autoDetectedCommunes, setAutoDetectedCommunes] = useState<string[]>(
     []

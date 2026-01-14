@@ -8,6 +8,8 @@ import { Input } from "@/components/ui/input";
 import { Spinner } from "@/components/ui/spinner";
 import { Label } from "@/components/ui/label";
 import { ArrowLeft, Images as ImagesIcon, Save, Search, X } from "lucide-react";
+import { useAdminApi } from "@/hooks/use-admin-api";
+import { useSiteContext } from "@/contexts/site-context";
 
 type PostLite = {
   slug: string;
@@ -18,6 +20,8 @@ type PostLite = {
 };
 
 export default function AdminImagesPage() {
+  const { fetchWithSite } = useAdminApi();
+  const { currentSite } = useSiteContext();
   const [loading, setLoading] = useState(true);
   const [posts, setPosts] = useState<PostLite[]>([]);
   const [query, setQuery] = useState("");
@@ -33,7 +37,7 @@ export default function AdminImagesPage() {
   useEffect(() => {
     let cancelled = false;
     setLoading(true);
-    fetch("/api/posts", { cache: "no-store" })
+    fetchWithSite("/api/posts", { cache: "no-store" })
       .then((r) => (r.ok ? r.json() : []))
       .then((rows) => {
         if (!cancelled) setPosts(Array.isArray(rows) ? rows : []);
@@ -43,7 +47,7 @@ export default function AdminImagesPage() {
     return () => {
       cancelled = true;
     };
-  }, []);
+  }, [fetchWithSite, currentSite]);
 
   useEffect(() => {
     if (!selectedSlug) {
@@ -54,7 +58,7 @@ export default function AdminImagesPage() {
     }
     let cancelled = false;
     setSelectedPost(null);
-    fetch(`/api/posts/${encodeURIComponent(selectedSlug)}`, {
+    fetchWithSite(`/api/posts/${encodeURIComponent(selectedSlug)}`, {
       cache: "no-store",
     })
       .then((r) => (r.ok ? r.json() : null))
@@ -75,7 +79,7 @@ export default function AdminImagesPage() {
     return () => {
       cancelled = true;
     };
-  }, [selectedSlug]);
+  }, [selectedSlug, fetchWithSite]);
 
   const filteredPosts = useMemo(() => {
     const q = query.trim().toLowerCase();

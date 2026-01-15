@@ -11,6 +11,7 @@ import { useEffect, use, useState } from "react";
 import { Spinner } from "@/components/ui/spinner";
 import { notFound } from "next/navigation";
 import { useSiteApi } from "@/hooks/use-site-api";
+import { isHiddenFrontPost } from "@/lib/post-visibility";
 
 type ResolvedParams = { slug: string };
 
@@ -21,8 +22,8 @@ export default function LugarPage(props: any) {
   // Next.js: params es un Promise en Client Components, usar React.use() para resolverlo
   const resolvedParams = use(props.params as any) as ResolvedParams;
 
-  // Ocultar completamente el post /lugar/w-santiago
-  if (resolvedParams?.slug === "w-santiago") {
+  // Ocultar completamente el post /lugar/w-santiago o TEST
+  if (isHiddenFrontPost({ slug: resolvedParams?.slug })) {
     notFound();
   }
 
@@ -39,7 +40,12 @@ export default function LugarPage(props: any) {
     fetchWithSite(`/api/posts/${encodeURIComponent(resolvedParams.slug)}`)
       .then((r) => (r.ok ? r.json() : null))
       .then((row) => {
-        if (!cancelled) setArquitecturaEntry(row);
+        if (cancelled) return;
+        if (row && isHiddenFrontPost(row)) {
+          setArquitecturaEntry(null);
+          return;
+        }
+        setArquitecturaEntry(row);
       })
       .catch(() => !cancelled && setArquitecturaEntry(null))
       .finally(() => !cancelled && setLoading(false));

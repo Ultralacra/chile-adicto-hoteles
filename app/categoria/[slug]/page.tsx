@@ -14,6 +14,7 @@ import { buildCardExcerpt } from "@/lib/utils";
 import Link from "next/link";
 import { Spinner } from "@/components/ui/spinner";
 import { useSiteApi } from "@/hooks/use-site-api";
+import { isHiddenFrontPost } from "@/lib/post-visibility";
 
 // Antes se validaba contra una lista fija, pero ahora el menú y las categorías
 // se administran desde la BD. No hacemos 404 por slug desconocido.
@@ -90,7 +91,9 @@ export default function CategoryPage({ params }: { params: any }) {
     fetchWithSite(`/api/posts?categorySlug=${encodeURIComponent(slug)}`)
       .then((r) => (r.ok ? r.json() : []))
       .then((rows) => {
-        if (!cancelled) setFilteredHotels(Array.isArray(rows) ? rows : []);
+        if (cancelled) return;
+        const list = Array.isArray(rows) ? rows : [];
+        setFilteredHotels(list.filter((p) => !isHiddenFrontPost(p)));
       })
       .catch(() => !cancelled && setFilteredHotels([]))
       .finally(() => !cancelled && setLoading(false));

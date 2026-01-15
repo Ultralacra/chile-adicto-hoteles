@@ -8,6 +8,7 @@ import { HotelCard } from "@/components/hotel-card";
 import { Footer } from "@/components/footer";
 import { CategoryNav } from "@/components/category-nav";
 import { buildCardExcerpt } from "@/lib/utils";
+import { isHiddenFrontPost } from "@/lib/post-visibility";
 import { useEffect, useState } from "react";
 import { Spinner } from "@/components/ui/spinner";
 import { useLanguage } from "@/contexts/language-context";
@@ -28,6 +29,7 @@ export default function Page() {
         if (cancelled) return;
         const list = Array.isArray(rows) ? rows : [];
         const filtered = list.filter((h) => {
+          if (isHiddenFrontPost(h)) return false;
           const cats = new Set<string>([
             ...(h.categories || []).map((c: any) => String(c).toUpperCase()),
           ]);

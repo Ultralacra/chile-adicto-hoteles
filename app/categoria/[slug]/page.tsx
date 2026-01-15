@@ -577,7 +577,9 @@ export default function CategoryPage({ params }: { params: any }) {
 
         // 2) Fallback: carpeta pública vía API actual
         setRestaurantMobileLoadedFromDb(false);
-        return fetchWithSite("/api/restaurant-slider-mobile", { cache: "no-store" })
+        return fetchWithSite("/api/restaurant-slider-mobile", {
+          cache: "no-store",
+        })
           .then((r) => (r.ok ? r.json() : { images: [] }))
           .then((json) => {
             if (cancelled) return;

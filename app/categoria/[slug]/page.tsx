@@ -848,8 +848,8 @@ export default function CategoryPage({ params }: { params: any }) {
             </div>
           )}
 
-          {/* En Monumentos Nacionales: banner largo bajo el menú, luego posts */}
-          {slug === "monumentos-nacionales" && (
+          {/* En Monumentos Nacionales y Cafés: banner largo bajo el menú, luego posts */}
+          {(slug === "monumentos-nacionales" || slug === "cafes") && (
             <div className="w-full mt-2">
               <BottomHomeBanner />
             </div>
@@ -931,6 +931,11 @@ export default function CategoryPage({ params }: { params: any }) {
                     subtitle={hotel[language].subtitle}
                     description={buildCardExcerpt(hotel[language].description)}
                     image={hotel.featuredImage || hotel.images?.[0] || ""}
+                    imageVariant={
+                      slug === "monumentos-nacionales" || slug === "cafes"
+                        ? "tall"
+                        : "default"
+                    }
                   />
                 ))
               ) : (

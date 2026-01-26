@@ -169,6 +169,7 @@ export default function Page() {
                         return buildCardExcerpt(paras);
                       })()}
                       image={hotel.featuredImage || hotel.images?.[0] || ""}
+                      imageVariant="default"
                     />
                   </div>
                 ))}

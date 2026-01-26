@@ -69,6 +69,12 @@ export function HotelDetail({ hotel }: HotelDetailProps) {
         .map((c) => toSlug(String(c || "")))
         .includes("monumentos-nacionales")
     : false;
+
+  const isCafesPost = Array.isArray(hotel?.categories)
+    ? hotel.categories.map((c) => toSlug(String(c || ""))).includes("cafes")
+    : false;
+
+  const showCategoryBanner = isMonumentosPost || isCafesPost;
   // La galería NO debe incluir la imagen de portada. Si hay imágenes de galería, usamos solo esas.
   // Si NO hay imágenes de galería, mostramos la portada como único slide.
   const allImages =
@@ -81,7 +87,7 @@ export function HotelDetail({ hotel }: HotelDetailProps) {
   // Slider manual: sin swipe/drag (solo flechas). Con loop para volver de la última a la primera.
   const [emblaRef, emblaApi] = useEmblaCarousel({
     loop: true,
-    draggable: false,
+    watchDrag: false,
   });
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [isLightboxOpen, setIsLightboxOpen] = useState(false);
@@ -89,7 +95,7 @@ export function HotelDetail({ hotel }: HotelDetailProps) {
   const lightboxOpenIndexRef = useRef(0);
   const [lightboxEmblaRef, lightboxEmblaApi] = useEmblaCarousel({
     loop: true,
-    draggable: false,
+    watchDrag: false,
   });
   const [cleanedFullContent, setCleanedFullContent] = useState(
     hotel.fullContent || "",
@@ -436,7 +442,7 @@ export function HotelDetail({ hotel }: HotelDetailProps) {
       </div>
 
       <main className="site-inner pt-0 pb-4">
-        {isMonumentosPost && (
+        {showCategoryBanner && (
           <div className="w-full mb-4">
             <BottomHomeBanner />
           </div>
@@ -444,7 +450,11 @@ export function HotelDetail({ hotel }: HotelDetailProps) {
 
         {allImages.length > 0 && (
           <div className="mb-4 w-full">
-            <div className="relative overflow-hidden h-[55vw] md:h-[45vw] lg:h-[640px]">
+            <div
+              className={`relative overflow-hidden h-[55vw] md:h-[45vw] ${
+                showCategoryBanner ? "lg:h-[715px]" : "lg:h-[640px]"
+              }`}
+            >
               {canShowControls && (
                 <>
                   <button

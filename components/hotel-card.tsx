@@ -7,6 +7,7 @@ interface HotelCardProps {
   subtitle: string;
   description: string;
   image: string;
+  imageVariant?: "default" | "tall";
 }
 
 export function HotelCard({
@@ -15,12 +16,16 @@ export function HotelCard({
   subtitle,
   description,
   image,
+  imageVariant = "default",
 }: HotelCardProps) {
+  const imageContainerClass =
+    imageVariant === "tall" ? "h-[400px]" : "aspect-[386/264]";
+
   return (
     <Link href={`/${slug}`}>
       <article className="group cursor-pointer flex flex-col h-full gap-3">
         {/* Image Container */}
-        <div className="relative aspect-[386/264] overflow-hidden">
+        <div className={`relative ${imageContainerClass} overflow-hidden`}>
           <Image
             src={image || "/placeholder.svg"}
             alt={name}

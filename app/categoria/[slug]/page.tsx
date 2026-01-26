@@ -15,6 +15,7 @@ import Link from "next/link";
 import { Spinner } from "@/components/ui/spinner";
 import { useSiteApi } from "@/hooks/use-site-api";
 import { isHiddenFrontPost } from "@/lib/post-visibility";
+import { BottomHomeBanner } from "@/components/home-promo-banners";
 
 // Antes se validaba contra una lista fija, pero ahora el menú y las categorías
 // se administran desde la BD. No hacemos 404 por slug desconocido.
@@ -153,7 +154,7 @@ export default function CategoryPage({ params }: { params: any }) {
       (c) =>
         String(c.slug || "")
           .trim()
-          .toLowerCase() === param
+          .toLowerCase() === param,
     );
     if (match) {
       setSelectedComuna(communeLabelFromRow(match));
@@ -217,7 +218,7 @@ export default function CategoryPage({ params }: { params: any }) {
                 label: x.label ?? null,
                 show_in_menu: x.show_in_menu ?? true,
                 menu_order: x.menu_order ?? 0,
-              }))
+              })),
           );
         }
         if (map && typeof map === "object") {
@@ -330,7 +331,7 @@ export default function CategoryPage({ params }: { params: any }) {
             "Providencia",
             "Alto Jahuel",
             "La Reina",
-          ]
+          ],
     );
   }, [isRestaurantsPage, filteredHotels]);
 
@@ -338,7 +339,7 @@ export default function CategoryPage({ params }: { params: any }) {
     ? (() => {
         const norm = normalizeComuna(selectedComuna);
         const match = dbCommunes.find(
-          (c) => normalizeComuna(communeLabelFromRow(c)) === norm
+          (c) => normalizeComuna(communeLabelFromRow(c)) === norm,
         );
         if (match) return String(match.slug || "").trim();
         return String(selectedComuna).trim().toLowerCase().replace(/\s+/g, "-");
@@ -371,7 +372,7 @@ export default function CategoryPage({ params }: { params: any }) {
     string[]
   >([]);
   const [restaurantSlideHrefs, setRestaurantSlideHrefs] = useState<string[]>(
-    []
+    [],
   );
   const [restaurantDesktopLoadedFromDb, setRestaurantDesktopLoadedFromDb] =
     useState(false);
@@ -380,7 +381,7 @@ export default function CategoryPage({ params }: { params: any }) {
     string[]
   >([]);
   const [restaurantMobileHrefs, setRestaurantMobileHrefs] = useState<string[]>(
-    []
+    [],
   );
   const [restaurantMobileLoadedFromDb, setRestaurantMobileLoadedFromDb] =
     useState(false);
@@ -403,7 +404,7 @@ export default function CategoryPage({ params }: { params: any }) {
           .map((it: any) => String(it?.image_url || "").trim())
           .filter(Boolean);
         const hrefsFromDb = activeItems.map((it: any) =>
-          it?.href ? String(it.href) : ""
+          it?.href ? String(it.href) : "",
         );
 
         if (imagesFromDb.length > 0) {
@@ -444,7 +445,7 @@ export default function CategoryPage({ params }: { params: any }) {
               return {
                 slug,
                 keys: [normKey(slug), normKey(esName), normKey(enName)].filter(
-                  Boolean
+                  Boolean,
                 ),
               };
             });
@@ -465,7 +466,7 @@ export default function CategoryPage({ params }: { params: any }) {
                   for (const row of restaurantIndex) {
                     if (
                       row.keys.some(
-                        (k: string) => k.startsWith(key) || key.startsWith(k)
+                        (k: string) => k.startsWith(key) || key.startsWith(k),
                       )
                     ) {
                       matchSlug = row.slug;
@@ -521,7 +522,7 @@ export default function CategoryPage({ params }: { params: any }) {
             ];
 
             const explicitHrefs = explicitRestaurantSlugs.map(
-              (slug) => `/${slug}`
+              (slug) => `/${slug}`,
             );
             const merged: string[] = [];
             for (const h of explicitHrefs) {
@@ -565,7 +566,7 @@ export default function CategoryPage({ params }: { params: any }) {
           .map((it: any) => String(it?.image_url || "").trim())
           .filter(Boolean);
         const hrefsFromDb = activeItems.map((it: any) =>
-          it?.href ? String(it.href) : ""
+          it?.href ? String(it.href) : "",
         );
 
         if (imagesFromDb.length > 0) {
@@ -601,7 +602,7 @@ export default function CategoryPage({ params }: { params: any }) {
               return {
                 slug,
                 keys: [normKey(slug), normKey(esName), normKey(enName)].filter(
-                  Boolean
+                  Boolean,
                 ),
               };
             });
@@ -616,7 +617,7 @@ export default function CategoryPage({ params }: { params: any }) {
               for (const row of restaurantIndex) {
                 if (
                   row.keys.some(
-                    (k: string) => k.startsWith(key) || key.startsWith(k)
+                    (k: string) => k.startsWith(key) || key.startsWith(k),
                   )
                 ) {
                   matchSlug = row.slug;
@@ -716,7 +717,7 @@ export default function CategoryPage({ params }: { params: any }) {
           const targets = Array.isArray(addition) ? addition : [addition];
           if (
             targets.some(
-              (v) => normalizeComuna(v) === normalizeComuna(selectedComuna)
+              (v) => normalizeComuna(v) === normalizeComuna(selectedComuna),
             )
           ) {
             return true;
@@ -728,7 +729,7 @@ export default function CategoryPage({ params }: { params: any }) {
           // Si hay override, debe coincidir con alguna de las comunas declaradas
           const targets = Array.isArray(override) ? override : [override];
           return targets.some(
-            (v) => normalizeComuna(v) === normalizeComuna(selectedComuna)
+            (v) => normalizeComuna(v) === normalizeComuna(selectedComuna),
           );
         }
 
@@ -761,13 +762,13 @@ export default function CategoryPage({ params }: { params: any }) {
       .trim();
 
   const cleanedList = finalHotels.filter(
-    (h: any) => String(h.slug) !== "w-santiago"
+    (h: any) => String(h.slug) !== "w-santiago",
   );
   const finalOrderedHotels = isRestaurantsPage
     ? cleanedList
         .slice()
         .sort((a, b) =>
-          sortKey(a) < sortKey(b) ? -1 : sortKey(a) > sortKey(b) ? 1 : 0
+          sortKey(a) < sortKey(b) ? -1 : sortKey(a) > sortKey(b) ? 1 : 0,
         )
     : cleanedList;
 
@@ -812,7 +813,7 @@ export default function CategoryPage({ params }: { params: any }) {
                   const match = dbCommunes.find(
                     (row) =>
                       normalizeComuna(communeLabelFromRow(row)) ===
-                      normalizeComuna(c)
+                      normalizeComuna(c),
                   );
                   const slugified = match
                     ? String(match.slug || "").trim()
@@ -847,6 +848,13 @@ export default function CategoryPage({ params }: { params: any }) {
             </div>
           )}
 
+          {/* En Monumentos Nacionales: banner largo bajo el menú, luego posts */}
+          {slug === "monumentos-nacionales" && (
+            <div className="w-full mt-2">
+              <BottomHomeBanner />
+            </div>
+          )}
+
           {/* Slider de restaurantes a ancho completo, sin banner, solo cuando no hay comuna seleccionada */}
           {isRestaurantsPage && !selectedComuna && (
             <div className="py-2">
@@ -858,35 +866,35 @@ export default function CategoryPage({ params }: { params: any }) {
                     restaurantMobileLoadedFromDb
                       ? restaurantMobileImages
                       : restaurantMobileImages.length > 0
-                      ? language === "es"
-                        ? restaurantMobileImages.filter((img) =>
-                            /-1\./i.test(img)
-                          )
-                        : restaurantMobileImages.filter((img) =>
-                            /-2\./i.test(img)
-                          )
-                      : restaurantDesktopLoadedFromDb
-                      ? restaurantSliderImages
-                      : language === "es"
-                      ? restaurantSliderImages.filter((img) =>
-                          /-1\./i.test(img)
-                        )
-                      : restaurantSliderImages.filter((img) =>
-                          /-2\./i.test(img)
-                        )
+                        ? language === "es"
+                          ? restaurantMobileImages.filter((img) =>
+                              /-1\./i.test(img),
+                            )
+                          : restaurantMobileImages.filter((img) =>
+                              /-2\./i.test(img),
+                            )
+                        : restaurantDesktopLoadedFromDb
+                          ? restaurantSliderImages
+                          : language === "es"
+                            ? restaurantSliderImages.filter((img) =>
+                                /-1\./i.test(img),
+                              )
+                            : restaurantSliderImages.filter((img) =>
+                                /-2\./i.test(img),
+                              )
                   }
                   slideHrefsMobile={
                     restaurantMobileLoadedFromDb
                       ? restaurantMobileHrefs
                       : restaurantMobileHrefs.length > 0
-                      ? language === "es"
-                        ? restaurantMobileHrefs.filter((_, i) =>
-                            /-1\./i.test(restaurantMobileImages[i] || "")
-                          )
-                        : restaurantMobileHrefs.filter((_, i) =>
-                            /-2\./i.test(restaurantMobileImages[i] || "")
-                          )
-                      : undefined
+                        ? language === "es"
+                          ? restaurantMobileHrefs.filter((_, i) =>
+                              /-1\./i.test(restaurantMobileImages[i] || ""),
+                            )
+                          : restaurantMobileHrefs.filter((_, i) =>
+                              /-2\./i.test(restaurantMobileImages[i] || ""),
+                            )
+                        : undefined
                   }
                   // Ver imagen completa sin recortar y mantener el ancho del contenedor
                   autoHeight
@@ -930,7 +938,7 @@ export default function CategoryPage({ params }: { params: any }) {
                   <p>
                     {t(
                       "No hay hoteles disponibles en esta categoría.",
-                      "No hotels available in this category."
+                      "No hotels available in this category.",
                     )}
                   </p>
                 </div>

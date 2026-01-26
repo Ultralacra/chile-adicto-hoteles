@@ -7,6 +7,7 @@ import useEmblaCarousel from "embla-carousel-react";
 import { useLanguage } from "@/contexts/language-context";
 import { CategoryNav } from "@/components/category-nav";
 import { useSiteApi } from "@/hooks/use-site-api";
+import { BottomHomeBanner } from "@/components/home-promo-banners";
 
 interface LocationInfo {
   label?: string;
@@ -53,14 +54,29 @@ interface HotelDetailProps {
 export function HotelDetail({ hotel }: HotelDetailProps) {
   const { t } = useLanguage();
   const { fetchWithSite } = useSiteApi();
+
+  const toSlug = (input: string) =>
+    String(input || "")
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .toLowerCase()
+      .trim()
+      .replace(/[^a-z0-9]+/g, "-")
+      .replace(/(^-|-$)/g, "");
+
+  const isMonumentosPost = Array.isArray(hotel?.categories)
+    ? hotel.categories
+        .map((c) => toSlug(String(c || "")))
+        .includes("monumentos-nacionales")
+    : false;
   // La galería NO debe incluir la imagen de portada. Si hay imágenes de galería, usamos solo esas.
   // Si NO hay imágenes de galería, mostramos la portada como único slide.
   const allImages =
     hotel.galleryImages && hotel.galleryImages.length > 0
       ? hotel.galleryImages.filter(Boolean)
       : hotel.featuredImage
-      ? [hotel.featuredImage]
-      : [];
+        ? [hotel.featuredImage]
+        : [];
   const canShowControls = allImages.length > 1;
   // Slider manual: sin swipe/drag (solo flechas). Con loop para volver de la última a la primera.
   const [emblaRef, emblaApi] = useEmblaCarousel({
@@ -76,10 +92,10 @@ export function HotelDetail({ hotel }: HotelDetailProps) {
     draggable: false,
   });
   const [cleanedFullContent, setCleanedFullContent] = useState(
-    hotel.fullContent || ""
+    hotel.fullContent || "",
   );
   const [address, setAddress] = useState<string>(
-    normalizeAddressText(hotel.address || "")
+    normalizeAddressText(hotel.address || ""),
   );
 
   const fallbackRestaurantCommunes = useMemo(
@@ -92,10 +108,10 @@ export function HotelDetail({ hotel }: HotelDetailProps) {
       { slug: "alto-jahuel", label: "Alto Jahuel" },
       { slug: "la-reina", label: "La Reina" },
     ],
-    []
+    [],
   );
   const [restaurantCommunes, setRestaurantCommunes] = useState(
-    fallbackRestaurantCommunes
+    fallbackRestaurantCommunes,
   );
 
   useEffect(() => {
@@ -122,7 +138,7 @@ export function HotelDetail({ hotel }: HotelDetailProps) {
         else setRestaurantCommunes(fallbackRestaurantCommunes);
       })
       .catch(
-        () => !cancelled && setRestaurantCommunes(fallbackRestaurantCommunes)
+        () => !cancelled && setRestaurantCommunes(fallbackRestaurantCommunes),
       );
 
     return () => {
@@ -176,7 +192,7 @@ export function HotelDetail({ hotel }: HotelDetailProps) {
             m.toLowerCase().startsWith("http:s") ||
             m.toLowerCase().startsWith("https:s")
               ? "https://"
-              : m
+              : m,
           )
           // https//... o http//... -> https://... / http://...
           .replace(/^https\/\/+/, "https://")
@@ -189,7 +205,7 @@ export function HotelDetail({ hotel }: HotelDetailProps) {
           .replace(/http\/\/+?/gi, "http://");
         // Colapsar repeticiones de protocolo
         href = href.replace(/^(https?:\/\/){2,}/i, (m) =>
-          m.substring(0, m.indexOf("//") + 2)
+          m.substring(0, m.indexOf("//") + 2),
         );
         // Colapsar protocolos duplicados en cualquier lugar (https://https://...)
         href = href.replace(/https?:\/\/https?:\/\//gi, "https://");
@@ -256,11 +272,11 @@ export function HotelDetail({ hotel }: HotelDetailProps) {
 
   const infoHtmlNewSanitized = useMemo(
     () => sanitizeInfoHtml(hotel.infoHtmlNew),
-    [hotel.infoHtmlNew]
+    [hotel.infoHtmlNew],
   );
   const infoHtmlLegacySanitized = useMemo(
     () => sanitizeInfoHtml(hotel.infoHtml),
-    [hotel.infoHtml]
+    [hotel.infoHtml],
   );
 
   // Log de HTML sanitizado para diagnóstico de URLs
@@ -322,7 +338,7 @@ export function HotelDetail({ hotel }: HotelDetailProps) {
         .replace(/\s+/g, " ")
         .trim();
       const hasAddress = /\b(direcci[oó]n|address|ubicaci[oó]n)\b/i.test(
-        text.toLowerCase()
+        text.toLowerCase(),
       );
       if (hasAddress && !foundAddress) {
         const cleanedAddr = text
@@ -420,6 +436,12 @@ export function HotelDetail({ hotel }: HotelDetailProps) {
       </div>
 
       <main className="site-inner pt-0 pb-4">
+        {isMonumentosPost && (
+          <div className="w-full mb-4">
+            <BottomHomeBanner />
+          </div>
+        )}
+
         {allImages.length > 0 && (
           <div className="mb-4 w-full">
             <div className="relative overflow-hidden h-[55vw] md:h-[45vw] lg:h-[640px]">
@@ -641,7 +663,7 @@ export function HotelDetail({ hotel }: HotelDetailProps) {
                               </span>
                               <span className="text-black">
                                 {normalizeAddressText(
-                                  loc.address || ""
+                                  loc.address || "",
                                 ).toUpperCase()}
                               </span>
                               {loc.hours && (
@@ -654,7 +676,7 @@ export function HotelDetail({ hotel }: HotelDetailProps) {
                           ) : (
                             <span className="text-black">
                               {normalizeAddressText(
-                                loc.address || ""
+                                loc.address || "",
                               ).toUpperCase()}
                             </span>
                           )}
@@ -684,14 +706,14 @@ export function HotelDetail({ hotel }: HotelDetailProps) {
                       className="text-[var(--color-brand-red)] no-underline"
                     >
                       {formatWebsiteDisplay(
-                        hotel.website_display || hotel.website
+                        hotel.website_display || hotel.website,
                       )}
                     </a>
                   ) : (
                     <span className="text-black">
                       {t(
                         "NO POSEE UN SITIO WEB OFICIAL",
-                        "NO OFFICIAL WEBSITE"
+                        "NO OFFICIAL WEBSITE",
                       )}
                     </span>
                   )}
@@ -777,7 +799,7 @@ export function HotelDetail({ hotel }: HotelDetailProps) {
                               </span>
                               <span className="text-black">
                                 {normalizeAddressText(
-                                  loc.address
+                                  loc.address,
                                 ).toUpperCase()}
                               </span>
                             </div>
@@ -792,7 +814,7 @@ export function HotelDetail({ hotel }: HotelDetailProps) {
                                 className="text-[var(--color-brand-red)] no-underline"
                               >
                                 {formatWebsiteDisplay(
-                                  loc.website_display || loc.website
+                                  loc.website_display || loc.website,
                                 )}
                               </a>
                             </div>
@@ -1009,6 +1031,6 @@ function normalizeAddressText(s: string) {
   // remove leading labels like DIRECCIÓN:, ADDRESS:, UBICACIÓN:
   return txt.replace(
     /^\s*(direcci[oó]n|address|ubicaci[oó]n)\s*[:\-]?\s*/i,
-    ""
+    "",
   );
 }

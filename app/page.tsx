@@ -13,6 +13,10 @@ import { useEffect, useState } from "react";
 import { Spinner } from "@/components/ui/spinner";
 import { useLanguage } from "@/contexts/language-context";
 import { useSiteApi } from "@/hooks/use-site-api";
+import {
+  BottomHomeBanner,
+  PromoStackBanners,
+} from "@/components/home-promo-banners";
 
 export default function Page() {
   const { language } = useLanguage();
@@ -72,24 +76,6 @@ export default function Page() {
     };
   }, [fetchWithSite]);
 
-  // Banner por idioma (ES/EN): reemplazar las URLs cuando tengas las versiones en ambos idiomas
-  const bannerByLang: Record<
-    string,
-    { href: string; src: string; alt: string }
-  > = {
-    es: {
-      href: "/restaurantes",
-      src: "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/WhatsApp-Image-2025-10-28-at-5.15.32-PM.jpeg",
-      alt: "Banner Restaurantes (ES)",
-    },
-    en: {
-      href: "/restaurantes",
-      src: "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/WhatsApp-Image-2025-10-28-at-5.15.32-PM.jpeg",
-      alt: "Restaurants Banner (EN)",
-    },
-  };
-  const currentBanner = bannerByLang[language] || bannerByLang.es;
-
   return (
     <div className="min-h-screen bg-white">
       <Header />
@@ -139,46 +125,13 @@ export default function Page() {
 
             {/* Columna 3: 2 banners apilados */}
             <div className="w-full mt-6 lg:mt-0">
-              <div className="w-full md:h-[520px] lg:h-[437px] flex flex-col gap-4">
-                <div className="flex-1 relative bg-black">
-                  <a
-                    href="https://chileadictohoteles.cl/"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="block w-full h-full"
-                  >
-                    <img
-                      src={currentBanner.src}
-                      alt={currentBanner.alt}
-                      className="object-contain object-center w-full h-full"
-                    />
-                  </a>
-                </div>
-
-                <div className="flex-1 relative bg-black">
-                  <Link href="/cafes" className="block w-full h-full">
-                    <img
-                      src={currentBanner.src}
-                      alt="Cafés"
-                      className="object-contain object-center w-full h-full"
-                      loading="lazy"
-                    />
-                  </Link>
-                </div>
-              </div>
+              <PromoStackBanners />
             </div>
           </div>
 
           {/* Banner adicional debajo del slider (se mantiene además de los 2 laterales) */}
           <div className="w-full mt-6">
-            <Link href="/monumentos-nacionales" className="block w-full">
-              <img
-                src="/BANNER-SA-ESPANOL-2048x256.webp"
-                alt="Monumentos Nacionales"
-                className="w-full h-auto"
-                loading="lazy"
-              />
-            </Link>
+            <BottomHomeBanner />
           </div>
 
           {/* Cards section below - full width */}

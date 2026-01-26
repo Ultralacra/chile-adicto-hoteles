@@ -28,6 +28,12 @@ const fallbackCategories = [
     labelEn: "TRIPS OUTSIDE SANTIAGO",
   },
   { slug: "ninos", labelEs: "NIÑOS", labelEn: "KIDS" },
+  {
+    slug: "monumentos-nacionales",
+    labelEs: "MONUMENTOS",
+    labelEn: "MONUMENTS",
+  },
+  { slug: "cafes", labelEs: "CAFÉS", labelEn: "CAFÉS" },
   { slug: "restaurantes", labelEs: "RESTOS", labelEn: "REST" },
 ];
 
@@ -84,10 +90,10 @@ export function CategoryNav({
             return {
               slug,
               labelEs: String(
-                r.label_es || fallback?.labelEs || slug.toUpperCase()
+                r.label_es || fallback?.labelEs || slug.toUpperCase(),
               ).toUpperCase(),
               labelEn: String(
-                r.label_en || fallback?.labelEn || slug
+                r.label_en || fallback?.labelEn || slug,
               ).toUpperCase(),
             };
           });
@@ -100,13 +106,13 @@ export function CategoryNav({
         const rest = mapped.filter((x) => x.slug !== "todos");
         const restaurants = rest.filter((x) => x.slug === "restaurantes");
         const tienda = rest.filter(
-          (x) => x.slug === "tienda" || x.slug === "tiendas"
+          (x) => x.slug === "tienda" || x.slug === "tiendas",
         );
         const others = rest.filter(
           (x) =>
             x.slug !== "restaurantes" &&
             x.slug !== "tienda" &&
-            x.slug !== "tiendas"
+            x.slug !== "tiendas",
         );
         const finalList = [
           todos || fallbackCategories[0],

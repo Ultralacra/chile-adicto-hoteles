@@ -128,16 +128,42 @@ export default function Page() {
               </div>
             </div>
 
-            {/* Banner: separación simétrica arriba y abajo en mobile (mt-6) */}
-            <div className="block w-full h-[437px] relative bg-black mt-6 lg:mt-0">
-              <Link href={currentBanner.href} className="block w-full h-full">
-                <img
-                  src={currentBanner.src}
-                  alt={currentBanner.alt}
-                  className="object-contain object-center w-full h-full"
-                />
-              </Link>
+            {/* Banners laterales: 2 apilados (alto total se mantiene) */}
+            <div className="block w-full h-[437px] mt-6 lg:mt-0">
+              <div className="h-full flex flex-col gap-4">
+                <div className="flex-1 relative bg-black">
+                  <Link
+                    href={currentBanner.href}
+                    className="block w-full h-full"
+                  >
+                    <img
+                      src={currentBanner.src}
+                      alt={currentBanner.alt}
+                      className="object-contain object-center w-full h-full"
+                    />
+                  </Link>
+                </div>
+
+                <div className="flex-1 relative bg-black">
+                  <img
+                    src="/BANNER-SA-ESPANOL-2048x256.webp"
+                    alt="Banner Santiago Adicto"
+                    className="object-contain object-center w-full h-full"
+                    loading="lazy"
+                  />
+                </div>
+              </div>
             </div>
+          </div>
+
+          {/* Banner adicional debajo del slider (se mantiene además de los 2 laterales) */}
+          <div className="w-full mt-6">
+            <img
+              src="/BANNER-SA-ESPANOL-2048x256.webp"
+              alt="Banner Santiago Adicto"
+              className="w-full h-auto"
+              loading="lazy"
+            />
           </div>
 
           {/* Cards section below - full width */}
@@ -166,12 +192,12 @@ export default function Page() {
                       }
                       description={(() => {
                         const paras = Array.isArray(
-                          hotel[language]?.description
+                          hotel[language]?.description,
                         )
                           ? hotel[language].description
                           : Array.isArray(hotel.en?.description)
-                          ? hotel.en.description
-                          : [];
+                            ? hotel.en.description
+                            : [];
                         return buildCardExcerpt(paras);
                       })()}
                       image={hotel.featuredImage || hotel.images?.[0] || ""}

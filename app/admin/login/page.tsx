@@ -24,7 +24,7 @@ export default function AdminLoginPage() {
       setError(
         language === "es"
           ? "Usuario o contraseña incorrectos"
-          : "Incorrect username or password"
+          : "Incorrect username or password",
       );
     }
   };
@@ -107,21 +107,6 @@ export default function AdminLoginPage() {
             {language === "es" ? "Iniciar Sesión" : "Sign In"}
           </button>
         </form>
-
-        {/* Credentials hint for development */}
-        <div className="mt-4 p-4 bg-gray-50 rounded-lg text-sm text-gray-600 text-center">
-          <p className="font-medium mb-1">
-            {language === "es"
-              ? "Credenciales de desarrollo:"
-              : "Development credentials:"}
-          </p>
-          <p>
-            Usuario / Username: <strong>admin</strong>
-          </p>
-          <p>
-            Contraseña / Password: <strong>chileadicto2024</strong>
-          </p>
-        </div>
       </div>
     </div>
   );

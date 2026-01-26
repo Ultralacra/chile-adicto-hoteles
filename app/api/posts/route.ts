@@ -91,6 +91,7 @@ function mapRowToLegacy(row: any) {
     : [];
   return {
     slug: row.slug,
+    site: row.site || null, // ¡Importante! Campo para multi-sitio
     featuredImage: row.featured_image || null,
     website: row.website || null,
     instagram: row.instagram || null,
@@ -133,6 +134,10 @@ export async function GET(req: Request) {
     const q = url.searchParams.get("q") || "";
     const category = url.searchParams.get("category");
     const categorySlug = url.searchParams.get("categorySlug");
+    
+    // DEBUG: Log del sitio detectado
+    console.log('🔍 [API /posts] Sitio detectado:', siteId);
+    console.log('🔍 [API /posts] Parámetros:', { q, category, categorySlug });
 
     const select =
       "slug,featured_image,website,instagram,website_display,instagram_display,email,phone,photos_credit,address,hours,reservation_link,reservation_policy,interesting_fact,site,images:post_images(url,position),locations:post_locations(*),translations:post_translations(*),useful:post_useful_info(*),category_links:post_category_map(category:categories(slug,label_es,label_en))";
@@ -195,6 +200,10 @@ export async function GET(req: Request) {
         });
       }
       const mapped = rows.map(mapRowToLegacy);
+      console.log(`✅ [API /posts] Retornando ${mapped.length} posts para sitio ${siteId}`);
+      if (mapped.length > 0) {
+        console.log('   Primeros posts:', mapped.slice(0, 3).map(p => p.slug));
+      }
       return NextResponse.json(mapped, { status: 200 });
     }
     return NextResponse.json([], { status: 200 });

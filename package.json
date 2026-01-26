@@ -5,6 +5,8 @@
   "scripts": {
     "build": "next build",
     "dev": "next dev",
+    "dev:santiago": "next dev --port 3000",
+    "dev:chile": "cross-env NEXT_PUBLIC_LOCAL_SITE=chileadicto next dev --port 3001",
     "lint": "eslint .",
     "start": "next start",
     "db:schema:apply": "node scripts/apply-schema.mjs",
@@ -71,6 +73,7 @@
     "@types/node": "^22",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "cross-env": "^10.1.0",
     "dotenv": "^16.4.5",
     "postcss": "^8.5",
     "tailwindcss": "^4.1.9",

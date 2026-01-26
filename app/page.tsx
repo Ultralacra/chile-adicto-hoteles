@@ -100,11 +100,10 @@ export default function Page() {
         </div>
 
         <div className="py-2">
-          {/* Layout: slider ocupa 2 columnas (lg:col-span-2) y banner 1 columna (lg:col-span-1) */}
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-0 lg:gap-6 items-start">
-            {/* Slider: ocupa 2 columnas en lg */}
-            <div className="w-full lg:col-span-2">
-              {/* Volvemos a alturas responsivas como estaba antes */}
+          {/* Layout: 3 columnas (laterales más anchas, centro más angosta) */}
+          <div className="grid grid-cols-1 lg:grid-cols-[1.15fr_0.7fr_1.15fr] gap-0 lg:gap-6 items-start">
+            {/* Columna 1: Slider */}
+            <div className="w-full">
               <div className="w-full md:h-[520px] lg:h-[437px] overflow-visible">
                 <HeroSlider
                   sliderKeyDesktop="home-desktop"
@@ -122,18 +121,30 @@ export default function Page() {
                     "/arquitectura",
                   ]}
                   preferApiHrefs
-                  // Subimos los puntos en la vista
                   dotBottom={24}
                 />
               </div>
             </div>
 
-            {/* Banners laterales: 2 apilados (alto total se mantiene) */}
-            <div className="block w-full h-[437px] mt-6 lg:mt-0">
-              <div className="h-full flex flex-col gap-4">
+            {/* Columna 2: Imagen vertical (placeholder: mismo banner, reemplazar cuando tengas el definitivo) */}
+            <div className="w-full mt-6 lg:mt-0">
+              <Link
+                href="/restaurantes"
+                aria-label="Ir a restaurantes"
+                className="block w-full"
+              >
+                <div className="w-full h-[260px] md:h-[520px] lg:h-[437px] relative bg-black overflow-hidden" />
+              </Link>
+            </div>
+
+            {/* Columna 3: 2 banners apilados */}
+            <div className="w-full mt-6 lg:mt-0">
+              <div className="w-full md:h-[520px] lg:h-[437px] flex flex-col gap-4">
                 <div className="flex-1 relative bg-black">
-                  <Link
-                    href={currentBanner.href}
+                  <a
+                    href="https://chileadictohoteles.cl/"
+                    target="_blank"
+                    rel="noopener noreferrer"
                     className="block w-full h-full"
                   >
                     <img
@@ -141,16 +152,18 @@ export default function Page() {
                       alt={currentBanner.alt}
                       className="object-contain object-center w-full h-full"
                     />
-                  </Link>
+                  </a>
                 </div>
 
                 <div className="flex-1 relative bg-black">
-                  <img
-                    src="/BANNER-SA-ESPANOL-2048x256.webp"
-                    alt="Banner Santiago Adicto"
-                    className="object-contain object-center w-full h-full"
-                    loading="lazy"
-                  />
+                  <Link href="/cafes" className="block w-full h-full">
+                    <img
+                      src={currentBanner.src}
+                      alt="Cafés"
+                      className="object-contain object-center w-full h-full"
+                      loading="lazy"
+                    />
+                  </Link>
                 </div>
               </div>
             </div>
@@ -158,12 +171,14 @@ export default function Page() {
 
           {/* Banner adicional debajo del slider (se mantiene además de los 2 laterales) */}
           <div className="w-full mt-6">
-            <img
-              src="/BANNER-SA-ESPANOL-2048x256.webp"
-              alt="Banner Santiago Adicto"
-              className="w-full h-auto"
-              loading="lazy"
-            />
+            <Link href="/monumentos-nacionales" className="block w-full">
+              <img
+                src="/BANNER-SA-ESPANOL-2048x256.webp"
+                alt="Monumentos Nacionales"
+                className="w-full h-auto"
+                loading="lazy"
+              />
+            </Link>
           </div>
 
           {/* Cards section below - full width */}

@@ -215,7 +215,7 @@ export default function EditPostPage({
     try {
       const form = new FormData();
       for (const f of arr) form.append("files", f);
-      const res = await fetch(`/api/posts/${encodeURIComponent(slug)}/images`, {
+      const res = await fetchWithSite(`/api/posts/${encodeURIComponent(slug)}/images`, {
         method: "POST",
         body: form,
       });
@@ -597,7 +597,7 @@ export default function EditPostPage({
       return;
     }
     setSaving(true);
-    fetch(`/api/posts/${encodeURIComponent(slug)}`, {
+    fetchWithSite(`/api/posts/${encodeURIComponent(slug)}`, {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(payloadToSend),
@@ -640,7 +640,7 @@ export default function EditPostPage({
           if (newSlug && newSlug !== slug) {
             router.replace(`/admin/posts/edit/${encodeURIComponent(newSlug)}`);
           }
-          const resp = await fetch(
+          const resp = await fetchWithSite(
             `/api/posts/${encodeURIComponent(newSlug)}`,
             { cache: "no-store" },
           );

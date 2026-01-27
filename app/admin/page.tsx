@@ -1,6 +1,6 @@
 "use client";
 
-import { FileText, Plus, TrendingUp } from "lucide-react";
+import { FileText, TrendingUp } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 import { Spinner } from "@/components/ui/spinner";
@@ -104,15 +104,7 @@ export default function AdminDashboard() {
           </div>
         </div>
 
-        <div className="bg-white rounded-lg shadow p-6">
-          <Link
-            href="/admin/posts/new"
-            className="flex items-center justify-center gap-2 bg-[var(--color-brand-red)] text-white px-6 py-3 rounded-lg hover:opacity-90 transition-opacity font-medium"
-          >
-            <Plus size={20} />
-            Create New Post
-          </Link>
-        </div>
+        
       </div>
 
       {/* Posts by Category */}
@@ -154,18 +146,6 @@ export default function AdminDashboard() {
               <p className="font-medium text-gray-900">View All Posts</p>
               <p className="text-sm text-gray-600">
                 Manage existing hotel posts
-              </p>
-            </div>
-          </Link>
-          <Link
-            href="/admin/posts/new"
-            className="flex items-center gap-3 p-4 border border-gray-200 rounded-lg hover:border-[var(--color-brand-red)] hover:bg-red-50 transition-colors"
-          >
-            <Plus size={24} className="text-gray-600" />
-            <div>
-              <p className="font-medium text-gray-900">Create New Post</p>
-              <p className="text-sm text-gray-600">
-                Add a new hotel to the site
               </p>
             </div>
           </Link>

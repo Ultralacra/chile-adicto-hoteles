@@ -8,7 +8,6 @@ import Link from "next/link";
 import {
   Home,
   FileText,
-  Plus,
   Settings,
   LogOut,
   Menu,
@@ -65,7 +64,6 @@ export default function AdminLayout({
   const menuItems = [
     { href: "/admin", icon: Home, label: "Inicio" },
     { href: "/admin/posts", icon: FileText, label: "Posts" },
-    { href: "/admin/posts/new", icon: Plus, label: "Crear nuevo" },
     { href: "/admin/categories", icon: Tag, label: "Categorías" },
     { href: "/admin/communes", icon: MapPin, label: "Comunas" },
     { href: "/admin/sliders", icon: Sliders, label: "Sliders" },

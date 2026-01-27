@@ -215,10 +215,13 @@ export default function EditPostPage({
     try {
       const form = new FormData();
       for (const f of arr) form.append("files", f);
-      const res = await fetchWithSite(`/api/posts/${encodeURIComponent(slug)}/images`, {
-        method: "POST",
-        body: form,
-      });
+      const res = await fetchWithSite(
+        `/api/posts/${encodeURIComponent(slug)}/images`,
+        {
+          method: "POST",
+          body: form,
+        },
+      );
       if (!res.ok) throw new Error(await res.text());
       // Refrescar datos del post para reconstruir la galería con orden correcto
       const fresh = await fetch(`/api/posts/${encodeURIComponent(slug)}`, {

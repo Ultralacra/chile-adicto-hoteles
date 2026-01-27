@@ -29,6 +29,17 @@ import {
   DialogDescription,
   DialogFooter,
 } from "@/components/ui/dialog";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 import { normalizePost, validatePost } from "@/lib/post-service";
 import { Spinner } from "@/components/ui/spinner";
 
@@ -45,6 +56,7 @@ export default function EditPostPage({
   const slugRegex = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [deleting, setDeleting] = useState(false);
   const [hotel, setHotel] = useState<any | null>(null);
   const [categoriesApi, setCategoriesApi] = useState<string[]>([]);
 
@@ -58,7 +70,9 @@ export default function EditPostPage({
             cache: "no-store",
           }),
           fetchWithSite("/api/categories", { cache: "no-store" }),
-          fetchWithSite("/api/communes?full=1&includeHidden=1", { cache: "no-store" }),
+          fetchWithSite("/api/communes?full=1&includeHidden=1", {
+            cache: "no-store",
+          }),
         ]);
         const p = pRes.ok ? await pRes.json() : null;
         const c = cRes.ok ? await cRes.json() : [];
@@ -71,7 +85,9 @@ export default function EditPostPage({
           setHotel(p && p.slug ? p : null);
           setCategoriesApi(Array.isArray(c) ? c : []);
           const communesList = Array.isArray(comm)
-            ? comm.map((co: any) => String(co.label || co.slug || "").trim()).filter(Boolean)
+            ? comm
+                .map((co: any) => String(co.label || co.slug || "").trim())
+                .filter(Boolean)
             : [];
           setPossibleCommunes(communesList);
           setLoadingCommunes(false);
@@ -164,7 +180,7 @@ export default function EditPostPage({
   const [loadingCommunes, setLoadingCommunes] = useState(true);
   const [communes, setCommunes] = useState<string[]>([]);
   const [autoDetectedCommunes, setAutoDetectedCommunes] = useState<string[]>(
-    []
+    [],
   );
   const normalizeComuna = (s: string) =>
     String(s || "")
@@ -248,7 +264,7 @@ export default function EditPostPage({
         v = "https://" + v.replace(/^\/+/, "");
       }
       v = v.replace(/^(https?:\/\/){2,}/i, (m) =>
-        m.substring(0, m.indexOf("//") + 2)
+        m.substring(0, m.indexOf("//") + 2),
       );
       v = v.replace(/https\/{2}(?=[^:])/gi, "https://");
       v = v.replace(/https:\/\/https\/\//i, "https://");
@@ -344,7 +360,7 @@ export default function EditPostPage({
       .filter(Boolean)
       .map((c) => c.toUpperCase());
     setCategories(
-      mergedCats.length > 0 ? Array.from(new Set(mergedCats)) : ["TODOS"]
+      mergedCats.length > 0 ? Array.from(new Set(mergedCats)) : ["TODOS"],
     );
     // locations existentes
     const locs = Array.isArray(hotel.locations) ? hotel.locations : [];
@@ -362,7 +378,7 @@ export default function EditPostPage({
         interestingFact: l?.interestingFact || "",
         email: l?.email || "",
         phone: String(l?.phone || "").replace(/^tel:/i, ""),
-      }))
+      })),
     );
 
     // Comunas: detección automática desde address/locations/descripciones
@@ -442,12 +458,12 @@ export default function EditPostPage({
     // Determinar featured final; si no hay imágenes mantener la previa
     const normalizedFeaturedIdx = Math.min(
       Math.max(0, featuredIndex || 0),
-      Math.max(0, images.length - 1)
+      Math.max(0, images.length - 1),
     );
     const finalFeatured = images[normalizedFeaturedIdx] || featuredImage || "";
     // Galería SIN la destacada (para no duplicarla en post_images)
     const galleryImages = images.filter(
-      (img, i) => img && img !== finalFeatured && i !== normalizedFeaturedIdx
+      (img, i) => img && img !== finalFeatured && i !== normalizedFeaturedIdx,
     );
 
     const sanitizePhone = (p: string) =>
@@ -540,7 +556,7 @@ export default function EditPostPage({
     const { payloadToSend } = built;
     try {
       setPreviewJson(
-        JSON.stringify(payloadToSend, null, 2).replace(/\n/g, "\n")
+        JSON.stringify(payloadToSend, null, 2).replace(/\n/g, "\n"),
       );
     } catch (e) {
       setPreviewJson('{\n  "error": "No se pudo serializar"\n}');
@@ -576,7 +592,7 @@ export default function EditPostPage({
       console.error("[Admin Edit] Validation errors:", result.issues);
       const first = result.issues?.[0];
       alert(
-        `Error de validación: ${first?.path || ""} - ${first?.message || ""}`
+        `Error de validación: ${first?.path || ""} - ${first?.message || ""}`,
       );
       return;
     }
@@ -598,7 +614,7 @@ export default function EditPostPage({
           // Después de guardar, reconstruir lista local combinando featured + galería
           const nextFeatured = normalized.featuredImage || finalFeatured;
           const nextGallery = normalized.images.filter(
-            (img: string) => img !== nextFeatured
+            (img: string) => img !== nextFeatured,
           );
           const rebuilt = nextFeatured
             ? [nextFeatured, ...nextGallery]
@@ -626,7 +642,7 @@ export default function EditPostPage({
           }
           const resp = await fetch(
             `/api/posts/${encodeURIComponent(newSlug)}`,
-            { cache: "no-store" }
+            { cache: "no-store" },
           );
           if (resp.ok) {
             const fresh = await resp.json();
@@ -645,6 +661,33 @@ export default function EditPostPage({
       .finally(() => {
         setSaving(false);
       });
+  };
+
+  const handleDelete = async () => {
+    if (!hotel?.slug) {
+      alert("No hay post cargado para eliminar");
+      return;
+    }
+    setDeleting(true);
+    try {
+      const res = await fetchWithSite(
+        `/api/posts/${encodeURIComponent(slug)}`,
+        {
+          method: "DELETE",
+        },
+      );
+      if (!res.ok) {
+        const msg = await res.text();
+        throw new Error(msg || `Error ${res.status}`);
+      }
+      alert("Post eliminado correctamente");
+      router.push("/admin/posts");
+    } catch (e: any) {
+      console.error(e);
+      alert("No se pudo eliminar: " + String(e?.message || e));
+    } finally {
+      setDeleting(false);
+    }
   };
 
   // Pegado inteligente e infoHtml han sido eliminados del editor.
@@ -726,6 +769,43 @@ export default function EditPostPage({
               <Save size={20} />
               {saving ? "Guardando..." : "Guardar cambios"}
             </Button>
+
+            <AlertDialog>
+              <AlertDialogTrigger asChild>
+                <Button
+                  type="button"
+                  variant="destructive"
+                  className="gap-2"
+                  disabled={saving || deleting}
+                >
+                  {deleting ? "Eliminando…" : "Eliminar post"}
+                </Button>
+              </AlertDialogTrigger>
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>¿Eliminar este post?</AlertDialogTitle>
+                  <AlertDialogDescription>
+                    Esta acción eliminará solo este post y todos sus datos
+                    relacionados (imágenes, traducciones, categorías, comunas,
+                    sucursales). No se puede deshacer.
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel disabled={deleting}>
+                    Cancelar
+                  </AlertDialogCancel>
+                  <AlertDialogAction
+                    onClick={(e) => {
+                      e.preventDefault();
+                      handleDelete();
+                    }}
+                    disabled={deleting}
+                  >
+                    Sí, eliminar
+                  </AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
           </div>
         </div>
 
@@ -814,7 +894,7 @@ export default function EditPostPage({
                           setCommunes((prev) =>
                             prev.includes(com)
                               ? prev.filter((c) => c !== com)
-                              : [...prev, com]
+                              : [...prev, com],
                           )
                         }
                         className="sr-only"
@@ -1165,7 +1245,7 @@ export default function EditPostPage({
 // Helpers para galería
 function moveImageFactory(
   images: string[],
-  setImages: (imgs: string[]) => void
+  setImages: (imgs: string[]) => void,
 ): (index: number, dir: -1 | 1) => void {
   return (index: number, dir: -1 | 1) => {
     const newIndex = index + dir;

@@ -451,9 +451,18 @@ export async function DELETE(
     }
     
     const postId = rows[0].id;
-    
-    // Eliminar el post (las relaciones se eliminarán en cascada si está configurado)
-    await serviceRest(`/posts?id=eq.${postId}`, { method: "DELETE" });
+
+    // Eliminar todo lo relacionado a este post (defensivo, sin depender de cascadas)
+    const delOpts = { method: "DELETE", headers: { Prefer: "return=minimal" } } as const;
+    await serviceRest(`/post_category_map?post_id=eq.${postId}`, delOpts);
+    await serviceRest(`/post_communes?post_id=eq.${postId}`, delOpts);
+    await serviceRest(`/post_locations?post_id=eq.${postId}`, delOpts);
+    await serviceRest(`/post_images?post_id=eq.${postId}`, delOpts);
+    await serviceRest(`/post_translations?post_id=eq.${postId}`, delOpts);
+    await serviceRest(`/post_useful_info?post_id=eq.${postId}`, delOpts);
+
+    // Finalmente eliminar el post (acotado al site por seguridad)
+    await serviceRest(`/posts?id=eq.${postId}&site=eq.${siteId}`, delOpts);
     
     return NextResponse.json({ ok: true }, { status: 200 });
   } catch (err: any) {

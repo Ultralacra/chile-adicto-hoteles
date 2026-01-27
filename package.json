@@ -14,6 +14,7 @@
     "db:migrate:rest": "node scripts/migrate-supabase-http.mjs",
     "backfill:infohtml": "node scripts/backfill-info-html.mjs",
     "db:backup:rest": "node scripts/backup-supabase-rest.mjs",
+    "db:restore:rest": "node scripts/restore-supabase-rest.mjs",
     "db:seed:communes:restaurantes": "node scripts/seed-communes-restaurantes.mjs"
   },
   "dependencies": {

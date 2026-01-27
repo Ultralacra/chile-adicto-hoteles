@@ -578,7 +578,8 @@ export default function AdminSlidersList() {
     const base = mediaUrls;
     const selected = pickerSelectedUrl;
     if (!selected) return base;
-    if (base.includes(selected)) return [selected, ...base.filter((u) => u !== selected)];
+    if (base.includes(selected))
+      return [selected, ...base.filter((u) => u !== selected)];
     return [selected, ...base];
   }, [mediaUrls, pickerSelectedUrl]);
 

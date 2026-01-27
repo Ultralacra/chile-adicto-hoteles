@@ -16,16 +16,22 @@ export function SiteSelector() {
   const { currentSite, setSite, isChanging } = useSiteContext();
 
   const handleViewSite = () => {
+    // Para chileadicto, el front vive en un deployment separado.
+    if (currentSite === "chileadicto") {
+      window.open("https://chile-adicto-hoteles-front.vercel.app/", "_blank");
+      return;
+    }
+
     const site = SITES[currentSite];
     // En desarrollo, usar localhost con parámetro de sitio
     // En producción, usar el dominio configurado
-    if (process.env.NODE_ENV === 'development') {
+    if (process.env.NODE_ENV === "development") {
       // Usar el parámetro ?previewSite= para forzar el sitio en desarrollo
       const url = `http://localhost:3000?previewSite=${currentSite}`;
-      window.open(url, '_blank');
+      window.open(url, "_blank");
     } else {
       const url = `https://${site.domain}`;
-      window.open(url, '_blank');
+      window.open(url, "_blank");
     }
   };
 
@@ -39,8 +45,8 @@ export function SiteSelector() {
         )}
         <span className="text-sm font-medium text-gray-300">Sitio:</span>
       </div>
-      <Select 
-        value={currentSite} 
+      <Select
+        value={currentSite}
         onValueChange={(value) => setSite(value as SiteId)}
         disabled={isChanging}
       >
@@ -55,7 +61,7 @@ export function SiteSelector() {
           ))}
         </SelectContent>
       </Select>
-      
+
       <Button
         onClick={handleViewSite}
         variant="outline"
@@ -72,10 +78,11 @@ export function SiteSelector() {
           Cambiando a {SITES[currentSite].displayName}...
         </p>
       )}
-      
+
       <div className="mt-3 pt-3 border-t border-gray-700">
         <p className="text-xs text-gray-500">
-          Dominio: <span className="text-gray-400">{SITES[currentSite].domain}</span>
+          Dominio:{" "}
+          <span className="text-gray-400">{SITES[currentSite].domain}</span>
         </p>
       </div>
     </div>

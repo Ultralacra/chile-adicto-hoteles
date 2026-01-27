@@ -592,7 +592,7 @@ export default function NewPostPage() {
       return;
     }
     setCreating(true);
-    fetch(`/api/posts`, {
+    fetchWithSite(`/api/posts`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(payloadToSend),

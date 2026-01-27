@@ -114,6 +114,16 @@ async function buildMediaUrlList(mode: "anon" | "service") {
   return list;
 }
 
+function getMediaName(url: string) {
+  const clean = String(url || "").split("#")[0].split("?")[0];
+  const last = clean.split("/").pop() || clean;
+  try {
+    return decodeURIComponent(last);
+  } catch {
+    return last;
+  }
+}
+
 export async function GET(req: Request) {
   try {
     if (!canUseAnon() && !canUseService()) {
@@ -134,7 +144,18 @@ export async function GET(req: Request) {
 
     const mode: "anon" | "service" = canUseService() ? "service" : "anon";
 
-    const list = await buildMediaUrlList(mode);
+    const full = await buildMediaUrlList(mode);
+
+    const qRaw = url.searchParams.get("q");
+    const q = String(qRaw || "").trim().toLowerCase();
+    const list = !q
+      ? full
+      : full.filter((u) => {
+          const urlLower = String(u || "").toLowerCase();
+          const nameLower = getMediaName(u).toLowerCase();
+          return urlLower.includes(q) || nameLower.includes(q);
+        });
+
     const total = list.length;
 
     if (!hasPagination) {

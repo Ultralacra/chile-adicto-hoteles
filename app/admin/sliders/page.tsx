@@ -67,10 +67,13 @@ export default function AdminSlidersList() {
       "restaurants-mobile-es",
       "restaurants-mobile-en",
     ],
-    []
+    [],
   );
 
   const [dbKey, setDbKey] = useState<string>(dbKeys[0] || "home-desktop");
+  const [dbSite, setDbSite] = useState<string>(currentSite || "santiagoadicto");
+  const [newKeyInput, setNewKeyInput] = useState<string>("");
+  const [dbView, setDbView] = useState<"list" | "edit">("list");
   const [dbItems, setDbItems] = useState<DbSliderItem[]>([]);
   const [dbLoading, setDbLoading] = useState(false);
   const [dbSaving, setDbSaving] = useState(false);
@@ -85,12 +88,10 @@ export default function AdminSlidersList() {
   const [pickerForIndex, setPickerForIndex] = useState<number | null>(null);
   const mediaFileRef = useRef<HTMLInputElement | null>(null);
   const mediaScrollRef = useRef<HTMLDivElement | null>(null);
-  const mediaSentinelRef = useRef<HTMLDivElement | null>(null);
   const mediaReqIdRef = useRef(0);
   const mediaLoadingRef = useRef(false);
   const mediaLoadingMoreRef = useRef(false);
   const mediaNextOffsetRef = useRef<number | null>(0);
-  const mediaAllLoadedRef = useRef(false);
   const [categories, setCategories] = useState<CategorySuggestion[]>([]);
 
   const hrefSuggestAbortRef = useRef<AbortController | null>(null);
@@ -112,6 +113,10 @@ export default function AdminSlidersList() {
   const [destinations, setDestinations] = useState<
     Record<string, Record<string, string>>
   >({});
+  const [dbSetsList, setDbSetsList] = useState<
+    { key: string; count: number; sample?: string | null }[]
+  >([]);
+  const [dbSetsLoading, setDbSetsLoading] = useState(false);
 
   useEffect(() => {
     let cancelled = false;
@@ -119,7 +124,9 @@ export default function AdminSlidersList() {
       setLoading(true);
       try {
         // Home: usa API existente
-        const rHome = await fetchWithSite("/api/slider-images", { cache: "no-store" });
+        const rHome = await fetchWithSite("/api/slider-images", {
+          cache: "no-store",
+        });
         const jHome = rHome.ok
           ? ((await rHome.json()) as HomeResp)
           : { desktop: [], mobile: [] };
@@ -136,13 +143,13 @@ export default function AdminSlidersList() {
             if (!cancelled) {
               setRestDesktopES(
                 j.map((s: string) =>
-                  s.startsWith("/") ? s : `/imagenes-slider/${s}`
-                )
+                  s.startsWith("/") ? s : `/imagenes-slider/${s}`,
+                ),
               );
               setRestDesktopEN(
                 j.map((s: string) =>
-                  s.startsWith("/") ? s : `/imagenes-slider/${s}`
-                )
+                  s.startsWith("/") ? s : `/imagenes-slider/${s}`,
+                ),
               );
             }
           } else if (j && typeof j === "object") {
@@ -151,13 +158,13 @@ export default function AdminSlidersList() {
             if (!cancelled) {
               setRestDesktopES(
                 es.map((s: string) =>
-                  s.startsWith("/") ? s : `/imagenes-slider/${s}`
-                )
+                  s.startsWith("/") ? s : `/imagenes-slider/${s}`,
+                ),
               );
               setRestDesktopEN(
                 en.map((s: string) =>
-                  s.startsWith("/") ? s : `/imagenes-slider/${s}`
-                )
+                  s.startsWith("/") ? s : `/imagenes-slider/${s}`,
+                ),
               );
             }
           }
@@ -181,9 +188,12 @@ export default function AdminSlidersList() {
 
         // Posts de restaurantes (para derivar href destino de cada imagen)
         try {
-          const rPosts = await fetchWithSite("/api/posts?categorySlug=restaurantes", {
-            cache: "no-store",
-          });
+          const rPosts = await fetchWithSite(
+            "/api/posts?categorySlug=restaurantes",
+            {
+              cache: "no-store",
+            },
+          );
           const rows = rPosts.ok ? await rPosts.json() : [];
           if (!cancelled && Array.isArray(rows)) setRestaurantsPosts(rows);
         } catch {
@@ -349,7 +359,7 @@ export default function AdminSlidersList() {
     };
   }, [hrefSuggest.index, hrefSuggest.query]);
 
-  const MEDIA_PAGE_SIZE = 120;
+  const MEDIA_PAGE_SIZE = 25;
 
   const fetchMediaPage = async (opts: {
     offset: number;
@@ -370,6 +380,8 @@ export default function AdminSlidersList() {
       const qs = new URLSearchParams();
       qs.set("limit", String(MEDIA_PAGE_SIZE));
       qs.set("offset", String(offset));
+      const q = mediaQuery.trim();
+      if (q) qs.set("q", q);
       if (refresh) qs.set("refresh", "1");
       const r = await fetch(`/api/media?${qs.toString()}`, {
         cache: "no-store",
@@ -413,39 +425,7 @@ export default function AdminSlidersList() {
   };
 
   const reloadMedia = async (opts?: { refresh?: boolean }) => {
-    mediaAllLoadedRef.current = false;
     await fetchMediaPage({ offset: 0, append: false, refresh: opts?.refresh });
-  };
-
-  const fetchMediaAll = async (opts?: { refresh?: boolean }) => {
-    // Traer TODO el listado (sin paginación) para que el buscador encuentre imágenes
-    // aunque no estén en la primera página.
-    const reqId = ++mediaReqIdRef.current;
-    mediaAllLoadedRef.current = true;
-    mediaLoadingRef.current = true;
-    setMediaLoading(true);
-    try {
-      const qs = new URLSearchParams();
-      if (opts?.refresh) qs.set("refresh", "1");
-      const r = await fetch(`/api/media?${qs.toString()}`, {
-        cache: "no-store",
-      });
-      const j = (r.ok ? await r.json() : null) as MediaListResp | null;
-      if (reqId !== mediaReqIdRef.current) return;
-
-      const urls = Array.isArray(j?.urls) ? j!.urls.map(String) : [];
-      const clean = urls.map((u) => u.trim()).filter(Boolean);
-
-      setMediaTotal(typeof j?.total === "number" ? j.total : null);
-      mediaNextOffsetRef.current = null;
-      setMediaNextOffset(null);
-      setMediaUrls(clean);
-    } catch {
-      // no-op
-    } finally {
-      mediaLoadingRef.current = false;
-      setMediaLoading(false);
-    }
   };
 
   const loadMoreMedia = async () => {
@@ -463,33 +443,8 @@ export default function AdminSlidersList() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pickerOpen]);
 
-  // Scroll infinito: cuando el sentinel entra en vista, cargar más
-  useEffect(() => {
-    if (!pickerOpen) return;
-    if (mediaNextOffset == null) return;
-    // Evita disparar carga masiva mientras se está filtrando/buscando.
-    if (mediaQuery.trim()) return;
-    const root = mediaScrollRef.current;
-    const target = mediaSentinelRef.current;
-    if (!root || !target) return;
-
-    const obs = new IntersectionObserver(
-      (entries) => {
-        const first = entries[0];
-        if (!first?.isIntersecting) return;
-        loadMoreMedia();
-      },
-      {
-        root,
-        rootMargin: "200px",
-        threshold: 0.01,
-      }
-    );
-
-    obs.observe(target);
-    return () => obs.disconnect();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [pickerOpen, mediaNextOffset, mediaQuery]);
+  // Nota: se quitó el scroll infinito para mejorar performance.
+  // Ahora se usa botón "Cargar más".
 
   const uploadMediaFiles = async (files: FileList | File[]) => {
     const arr = Array.from(files || []);
@@ -522,9 +477,14 @@ export default function AdminSlidersList() {
   const loadDbSet = async (key: string) => {
     setDbLoading(true);
     try {
-      const res = await fetch(`/api/sliders/${encodeURIComponent(key)}?all=1`, {
-        cache: "no-store",
-      });
+      const res = await fetch(
+        `/api/sliders/${encodeURIComponent(key)}?all=1&adminSite=${encodeURIComponent(
+          dbSite,
+        )}`,
+        {
+          cache: "no-store",
+        },
+      );
       const j = (res.ok ? await res.json() : null) as DbSliderResp | null;
       const items = Array.isArray(j?.items) ? j!.items : [];
       const normalized = items
@@ -548,18 +508,50 @@ export default function AdminSlidersList() {
   useEffect(() => {
     loadDbSet(dbKey);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [dbKey]);
+  }, [dbKey, dbSite]);
+
+  const loadDbSetsList = async () => {
+    setDbSetsLoading(true);
+    try {
+      const res = await fetch(
+        `/api/sliders?adminSite=${encodeURIComponent(dbSite)}`,
+        { cache: "no-store" },
+      );
+      if (!res.ok) throw new Error(await res.text());
+      const j = await res.json();
+      const sets = Array.isArray(j?.sets) ? j.sets : [];
+      setDbSetsList(
+        sets.map((s: any) => ({
+          key: String(s.key || ""),
+          count: Number(s.count || 0),
+          sample: s.sample || null,
+        })),
+      );
+    } catch {
+      setDbSetsList([]);
+    } finally {
+      setDbSetsLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    loadDbSetsList();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [dbSite]);
 
   const updateDbItem = (idx: number, patch: Partial<DbSliderItem>) => {
     setDbItems((prev) =>
-      prev.map((it, i) => (i === idx ? { ...it, ...patch } : it))
+      prev.map((it, i) => (i === idx ? { ...it, ...patch } : it)),
     );
   };
 
   const openPickerFor = (idx: number) => {
     setPickerForIndex(idx);
     setMediaQuery("");
-    mediaAllLoadedRef.current = false;
+    setMediaUrls([]);
+    setMediaTotal(null);
+    mediaNextOffsetRef.current = 0;
+    setMediaNextOffset(0);
     setPickerOpen(true);
   };
 
@@ -581,40 +573,20 @@ export default function AdminSlidersList() {
   }, [pickerForIndex, dbItems]);
 
   const filteredMediaUrls = useMemo(() => {
-    const q = mediaQuery.trim().toLowerCase();
-    const base = !q
-      ? mediaUrls
-      : mediaUrls.filter((u) => {
-          const name = getMediaName(u).toLowerCase();
-          const full = String(u || "").toLowerCase();
-          return name.includes(q) || full.includes(q);
-        });
-
+    // La API ya devuelve resultados filtrados/paginados (q + limit/offset).
+    // Solo nos preocupamos de pinnear la imagen seleccionada arriba.
+    const base = mediaUrls;
     const selected = pickerSelectedUrl;
     if (!selected) return base;
-
-    const selName = getMediaName(selected).toLowerCase();
-    const selFull = selected.toLowerCase();
-    const matches = !q || selName.includes(q) || selFull.includes(q);
-    if (!matches) return base;
-
-    if (base.includes(selected)) {
-      return [selected, ...base.filter((u) => u !== selected)];
-    }
-    // Si la imagen actual no viene en la lista (p.ej. URL antigua), igual mostrarla primero.
+    if (base.includes(selected)) return [selected, ...base.filter((u) => u !== selected)];
     return [selected, ...base];
-  }, [mediaQuery, mediaUrls, pickerSelectedUrl]);
+  }, [mediaUrls, pickerSelectedUrl]);
 
-  // Si el usuario escribe en el buscador, cargamos la lista completa una sola vez
-  // para que el filtrado encuentre cualquier imagen.
+  // Si el usuario escribe en el buscador, pedimos la primera página filtrada al backend.
   useEffect(() => {
     if (!pickerOpen) return;
-    const q = mediaQuery.trim();
-    if (!q) return;
-    if (mediaAllLoadedRef.current) return;
-
     const t = window.setTimeout(() => {
-      fetchMediaAll();
+      reloadMedia();
     }, 250);
     return () => window.clearTimeout(t);
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -649,8 +621,8 @@ export default function AdminSlidersList() {
       const inferredLang = dbKey.endsWith("-es")
         ? "es"
         : dbKey.endsWith("-en")
-        ? "en"
-        : null;
+          ? "en"
+          : null;
       const payload = {
         items: dbItems.map((it, idx) => ({
           image_url: String(it.image_url || "").trim(),
@@ -660,11 +632,16 @@ export default function AdminSlidersList() {
           lang: inferredLang || it.lang || null,
         })),
       };
-      const res = await fetch(`/api/sliders/${encodeURIComponent(dbKey)}`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
-      });
+      const res = await fetch(
+        `/api/sliders/${encodeURIComponent(dbKey)}?adminSite=${encodeURIComponent(
+          dbSite,
+        )}`,
+        {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload),
+        },
+      );
       if (!res.ok) throw new Error(await res.text());
       await loadDbSet(dbKey);
       alert("Slider guardado en la base de datos");
@@ -686,7 +663,7 @@ export default function AdminSlidersList() {
         .replace(/[\u0300-\u036f]/g, "")
         .toUpperCase();
     const name = norm(
-      (filenameOrUrl.split("/").pop() || filenameOrUrl).replace(/\.[^.]+$/, "")
+      (filenameOrUrl.split("/").pop() || filenameOrUrl).replace(/\.[^.]+$/, ""),
     );
     const has = (k: string) => name.includes(k);
     let key: string | null = null;
@@ -1044,516 +1021,560 @@ export default function AdminSlidersList() {
       <h1 className="text-2xl font-semibold">Sliders</h1>
 
       <Card className="p-4 space-y-4">
-        <div className="flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
-          <div className="space-y-2">
-            <div className="text-sm font-medium">Editor (Base de Datos)</div>
-            <div className="text-xs text-muted-foreground">
-              Agrega/quita slides, reemplaza imagen usando "Imágenes", y define
-              la ruta destino (href).
-            </div>
-            <div className="space-y-1">
-              <Label htmlFor="sliderKey">Slider</Label>
-              <select
-                id="sliderKey"
-                className="h-9 w-full md:w-[320px] rounded border bg-white px-2 text-sm"
-                value={dbKey}
-                onChange={(e) => setDbKey(e.target.value)}
-              >
-                {dbKeys.map((k) => (
-                  <option key={k} value={k}>
-                    {k}
-                  </option>
-                ))}
-              </select>
-            </div>
-          </div>
-          <div className="flex gap-2">
-            <Button
-              variant="outline"
-              onClick={() => loadDbSet(dbKey)}
-              disabled={dbLoading || dbSaving}
-            >
-              Recargar
-            </Button>
-            <Button
-              variant="outline"
-              onClick={addDbItem}
-              disabled={dbLoading || dbSaving}
-            >
-              Agregar slide
-            </Button>
-            <Button onClick={saveDbSet} disabled={dbSaving || dbLoading}>
-              {dbSaving ? "Guardando…" : "Guardar"}
-            </Button>
-          </div>
-        </div>
+        {dbView === "list" ? (
+          <>
+            <div className="flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
+              <div className="space-y-2">
+                <div className="text-sm font-medium">
+                  Sliders (Base de Datos)
+                </div>
+                <div className="text-xs text-muted-foreground">
+                  Haz click en un slider para ir a su vista de edición.
+                </div>
+                <div className="space-y-1">
+                  <Label htmlFor="sliderSite">Sitio</Label>
+                  <select
+                    id="sliderSite"
+                    className="h-9 w-full md:w-[200px] rounded border bg-white px-2 text-sm"
+                    value={dbSite}
+                    onChange={(e) => setDbSite(e.target.value)}
+                  >
+                    <option value="santiagoadicto">santiagoadicto</option>
+                    <option value="chileadicto">chileadicto</option>
+                  </select>
+                </div>
 
-        {(dbLoading || mediaLoading) && (
-          <div className="text-sm text-gray-600 flex items-center gap-2">
-            <Spinner className="size-4" /> Cargando{" "}
-            {dbLoading ? "slider" : "imágenes"}…
-          </div>
-        )}
-
-        {dbItems.length === 0 ? (
-          <div className="text-sm text-muted-foreground">
-            No hay slides en la BD para este key.
-          </div>
-        ) : (
-          <div className="space-y-3">
-            {dbItems.map((it, idx) => (
-              <div
-                key={`${dbKey}-${idx}`}
-                className="grid grid-cols-1 md:grid-cols-[160px_1fr] gap-3 border rounded p-3 bg-white"
-              >
-                <div className="w-full aspect-[16/9] bg-gray-100 overflow-hidden rounded">
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img
-                    src={it.image_url}
-                    alt={`slide-${idx}`}
-                    className="w-full h-full object-cover"
+                <div className="flex flex-wrap items-center gap-2">
+                  <Input
+                    value={newKeyInput}
+                    onChange={(e) => setNewKeyInput(e.target.value)}
+                    placeholder="Crear nuevo slider (set_key)"
+                    className="h-9 md:w-[260px]"
                   />
-                </div>
-                <div className="space-y-2">
-                  <div className="flex flex-wrap gap-2 items-center justify-between">
-                    <div className="text-sm font-medium">Slide #{idx + 1}</div>
-                    <div className="flex gap-2">
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => moveDbItem(idx, -1)}
-                        disabled={idx === 0 || dbSaving}
-                      >
-                        ↑
-                      </Button>
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => moveDbItem(idx, +1)}
-                        disabled={idx === dbItems.length - 1 || dbSaving}
-                      >
-                        ↓
-                      </Button>
-                      <Button
-                        variant="destructive"
-                        size="sm"
-                        onClick={() => removeDbItem(idx)}
-                        disabled={dbSaving}
-                      >
-                        Quitar
-                      </Button>
-                    </div>
-                  </div>
-
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
-                    <div className="space-y-1">
-                      <Label>Imagen (URL)</Label>
-                      <Input
-                        value={it.image_url}
-                        readOnly
-                        placeholder="https://..."
-                      />
-                      <div className="text-[11px] text-muted-foreground">
-                        Se llena al seleccionar desde Imágenes.
-                      </div>
-                    </div>
-
-                    <div className="space-y-1">
-                      <Label>Elegir desde imágenes</Label>
-                      <div className="flex flex-wrap gap-2">
-                        <Button
-                          type="button"
-                          variant="outline"
-                          size="sm"
-                          onClick={() => openPickerFor(idx)}
-                          disabled={dbSaving || mediaLoading}
-                        >
-                          Seleccionar imagen
-                        </Button>
-                        <Button
-                          type="button"
-                          variant="outline"
-                          size="sm"
-                          onClick={() => reloadMedia({ refresh: true })}
-                          disabled={dbSaving || mediaLoading}
-                        >
-                          {mediaLoading ? "Cargando…" : "Refrescar"}
-                        </Button>
-                      </div>
-                      <div className="text-[11px] text-muted-foreground truncate">
-                        {it.image_url || "Sin imagen"}
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
-                    <div className="space-y-1">
-                      <Label>Destino (href)</Label>
-                      <div className="relative">
-                        <Input
-                          value={it.href || ""}
-                          onFocus={() => {
-                            if (hrefSuggestBlurTimerRef.current != null) {
-                              window.clearTimeout(
-                                hrefSuggestBlurTimerRef.current
-                              );
-                              hrefSuggestBlurTimerRef.current = null;
-                            }
-                            setHrefSuggest((s) => ({
-                              ...s,
-                              index: idx,
-                              query: String(it.href || "").replace(/^\//, ""),
-                            }));
-                          }}
-                          onBlur={() => {
-                            if (hrefSuggestBlurTimerRef.current != null) {
-                              window.clearTimeout(
-                                hrefSuggestBlurTimerRef.current
-                              );
-                            }
-                            hrefSuggestBlurTimerRef.current = window.setTimeout(
-                              () => {
-                                setHrefSuggest((s) =>
-                                  s.index === idx
-                                    ? {
-                                        ...s,
-                                        index: null,
-                                        items: [],
-                                        loading: false,
-                                      }
-                                    : s
-                                );
-                              },
-                              150
-                            );
-                          }}
-                          onChange={(e) => {
-                            const v = e.target.value;
-                            updateDbItem(idx, { href: v });
-                            setHrefSuggest((s) => ({
-                              ...s,
-                              index: idx,
-                              query: String(v || "").replace(/^\//, ""),
-                            }));
-                          }}
-                          placeholder="/iconos o /mi-post"
-                        />
-
-                        {hrefSuggest.index === idx &&
-                        (hrefSuggest.loading ||
-                          hrefSuggest.items.length > 0) ? (
-                          <div className="absolute z-50 mt-1 w-full rounded border bg-background shadow-sm">
-                            <div className="max-h-56 overflow-auto">
-                              {hrefSuggest.loading ? (
-                                <div className="px-3 py-2 text-xs text-muted-foreground">
-                                  Buscando…
-                                </div>
-                              ) : null}
-                              {hrefSuggest.items.map((p) => {
-                                const kindLabel =
-                                  p.kind === "category" ? "Categoría" : "Post";
-                                return (
-                                  <button
-                                    key={`${p.kind}:${p.slug}`}
-                                    type="button"
-                                    className="w-full text-left px-3 py-2 text-sm hover:bg-muted"
-                                    onMouseDown={(ev) => ev.preventDefault()}
-                                    onClick={() => {
-                                      updateDbItem(idx, { href: p.href });
-                                      setHrefSuggest((s) => ({
-                                        ...s,
-                                        index: null,
-                                        items: [],
-                                        loading: false,
-                                      }));
-                                    }}
-                                    title={p.href}
-                                  >
-                                    <div className="flex items-center justify-between gap-2">
-                                      <div className="font-medium truncate">
-                                        {p.label}
-                                      </div>
-                                      <div className="text-[11px] text-muted-foreground shrink-0">
-                                        {kindLabel}
-                                      </div>
-                                    </div>
-                                    <div className="text-[11px] text-muted-foreground truncate">
-                                      {p.href}
-                                    </div>
-                                  </button>
-                                );
-                              })}
-                            </div>
-                          </div>
-                        ) : null}
-                      </div>
-                    </div>
-                    <div className="flex items-end gap-2">
-                      <label className="flex items-center gap-2 text-sm">
-                        <input
-                          type="checkbox"
-                          checked={it.active !== false}
-                          onChange={(e) =>
-                            updateDbItem(idx, { active: e.target.checked })
-                          }
-                        />
-                        Activo
-                      </label>
-                    </div>
-                  </div>
+                  <Button
+                    type="button"
+                    onClick={() => {
+                      const v = String(newKeyInput || "").trim();
+                      if (!v) return alert("Ingresa un key válido");
+                      setDbKey(v);
+                      setDbView("edit");
+                      setNewKeyInput("");
+                      loadDbSet(v);
+                    }}
+                  >
+                    Crear / Editar
+                  </Button>
                 </div>
               </div>
-            ))}
-          </div>
-        )}
 
-        <Dialog
-          open={pickerOpen}
-          onOpenChange={(open) => {
-            setPickerOpen(open);
-            if (!open) {
-              setPickerForIndex(null);
-              mediaAllLoadedRef.current = false;
-            }
-          }}
-        >
-          <DialogContent className="sm:max-w-6xl max-h-[85vh] overflow-hidden">
-            <DialogHeader>
-              <DialogTitle>Seleccionar imagen</DialogTitle>
-            </DialogHeader>
-
-            <div className="flex flex-wrap items-center gap-2">
-              <input
-                ref={mediaFileRef}
-                type="file"
-                className="hidden"
-                accept="image/*"
-                multiple
-                onChange={(e) => {
-                  const files = e.target.files;
-                  if (!files) return;
-                  uploadMediaFiles(files).finally(() => {
-                    if (mediaFileRef.current) mediaFileRef.current.value = "";
-                  });
-                }}
-              />
-              <Button
-                type="button"
-                variant="outline"
-                onClick={() => mediaFileRef.current?.click()}
-                disabled={mediaUploading || dbSaving}
-              >
-                {mediaUploading ? "Subiendo…" : "Subir imágenes"}
-              </Button>
-              <Button
-                type="button"
-                variant="outline"
-                onClick={() => reloadMedia({ refresh: true })}
-                disabled={mediaLoading || mediaUploading}
-              >
-                {mediaLoading ? "Cargando…" : "Recargar lista"}
-              </Button>
-
-              <Input
-                value={mediaQuery}
-                onChange={(e) => setMediaQuery(e.target.value)}
-                placeholder="Buscar por nombre de imagen…"
-                className="h-9 w-full sm:w-[320px]"
-              />
-              <Button
-                type="button"
-                variant="outline"
-                onClick={() => setMediaQuery("")}
-                disabled={!mediaQuery.trim()}
-              >
-                Limpiar
-              </Button>
-              <div className="text-xs text-muted-foreground">
-                Mostrando {filteredMediaUrls.length}
-                {typeof mediaTotal === "number" ? ` de ${mediaTotal}` : ""}
-                {mediaLoadingMore ? " · Cargando más…" : ""}
+              <div className="flex gap-2">
+                <Button
+                  variant="outline"
+                  onClick={loadDbSetsList}
+                  disabled={dbSetsLoading}
+                >
+                  {dbSetsLoading ? "Cargando…" : "Refrescar lista"}
+                </Button>
               </div>
             </div>
 
-            {mediaUrls.length === 0 && mediaLoading ? (
+            {dbSetsLoading ? (
               <div className="text-sm text-muted-foreground">Cargando…</div>
-            ) : mediaUrls.length === 0 ? (
+            ) : dbSetsList.length === 0 ? (
               <div className="text-sm text-muted-foreground">
-                No hay imágenes disponibles.
+                No hay sliders en la BD para este sitio.
               </div>
             ) : (
-              <div
-                ref={mediaScrollRef}
-                className="max-h-[65vh] overflow-auto pr-1"
-              >
-                {filteredMediaUrls.length === 0 ? (
-                  <div className="py-6 text-sm text-muted-foreground">
-                    No hay resultados
-                    {mediaQuery.trim() ? ` para "${mediaQuery.trim()}"` : ""}.
-                  </div>
-                ) : null}
-                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-2">
-                  {filteredMediaUrls.map((u) => (
-                    <button
-                      type="button"
-                      key={u}
-                      onClick={() => {
-                        if (pickerForIndex == null) return;
-                        updateDbItem(pickerForIndex, { image_url: u });
-                        setPickerOpen(false);
-                        setPickerForIndex(null);
-                      }}
-                      title={u}
-                      className={`border rounded overflow-hidden text-left hover:bg-muted ${
-                        u === pickerSelectedUrl ? "ring-2 ring-green-500" : ""
-                      }`}
-                    >
-                      <div className="w-full aspect-[4/3] bg-gray-100 overflow-hidden">
-                        {/* eslint-disable-next-line @next/next/no-img-element */}
-                        <img
-                          src={u}
-                          alt="media"
-                          className="w-full h-full object-cover"
-                          loading="lazy"
-                        />
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
+                {dbSetsList.map((s) => (
+                  <button
+                    key={s.key}
+                    type="button"
+                    className="border rounded p-2 bg-white hover:bg-muted text-left"
+                    onClick={() => {
+                      setDbKey(s.key);
+                      setDbView("edit");
+                      loadDbSet(s.key);
+                    }}
+                    title={`Editar ${s.key}`}
+                  >
+                    <div className="flex items-center gap-2">
+                      <div className="w-16 h-12 bg-gray-100 overflow-hidden rounded">
+                        {s.sample ? (
+                          // eslint-disable-next-line @next/next/no-img-element
+                          <img
+                            src={s.sample}
+                            alt={s.key}
+                            className="w-full h-full object-cover"
+                          />
+                        ) : (
+                          <div className="w-full h-full flex items-center justify-center text-xs text-muted-foreground">
+                            Sin imagen
+                          </div>
+                        )}
                       </div>
-                      <div className="px-2 py-1 text-[10px] text-muted-foreground truncate">
-                        {getMediaName(u)}
+                      <div className="flex-1">
+                        <div className="font-medium truncate">{s.key}</div>
+                        <div className="text-xs text-muted-foreground">
+                          {s.count} slides
+                        </div>
                       </div>
-                    </button>
-                  ))}
-                </div>
-
-                <div ref={mediaSentinelRef} className="h-8" />
-
-                {mediaNextOffset == null ? (
-                  <div className="py-3 text-xs text-muted-foreground">
-                    Fin de la lista.
-                  </div>
-                ) : null}
+                      <div>
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          type="button"
+                          onClick={(e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            setDbKey(s.key);
+                            setDbView("edit");
+                            loadDbSet(s.key);
+                          }}
+                        >
+                          Editar
+                        </Button>
+                      </div>
+                    </div>
+                  </button>
+                ))}
               </div>
             )}
-          </DialogContent>
-        </Dialog>
+          </>
+        ) : (
+          <>
+            <div className="flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
+              <div className="space-y-1">
+                <div className="text-sm font-medium">Editar slider</div>
+                <div className="text-xs text-muted-foreground">
+                  Sitio: <span className="font-mono">{dbSite}</span> · Key:{" "}
+                  <span className="font-mono">{dbKey}</span>
+                </div>
+              </div>
+              <div className="flex gap-2">
+                <Button
+                  variant="outline"
+                  onClick={() => {
+                    setDbView("list");
+                    loadDbSetsList();
+                  }}
+                  disabled={dbSaving}
+                >
+                  Volver
+                </Button>
+                <Button
+                  variant="outline"
+                  onClick={() => loadDbSet(dbKey)}
+                  disabled={dbLoading || dbSaving}
+                >
+                  Recargar
+                </Button>
+                <Button
+                  variant="outline"
+                  onClick={addDbItem}
+                  disabled={dbLoading || dbSaving}
+                >
+                  Agregar slide
+                </Button>
+                <Button onClick={saveDbSet} disabled={dbSaving || dbLoading}>
+                  {dbSaving ? "Guardando…" : "Guardar"}
+                </Button>
+              </div>
+            </div>
+
+            {(dbLoading || mediaLoading) && (
+              <div className="text-sm text-gray-600 flex items-center gap-2">
+                <Spinner className="size-4" /> Cargando{" "}
+                {dbLoading ? "slider" : "imágenes"}…
+              </div>
+            )}
+
+            {dbItems.length === 0 ? (
+              <div className="text-sm text-muted-foreground">
+                No hay slides en la BD para este key.
+              </div>
+            ) : (
+              <div className="space-y-3">
+                {dbItems.map((it, idx) => (
+                  <div
+                    key={`${dbKey}-${idx}`}
+                    className="grid grid-cols-1 md:grid-cols-[160px_1fr] gap-3 border rounded p-3 bg-white"
+                  >
+                    <div className="w-full aspect-[16/9] bg-gray-100 overflow-hidden rounded">
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img
+                        src={it.image_url}
+                        alt={`slide-${idx}`}
+                        className="w-full h-full object-cover"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <div className="flex flex-wrap gap-2 items-center justify-between">
+                        <div className="text-sm font-medium">
+                          Slide #{idx + 1}
+                        </div>
+                        <div className="flex gap-2">
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => moveDbItem(idx, -1)}
+                            disabled={idx === 0 || dbSaving}
+                          >
+                            ↑
+                          </Button>
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => moveDbItem(idx, +1)}
+                            disabled={idx === dbItems.length - 1 || dbSaving}
+                          >
+                            ↓
+                          </Button>
+                          <Button
+                            variant="destructive"
+                            size="sm"
+                            onClick={() => removeDbItem(idx)}
+                            disabled={dbSaving}
+                          >
+                            Quitar
+                          </Button>
+                        </div>
+                      </div>
+
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+                        <div className="space-y-1">
+                          <Label>Imagen (URL)</Label>
+                          <Input
+                            value={it.image_url}
+                            onChange={(e) =>
+                              updateDbItem(idx, { image_url: e.target.value })
+                            }
+                            placeholder="https://..."
+                          />
+                          <div className="text-[11px] text-muted-foreground">
+                            Puedes pegar una URL externa o seleccionar desde
+                            Imágenes.
+                          </div>
+                        </div>
+
+                        <div className="space-y-1">
+                          <Label>Elegir desde imágenes</Label>
+                          <div className="flex flex-wrap gap-2">
+                            <Button
+                              type="button"
+                              variant="outline"
+                              size="sm"
+                              onClick={() => openPickerFor(idx)}
+                              disabled={dbSaving || mediaLoading}
+                            >
+                              Seleccionar imagen
+                            </Button>
+                            <Button
+                              type="button"
+                              variant="outline"
+                              size="sm"
+                              onClick={() => reloadMedia({ refresh: true })}
+                              disabled={dbSaving || mediaLoading}
+                            >
+                              {mediaLoading ? "Cargando…" : "Refrescar"}
+                            </Button>
+                          </div>
+                          <div className="text-[11px] text-muted-foreground truncate">
+                            {it.image_url || "Sin imagen"}
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="grid grid-cols-1 md:grid-cols-3 gap-2">
+                        <div className="space-y-1">
+                          <Label>Destino (href)</Label>
+                          <div className="relative">
+                            <Input
+                              value={it.href || ""}
+                              onFocus={() => {
+                                if (hrefSuggestBlurTimerRef.current != null) {
+                                  window.clearTimeout(
+                                    hrefSuggestBlurTimerRef.current,
+                                  );
+                                  hrefSuggestBlurTimerRef.current = null;
+                                }
+                                setHrefSuggest((s) => ({
+                                  ...s,
+                                  index: idx,
+                                  query: String(it.href || "").replace(
+                                    /^\//,
+                                    "",
+                                  ),
+                                }));
+                              }}
+                              onBlur={() => {
+                                if (hrefSuggestBlurTimerRef.current != null) {
+                                  window.clearTimeout(
+                                    hrefSuggestBlurTimerRef.current,
+                                  );
+                                }
+                                hrefSuggestBlurTimerRef.current =
+                                  window.setTimeout(() => {
+                                    setHrefSuggest((s) =>
+                                      s.index === idx
+                                        ? {
+                                            ...s,
+                                            index: null,
+                                            items: [],
+                                            loading: false,
+                                          }
+                                        : s,
+                                    );
+                                  }, 150);
+                              }}
+                              onChange={(e) => {
+                                const v = e.target.value;
+                                updateDbItem(idx, { href: v });
+                                setHrefSuggest((s) => ({
+                                  ...s,
+                                  index: idx,
+                                  query: String(v || "").replace(/^\//, ""),
+                                }));
+                              }}
+                              placeholder="/iconos o /mi-post"
+                            />
+
+                            {hrefSuggest.index === idx &&
+                            (hrefSuggest.loading ||
+                              hrefSuggest.items.length > 0) ? (
+                              <div className="absolute z-50 mt-1 w-full rounded border bg-background shadow-sm">
+                                <div className="max-h-56 overflow-auto">
+                                  {hrefSuggest.loading ? (
+                                    <div className="px-3 py-2 text-xs text-muted-foreground">
+                                      Buscando…
+                                    </div>
+                                  ) : null}
+                                  {hrefSuggest.items.map((p) => {
+                                    const kindLabel =
+                                      p.kind === "category"
+                                        ? "Categoría"
+                                        : "Post";
+                                    return (
+                                      <button
+                                        key={`${p.kind}:${p.slug}`}
+                                        type="button"
+                                        className="w-full text-left px-3 py-2 text-sm hover:bg-muted"
+                                        onMouseDown={(ev) =>
+                                          ev.preventDefault()
+                                        }
+                                        onClick={() => {
+                                          updateDbItem(idx, { href: p.href });
+                                          setHrefSuggest((s) => ({
+                                            ...s,
+                                            index: null,
+                                            items: [],
+                                            loading: false,
+                                          }));
+                                        }}
+                                        title={p.href}
+                                      >
+                                        <div className="flex items-center justify-between gap-2">
+                                          <div className="font-medium truncate">
+                                            {p.label}
+                                          </div>
+                                          <div className="text-[11px] text-muted-foreground shrink-0">
+                                            {kindLabel}
+                                          </div>
+                                        </div>
+                                        <div className="text-[11px] text-muted-foreground truncate">
+                                          {p.href}
+                                        </div>
+                                      </button>
+                                    );
+                                  })}
+                                </div>
+                              </div>
+                            ) : null}
+                          </div>
+                        </div>
+                        <div className="space-y-1">
+                          <Label>Idioma (lang)</Label>
+                          <select
+                            className="h-9 w-full rounded border bg-white px-2 text-sm"
+                            value={it.lang ?? ""}
+                            onChange={(e) =>
+                              updateDbItem(idx, {
+                                lang: e.target.value ? e.target.value : null,
+                              })
+                            }
+                          >
+                            <option value="">(sin idioma)</option>
+                            <option value="es">es</option>
+                            <option value="en">en</option>
+                          </select>
+                          <div className="text-[11px] text-muted-foreground">
+                            Opcional. Si el key termina en -es/-en se infiere.
+                          </div>
+                        </div>
+                        <div className="flex items-end gap-2">
+                          <label className="flex items-center gap-2 text-sm">
+                            <input
+                              type="checkbox"
+                              checked={it.active !== false}
+                              onChange={(e) =>
+                                updateDbItem(idx, { active: e.target.checked })
+                              }
+                            />
+                            Activo
+                          </label>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+
+            <Dialog
+              open={pickerOpen}
+              onOpenChange={(open) => {
+                setPickerOpen(open);
+                if (!open) {
+                  setPickerForIndex(null);
+                }
+              }}
+            >
+              <DialogContent className="sm:max-w-6xl max-h-[85vh] overflow-hidden">
+                <DialogHeader>
+                  <DialogTitle>Seleccionar imagen</DialogTitle>
+                </DialogHeader>
+
+                <div className="flex flex-wrap items-center gap-2">
+                  <input
+                    ref={mediaFileRef}
+                    type="file"
+                    className="hidden"
+                    accept="image/*"
+                    multiple
+                    onChange={(e) => {
+                      const files = e.target.files;
+                      if (!files) return;
+                      uploadMediaFiles(files).finally(() => {
+                        if (mediaFileRef.current)
+                          mediaFileRef.current.value = "";
+                      });
+                    }}
+                  />
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={() => mediaFileRef.current?.click()}
+                    disabled={mediaUploading || dbSaving}
+                  >
+                    {mediaUploading ? "Subiendo…" : "Subir imágenes"}
+                  </Button>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={() => reloadMedia({ refresh: true })}
+                    disabled={mediaLoading || mediaUploading}
+                  >
+                    {mediaLoading ? "Cargando…" : "Recargar lista"}
+                  </Button>
+
+                  <Input
+                    value={mediaQuery}
+                    onChange={(e) => setMediaQuery(e.target.value)}
+                    placeholder="Buscar por nombre de imagen…"
+                    className="h-9 w-full sm:w-[320px]"
+                  />
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={() => setMediaQuery("")}
+                    disabled={!mediaQuery.trim()}
+                  >
+                    Limpiar
+                  </Button>
+                  <div className="text-xs text-muted-foreground">
+                    Mostrando {filteredMediaUrls.length}
+                    {typeof mediaTotal === "number" ? ` de ${mediaTotal}` : ""}
+                    {mediaLoadingMore ? " · Cargando más…" : ""}
+                  </div>
+                </div>
+
+                {mediaUrls.length === 0 && mediaLoading ? (
+                  <div className="text-sm text-muted-foreground">Cargando…</div>
+                ) : mediaUrls.length === 0 ? (
+                  <div className="text-sm text-muted-foreground">
+                    No hay imágenes disponibles.
+                  </div>
+                ) : (
+                  <div
+                    ref={mediaScrollRef}
+                    className="max-h-[65vh] overflow-auto pr-1"
+                  >
+                    {filteredMediaUrls.length === 0 ? (
+                      <div className="py-6 text-sm text-muted-foreground">
+                        No hay resultados
+                        {mediaQuery.trim()
+                          ? ` para "${mediaQuery.trim()}"`
+                          : ""}
+                        .
+                      </div>
+                    ) : null}
+                    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-2">
+                      {filteredMediaUrls.map((u) => (
+                        <button
+                          type="button"
+                          key={u}
+                          onClick={() => {
+                            if (pickerForIndex == null) return;
+                            updateDbItem(pickerForIndex, { image_url: u });
+                            setPickerOpen(false);
+                            setPickerForIndex(null);
+                          }}
+                          title={u}
+                          className={`border rounded overflow-hidden text-left hover:bg-muted ${
+                            u === pickerSelectedUrl
+                              ? "ring-2 ring-green-500"
+                              : ""
+                          }`}
+                        >
+                          <div className="w-full aspect-[4/3] bg-gray-100 overflow-hidden">
+                            {/* eslint-disable-next-line @next/next/no-img-element */}
+                            <img
+                              src={u}
+                              alt="media"
+                              className="w-full h-full object-cover"
+                              loading="lazy"
+                            />
+                          </div>
+                          <div className="px-2 py-1 text-[10px] text-muted-foreground truncate">
+                            {getMediaName(u)}
+                          </div>
+                        </button>
+                      ))}
+                    </div>
+
+                    <div className="py-3 flex items-center justify-center">
+                      {mediaNextOffset == null ? (
+                        <div className="text-xs text-muted-foreground">
+                          Fin de la lista.
+                        </div>
+                      ) : (
+                        <Button
+                          type="button"
+                          variant="outline"
+                          onClick={() => loadMoreMedia()}
+                          disabled={mediaLoading || mediaLoadingMore}
+                        >
+                          {mediaLoadingMore ? "Cargando…" : "Cargar más"}
+                        </Button>
+                      )}
+                    </div>
+                  </div>
+                )}
+              </DialogContent>
+            </Dialog>
+          </>
+        )}
       </Card>
-
-      <p className="text-sm text-muted-foreground">
-        Vista de todos los sliders actuales (solo lectura). Se muestran los
-        orígenes existentes del proyecto.
-      </p>
-      <div className="flex gap-2">
-        <button
-          className="px-3 py-2 rounded bg-gray-900 text-white text-sm"
-          onClick={saveOrders}
-          disabled={saving}
-        >
-          {saving ? "Guardando…" : "Guardar orden"}
-        </button>
-      </div>
-
-      {loading ? (
-        <div className="py-12 text-gray-500 flex items-center gap-2">
-          <Spinner className="size-5" /> Cargando…
-        </div>
-      ) : (
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          {/* Home Desktop */}
-          <Card className="p-4">
-            <h2 className="font-medium mb-3">Home · Desktop</h2>
-            <ImagesGrid
-              urls={home?.desktop || []}
-              hrefs={homeDesktopHrefs}
-              emptyText="Sin imágenes"
-              onMove={(i, d) => moveHomeDesktop(i, d)}
-              onReorder={(from, to) => onReorderHomeDesktop(from, to)}
-              onChangeHref={(i, v) => {
-                const u = home?.desktop?.[i];
-                if (!u) return;
-                setDest(keyHomeDesktop, baseName(u), v);
-              }}
-            />
-          </Card>
-
-          {/* Home Mobile */}
-          <Card className="p-4">
-            <h2 className="font-medium mb-3">Home · Móvil</h2>
-            <ImagesGrid
-              urls={home?.mobile || []}
-              hrefs={homeMobileHrefs}
-              emptyText="Sin imágenes"
-              onMove={(i, d) => moveHomeMobile(i, d)}
-              onReorder={(from, to) => onReorderHomeMobile(from, to)}
-              onChangeHref={(i, v) => {
-                const u = home?.mobile?.[i];
-                if (!u) return;
-                setDest(keyHomeMobile, baseName(u), v);
-              }}
-            />
-          </Card>
-
-          {/* Restaurantes Desktop ES */}
-          <Card className="p-4">
-            <h2 className="font-medium mb-3">Restaurantes · Desktop (ES)</h2>
-            <ImagesGrid
-              urls={restDesktopES}
-              hrefs={restDesktopESHrefs}
-              emptyText="Sin imágenes (manifest)"
-              onMove={(i, d) => moveRestDES(i, d)}
-              onReorder={(from, to) => onReorderRestDES(from, to)}
-              onChangeUrl={(i, v) => setUrlAt("es", i, v)}
-              onChangeHref={(i, v) =>
-                setDest(keyRestDES, baseName(restDesktopES[i] || ""), v)
-              }
-            />
-          </Card>
-
-          {/* Restaurantes Desktop EN */}
-          <Card className="p-4">
-            <h2 className="font-medium mb-3">Restaurantes · Desktop (EN)</h2>
-            <ImagesGrid
-              urls={restDesktopEN}
-              hrefs={restDesktopENHrefs}
-              emptyText="Sin imágenes (manifest)"
-              onMove={(i, d) => moveRestDEN(i, d)}
-              onReorder={(from, to) => onReorderRestDEN(from, to)}
-              onChangeUrl={(i, v) => setUrlAt("en", i, v)}
-              onChangeHref={(i, v) =>
-                setDest(keyRestDEN, baseName(restDesktopEN[i] || ""), v)
-              }
-            />
-          </Card>
-
-          {/* Restaurantes Móvil ES */}
-          <Card className="p-4">
-            <h2 className="font-medium mb-3">Restaurantes · Móvil (ES)</h2>
-            <ImagesGrid
-              urls={RestMobileES}
-              hrefs={RestMobileESHrefs}
-              emptyText="Sin imágenes (carpeta -1)"
-              onMove={(i, d) => moveRestMES(i, d)}
-              onReorder={(from, to) => onReorderRestMES(from, to)}
-              onChangeHref={(i, v) =>
-                setDest(keyRestMES, baseName(RestMobileES[i] || ""), v)
-              }
-            />
-          </Card>
-
-          {/* Restaurantes Móvil EN */}
-          <Card className="p-4">
-            <h2 className="font-medium mb-3">Restaurantes · Móvil (EN)</h2>
-            <ImagesGrid
-              urls={RestMobileEN}
-              hrefs={RestMobileENHrefs}
-              emptyText="Sin imágenes (carpeta -2)"
-              onMove={(i, d) => moveRestMEN(i, d)}
-              onReorder={(from, to) => onReorderRestMEN(from, to)}
-              onChangeHref={(i, v) =>
-                setDest(keyRestMEN, baseName(RestMobileEN[i] || ""), v)
-              }
-            />
-          </Card>
-        </div>
-      )}
     </div>
   );
 }

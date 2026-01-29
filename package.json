@@ -15,7 +15,11 @@
     "backfill:infohtml": "node scripts/backfill-info-html.mjs",
     "db:backup:rest": "node scripts/backup-supabase-rest.mjs",
     "db:restore:rest": "node scripts/restore-supabase-rest.mjs",
-    "db:seed:communes:restaurantes": "node scripts/seed-communes-restaurantes.mjs"
+    "db:dump:schema": "node scripts/dump-supabase-schema.mjs --env .env.local",
+    "db:dump:schema:cli": "node scripts/dump-supabase-schema-cli.mjs --env .env.local",
+    "db:seed:communes:restaurantes": "node scripts/seed-communes-restaurantes.mjs",
+    "storage:download": "node scripts/download-supabase-storage.mjs",
+    "storage:list": "node scripts/list-supabase-storage.mjs"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.10.0",

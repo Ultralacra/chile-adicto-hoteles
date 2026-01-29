@@ -87,7 +87,7 @@ export default function Page() {
 
         <div className="py-2">
           {/* Layout: 3 columnas (laterales más anchas, centro más angosta) */}
-          <div className="grid grid-cols-1 lg:grid-cols-[1.15fr_0.7fr_1.15fr] gap-0 lg:gap-6 items-start">
+          <div className="grid grid-cols-1 lg:grid-cols-[1.15fr_0.7fr_1.15fr] gap-0 lg:gap-4 items-start">
             {/* Columna 1: Slider */}
             <div className="w-full">
               <div className="w-full md:h-[520px] lg:h-[437px] overflow-visible">
@@ -119,7 +119,14 @@ export default function Page() {
                 aria-label="Ir a restaurantes"
                 className="block w-full"
               >
-                <div className="w-full h-[260px] md:h-[520px] lg:h-[437px] relative bg-black overflow-hidden" />
+                <div className="w-full h-[260px] md:h-[520px] lg:h-[437px] bg-black overflow-hidden flex items-center justify-center">
+                  <img
+                    src="/65 RESTAURANTES.svg"
+                    alt="Restaurantes"
+                    className="max-w-full max-h-full object-contain p-3 md:p-4 lg:p-5"
+                    loading="lazy"
+                  />
+                </div>
               </Link>
             </div>
 

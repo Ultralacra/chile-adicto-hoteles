@@ -26,24 +26,32 @@ export function PromoStackBanners() {
           className="block w-full h-full"
           aria-label="Ir a cafés"
         >
-          <div className="w-full h-full grid place-items-center bg-black text-white font-neutra tracking-wide">
-            CAFÉS (PRONTO)
-          </div>
+          <img
+            src="/40 CAFES.png"
+            alt="Cafés"
+            className="object-cover object-top w-full h-full"
+            loading="lazy"
+          />
         </Link>
       </div>
     </div>
   );
 }
 
-export function BottomHomeBanner() {
+type BottomHomeBannerProps = {
+  href?: string;
+  src?: string;
+  alt?: string;
+};
+
+export function BottomHomeBanner({
+  href = "/monumentos-nacionales",
+  src = "/BANNER MONUMENTOS.svg",
+  alt = "Monumentos Nacionales",
+}: BottomHomeBannerProps) {
   return (
-    <Link href="/monumentos-nacionales" className="block w-full">
-      <img
-        src="/BANNER MONUMENTOS.svg"
-        alt="Monumentos Nacionales"
-        className="w-full h-auto"
-        loading="lazy"
-      />
+    <Link href={href} className="block w-full">
+      <img src={src} alt={alt} className="w-full h-auto" loading="lazy" />
     </Link>
   );
 }

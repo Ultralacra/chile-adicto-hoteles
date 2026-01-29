@@ -13,7 +13,7 @@ export function AgendaCulturalBanner() {
         alt="Agenda Cultural"
         width={708}
         height={136}
-        className="h-[136px] w-[708px]"
+        className="h-[120px] w-auto max-w-full"
         priority
       />
     </div>

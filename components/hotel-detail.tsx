@@ -444,7 +444,11 @@ export function HotelDetail({ hotel }: HotelDetailProps) {
       <main className="site-inner pt-0 pb-4">
         {showCategoryBanner && (
           <div className="w-full mb-4">
-            <BottomHomeBanner />
+            <BottomHomeBanner
+              href={isCafesPost ? "/cafes" : "/monumentos-nacionales"}
+              src={isCafesPost ? "/BANNER CAFES.png" : "/BANNER MONUMENTOS.svg"}
+              alt={isCafesPost ? "Cafés" : "Monumentos Nacionales"}
+            />
           </div>
         )}
 

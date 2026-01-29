@@ -851,7 +851,15 @@ export default function CategoryPage({ params }: { params: any }) {
           {/* En Monumentos Nacionales y Cafés: banner largo bajo el menú, luego posts */}
           {(slug === "monumentos-nacionales" || slug === "cafes") && (
             <div className="w-full mt-2">
-              <BottomHomeBanner />
+              <BottomHomeBanner
+                href={slug === "cafes" ? "/cafes" : "/monumentos-nacionales"}
+                src={
+                  slug === "cafes"
+                    ? "/BANNER CAFES.png"
+                    : "/BANNER MONUMENTOS.svg"
+                }
+                alt={slug === "cafes" ? "Cafés" : "Monumentos Nacionales"}
+              />
             </div>
           )}
 

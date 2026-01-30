@@ -74,7 +74,13 @@ export function HotelDetail({ hotel }: HotelDetailProps) {
     ? hotel.categories.map((c) => toSlug(String(c || ""))).includes("cafes")
     : false;
 
-  const showCategoryBanner = isMonumentosPost || isCafesPost;
+  const isAgendaPost = Array.isArray(hotel?.categories)
+    ? hotel.categories
+        .map((c) => toSlug(String(c || "")))
+        .includes("agenda-cultural")
+    : false;
+
+  const showCategoryBanner = isMonumentosPost || isCafesPost || isAgendaPost;
   // La galería NO debe incluir la imagen de portada. Si hay imágenes de galería, usamos solo esas.
   // Si NO hay imágenes de galería, mostramos la portada como único slide.
   const allImages =
@@ -445,9 +451,27 @@ export function HotelDetail({ hotel }: HotelDetailProps) {
         {showCategoryBanner && (
           <div className="w-full mb-4">
             <BottomHomeBanner
-              href={isCafesPost ? "/cafes" : "/monumentos-nacionales"}
-              src={isCafesPost ? "/BANNER CAFES.png" : "/BANNER MONUMENTOS.svg"}
-              alt={isCafesPost ? "Cafés" : "Monumentos Nacionales"}
+              href={
+                isCafesPost
+                  ? "/cafes"
+                  : isMonumentosPost
+                    ? "/monumentos-nacionales"
+                    : "/categoria/agenda-cultural"
+              }
+              src={
+                isCafesPost
+                  ? "/BANNER CAFES.png"
+                  : isMonumentosPost
+                    ? "/BANNER MONUMENTOS.svg"
+                    : "/BANNER AGENDA CILTURAL.svg"
+              }
+              alt={
+                isCafesPost
+                  ? "Cafés"
+                  : isMonumentosPost
+                    ? "Monumentos Nacionales"
+                    : "Agenda Cultural"
+              }
             />
           </div>
         )}

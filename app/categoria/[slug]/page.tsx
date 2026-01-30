@@ -849,16 +849,32 @@ export default function CategoryPage({ params }: { params: any }) {
           )}
 
           {/* En Monumentos Nacionales y Cafés: banner largo bajo el menú, luego posts */}
-          {(slug === "monumentos-nacionales" || slug === "cafes") && (
+          {(slug === "monumentos-nacionales" ||
+            slug === "cafes" ||
+            slug === "agenda-cultural") && (
             <div className="w-full mt-2">
               <BottomHomeBanner
-                href={slug === "cafes" ? "/cafes" : "/monumentos-nacionales"}
+                href={
+                  slug === "cafes"
+                    ? "/cafes"
+                    : slug === "monumentos-nacionales"
+                      ? "/monumentos-nacionales"
+                      : "/categoria/agenda-cultural"
+                }
                 src={
                   slug === "cafes"
                     ? "/BANNER CAFES.png"
-                    : "/BANNER MONUMENTOS.svg"
+                    : slug === "monumentos-nacionales"
+                      ? "/BANNER MONUMENTOS.svg"
+                      : "/BANNER AGENDA CILTURAL.svg"
                 }
-                alt={slug === "cafes" ? "Cafés" : "Monumentos Nacionales"}
+                alt={
+                  slug === "cafes"
+                    ? "Cafés"
+                    : slug === "monumentos-nacionales"
+                      ? "Monumentos Nacionales"
+                      : "Agenda Cultural"
+                }
               />
             </div>
           )}

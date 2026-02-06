@@ -174,7 +174,7 @@ export default function EditPostPage({
       setFeaturedIndex(Math.max(0, featuredIndex - 1));
     }
   };
-  const [categories, setCategories] = useState<string[]>(["TODOS"]);
+  const [categories, setCategories] = useState<string[]>([]);
   // Comunas (admin-only hasta que DB soporte): seleccionables tipo categorías
   const [possibleCommunes, setPossibleCommunes] = useState<string[]>([]);
   const [loadingCommunes, setLoadingCommunes] = useState(true);
@@ -362,9 +362,7 @@ export default function EditPostPage({
       .map((c: any) => String(c || "").trim())
       .filter(Boolean)
       .map((c) => c.toUpperCase());
-    setCategories(
-      mergedCats.length > 0 ? Array.from(new Set(mergedCats)) : ["TODOS"],
-    );
+    setCategories(mergedCats.length > 0 ? Array.from(new Set(mergedCats)) : []);
     // locations existentes
     const locs = Array.isArray(hotel.locations) ? hotel.locations : [];
     setLocations(
@@ -542,7 +540,9 @@ export default function EditPostPage({
         reservationPolicy.trim() === "" ? "" : reservationPolicy,
       interestingFact: interestingFact.trim() === "" ? "" : interestingFact,
       images: normalized.images, // galería sin destacada
-      categories: normalized.categories,
+      categories: (normalized.categories || []).filter(
+        (c: string) => String(c).toUpperCase() !== "TODOS",
+      ),
       locations: normalized.locations,
       // Campo provisional solo para vista previa/compatibilidad futura
       communes: communes,

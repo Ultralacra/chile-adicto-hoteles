@@ -43,15 +43,26 @@ export default function Page() {
           const enCat = h.en?.category
             ? String(h.en.category).toUpperCase()
             : null;
-          // Excluir restaurantes y el post w-santiago
+          // Excluir posts específicos por slug
           if (String(h.slug) === "w-santiago") return false;
-          return !(
-            cats.has("RESTAURANTES") ||
-            cats.has("RESTAURANTS") ||
-            esCat === "RESTAURANTES" ||
-            enCat === "RESTAURANTS" ||
-            enCat === "RESTAURANTES"
-          );
+
+          // Categorías que NO deben aparecer en el feed "todos"
+          // (restaurantes/cafes/agenda cultural/monumentos nacionales)
+          const excluded = new Set<string>([
+            "RESTAURANTES",
+            "RESTAURANTS",
+            "CAFES",
+            "CAFÉ",
+            "CAFÉS",
+            "AGENDA CULTURAL",
+            "MONUMENTOS NACIONALES",
+          ]);
+
+          const hasExcludedCat = [...cats].some((c) => excluded.has(c));
+          const transExcluded =
+            (esCat && excluded.has(esCat)) || (enCat && excluded.has(enCat));
+
+          return !(hasExcludedCat || transExcluded);
         });
         // Orden aleatorio en Home cada vez que se entra
         const shuffled = (() => {

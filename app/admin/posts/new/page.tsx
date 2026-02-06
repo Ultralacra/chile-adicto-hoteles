@@ -70,7 +70,7 @@ export default function NewPostPage() {
   const [infoHtmlEn, setInfoHtmlEn] = useState<string>("");
 
   // Categorías y comunas
-  const [categories, setCategories] = useState<string[]>(["TODOS"]);
+  const [categories, setCategories] = useState<string[]>([]);
   const [possibleCommunes, setPossibleCommunes] = useState<string[]>([]);
   const [loadingCommunes, setLoadingCommunes] = useState(true);
   const [communes, setCommunes] = useState<string[]>([]);
@@ -549,7 +549,9 @@ export default function NewPostPage() {
         reservationPolicy.trim() === "" ? "" : reservationPolicy,
       interestingFact: interestingFact.trim() === "" ? "" : interestingFact,
       images: normalized.images,
-      categories: normalized.categories,
+      categories: (normalized.categories || []).filter(
+        (c: string) => String(c).toUpperCase() !== "TODOS",
+      ),
       locations: normalized.locations,
       communes,
     } as any;

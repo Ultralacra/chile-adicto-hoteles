@@ -105,6 +105,7 @@ export default function Page() {
                 <HeroSlider
                   sliderKeyDesktop="home-desktop"
                   sliderKeyMobile="home-mobile"
+                  objectPosition="left"
                   // Reordenado: iconos primero para alinear con nuevo orden de imágenes
                   slideHrefs={[
                     "/iconos",

@@ -31,7 +31,7 @@ type HeroSliderProps = {
   sliderKeyDesktop?: string;
   sliderKeyMobile?: string;
   objectFit?: "cover" | "contain"; // cover por defecto; contain para no recortar
-  objectPosition?: "center" | "top" | "bottom"; // alineación vertical/horizontal del objeto
+  objectPosition?: "center" | "top" | "bottom" | "left" | "right"; // alineación vertical/horizontal del objeto
   desktopHeight?: number; // alto del slide desktop en px (por defecto 437)
   mobileHeight?: number; // alto del slide mobile en px (por defecto 550)
   dotActiveClass?: string; // clase tailwind para punto activo
@@ -42,6 +42,8 @@ type HeroSliderProps = {
   slideHrefsMobile?: string[]; // hrefs específicos para mobile; si no se provee, cae en slideHrefs
   preferApiHrefs?: boolean; // si true, los hrefs cargados por API tienen prioridad sobre los props
   autoHeight?: boolean; // si true, la altura se adapta a la imagen (w-full h-auto)
+  desktopImageClassName?: string; // clases extra para imagen desktop
+  mobileImageClassName?: string; // clases extra para imagen mobile
 };
 
 export function HeroSlider({
@@ -61,6 +63,8 @@ export function HeroSlider({
   slideHrefsMobile,
   preferApiHrefs = false,
   autoHeight = false,
+  desktopImageClassName,
+  mobileImageClassName,
 }: HeroSliderProps) {
   const { fetchWithSite } = useSiteApi();
   // Estado para imágenes obtenidas desde API (si existen en /public/slider-*)
@@ -242,6 +246,25 @@ export function HeroSlider({
     setSelectedIndex(index);
   };
 
+  const imageClassName = (extraClass?: string) => {
+    const baseClass = autoHeight
+      ? "w-full h-auto"
+      : `w-full h-full ${
+          objectFit === "contain" ? "object-contain" : "object-cover"
+        } ${
+          objectPosition === "top"
+            ? "object-top"
+            : objectPosition === "bottom"
+            ? "object-bottom"
+            : objectPosition === "left"
+            ? "object-left"
+            : objectPosition === "right"
+            ? "object-right"
+            : "object-center"
+        }`;
+    return `${baseClass} ${extraClass || ""}`.trim();
+  };
+
   return (
     <div className="relative w-full overflow-hidden">
       {/* Desktop Embla */}
@@ -266,42 +289,14 @@ export function HeroSlider({
                     <img
                       src={image || "/placeholder.svg"}
                       alt={`Slide ${index + 1}`}
-                      className={
-                        autoHeight
-                          ? "w-full h-auto"
-                          : `w-full h-full ${
-                              objectFit === "contain"
-                                ? "object-contain"
-                                : "object-cover"
-                            } ${
-                              objectPosition === "top"
-                                ? "object-top"
-                                : objectPosition === "bottom"
-                                ? "object-bottom"
-                                : "object-center"
-                            }`
-                      }
+                      className={imageClassName(desktopImageClassName)}
                     />
                   </Link>
                 ) : (
                   <img
                     src={image || "/placeholder.svg"}
                     alt={`Slide ${index + 1}`}
-                    className={
-                      autoHeight
-                        ? "w-full h-auto"
-                        : `w-full h-full ${
-                            objectFit === "contain"
-                              ? "object-contain"
-                              : "object-cover"
-                          } ${
-                            objectPosition === "top"
-                              ? "object-top"
-                              : objectPosition === "bottom"
-                              ? "object-bottom"
-                              : "object-center"
-                          }`
-                    }
+                    className={imageClassName(desktopImageClassName)}
                   />
                 )}
               </div>
@@ -330,42 +325,14 @@ export function HeroSlider({
                     <img
                       src={image || "/placeholder.svg"}
                       alt={`Slide ${index + 1}`}
-                      className={
-                        autoHeight
-                          ? "w-full h-auto"
-                          : `w-full h-full ${
-                              objectFit === "contain"
-                                ? "object-contain"
-                                : "object-cover"
-                            } ${
-                              objectPosition === "top"
-                                ? "object-top"
-                                : objectPosition === "bottom"
-                                ? "object-bottom"
-                                : "object-center"
-                            }`
-                      }
+                      className={imageClassName(mobileImageClassName)}
                     />
                   </Link>
                 ) : (
                   <img
                     src={image || "/placeholder.svg"}
                     alt={`Slide ${index + 1}`}
-                    className={
-                      autoHeight
-                        ? "w-full h-auto"
-                        : `w-full h-full ${
-                            objectFit === "contain"
-                              ? "object-contain"
-                              : "object-cover"
-                          } ${
-                            objectPosition === "top"
-                              ? "object-top"
-                              : objectPosition === "bottom"
-                              ? "object-bottom"
-                              : "object-center"
-                          }`
-                    }
+                    className={imageClassName(mobileImageClassName)}
                   />
                 )}
               </div>

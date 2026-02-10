@@ -478,11 +478,7 @@ export function HotelDetail({ hotel }: HotelDetailProps) {
 
         {allImages.length > 0 && (
           <div className="mb-4 w-full">
-            <div
-              className={`relative overflow-hidden h-[55vw] md:h-[45vw] ${
-                showCategoryBanner ? "lg:h-[715px]" : "lg:h-[640px]"
-              }`}
-            >
+            <div className="relative overflow-hidden h-[55vw] md:h-[45vw] lg:h-[640px]">
               {canShowControls && (
                 <>
                   <button

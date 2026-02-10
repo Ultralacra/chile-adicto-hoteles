@@ -74,7 +74,7 @@ export function HeroSlider({
     string[] | null
   >(null);
   const [mobileHrefsFromApi, setMobileHrefsFromApi] = useState<string[] | null>(
-    null
+    null,
   );
   const [desktopLoadedFromDb, setDesktopLoadedFromDb] = useState(false);
   const [mobileLoadedFromDb, setMobileLoadedFromDb] = useState(false);
@@ -132,9 +132,12 @@ export function HeroSlider({
 
         // 1) Preferir sliders desde BD (si se indicó key)
         const loadSet = async (key: string) => {
-          const res = await fetchWithSite(`/api/sliders/${encodeURIComponent(key)}`, {
-            cache: "no-store",
-          });
+          const res = await fetchWithSite(
+            `/api/sliders/${encodeURIComponent(key)}`,
+            {
+              cache: "no-store",
+            },
+          );
           if (!res.ok) return { images: [], hrefs: [] };
           const json = (await res.json()) as {
             key?: string;
@@ -150,7 +153,7 @@ export function HeroSlider({
             .map((it) => String(it?.image_url || "").trim())
             .filter(Boolean);
           const hrefs = activeItems.map((it) =>
-            it?.href ? String(it.href).trim() : ""
+            it?.href ? String(it.href).trim() : "",
           );
           return { images, hrefs };
         };
@@ -184,7 +187,9 @@ export function HeroSlider({
         if (usedDb) return;
 
         // 2) Fallback legacy: /api/slider-images (carpetas públicas)
-        const res = await fetchWithSite("/api/slider-images", { cache: "no-store" });
+        const res = await fetchWithSite("/api/slider-images", {
+          cache: "no-store",
+        });
         if (!res.ok) return;
         const json = (await res.json()) as {
           desktop: string[];
@@ -205,7 +210,13 @@ export function HeroSlider({
     return () => {
       cancelled = true;
     };
-  }, [desktopImages, mobileImages, sliderKeyDesktop, sliderKeyMobile, fetchWithSite]);
+  }, [
+    desktopImages,
+    mobileImages,
+    sliderKeyDesktop,
+    sliderKeyMobile,
+    fetchWithSite,
+  ]);
 
   const hrefForIndex = (index: number, mode: "desktop" | "mobile") => {
     const apiHrefs =
@@ -255,12 +266,12 @@ export function HeroSlider({
           objectPosition === "top"
             ? "object-top"
             : objectPosition === "bottom"
-            ? "object-bottom"
-            : objectPosition === "left"
-            ? "object-left"
-            : objectPosition === "right"
-            ? "object-right"
-            : "object-center"
+              ? "object-bottom"
+              : objectPosition === "left"
+                ? "object-left"
+                : objectPosition === "right"
+                  ? "object-right"
+                  : "object-center"
         }`;
     return `${baseClass} ${extraClass || ""}`.trim();
   };

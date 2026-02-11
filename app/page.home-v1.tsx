@@ -1,6 +1,6 @@
 "use client";
 
-import { Header } from "@/components/header.home-v2";
+import { Header } from "@/components/header";
 import { HeroSlider } from "@/components/hero-slider";
 import Image from "next/image";
 import Link from "next/link";
@@ -13,10 +13,6 @@ import { useEffect, useState } from "react";
 import { Spinner } from "@/components/ui/spinner";
 import { useLanguage } from "@/contexts/language-context";
 import { useSiteApi } from "@/hooks/use-site-api";
-import {
-  BottomHomeBanner,
-  PromoStackBanners,
-} from "@/components/home-promo-banners.home-v2";
 
 export default function Page() {
   const { language } = useLanguage();
@@ -34,6 +30,10 @@ export default function Page() {
         const list = Array.isArray(rows) ? rows : [];
         const filtered = list.filter((h) => {
           if (isHiddenFrontPost(h)) return false;
+
+          // Excluir posts específicos por slug
+          if (String(h.slug) === "w-santiago") return false;
+
           const cats = new Set<string>([
             ...(h.categories || []).map((c: any) => String(c).toUpperCase()),
           ]);
@@ -43,11 +43,8 @@ export default function Page() {
           const enCat = h.en?.category
             ? String(h.en.category).toUpperCase()
             : null;
-          // Excluir posts específicos por slug
-          if (String(h.slug) === "w-santiago") return false;
 
           // Categorías que NO deben aparecer en el feed "todos"
-          // (restaurantes/cafes/agenda cultural/monumentos nacionales)
           const excluded = new Set<string>([
             "RESTAURANTES",
             "RESTAURANTS",
@@ -87,6 +84,24 @@ export default function Page() {
     };
   }, [fetchWithSite]);
 
+  // Banner por idioma (ES/EN): reemplazar las URLs cuando tengas las versiones en ambos idiomas
+  const bannerByLang: Record<
+    string,
+    { href: string; src: string; alt: string }
+  > = {
+    es: {
+      href: "/restaurantes",
+      src: "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/WhatsApp-Image-2025-10-28-at-5.15.32-PM.jpeg",
+      alt: "Banner Restaurantes (ES)",
+    },
+    en: {
+      href: "/restaurantes",
+      src: "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/WhatsApp-Image-2025-10-28-at-5.15.32-PM.jpeg",
+      alt: "Restaurants Banner (EN)",
+    },
+  };
+  const currentBanner = bannerByLang[language] || bannerByLang.es;
+
   return (
     <div className="min-h-screen bg-white">
       <Header />
@@ -97,15 +112,15 @@ export default function Page() {
         </div>
 
         <div className="py-2">
-          {/* Layout: 3 columnas (laterales más anchas, centro más angosta) */}
-          <div className="grid grid-cols-1 lg:grid-cols-[1.15fr_0.7fr_1.15fr] gap-0 lg:gap-4 items-start">
-            {/* Columna 1: Slider */}
-            <div className="w-full">
+          {/* Layout: slider ocupa 2 columnas (lg:col-span-2) y banner 1 columna (lg:col-span-1) */}
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-0 lg:gap-6 items-start">
+            {/* Slider: ocupa 2 columnas en lg */}
+            <div className="w-full lg:col-span-2">
+              {/* Volvemos a alturas responsivas como estaba antes */}
               <div className="w-full md:h-[520px] lg:h-[437px] overflow-visible">
                 <HeroSlider
                   sliderKeyDesktop="home-desktop"
                   sliderKeyMobile="home-mobile"
-                  objectPosition="left"
                   // Reordenado: iconos primero para alinear con nuevo orden de imágenes
                   slideHrefs={[
                     "/iconos",
@@ -119,38 +134,22 @@ export default function Page() {
                     "/arquitectura",
                   ]}
                   preferApiHrefs
+                  // Subimos los puntos en la vista
                   dotBottom={24}
                 />
               </div>
             </div>
 
-            {/* Columna 2: Imagen vertical (placeholder: mismo banner, reemplazar cuando tengas el definitivo) */}
-            <div className="w-full mt-6 lg:mt-0">
-              <Link
-                href="/restaurantes"
-                aria-label="Ir a restaurantes"
-                className="block w-full"
-              >
-                <div className="w-full h-[260px] md:h-[520px] lg:h-[437px] bg-black overflow-hidden flex items-center justify-center">
-                  <img
-                    src="/65 RESTAURANTES.svg"
-                    alt="Restaurantes"
-                    className="max-w-full max-h-full object-contain p-3 md:p-4 lg:p-5"
-                    loading="lazy"
-                  />
-                </div>
+            {/* Banner: separación simétrica arriba y abajo en mobile (mt-6) */}
+            <div className="block w-full h-[437px] relative bg-black mt-6 lg:mt-0">
+              <Link href={currentBanner.href} className="block w-full h-full">
+                <img
+                  src={currentBanner.src}
+                  alt={currentBanner.alt}
+                  className="object-contain object-center w-full h-full"
+                />
               </Link>
             </div>
-
-            {/* Columna 3: 2 banners apilados */}
-            <div className="w-full mt-6 lg:mt-0">
-              <PromoStackBanners />
-            </div>
-          </div>
-
-          {/* Banner adicional debajo del slider (se mantiene además de los 2 laterales) */}
-          <div className="w-full mt-6">
-            <BottomHomeBanner />
           </div>
 
           {/* Cards section below - full width */}
@@ -188,7 +187,6 @@ export default function Page() {
                         return buildCardExcerpt(paras);
                       })()}
                       image={hotel.featuredImage || hotel.images?.[0] || ""}
-                      imageVariant="default"
                     />
                   </div>
                 ))}

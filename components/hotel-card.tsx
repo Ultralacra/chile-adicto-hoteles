@@ -21,6 +21,8 @@ export function HotelCard({
   const imageContainerClass =
     imageVariant === "tall" ? "h-[400px]" : "aspect-[386/264]";
 
+  const looksLikeHtml = /<[^>]+>/.test(description);
+
   return (
     <Link href={`/${slug}`}>
       <article className="group cursor-pointer flex flex-col h-full gap-3">
@@ -62,9 +64,16 @@ export function HotelCard({
           </div>
 
           {/* Description */}
-          <p className="font-neutra text-[15px] text-black leading-[22px] font-normal line-clamp-5 min-h-[110px]">
-            {description}
-          </p>
+          {looksLikeHtml ? (
+            <div
+              className="font-neutra text-[15px] text-black leading-[22px] font-normal line-clamp-5 min-h-[110px]"
+              dangerouslySetInnerHTML={{ __html: description }}
+            />
+          ) : (
+            <p className="font-neutra text-[15px] text-black leading-[22px] font-normal line-clamp-5 min-h-[110px]">
+              {description}
+            </p>
+          )}
         </div>
 
         {/* Elegant divider pushed to bottom so all cards align */}

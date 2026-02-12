@@ -1,8 +1,6 @@
 "use client";
 
 import { Header } from "@/components/header.home-v2";
-import { HeroSlider } from "@/components/hero-slider";
-import Image from "next/image";
 import Link from "next/link";
 import { HotelCard } from "@/components/hotel-card";
 import { Footer } from "@/components/footer";
@@ -102,6 +100,7 @@ export default function Page() {
             {/* Columna 1: Slider */}
             <div className="w-full">
               <div className="w-full md:h-[520px] lg:h-[437px] overflow-visible">
+                {/*
                 <HeroSlider
                   sliderKeyDesktop="home-desktop"
                   sliderKeyMobile="home-mobile"
@@ -121,6 +120,15 @@ export default function Page() {
                   preferApiHrefs
                   dotBottom={24}
                 />
+                */}
+                <div className="w-full h-full bg-black overflow-hidden flex items-center justify-center">
+                  <img
+                    src="/bannerHome/imagen-test.jpeg"
+                    alt="Imagen de prueba"
+                    className="w-full h-full object-cover"
+                    loading="lazy"
+                  />
+                </div>
               </div>
             </div>
 

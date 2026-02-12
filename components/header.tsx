@@ -30,7 +30,7 @@ export function Header() {
             <div className="lg:hidden absolute left-1/2 -translate-x-1/2">
               <Link href="/" aria-label={t("Ir al inicio", "Go to home")}>
                 <Image
-                  src="/Santiago-adicto-Guia.svg"
+                  src="/Santiago-adicto-Guia%202.svg"
                   alt={t("Chile Adicto 50 Best", "Santiago Adicto 50 Best")}
                   width={260}
                   height={90}
@@ -67,7 +67,7 @@ export function Header() {
             <div className="hidden lg:flex items-center">
               <Link href="/" aria-label={t("Ir al inicio", "Go to home")}>
                 <Image
-                  src="/Santiago-adicto-Guia.svg"
+                  src="/Santiago-adicto-Guia%202.svg"
                   alt={t("Santiago Adicto", "Santiago Adicto")}
                   width={360}
                   height={110}

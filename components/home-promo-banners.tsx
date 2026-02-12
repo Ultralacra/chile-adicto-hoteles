@@ -16,7 +16,7 @@ export function PromoStackBanners() {
           rel="noopener noreferrer"
         >
           <img
-            src="/70 HOTELES.svg"
+            src="/bannerHome/70 HOTELES.svg"
             alt="Hoteles"
             className="w-full h-full object-contain md:object-cover"
             style={{
@@ -39,7 +39,7 @@ export function PromoStackBanners() {
           aria-label="Ir a cafés"
         >
           <img
-            src="/40 CAFES.png"
+            src="/bannerHome/30 CAFES.svg"
             alt="Cafés"
             className="w-full h-full object-contain md:object-cover"
             style={{
@@ -64,7 +64,7 @@ type BottomHomeBannerProps = {
 
 export function BottomHomeBanner({
   href = "/monumentos-nacionales",
-  src = "/BANNER MONUMENTOS.svg",
+  src = "/bannerHome/BANNER MONUMENTOS.svg",
   alt = "Monumentos Nacionales",
 }: BottomHomeBannerProps) {
   return (

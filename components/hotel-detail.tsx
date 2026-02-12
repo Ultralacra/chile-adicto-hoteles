@@ -460,10 +460,10 @@ export function HotelDetail({ hotel }: HotelDetailProps) {
               }
               src={
                 isCafesPost
-                  ? "/BANNER CAFES.png"
+                  ? "/bannerHome/BANNER 30 CAFES.svg"
                   : isMonumentosPost
-                    ? "/BANNER MONUMENTOS.svg"
-                    : "/BANNER AGENDA CILTURAL.svg"
+                    ? "/bannerHome/BANNER MONUMENTOS.svg"
+                    : "/bannerHome/BANNER AGENDA CILTURAL.svg"
               }
               alt={
                 isCafesPost

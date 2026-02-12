@@ -863,10 +863,10 @@ export default function CategoryPage({ params }: { params: any }) {
                 }
                 src={
                   slug === "cafes"
-                    ? "/BANNER CAFES.png"
+                    ? "/bannerHome/BANNER 30 CAFES.svg"
                     : slug === "monumentos-nacionales"
-                      ? "/BANNER MONUMENTOS.svg"
-                      : "/BANNER AGENDA CILTURAL.svg"
+                      ? "/bannerHome/BANNER MONUMENTOS.svg"
+                      : "/bannerHome/BANNER AGENDA CILTURAL.svg"
                 }
                 alt={
                   slug === "cafes"

@@ -91,12 +91,12 @@ export default function Page() {
   > = {
     es: {
       href: "/restaurantes",
-      src: "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/WhatsApp-Image-2025-10-28-at-5.15.32-PM.jpeg",
+      src: "/bannerHome/65 RESTAURANTES.svg",
       alt: "Banner Restaurantes (ES)",
     },
     en: {
       href: "/restaurantes",
-      src: "https://azure-seal-918691.hostingersite.com/wp-content/uploads/2025/10/WhatsApp-Image-2025-10-28-at-5.15.32-PM.jpeg",
+      src: "/bannerHome/65 RESTAURANTES.svg",
       alt: "Restaurants Banner (EN)",
     },
   };

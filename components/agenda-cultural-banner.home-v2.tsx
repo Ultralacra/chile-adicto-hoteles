@@ -15,7 +15,7 @@ export function AgendaCulturalBanner() {
         className="block"
       >
         <Image
-          src="/AGENDA CULTURAL HEADER.svg"
+          src="/bannerHome/AGENDA CULTURAL HEADER.svg"
           alt="Agenda Cultural"
           width={708}
           height={136}

@@ -1,6 +1,7 @@
 "use client";
 
 import { Header } from "@/components/header.home-v2";
+import { HeroSlider } from "@/components/hero-slider";
 import Link from "next/link";
 import { HotelCard } from "@/components/hotel-card";
 import { Footer } from "@/components/footer";
@@ -121,14 +122,43 @@ export default function Page() {
                   dotBottom={24}
                 />
                 */}
-                <div className="w-full h-full bg-black overflow-hidden flex items-center justify-center">
-                  <img
-                    src="/bannerHome/imagen-test.jpeg"
-                    alt="Imagen de prueba"
-                    className="w-full h-full object-cover"
-                    loading="lazy"
-                  />
-                </div>
+                <HeroSlider
+                  desktopImages={[
+                    "/sliderHome/ICONOS.png",
+                    "/sliderHome/ARQ.png",
+                    "/sliderHome/BARRIOS.png",
+                    "/sliderHome/MERCADOS.png",
+                    "/sliderHome/MIRADORES.png",
+                    "/sliderHome/CULTURA.png",
+                    "/sliderHome/PALACIOS.png",
+                    "/sliderHome/PARQUES.png",
+                    "/sliderHome/FUERA DE STGO.png",
+                  ]}
+                  mobileImages={[
+                    "/sliderHome/ICONOS.png",
+                    "/sliderHome/ARQ.png",
+                    "/sliderHome/BARRIOS.png",
+                    "/sliderHome/MERCADOS.png",
+                    "/sliderHome/MIRADORES.png",
+                    "/sliderHome/CULTURA.png",
+                    "/sliderHome/PALACIOS.png",
+                    "/sliderHome/PARQUES.png",
+                    "/sliderHome/FUERA DE STGO.png",
+                  ]}
+                  objectPosition="left"
+                  slideHrefs={[
+                    "/iconos",
+                    "/arquitectura",
+                    "/barrios",
+                    "/mercados",
+                    "/miradores",
+                    "/museos",
+                    "/palacios",
+                    "/parques",
+                    "/paseos-fuera-de-santiago",
+                  ]}
+                  dotBottom={24}
+                />
               </div>
             </div>
 

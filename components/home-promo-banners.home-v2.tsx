@@ -16,7 +16,7 @@ export function PromoStackBanners() {
           rel="noopener noreferrer"
         >
           <img
-            src="/bannerHome/70 HOTELES.svg"
+            src="/bannerHome/70%20HOTELES.png"
             alt="Hoteles"
             className="w-full h-full object-contain md:object-cover"
             style={{

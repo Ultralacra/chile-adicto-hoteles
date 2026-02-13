@@ -15,11 +15,11 @@ export function AgendaCulturalBanner() {
         className="block"
       >
         <Image
-          src="/bannerHome/AGENDA CULTURAL HEADER.svg"
+          src="/bannerHome/AGENDA%20CULTURAL%20HEADER.png"
           alt="Agenda Cultural"
           width={708}
           height={136}
-          className="h-[100px] w-auto max-w-full"
+          className="h-[120px] w-auto max-w-full"
           priority
         />
       </Link>

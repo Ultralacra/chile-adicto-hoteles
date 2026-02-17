@@ -35,6 +35,29 @@ export const postSchema = z.object({
   featuredImage: z.string().optional(),
   images: z.array(z.string()).optional(),
   categories: z.array(z.string().min(1)).optional(),
+  publicationStatus: z.enum(["published", "unpublished"]).optional(),
+  publishStartAt: z
+    .union([
+      z
+        .string()
+        .regex(
+          /^\d{4}-\d{2}-\d{2}(?:T\d{2}:\d{2}(?::\d{2}(?:\.\d{1,3})?)?(?:Z|[+-]\d{2}:\d{2})?)?$/,
+          "publishStartAt debe ser YYYY-MM-DD o datetime válido"
+        ),
+      z.literal(""),
+    ])
+    .optional(),
+  publishEndAt: z
+    .union([
+      z
+        .string()
+        .regex(
+          /^\d{4}-\d{2}-\d{2}(?:T\d{2}:\d{2}(?::\d{2}(?:\.\d{1,3})?)?(?:Z|[+-]\d{2}:\d{2})?)?$/,
+          "publishEndAt debe ser YYYY-MM-DD o datetime válido"
+        ),
+      z.literal(""),
+    ])
+    .optional(),
   website: z.string().optional(),
   website_display: z.string().optional(),
   instagram: z.string().optional(),

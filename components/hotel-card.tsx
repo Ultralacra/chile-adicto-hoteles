@@ -8,6 +8,9 @@ interface HotelCardProps {
   description: string;
   image: string;
   imageVariant?: "default" | "tall";
+  publishStartAt?: string | null;
+  publishEndAt?: string | null;
+  publicationEndsAt?: string | null;
 }
 
 export function HotelCard({
@@ -17,11 +20,38 @@ export function HotelCard({
   description,
   image,
   imageVariant = "default",
+  publishStartAt,
+  publishEndAt,
+  publicationEndsAt,
 }: HotelCardProps) {
   const imageContainerClass =
     imageVariant === "tall" ? "h-[400px]" : "aspect-[386/264]";
 
   const looksLikeHtml = /<[^>]+>/.test(description);
+
+  const formatPublicationDate = (value?: string | null): string | null => {
+    const raw = String(value || "").trim();
+    if (!raw) return null;
+    const parsed = new Date(raw);
+    if (Number.isNaN(parsed.getTime())) return raw;
+    const hasTime = /T\d{2}:\d{2}|\d{2}:\d{2}/.test(raw);
+    return new Intl.DateTimeFormat("es-CL", {
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+      ...(hasTime
+        ? {
+            hour: "2-digit",
+            minute: "2-digit",
+          }
+        : {}),
+    }).format(parsed);
+  };
+
+  const endValue = publicationEndsAt || publishEndAt || null;
+  const startLabel = formatPublicationDate(publishStartAt);
+  const endLabel = formatPublicationDate(endValue);
+  const showPublicationDates = Boolean(startLabel || endLabel);
 
   return (
     <Link href={`/${slug}`}>
@@ -60,6 +90,20 @@ export function HotelCard({
               <p className="font-neutra text-[15px] font-normal text-black uppercase leading-[19px]">
                 {subtitle}
               </p>
+              {showPublicationDates && (
+                <div className="mt-1 font-neutra text-[12px] leading-[16px] text-black/70">
+                  {startLabel && (
+                    <div>
+                      <span className="font-semibold">Desde:</span> {startLabel}
+                    </div>
+                  )}
+                  {endLabel && (
+                    <div>
+                      <span className="font-semibold">Hasta:</span> {endLabel}
+                    </div>
+                  )}
+                </div>
+              )}
             </div>
           </div>
 

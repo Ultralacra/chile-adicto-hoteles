@@ -17,6 +17,7 @@ import {
 } from "@/components/ui/pagination";
 import { Spinner } from "@/components/ui/spinner";
 import { useAdminApi } from "@/hooks/use-admin-api";
+import { getPostPublicationBadge } from "@/lib/post-publication";
 
 export default function PostsListPage() {
   const router = useRouter();
@@ -211,7 +212,7 @@ export default function PostsListPage() {
     };
 
     return hotelsData.filter(
-      (h) => matchesQuery(h) && matchesCategory(h) && matchesComuna(h)
+      (h) => matchesQuery(h) && matchesCategory(h) && matchesComuna(h),
     );
   }, [query, category, hotelsData, selectedComuna]);
 
@@ -236,7 +237,7 @@ export default function PostsListPage() {
   useEffect(() => {
     try {
       const params = new URLSearchParams(
-        typeof window !== "undefined" ? window.location.search : ""
+        typeof window !== "undefined" ? window.location.search : "",
       );
       const c = params.get("category");
       if (c) setCategory(c.toUpperCase());
@@ -447,6 +448,17 @@ export default function PostsListPage() {
 
                 {/* Content */}
                 <div className="p-4">
+                  <div className="mb-2">
+                    <span
+                      className={`inline-flex items-center rounded px-2 py-1 text-[11px] font-semibold ${
+                        getPostPublicationBadge(hotel) === "Publicado"
+                          ? "bg-green-100 text-green-700"
+                          : "bg-gray-200 text-gray-700"
+                      }`}
+                    >
+                      {getPostPublicationBadge(hotel)}
+                    </span>
+                  </div>
                   <h3 className="font-semibold text-lg text-gray-900 mb-1 line-clamp-1">
                     {hotel.es?.name || hotel.en?.name || hotel.slug}
                   </h3>

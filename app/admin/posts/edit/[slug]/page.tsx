@@ -137,6 +137,29 @@ export default function EditPostPage({
   const [reservationLink, setReservationLink] = useState("");
   const [reservationPolicy, setReservationPolicy] = useState("");
   const [interestingFact, setInterestingFact] = useState("");
+  const [publicationStatus, setPublicationStatus] = useState<
+    "published" | "unpublished"
+  >("published");
+  const [publishStartAt, setPublishStartAt] = useState("");
+  const [publishEndAt, setPublishEndAt] = useState("");
+
+  const toDateTimeLocalNow = () => {
+    const now = new Date();
+    const pad = (n: number) => String(n).padStart(2, "0");
+    return `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())}T${pad(now.getHours())}:${pad(now.getMinutes())}`;
+  };
+
+  const toDateTimeLocalInput = (value: unknown): string => {
+    const s = String(value ?? "").trim();
+    if (!s) return "";
+    if (/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}$/.test(s)) return s;
+    if (/^\d{4}-\d{2}-\d{2}$/.test(s)) return `${s}T00:00`;
+
+    const dt = new Date(s);
+    if (Number.isNaN(dt.getTime())) return "";
+    const pad = (n: number) => String(n).padStart(2, "0");
+    return `${dt.getFullYear()}-${pad(dt.getMonth() + 1)}-${pad(dt.getDate())}T${pad(dt.getHours())}:${pad(dt.getMinutes())}`;
+  };
 
   // Imágenes: mantener arreglo y featured index + featuredImage persistente
   const [images, setImages] = useState<string[]>([]);
@@ -224,9 +247,13 @@ export default function EditPostPage({
       );
       if (!res.ok) throw new Error(await res.text());
       // Refrescar datos del post para reconstruir la galería con orden correcto
-      const fresh = await fetch(`/api/posts/${encodeURIComponent(slug)}`, {
-        cache: "no-store",
-      }).then((r) => (r.ok ? r.json() : null));
+      const freshRes = await fetchWithSite(
+        `/api/posts/${encodeURIComponent(slug)}`,
+        {
+          cache: "no-store",
+        },
+      );
+      const fresh = freshRes.ok ? await freshRes.json() : null;
       if (fresh) {
         let next: string[] = Array.isArray(fresh.images)
           ? fresh.images.slice()
@@ -337,6 +364,14 @@ export default function EditPostPage({
     setReservationLink(hotel.reservationLink || "");
     setReservationPolicy(hotel.reservationPolicy || "");
     setInterestingFact(hotel.interestingFact || "");
+    setPublicationStatus(
+      String(hotel.publicationStatus || "published").toLowerCase() ===
+        "unpublished"
+        ? "unpublished"
+        : "published",
+    );
+    setPublishStartAt(toDateTimeLocalInput(hotel.publishStartAt));
+    setPublishEndAt(toDateTimeLocalInput(hotel.publishEndAt));
     setEditSlug(hotel.slug || slug);
 
     let initialImgs: string[] = Array.isArray(hotel.images)
@@ -487,6 +522,9 @@ export default function EditPostPage({
     const updated = {
       slug: editSlug || hotel?.slug || slug,
       featuredImage: finalFeatured || undefined,
+      publicationStatus,
+      publishStartAt,
+      publishEndAt,
       es: {
         name: nameEs,
         subtitle: subtitleEs,
@@ -539,6 +577,10 @@ export default function EditPostPage({
       reservationPolicy:
         reservationPolicy.trim() === "" ? "" : reservationPolicy,
       interestingFact: interestingFact.trim() === "" ? "" : interestingFact,
+      publicationStatus: normalized.publicationStatus || "published",
+      publishStartAt:
+        publishStartAt.trim() === "" ? "" : normalized.publishStartAt,
+      publishEndAt: publishEndAt.trim() === "" ? "" : normalized.publishEndAt,
       images: normalized.images, // galería sin destacada
       categories: (normalized.categories || []).filter(
         (c: string) => String(c).toUpperCase() !== "TODOS",
@@ -850,6 +892,90 @@ export default function EditPostPage({
                   Usa minúsculas, números y guiones. Ej: mi-post-ejemplo
                 </p>
               )}
+            </div>
+            <div>
+              <Label className="text-sm font-medium mb-2 block">
+                Publicación
+              </Label>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                <div>
+                  <Label className="text-xs text-gray-600 mb-1 block">
+                    Estado
+                  </Label>
+                  <select
+                    value={publicationStatus}
+                    onChange={(e) =>
+                      setPublicationStatus(
+                        e.target.value === "unpublished"
+                          ? "unpublished"
+                          : "published",
+                      )
+                    }
+                    className="w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm"
+                  >
+                    <option value="published">Publicado</option>
+                    <option value="unpublished">No publicado</option>
+                  </select>
+                </div>
+                <div>
+                  <Label className="text-xs text-gray-600 mb-1 block">
+                    Inicio publicación (fecha y hora)
+                  </Label>
+                  <div className="flex items-center gap-2">
+                    <Input
+                      type="datetime-local"
+                      value={publishStartAt}
+                      onChange={(e) => setPublishStartAt(e.target.value)}
+                    />
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      onClick={() => {
+                        setPublicationStatus("published");
+                        setPublishStartAt(toDateTimeLocalNow());
+                      }}
+                    >
+                      Publicar ahora
+                    </Button>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      onClick={() => setPublishStartAt("")}
+                    >
+                      Limpiar
+                    </Button>
+                  </div>
+                </div>
+                <div>
+                  <Label className="text-xs text-gray-600 mb-1 block">
+                    Fin publicación (fecha y hora)
+                  </Label>
+                  <div className="flex items-center gap-2">
+                    <Input
+                      type="datetime-local"
+                      value={publishEndAt}
+                      onChange={(e) => setPublishEndAt(e.target.value)}
+                    />
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      onClick={() => setPublishEndAt("")}
+                    >
+                      Limpiar
+                    </Button>
+                  </div>
+                </div>
+              </div>
+              <p className="text-xs text-gray-500 mt-2">
+                Si dejas fechas vacías, el post depende solo del estado manual.
+              </p>
+              <p className="text-xs text-gray-500 mt-1">
+                Usa "Publicar ahora" para fijar la fecha/hora actual y evitar
+                desfases.
+              </p>
             </div>
             <div>
               <Label className="text-sm font-medium mb-2 block">

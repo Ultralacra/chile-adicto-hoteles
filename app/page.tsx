@@ -227,6 +227,9 @@ export default function Page() {
                       })()}
                       image={hotel.featuredImage || hotel.images?.[0] || ""}
                       imageVariant="default"
+                      publishStartAt={hotel.publishStartAt}
+                      publishEndAt={hotel.publishEndAt}
+                      publicationEndsAt={hotel.publicationEndsAt}
                     />
                   </div>
                 ))}

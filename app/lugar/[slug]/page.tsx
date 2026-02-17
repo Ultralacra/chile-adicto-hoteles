@@ -80,7 +80,7 @@ export default function LugarPage(props: any) {
             <p className="text-xl text-[var(--color-brand-gray)] mb-8">
               {t(
                 "Este hotel aún está en proceso de migración. Por favor, vuelve pronto.",
-                "This hotel is still being migrated. Please check back soon."
+                "This hotel is still being migrated. Please check back soon.",
               )}
             </p>
             <a
@@ -129,6 +129,9 @@ export default function LugarPage(props: any) {
         reservationLink: source.reservationLink || "",
         reservationPolicy: source.reservationPolicy || "",
         interestingFact: source.interestingFact || "",
+        publishStartAt: source.publishStartAt || null,
+        publishEndAt: source.publishEndAt || null,
+        publicationEndsAt: source.publicationEndsAt || null,
         // Imagen destacada separada de la galería; si no viene, usamos la primera.
         // Además, evitamos duplicados comparando por nombre de archivo (ignorando query y mayúsculas).
         ...(() => {
@@ -325,7 +328,7 @@ export default function LugarPage(props: any) {
             <p className="text-xl text-[var(--color-brand-gray)] mb-8">
               {t(
                 "Este hotel aún está en proceso de migración. Por favor, vuelve pronto.",
-                "This hotel is still being migrated. Please check back soon."
+                "This hotel is still being migrated. Please check back soon.",
               )}
             </p>
             <a
@@ -360,7 +363,7 @@ export default function LugarPage(props: any) {
   }
 
   const activeCategorySlug = categoryToSlug(
-    (hotel?.categories && hotel.categories[0]) || "todos"
+    (hotel?.categories && hotel.categories[0]) || "todos",
   );
   const isRestaurantPost = activeCategorySlug === "restaurantes";
 

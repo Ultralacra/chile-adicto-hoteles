@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { isPostCurrentlyPublished } from "@/lib/post-publication";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -34,8 +35,9 @@ export async function GET(req: Request) {
   const url = new URL(req.url);
   const q = String(url.searchParams.get("q") || "").trim().toLowerCase();
   const limit = Math.min(Math.max(Number(url.searchParams.get("limit") || 30) || 30, 5), 100);
+  const isAdminRequest = !!url.searchParams.get("adminSite");
 
-  const select = "slug,featured_image,translations:post_translations(lang,name)";
+  const select = "slug,featured_image,publication_status,publish_start_at,publish_end_at,translations:post_translations(lang,name)";
 
   // Sin q: devolver algunos posts (orden por slug)
   const basePath = `/posts?select=${encodeURIComponent(select)}&order=slug.asc&limit=${limit}`;
@@ -56,11 +58,16 @@ export async function GET(req: Request) {
       return {
         slug: String(p.slug || ""),
         featuredImage: p.featured_image || null,
+        publicationStatus: p.publication_status || "published",
+        publishStartAt: p.publish_start_at || null,
+        publishEndAt: p.publish_end_at || null,
+        publicationEndsAt: p.publish_end_at || null,
         name_es: trEs.name || "",
         name_en: trEn.name || "",
       };
     })
-    .filter((p: any) => p.slug);
+    .filter((p: any) => p.slug)
+    .filter((p: any) => (isAdminRequest ? true : isPostCurrentlyPublished(p)));
 
   if (!q) return NextResponse.json({ items: mapped.slice(0, limit) }, { status: 200 });
 

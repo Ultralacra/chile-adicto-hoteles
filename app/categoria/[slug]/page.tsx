@@ -960,6 +960,9 @@ export default function CategoryPage({ params }: { params: any }) {
                         ? "tall"
                         : "default"
                     }
+                    publishStartAt={hotel.publishStartAt}
+                    publishEndAt={hotel.publishEndAt}
+                    publicationEndsAt={hotel.publicationEndsAt}
                   />
                 ))
               ) : (

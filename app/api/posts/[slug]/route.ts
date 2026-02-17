@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { postSchema } from "@/lib/post-schema";
 import { normalizePost } from "@/lib/post-normalize";
 import { getCurrentSiteId } from "@/lib/site-utils";
+import { isPostCurrentlyPublished } from "@/lib/post-publication";
 
 function envOrNull(name: string) {
   const v = process.env[name];
@@ -94,6 +95,10 @@ function mapRowToLegacy(row: any) {
     : [];
   return {
     slug: row.slug,
+    publicationStatus: row.publication_status || "published",
+    publishStartAt: row.publish_start_at || null,
+    publishEndAt: row.publish_end_at || null,
+    publicationEndsAt: row.publish_end_at || null,
     featuredImage: row.featured_image || null,
     website: row.website || null,
     instagram: row.instagram || null,
@@ -129,24 +134,49 @@ function mapRowToLegacy(row: any) {
   };
 }
 
+async function fetchWithPublicationFallback(pathWithSelectBase: string) {
+  try {
+    return await fetchFromSupabase(pathWithSelectBase);
+  } catch (err: any) {
+    const msg = String(err?.message || "");
+    const missingColumn =
+      /Could not find the '([a-zA-Z0-9_]+)' column/i.test(msg) ||
+      /column\s+[^.]*\.?([a-zA-Z0-9_]+)\s+does not exist/i.test(msg);
+    if (!missingColumn) throw err;
+    const fallback = pathWithSelectBase
+      .replace("publication_status,", "")
+      .replace("publish_start_at,", "")
+      .replace("publish_end_at,", "")
+      .replace("publication_status%2C", "")
+      .replace("publish_start_at%2C", "")
+      .replace("publish_end_at%2C", "");
+    return await fetchFromSupabase(fallback);
+  }
+}
+
 // GET /api/posts/[slug]
 export async function GET(
   _req: Request,
   { params }: { params: { slug: string } }
 ) {
   try {
+    const url = new URL(_req.url);
+    const isAdminRequest = !!url.searchParams.get("adminSite");
     const siteId = await getCurrentSiteId(_req);
     const ctx = (await (params as any)) as { slug?: string };
     const slug = String(ctx?.slug || "").trim();
 
     // Intentar Supabase
     const select =
-      "slug,featured_image,website,instagram,website_display,instagram_display,email,phone,photos_credit,address,hours,reservation_link,reservation_policy,interesting_fact,site,images:post_images(url,position),locations:post_locations(*),translations:post_translations(*),useful:post_useful_info(*),category_links:post_category_map(category:categories(slug,label_es,label_en))";
-    const rows: any[] | null = await fetchFromSupabase(
+      "slug,publication_status,publish_start_at,publish_end_at,featured_image,website,instagram,website_display,instagram_display,email,phone,photos_credit,address,hours,reservation_link,reservation_policy,interesting_fact,site,images:post_images(url,position),locations:post_locations(*),translations:post_translations(*),useful:post_useful_info(*),category_links:post_category_map(category:categories(slug,label_es,label_en))";
+    const rows: any[] | null = await fetchWithPublicationFallback(
       `/posts?slug=eq.${encodeURIComponent(slug)}&site=eq.${siteId}&select=${encodeURIComponent(select)}`
     );
     if (rows && rows.length > 0) {
       const mapped = mapRowToLegacy(rows[0]);
+      if (!isAdminRequest && !isPostCurrentlyPublished(mapped)) {
+        return NextResponse.json({ error: "not_found" }, { status: 404 });
+      }
       return NextResponse.json(mapped, { status: 200 });
     }
 
@@ -231,6 +261,12 @@ export async function PUT(
               ? "reservation_policy"
               : key === "interestingFact"
               ? "interesting_fact"
+              : key === "publicationStatus"
+              ? "publication_status"
+              : key === "publishStartAt"
+              ? "publish_start_at"
+              : key === "publishEndAt"
+              ? "publish_end_at"
               : key
           ] = value ?? null;
         }
@@ -248,6 +284,9 @@ export async function PUT(
       setIfProvided("reservationLink", normalized.reservationLink);
       setIfProvided("reservationPolicy", normalized.reservationPolicy);
       setIfProvided("interestingFact", normalized.interestingFact);
+      setIfProvided("publicationStatus", normalized.publicationStatus);
+      setIfProvided("publishStartAt", normalized.publishStartAt);
+      setIfProvided("publishEndAt", normalized.publishEndAt);
 
       if (Object.keys(patchData).length > 0) {
         const tryPatch = async () => {

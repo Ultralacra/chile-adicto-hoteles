@@ -52,6 +52,9 @@ export interface PostBase {
   featuredImage?: string; // imagen principal (separada de la galería)
   images: string[]; // galería (excluye la destacada)
   categories: string[]; // etiquetas superiores (ALL/TODOS, NORTE, etc.)
+  publicationStatus?: "published" | "unpublished";
+  publishStartAt?: string; // ISO datetime o YYYY-MM-DD (compatibilidad)
+  publishEndAt?: string; // ISO datetime o YYYY-MM-DD (compatibilidad)
 }
 
 export type Post = PostBase & PostContact;

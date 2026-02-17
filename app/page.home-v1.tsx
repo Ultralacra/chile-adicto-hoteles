@@ -187,6 +187,9 @@ export default function Page() {
                         return buildCardExcerpt(paras);
                       })()}
                       image={hotel.featuredImage || hotel.images?.[0] || ""}
+                      publishStartAt={hotel.publishStartAt}
+                      publishEndAt={hotel.publishEndAt}
+                      publicationEndsAt={hotel.publicationEndsAt}
                     />
                   </div>
                 ))}

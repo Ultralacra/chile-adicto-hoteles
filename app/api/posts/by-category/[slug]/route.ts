@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { isPostCurrentlyPublished } from "@/lib/post-publication";
 
 function envOrNull(name: string) {
   const v = process.env[name];
@@ -54,6 +55,10 @@ function mapRowToLegacy(row: any) {
     : [];
   return {
     slug: row.slug,
+    publicationStatus: row.publication_status || "published",
+    publishStartAt: row.publish_start_at || null,
+    publishEndAt: row.publish_end_at || null,
+    publicationEndsAt: row.publish_end_at || null,
     featuredImage: row.featured_image || null,
     website: row.website || null,
     instagram: row.instagram || null,
@@ -85,6 +90,26 @@ function mapRowToLegacy(row: any) {
   };
 }
 
+async function fetchWithPublicationFallback(pathWithSelectBase: string) {
+  try {
+    return await fetchFromSupabase(pathWithSelectBase);
+  } catch (err: any) {
+    const msg = String(err?.message || "");
+    const missingColumn =
+      /Could not find the '([a-zA-Z0-9_]+)' column/i.test(msg) ||
+      /column\s+[^.]*\.?([a-zA-Z0-9_]+)\s+does not exist/i.test(msg);
+    if (!missingColumn) throw err;
+    const fallback = pathWithSelectBase
+      .replace("publication_status,", "")
+      .replace("publish_start_at,", "")
+      .replace("publish_end_at,", "")
+      .replace("publication_status%2C", "")
+      .replace("publish_start_at%2C", "")
+      .replace("publish_end_at%2C", "");
+    return await fetchFromSupabase(fallback);
+  }
+}
+
 // GET /api/posts/by-category/[slug]
 export async function GET(req: Request, { params }: { params: { slug: string } }) {
   try {
@@ -94,8 +119,8 @@ export async function GET(req: Request, { params }: { params: { slug: string } }
     const url = new URL(req.url);
     const q = url.searchParams.get("q") || "";
     const select =
-      "slug,featured_image,website,instagram,website_display,instagram_display,email,phone,photos_credit,address,hours,reservation_link,reservation_policy,interesting_fact,images:post_images(url,position),locations:post_locations(*),translations:post_translations(*),category_links:post_category_map(category:categories(slug,label_es,label_en))";
-    let rows: any[] | null = await fetchFromSupabase(`/posts?select=${encodeURIComponent(select)}`);
+      "slug,publication_status,publish_start_at,publish_end_at,featured_image,website,instagram,website_display,instagram_display,email,phone,photos_credit,address,hours,reservation_link,reservation_policy,interesting_fact,images:post_images(url,position),locations:post_locations(*),translations:post_translations(*),category_links:post_category_map(category:categories(slug,label_es,label_en))";
+    let rows: any[] | null = await fetchWithPublicationFallback(`/posts?select=${encodeURIComponent(select)}`);
     if (!rows) return NextResponse.json([], { status: 200 });
 
     // Filtrar por slug de categoría. Fallback: si no hay mapeo, usar category de traducciones.
@@ -127,7 +152,8 @@ export async function GET(req: Request, { params }: { params: { slug: string } }
       });
     }
 
-    return NextResponse.json(rows.map(mapRowToLegacy), { status: 200 });
+    const mapped = rows.map(mapRowToLegacy).filter((post: any) => isPostCurrentlyPublished(post));
+    return NextResponse.json(mapped, { status: 200 });
   } catch (err: any) {
     console.error("[GET /api/posts/by-category/[slug]] error", err);
     return NextResponse.json({ error: "internal_error" }, { status: 500 });

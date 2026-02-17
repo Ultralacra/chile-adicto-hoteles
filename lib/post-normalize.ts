@@ -34,6 +34,29 @@ export function normalizePost(input: PostInput): PostInput {
   const enDesc = Array.isArray(enIn.description) ? enIn.description : [];
   const catsIn = Array.isArray((input as any).categories) ? (input as any).categories : [];
   const locsIn = Array.isArray((input as any).locations) ? (input as any).locations : [];
+  const rawPublicationStatus = String((input as any)?.publicationStatus || "").trim().toLowerCase();
+  const normalizedPublicationStatus =
+    rawPublicationStatus === "unpublished" ? "unpublished" : rawPublicationStatus === "published" ? "published" : undefined;
+  const normalizeDate = (value: unknown): string | undefined => {
+    if (value === undefined || value === null) return undefined;
+    const raw = String(value).trim();
+    if (!raw) return undefined;
+    if (/^\d{4}-\d{2}-\d{2}$/.test(raw)) return raw;
+
+    // datetime-local (sin zona): asumimos zona local del cliente y serializamos a ISO UTC
+    if (/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}$/.test(raw)) {
+      const dt = new Date(raw);
+      if (!Number.isNaN(dt.getTime())) return dt.toISOString();
+      return raw;
+    }
+
+    // ISO / datetime con zona
+    const dt = new Date(raw);
+    if (!Number.isNaN(dt.getTime())) return dt.toISOString();
+    return raw;
+  };
+  const publishStartAt = normalizeDate((input as any)?.publishStartAt);
+  const publishEndAt = normalizeDate((input as any)?.publishEndAt);
 
   const normalizedLocs = locsIn.map((loc: any) => {
     const website = fixUrl(loc.website);
@@ -67,6 +90,9 @@ export function normalizePost(input: PostInput): PostInput {
     phone: normPhone,
     website: fixUrl((input as any).website),
     reservationLink: fixUrl((input as any).reservationLink),
+    publicationStatus: normalizedPublicationStatus,
+    publishStartAt,
+    publishEndAt,
     images: uniqueImages,
     slug: String(input.slug).trim(),
     es: {

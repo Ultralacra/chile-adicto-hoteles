@@ -10,7 +10,7 @@ export function PromoStackBanners() {
         style={{ height: 210 }}
       >
         <Link
-          href="https://chile-adicto-hoteles-front.vercel.app/"
+          href="https://chileadictohoteles.cl/"
           className="block w-full h-full"
           target="_blank"
           rel="noopener noreferrer"

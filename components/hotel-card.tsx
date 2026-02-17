@@ -11,6 +11,7 @@ interface HotelCardProps {
   publishStartAt?: string | null;
   publishEndAt?: string | null;
   publicationEndsAt?: string | null;
+  showPublicationDates?: boolean;
 }
 
 export function HotelCard({
@@ -23,6 +24,7 @@ export function HotelCard({
   publishStartAt,
   publishEndAt,
   publicationEndsAt,
+  showPublicationDates = true,
 }: HotelCardProps) {
   const imageContainerClass =
     imageVariant === "tall" ? "h-[400px]" : "aspect-[386/264]";
@@ -51,7 +53,8 @@ export function HotelCard({
   const endValue = publicationEndsAt || publishEndAt || null;
   const startLabel = formatPublicationDate(publishStartAt);
   const endLabel = formatPublicationDate(endValue);
-  const showPublicationDates = Boolean(startLabel || endLabel);
+  const shouldShowPublicationDates =
+    showPublicationDates && Boolean(startLabel || endLabel);
 
   return (
     <Link href={`/${slug}`}>
@@ -90,7 +93,7 @@ export function HotelCard({
               <p className="font-neutra text-[15px] font-normal text-black uppercase leading-[19px]">
                 {subtitle}
               </p>
-              {showPublicationDates && (
+              {shouldShowPublicationDates && (
                 <div className="mt-1 font-neutra text-[12px] leading-[16px] text-black/70">
                   {startLabel && (
                     <div>

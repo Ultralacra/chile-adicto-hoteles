@@ -963,6 +963,7 @@ export default function CategoryPage({ params }: { params: any }) {
                     publishStartAt={hotel.publishStartAt}
                     publishEndAt={hotel.publishEndAt}
                     publicationEndsAt={hotel.publicationEndsAt}
+                    showPublicationDates={false}
                   />
                 ))
               ) : (

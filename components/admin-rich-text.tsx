@@ -36,7 +36,7 @@ export default function AdminRichText({ value, onChange }: AdminRichTextProps) {
 
   const onPaste = (e: React.ClipboardEvent<HTMLDivElement>) => {
     // Pegar como HTML limpio básico (permitimos el propio contenteditable formatear)
-    // Para simplificar, pegamos texto plano y dejamos que el usuario formatee
+    // Para simplificar, pegamos texto plano y dejamos que el usuario
     e.preventDefault();
     const text = e.clipboardData.getData("text/plain");
     document.execCommand("insertText", false, text);

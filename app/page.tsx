@@ -181,13 +181,13 @@ export default function Page() {
             </div>
 
             {/* Columna 3: 2 banners apilados */}
-            <div className="w-full mt-6 lg:mt-0">
+            <div className="w-full mt-[18px] lg:mt-0">
               <PromoStackBanners />
             </div>
           </div>
 
           {/* Banner adicional debajo del slider (se mantiene además de los 2 laterales) */}
-          <div className="w-full mt-6">
+          <div className="w-full mt-[18px] md:mt-6">
             <BottomHomeBanner />
           </div>
 

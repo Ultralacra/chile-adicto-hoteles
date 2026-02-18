@@ -4,11 +4,8 @@ import Link from "next/link";
 
 export function PromoStackBanners() {
   return (
-    <div className="w-full flex flex-col gap-4 overflow-hidden h-[435px] md:h-[520px] lg:h-[437px]">
-      <div
-        className="flex-1 min-h-0 relative overflow-hidden max-w-[435px] mx-auto"
-        style={{ height: 210 }}
-      >
+    <div className="w-full flex flex-col gap-[18px] md:gap-4 overflow-hidden md:h-[520px] lg:h-[437px]">
+      <div className="relative overflow-hidden max-w-[435px] mx-auto md:flex-1 md:min-h-0">
         <Link
           href="https://chileadictohoteles.cl/"
           className="block w-full h-full"
@@ -18,21 +15,13 @@ export function PromoStackBanners() {
           <img
             src="/bannerHome/70%20HOTELES.png"
             alt="Hoteles"
-            className="w-full h-full object-contain md:object-cover"
-            style={{
-              objectPosition: "center",
-              width: 435,
-              height: 210,
-              maxWidth: "100%",
-            }}
+            className="block w-full h-auto md:h-full object-contain md:object-cover"
+            style={{ objectPosition: "center", maxWidth: "100%" }}
           />
         </Link>
       </div>
 
-      <div
-        className="flex-1 min-h-0 relative overflow-hidden max-w-[435px] mx-auto"
-        style={{ height: 210 }}
-      >
+      <div className="relative overflow-hidden max-w-[435px] mx-auto md:flex-1 md:min-h-0">
         <Link
           href="/cafes"
           className="block w-full h-full"
@@ -41,13 +30,8 @@ export function PromoStackBanners() {
           <img
             src="/bannerHome/30 CAFES.svg"
             alt="Cafés"
-            className="w-full h-full object-contain md:object-cover"
-            style={{
-              objectPosition: "center",
-              width: 435,
-              height: 210,
-              maxWidth: "100%",
-            }}
+            className="block w-full h-auto md:h-full object-contain md:object-cover"
+            style={{ objectPosition: "center", maxWidth: "100%" }}
             loading="lazy"
           />
         </Link>

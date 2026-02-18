@@ -55,6 +55,68 @@ async function serviceRest(path: string, init?: RequestInit) {
   return res.json();
 }
 
+function normalizeCommuneKey(value: string) {
+  return String(value || "")
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .trim()
+    .toUpperCase();
+}
+
+async function resolveCommuneSlugs(siteId: string, communesInput: unknown) {
+  const rawList = Array.isArray(communesInput) ? communesInput : [];
+  const requested = Array.from(
+    new Set(rawList.map((x: any) => String(x || "").trim()).filter(Boolean))
+  );
+  if (requested.length === 0) return [] as string[];
+
+  const rows: any[] =
+    (await serviceRest(
+      `/communes?site=eq.${siteId}&select=slug,label`
+    )) || [];
+
+  const dict = new Map<string, string>();
+  for (const row of Array.isArray(rows) ? rows : []) {
+    const slug = String(row?.slug || "").trim();
+    const label = String(row?.label || "").trim();
+    if (!slug) continue;
+    dict.set(normalizeCommuneKey(slug), slug);
+    if (label) dict.set(normalizeCommuneKey(label), slug);
+  }
+
+  const slugs: string[] = [];
+  for (const item of requested) {
+    const found = dict.get(normalizeCommuneKey(item));
+    if (found && !slugs.includes(found)) slugs.push(found);
+  }
+  return slugs;
+}
+
+async function replacePostCommunes(
+  postId: string,
+  siteId: string,
+  communesInput: unknown
+) {
+  const slugs = await resolveCommuneSlugs(siteId, communesInput);
+  await serviceRest(`/post_communes?post_id=eq.${encodeURIComponent(postId)}`, {
+    method: "DELETE",
+    headers: { Prefer: "return=minimal" },
+  });
+
+  if (slugs.length === 0) return;
+
+  await serviceRest(`/post_communes?on_conflict=post_id,commune_slug`, {
+    method: "POST",
+    headers: { Prefer: "return=representation,resolution=merge-duplicates" },
+    body: JSON.stringify(
+      slugs.map((communeSlug) => ({
+        post_id: postId,
+        commune_slug: communeSlug,
+      }))
+    ),
+  });
+}
+
 function mapRowToLegacy(row: any) {
   let images = Array.isArray(row.images)
     ? row.images
@@ -92,6 +154,15 @@ function mapRowToLegacy(row: any) {
   const uEn = useful.find((u: any) => (u.lang || "").toLowerCase() === "en") || {};
   const categories = Array.isArray(row.category_links)
     ? row.category_links.map((r: any) => r.category?.label_es || r.category?.slug).filter(Boolean)
+    : [];
+  const communes = Array.isArray(row.communes_links)
+    ? row.communes_links
+        .map((r: any) => {
+          const label = String(r?.commune?.label || "").trim();
+          const slug = String(r?.commune_slug || r?.commune?.slug || "").trim();
+          return label || slug;
+        })
+        .filter(Boolean)
     : [];
   return {
     slug: row.slug,
@@ -131,6 +202,7 @@ function mapRowToLegacy(row: any) {
       category: trEn.category || null,
     },
     categories,
+    communes,
   };
 }
 
@@ -168,7 +240,7 @@ export async function GET(
 
     // Intentar Supabase
     const select =
-      "slug,publication_status,publish_start_at,publish_end_at,featured_image,website,instagram,website_display,instagram_display,email,phone,photos_credit,address,hours,reservation_link,reservation_policy,interesting_fact,site,images:post_images(url,position),locations:post_locations(*),translations:post_translations(*),useful:post_useful_info(*),category_links:post_category_map(category:categories(slug,label_es,label_en))";
+      "slug,publication_status,publish_start_at,publish_end_at,featured_image,website,instagram,website_display,instagram_display,email,phone,photos_credit,address,hours,reservation_link,reservation_policy,interesting_fact,site,images:post_images(url,position),locations:post_locations(*),translations:post_translations(*),useful:post_useful_info(*),category_links:post_category_map(category:categories(slug,label_es,label_en)),communes_links:post_communes(commune_slug,commune:communes(slug,label))";
     const rows: any[] | null = await fetchWithPublicationFallback(
       `/posts?slug=eq.${encodeURIComponent(slug)}&site=eq.${siteId}&select=${encodeURIComponent(select)}`
     );
@@ -456,6 +528,11 @@ export async function PUT(
       } catch (e) {
         console.warn("[PUT posts] Categorías: continuidad tras fallo en mapeo", e);
       }
+    }
+
+    if (provided.has("communes")) {
+      step = "replace_communes";
+      await replacePostCommunes(postId, siteId, (normalized as any).communes);
     }
 
     return NextResponse.json({ ok: true, slug: normalized.slug || slugParam }, { status: 200 });

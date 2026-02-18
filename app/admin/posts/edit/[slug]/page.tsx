@@ -198,7 +198,7 @@ export default function EditPostPage({
     }
   };
   const [categories, setCategories] = useState<string[]>([]);
-  // Comunas (admin-only hasta que DB soporte): seleccionables tipo categorías
+  // Comunas: seleccionables tipo categorías
   const [possibleCommunes, setPossibleCommunes] = useState<string[]>([]);
   const [loadingCommunes, setLoadingCommunes] = useState(true);
   const [communes, setCommunes] = useState<string[]>([]);
@@ -440,21 +440,31 @@ export default function EditPostPage({
     const detected = possibleCommunes.filter((c) => found.has(c));
     setAutoDetectedCommunes(detected);
 
-    // Cargar comunas manuales desde localStorage (si existen)
+    // Comunas del post: priorizar BD; fallback a detección/localStorage para posts antiguos
+    const dbCommunes = Array.isArray(hotel.communes)
+      ? hotel.communes
+          .map((s: any) => String(s || "").trim())
+          .filter(Boolean)
+      : [];
+    if (dbCommunes.length > 0) {
+      setCommunes(Array.from(new Set(dbCommunes)));
+      return;
+    }
+
     try {
       const key = `post:communes:${hotel.slug}`;
       const saved =
         typeof window !== "undefined" ? window.localStorage.getItem(key) : null;
       if (saved) {
         const arr = JSON.parse(saved);
-        if (Array.isArray(arr)) setCommunes(arr.map((s) => String(s)));
-        else setCommunes(detected);
-      } else {
-        setCommunes(detected);
+        if (Array.isArray(arr)) {
+          setCommunes(arr.map((s) => String(s)));
+          return;
+        }
       }
-    } catch {
-      setCommunes(detected);
-    }
+    } catch {}
+
+    setCommunes(detected);
   }, [hotel]);
 
   const allCategories = categoriesApi;
@@ -630,6 +640,16 @@ export default function EditPostPage({
       return;
     }
     const { payloadToSend, normalized, finalFeatured } = built;
+    const normalizedCategories = (normalized.categories || []).map((c: string) =>
+      String(c || "").trim().toUpperCase(),
+    );
+    if (
+      normalizedCategories.includes("RESTAURANTES") &&
+      communes.length === 0
+    ) {
+      alert("Para posts de RESTAURANTES debes seleccionar al menos una comuna.");
+      return;
+    }
     console.log("[Admin Edit] PUT payloadToSend", payloadToSend);
     console.log("[Admin Edit] Validating normalized:", normalized);
     const result = validatePost(normalized as any);
@@ -1064,9 +1084,8 @@ export default function EditPostPage({
                 )}
               </div>
               <p className="text-[11px] text-gray-500 mt-1">
-                Nota: las comunas aún no se guardan en la base de datos. Se
-                conservan localmente y se incluyen en el JSON de vista
-                previa/guardado para futura compatibilidad.
+                Las comunas seleccionadas se guardan en base de datos y se
+                reflejan en el filtro por comuna del frontend.
               </p>
             </div>
           </div>

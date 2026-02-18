@@ -607,6 +607,16 @@ export default function NewPostPage() {
       return;
     }
     const { payloadToSend, normalized, finalFeatured } = buildPayload();
+    const normalizedCategories = (normalized.categories || []).map((c: string) =>
+      String(c || "").trim().toUpperCase(),
+    );
+    if (
+      normalizedCategories.includes("RESTAURANTES") &&
+      communes.length === 0
+    ) {
+      alert("Para posts de RESTAURANTES debes seleccionar al menos una comuna.");
+      return;
+    }
     const result = validatePost(normalized as any);
     if (!result.ok) {
       const first = result.issues?.[0];
@@ -923,9 +933,8 @@ export default function NewPostPage() {
                 )}
               </div>
               <p className="text-[11px] text-gray-500 mt-1">
-                Nota: las comunas aún no se guardan en la base de datos. Se
-                conservan localmente y se incluyen en el JSON de vista
-                previa/guardado para futura compatibilidad.
+                Las comunas seleccionadas se guardan en base de datos y se
+                reflejan en el filtro por comuna del frontend.
               </p>
             </div>
           </div>

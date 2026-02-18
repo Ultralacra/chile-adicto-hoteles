@@ -33,6 +33,7 @@ export function normalizePost(input: PostInput): PostInput {
   const esDesc = Array.isArray(esIn.description) ? esIn.description : [];
   const enDesc = Array.isArray(enIn.description) ? enIn.description : [];
   const catsIn = Array.isArray((input as any).categories) ? (input as any).categories : [];
+  const communesIn = Array.isArray((input as any).communes) ? (input as any).communes : [];
   const locsIn = Array.isArray((input as any).locations) ? (input as any).locations : [];
   const rawPublicationStatus = String((input as any)?.publicationStatus || "").trim().toLowerCase();
   const normalizedPublicationStatus =
@@ -108,6 +109,9 @@ export function normalizePost(input: PostInput): PostInput {
       description: enDesc.map((p: any) => String(p).trim()).filter(Boolean),
     },
     categories: catsIn.map((c: any) => String(c).trim()).filter(Boolean),
+    communes: Array.from(
+      new Set(communesIn.map((c: any) => String(c).trim()).filter(Boolean))
+    ),
     locations: normalizedLocs,
   } as PostInput;
 }

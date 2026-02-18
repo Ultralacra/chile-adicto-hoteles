@@ -35,6 +35,7 @@ export const postSchema = z.object({
   featuredImage: z.string().optional(),
   images: z.array(z.string()).optional(),
   categories: z.array(z.string().min(1)).optional(),
+  communes: z.array(z.string().min(1)).optional(),
   publicationStatus: z.enum(["published", "unpublished"]).optional(),
   publishStartAt: z
     .union([

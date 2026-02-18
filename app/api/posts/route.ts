@@ -56,6 +56,68 @@ async function serviceRest(path: string, init?: RequestInit) {
   return res.json();
 }
 
+function normalizeCommuneKey(value: string) {
+  return String(value || "")
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .trim()
+    .toUpperCase();
+}
+
+async function resolveCommuneSlugs(siteId: string, communesInput: unknown) {
+  const rawList = Array.isArray(communesInput) ? communesInput : [];
+  const requested = Array.from(
+    new Set(rawList.map((x: any) => String(x || "").trim()).filter(Boolean))
+  );
+  if (requested.length === 0) return [] as string[];
+
+  const rows: any[] =
+    (await serviceRest(
+      `/communes?site=eq.${siteId}&select=slug,label`
+    )) || [];
+
+  const dict = new Map<string, string>();
+  for (const row of Array.isArray(rows) ? rows : []) {
+    const slug = String(row?.slug || "").trim();
+    const label = String(row?.label || "").trim();
+    if (!slug) continue;
+    dict.set(normalizeCommuneKey(slug), slug);
+    if (label) dict.set(normalizeCommuneKey(label), slug);
+  }
+
+  const slugs: string[] = [];
+  for (const item of requested) {
+    const found = dict.get(normalizeCommuneKey(item));
+    if (found && !slugs.includes(found)) slugs.push(found);
+  }
+  return slugs;
+}
+
+async function replacePostCommunes(
+  postId: string,
+  siteId: string,
+  communesInput: unknown
+) {
+  const slugs = await resolveCommuneSlugs(siteId, communesInput);
+  await serviceRest(`/post_communes?post_id=eq.${encodeURIComponent(postId)}`, {
+    method: "DELETE",
+    headers: { Prefer: "return=minimal" },
+  });
+
+  if (slugs.length === 0) return;
+
+  await serviceRest(`/post_communes?on_conflict=post_id,commune_slug`, {
+    method: "POST",
+    headers: { Prefer: "return=representation,resolution=merge-duplicates" },
+    body: JSON.stringify(
+      slugs.map((communeSlug) => ({
+        post_id: postId,
+        commune_slug: communeSlug,
+      }))
+    ),
+  });
+}
+
 function mapRowToLegacy(row: any) {
   const images = Array.isArray(row.images)
     ? row.images
@@ -395,6 +457,10 @@ export async function POST(req: Request) {
       }
     } catch (e) {
       console.warn("[POST posts] Categorías: continuidad tras fallo en mapeo", e);
+    }
+
+    if (Array.isArray((body as any)?.communes)) {
+      await replacePostCommunes(postId, siteId, (normalized as any).communes);
     }
 
     return NextResponse.json({ ok: true, slug: normalized.slug }, { status: 201 });

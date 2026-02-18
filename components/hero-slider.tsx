@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
 import useEmblaCarousel from "embla-carousel-react";
 import { useSiteApi } from "@/hooks/use-site-api";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 
 // Reordenado: ICONOS debe ser el primer slide según solicitud.
 // iconos, arquitectura, barrios, mercados, miradores, museos (CULTURA),
@@ -41,6 +42,8 @@ type HeroSliderProps = {
   slideHrefs?: string[]; // hrefs por slide; tiene prioridad sobre slideHref
   slideHrefsMobile?: string[]; // hrefs específicos para mobile; si no se provee, cae en slideHrefs
   preferApiHrefs?: boolean; // si true, los hrefs cargados por API tienen prioridad sobre los props
+  autoplay?: boolean; // si false, desactiva avance automático
+  showArrows?: boolean; // si true, muestra flechas de navegación manual
   autoHeight?: boolean; // si true, la altura se adapta a la imagen (w-full h-auto)
   desktopImageClassName?: string; // clases extra para imagen desktop
   mobileImageClassName?: string; // clases extra para imagen mobile
@@ -62,6 +65,8 @@ export function HeroSlider({
   slideHrefs,
   slideHrefsMobile,
   preferApiHrefs = false,
+  autoplay = true,
+  showArrows = false,
   autoHeight = false,
   desktopImageClassName,
   mobileImageClassName,
@@ -110,11 +115,12 @@ export function HeroSlider({
 
   // Autoplay solo sobre el carrusel activo
   useEffect(() => {
+    if (!autoplay) return;
     const api = isMobile ? emblaMobileApi : emblaDesktopApi;
     if (!api) return;
     const id = setInterval(() => api.scrollNext(), 5000);
     return () => clearInterval(id);
-  }, [isMobile, emblaDesktopApi, emblaMobileApi]);
+  }, [autoplay, isMobile, emblaDesktopApi, emblaMobileApi]);
 
   // Cargar imágenes locales desde API si no se pasaron por props
   useEffect(() => {
@@ -257,6 +263,19 @@ export function HeroSlider({
     setSelectedIndex(index);
   };
 
+  const goPrev = useCallback(() => {
+    const api = isMobile ? emblaMobileApi : emblaDesktopApi;
+    api?.scrollPrev();
+  }, [isMobile, emblaDesktopApi, emblaMobileApi]);
+
+  const goNext = useCallback(() => {
+    const api = isMobile ? emblaMobileApi : emblaDesktopApi;
+    api?.scrollNext();
+  }, [isMobile, emblaDesktopApi, emblaMobileApi]);
+
+  const canShowArrows =
+    showArrows && (isMobile ? mobile.length : desktop.length) > 1;
+
   const imageClassName = (extraClass?: string) => {
     const baseClass = autoHeight
       ? "w-full h-auto"
@@ -351,6 +370,27 @@ export function HeroSlider({
           </div>
         </div>
       </div>
+
+      {canShowArrows && (
+        <>
+          <button
+            type="button"
+            aria-label="Slide previo"
+            onClick={goPrev}
+            className="absolute left-2 md:left-3 top-1/2 -translate-y-1/2 z-30 text-white bg-black/30 hover:bg-black/50 backdrop-blur-[2px] p-2 md:p-3 rounded-full focus:outline-none focus:ring-2 focus:ring-white/70"
+          >
+            <ChevronLeft className="w-5 h-5 md:w-6 md:h-6" />
+          </button>
+          <button
+            type="button"
+            aria-label="Slide siguiente"
+            onClick={goNext}
+            className="absolute right-2 md:right-3 top-1/2 -translate-y-1/2 z-30 text-white bg-black/30 hover:bg-black/50 backdrop-blur-[2px] p-2 md:p-3 rounded-full focus:outline-none focus:ring-2 focus:ring-white/70"
+          >
+            <ChevronRight className="w-5 h-5 md:w-6 md:h-6" />
+          </button>
+        </>
+      )}
 
       {/* dots: centered bottom */}
       <div

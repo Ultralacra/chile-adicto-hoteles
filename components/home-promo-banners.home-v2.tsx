@@ -43,17 +43,27 @@ export function PromoStackBanners() {
 type BottomHomeBannerProps = {
   href?: string;
   src?: string;
+  mobileSrc?: string;
   alt?: string;
 };
 
 export function BottomHomeBanner({
   href = "/monumentos-nacionales",
   src = "/bannerHome/BANNER MONUMENTOS.svg",
+  mobileSrc = "/bannerHome/monumentos movil.png",
   alt = "Monumentos Nacionales",
 }: BottomHomeBannerProps) {
+  const desktopSrc = encodeURI(src);
+  const mobileSrcSet = mobileSrc ? encodeURI(mobileSrc) : undefined;
+
   return (
     <Link href={href} className="block w-full">
-      <img src={src} alt={alt} className="w-full h-auto" loading="lazy" />
+      <picture>
+        {mobileSrcSet ? (
+          <source media="(max-width: 767.98px)" srcSet={mobileSrcSet} />
+        ) : null}
+        <img src={desktopSrc} alt={alt} className="w-full h-auto" loading="lazy" />
+      </picture>
     </Link>
   );
 }

@@ -869,7 +869,11 @@ export default function CategoryPage({ params }: { params: any }) {
                       : "/bannerHome/BANNER AGENDA CILTURAL.svg"
                 }
                 mobileSrc={
-                  slug === "cafes" ? "/bannerHome/30 CAFES.png" : undefined
+                  slug === "cafes"
+                    ? "/bannerHome/30 CAFES.png"
+                    : slug === "monumentos-nacionales"
+                      ? "/bannerHome/monumentos movil.png"
+                      : undefined
                 }
                 alt={
                   slug === "cafes"

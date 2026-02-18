@@ -495,7 +495,13 @@ export function HotelDetail({ hotel }: HotelDetailProps) {
                     ? "/bannerHome/BANNER MONUMENTOS.svg"
                     : "/bannerHome/BANNER AGENDA CILTURAL.svg"
               }
-              mobileSrc={isCafesPost ? "/bannerHome/30 CAFES.png" : undefined}
+              mobileSrc={
+                isCafesPost
+                  ? "/bannerHome/30 CAFES.png"
+                  : isMonumentosPost
+                    ? "/bannerHome/monumentos movil.png"
+                    : undefined
+              }
               alt={
                 isCafesPost
                   ? "Cafés"

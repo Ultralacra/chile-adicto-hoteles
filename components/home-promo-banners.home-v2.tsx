@@ -62,7 +62,12 @@ export function BottomHomeBanner({
         {mobileSrcSet ? (
           <source media="(max-width: 767.98px)" srcSet={mobileSrcSet} />
         ) : null}
-        <img src={desktopSrc} alt={alt} className="w-full h-auto" loading="lazy" />
+        <img
+          src={desktopSrc}
+          alt={alt}
+          className="w-full h-auto"
+          loading="lazy"
+        />
       </picture>
     </Link>
   );

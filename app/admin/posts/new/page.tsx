@@ -607,14 +607,19 @@ export default function NewPostPage() {
       return;
     }
     const { payloadToSend, normalized, finalFeatured } = buildPayload();
-    const normalizedCategories = (normalized.categories || []).map((c: string) =>
-      String(c || "").trim().toUpperCase(),
+    const normalizedCategories = (normalized.categories || []).map(
+      (c: string) =>
+        String(c || "")
+          .trim()
+          .toUpperCase(),
     );
     if (
       normalizedCategories.includes("RESTAURANTES") &&
       communes.length === 0
     ) {
-      alert("Para posts de RESTAURANTES debes seleccionar al menos una comuna.");
+      alert(
+        "Para posts de RESTAURANTES debes seleccionar al menos una comuna.",
+      );
       return;
     }
     const result = validatePost(normalized as any);

@@ -442,9 +442,7 @@ export default function EditPostPage({
 
     // Comunas del post: priorizar BD; fallback a detección/localStorage para posts antiguos
     const dbCommunes = Array.isArray(hotel.communes)
-      ? hotel.communes
-          .map((s: any) => String(s || "").trim())
-          .filter(Boolean)
+      ? hotel.communes.map((s: any) => String(s || "").trim()).filter(Boolean)
       : [];
     if (dbCommunes.length > 0) {
       setCommunes(Array.from(new Set(dbCommunes)));
@@ -640,14 +638,19 @@ export default function EditPostPage({
       return;
     }
     const { payloadToSend, normalized, finalFeatured } = built;
-    const normalizedCategories = (normalized.categories || []).map((c: string) =>
-      String(c || "").trim().toUpperCase(),
+    const normalizedCategories = (normalized.categories || []).map(
+      (c: string) =>
+        String(c || "")
+          .trim()
+          .toUpperCase(),
     );
     if (
       normalizedCategories.includes("RESTAURANTES") &&
       communes.length === 0
     ) {
-      alert("Para posts de RESTAURANTES debes seleccionar al menos una comuna.");
+      alert(
+        "Para posts de RESTAURANTES debes seleccionar al menos una comuna.",
+      );
       return;
     }
     console.log("[Admin Edit] PUT payloadToSend", payloadToSend);

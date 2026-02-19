@@ -3,12 +3,12 @@
 import { Header } from "@/components/header.home-v2";
 import { HeroSlider } from "@/components/hero-slider";
 import Link from "next/link";
+import Image from "next/image";
 import { HotelCard } from "@/components/hotel-card";
 import { Footer } from "@/components/footer";
 import { CategoryNav } from "@/components/category-nav";
 import { buildCardExcerpt } from "@/lib/utils";
-import { isHiddenFrontPost } from "@/lib/post-visibility";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { Spinner } from "@/components/ui/spinner";
 import { useLanguage } from "@/contexts/language-context";
 import { useSiteApi } from "@/hooks/use-site-api";
@@ -17,74 +17,127 @@ import {
   PromoStackBanners,
 } from "@/components/home-promo-banners.home-v2";
 
+const HOME_PAGE_SIZE = 25;
+const HOME_CACHE_TTL_MS = 1000 * 60 * 5;
+
+type HomeCacheEntry = {
+  items: any[];
+  nextOffset: number;
+  hasMore: boolean;
+  savedAt: number;
+};
+
+const homeFeedCache = new Map<string, HomeCacheEntry>();
+
 export default function Page() {
   const { language } = useLanguage();
-  const { fetchWithSite } = useSiteApi();
+  const { fetchWithSite, previewSite } = useSiteApi();
   const [hotels, setHotels] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [loadingMore, setLoadingMore] = useState(false);
+  const [hasMore, setHasMore] = useState(true);
+  const [nextOffset, setNextOffset] = useState(0);
+  const loadMoreRef = useRef<HTMLDivElement | null>(null);
+  const loadingMoreRef = useRef(false);
+
+  const cacheKey = previewSite || "default";
+
+  const updateCache = useCallback(
+    (items: any[], offset: number, more: boolean) => {
+      homeFeedCache.set(cacheKey, {
+        items,
+        nextOffset: offset,
+        hasMore: more,
+        savedAt: Date.now(),
+      });
+    },
+    [cacheKey],
+  );
+
+  const loadPage = useCallback(
+    async (offset: number, append: boolean) => {
+      const res = await fetchWithSite(
+        `/api/posts?homeFeed=1&limit=${HOME_PAGE_SIZE}&offset=${offset}`,
+        { cache: "no-store" },
+      );
+      const rows = res.ok ? await res.json() : [];
+      const batch = Array.isArray(rows) ? rows : [];
+      const more = batch.length === HOME_PAGE_SIZE;
+      const newOffset = offset + batch.length;
+
+      setHasMore(more);
+      setNextOffset(newOffset);
+      setHotels((prev) => {
+        const nextItems = append ? [...prev, ...batch] : batch;
+        updateCache(nextItems, newOffset, more);
+        return nextItems;
+      });
+    },
+    [fetchWithSite, updateCache],
+  );
 
   useEffect(() => {
     let cancelled = false;
-    setLoading(true);
-    fetchWithSite("/api/posts")
-      .then((r) => (r.ok ? r.json() : []))
-      .then((rows) => {
+
+    const run = async () => {
+      setLoading(true);
+      const cached = homeFeedCache.get(cacheKey);
+      const isFresh = cached && Date.now() - cached.savedAt < HOME_CACHE_TTL_MS;
+
+      if (isFresh && cached.items.length > 0) {
         if (cancelled) return;
-        const list = Array.isArray(rows) ? rows : [];
-        const filtered = list.filter((h) => {
-          if (isHiddenFrontPost(h)) return false;
-          const cats = new Set<string>([
-            ...(h.categories || []).map((c: any) => String(c).toUpperCase()),
-          ]);
-          const esCat = h.es?.category
-            ? String(h.es.category).toUpperCase()
-            : null;
-          const enCat = h.en?.category
-            ? String(h.en.category).toUpperCase()
-            : null;
-          // Excluir posts específicos por slug
-          if (String(h.slug) === "w-santiago") return false;
-
-          // Categorías que NO deben aparecer en el feed "todos"
-          // (restaurantes/cafes/agenda cultural/monumentos nacionales)
-          const excluded = new Set<string>([
-            "RESTAURANTES",
-            "RESTAURANTS",
-            "CAFES",
-            "CAFÉ",
-            "CAFÉS",
-            "AGENDA CULTURAL",
-            "MONUMENTOS NACIONALES",
-          ]);
-
-          const hasExcludedCat = [...cats].some((c) => excluded.has(c));
-          const transExcluded =
-            (esCat && excluded.has(esCat)) || (enCat && excluded.has(enCat));
-
-          return !(hasExcludedCat || transExcluded);
-        });
-        // Orden aleatorio en Home cada vez que se entra
-        const shuffled = (() => {
-          const arr = filtered.slice();
-          for (let i = arr.length - 1; i > 0; i--) {
-            const j = Math.floor(Math.random() * (i + 1));
-            [arr[i], arr[j]] = [arr[j], arr[i]];
-          }
-          return arr;
-        })();
-        setHotels(shuffled);
+        setHotels(cached.items);
+        setNextOffset(cached.nextOffset);
+        setHasMore(cached.hasMore);
         setLoading(false);
-      })
-      .catch(() => {
+        return;
+      }
+
+      try {
+        await loadPage(0, false);
+      } catch {
         if (!cancelled) {
           setHotels([]);
-          setLoading(false);
+          setHasMore(false);
+          setNextOffset(0);
         }
-      });
+      } finally {
+        if (!cancelled) setLoading(false);
+      }
+    };
+
+    run();
+
     return () => {
       cancelled = true;
     };
-  }, [fetchWithSite]);
+  }, [cacheKey, loadPage]);
+
+  useEffect(() => {
+    const node = loadMoreRef.current;
+    if (!node || loading || !hasMore) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const [entry] = entries;
+        if (!entry?.isIntersecting) return;
+        if (loadingMoreRef.current) return;
+
+        loadingMoreRef.current = true;
+        setLoadingMore(true);
+        loadPage(nextOffset, true)
+          .catch(() => undefined)
+          .finally(() => {
+            loadingMoreRef.current = false;
+            setLoadingMore(false);
+          });
+      },
+      { rootMargin: "320px 0px" },
+    );
+
+    observer.observe(node);
+    return () => observer.disconnect();
+  }, [hasMore, loadPage, loading, nextOffset]);
 
   return (
     <div className="min-h-screen bg-white">
@@ -170,17 +223,24 @@ export default function Page() {
                 className="block w-full"
               >
                 <div className="w-full h-[260px] md:h-[520px] lg:h-[437px] bg-black overflow-hidden flex items-center justify-center">
-                  <img
+                  <Image
                     src="/bannerHome/restaurantes movil.png"
                     alt="Restaurantes"
+                    width={900}
+                    height={1400}
+                    sizes="100vw"
                     className="max-w-full max-h-full object-contain p-3 md:hidden"
                     loading="lazy"
                   />
-                  <img
+                  <Image
                     src="/bannerHome/65 RESTAURANTES.svg"
                     alt="Restaurantes"
+                    width={435}
+                    height={437}
+                    sizes="(max-width: 1279px) 100vw, 435px"
                     className="hidden md:block max-w-full max-h-full object-contain p-3 md:p-4 lg:p-5"
                     loading="lazy"
+                    unoptimized
                   />
                 </div>
               </Link>
@@ -207,7 +267,7 @@ export default function Page() {
               </div>
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-                {hotels.map((hotel) => (
+                {hotels.map((hotel, index) => (
                   <div key={hotel.slug} className="col-span-1">
                     <HotelCard
                       slug={hotel.slug}
@@ -233,6 +293,7 @@ export default function Page() {
                       })()}
                       image={hotel.featuredImage || hotel.images?.[0] || ""}
                       imageVariant="default"
+                      imagePriority={index < 3}
                       publishStartAt={hotel.publishStartAt}
                       publishEndAt={hotel.publishEndAt}
                       publicationEndsAt={hotel.publicationEndsAt}
@@ -241,6 +302,23 @@ export default function Page() {
                 ))}
               </div>
             )}
+
+            {!loading ? (
+              <>
+                <div
+                  ref={loadMoreRef}
+                  className="h-px w-full"
+                  aria-hidden="true"
+                />
+                {loadingMore ? (
+                  <div className="w-full py-8 grid place-items-center text-gray-500">
+                    <div className="flex items-center gap-2">
+                      <Spinner className="size-4" /> Cargando más posts…
+                    </div>
+                  </div>
+                ) : null}
+              </>
+            ) : null}
           </section>
         </div>
       </main>

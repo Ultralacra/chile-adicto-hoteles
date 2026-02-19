@@ -4,7 +4,17 @@ const nextConfig = {
     ignoreBuildErrors: true,
   },
   images: {
-    unoptimized: true,
+    formats: ["image/avif", "image/webp"],
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "azure-seal-918691.hostingersite.com",
+      },
+      {
+        protocol: "https",
+        hostname: "xtctddbjwmmeirjltatm.supabase.co",
+      },
+    ],
   },
   async rewrites() {
     // Rutas "bonitas":

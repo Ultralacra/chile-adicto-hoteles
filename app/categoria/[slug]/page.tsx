@@ -886,8 +886,8 @@ export default function CategoryPage({ params }: { params: any }) {
             </div>
           )}
 
-          {/* Slider de restaurantes a ancho completo, sin banner, solo cuando no hay comuna seleccionada */}
-          {isRestaurantsPage && !selectedComuna && (
+          {/* Slider de restaurantes a ancho completo, sin banner */}
+          {isRestaurantsPage && (
             <div className="py-2">
               <div className="w-full overflow-hidden mb-0">
                 <HeroSlider

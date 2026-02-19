@@ -5,6 +5,16 @@ import { normalizePost } from "@/lib/post-normalize";
 import { getCurrentSiteId } from "@/lib/site-utils";
 import { isPostCurrentlyPublished } from "@/lib/post-publication";
 
+const HOME_FEED_EXCLUDED = new Set<string>([
+  "RESTAURANTES",
+  "RESTAURANTS",
+  "CAFES",
+  "CAFÉ",
+  "CAFÉS",
+  "AGENDA CULTURAL",
+  "MONUMENTOS NACIONALES",
+]);
+
 function envOrNull(name: string) {
   const v = process.env[name];
   return v && v.length > 0 ? v : null;
@@ -194,6 +204,30 @@ function mapRowToLegacy(row: any) {
   };
 }
 
+function isExcludedFromHomeFeed(post: any): boolean {
+  if (String(post?.slug || "").trim() === "w-santiago") return true;
+
+  const cats = new Set<string>([
+    ...((post?.categories || []) as any[]).map((c) =>
+      String(c || "").toUpperCase(),
+    ),
+  ]);
+
+  const esCat = post?.es?.category
+    ? String(post.es.category).toUpperCase()
+    : null;
+  const enCat = post?.en?.category
+    ? String(post.en.category).toUpperCase()
+    : null;
+
+  const hasExcludedCat = [...cats].some((c) => HOME_FEED_EXCLUDED.has(c));
+  const hasExcludedTranslation =
+    (esCat && HOME_FEED_EXCLUDED.has(esCat)) ||
+    (enCat && HOME_FEED_EXCLUDED.has(enCat));
+
+  return Boolean(hasExcludedCat || hasExcludedTranslation);
+}
+
 async function fetchPostsWithPublicationFallback(pathWithSelectBase: string) {
   try {
     return await fetchFromSupabase(pathWithSelectBase);
@@ -221,6 +255,25 @@ export async function GET(req: Request) {
     const q = url.searchParams.get("q") || "";
     const category = url.searchParams.get("category");
     const categorySlug = url.searchParams.get("categorySlug");
+    const homeFeed =
+      url.searchParams.get("homeFeed") === "1" ||
+      url.searchParams.get("homeFeed") === "true";
+    const limitParam = url.searchParams.get("limit");
+    const offsetParam = url.searchParams.get("offset");
+    const limitNumber =
+      limitParam !== null && limitParam.trim() !== ""
+        ? Number(limitParam)
+        : NaN;
+    const offsetNumber =
+      offsetParam !== null && offsetParam.trim() !== ""
+        ? Number(offsetParam)
+        : NaN;
+    const limit = Number.isFinite(limitNumber)
+      ? Math.max(1, Math.min(100, Math.trunc(limitNumber)))
+      : null;
+    const offset = Number.isFinite(offsetNumber)
+      ? Math.max(0, Math.trunc(offsetNumber))
+      : 0;
     const isAdminRequest = !!url.searchParams.get("adminSite");
     
     // DEBUG: Log del sitio detectado
@@ -291,11 +344,17 @@ export async function GET(req: Request) {
       const visible = isAdminRequest
         ? mapped
         : mapped.filter((post: any) => isPostCurrentlyPublished(post));
-      console.log(`✅ [API /posts] Retornando ${visible.length} posts para sitio ${siteId}`);
-      if (visible.length > 0) {
-        console.log('   Primeros posts:', visible.slice(0, 3).map(p => p.slug));
+      const homeFiltered = homeFeed
+        ? visible.filter((post) => !isExcludedFromHomeFeed(post))
+        : visible;
+      const paged =
+        limit !== null ? homeFiltered.slice(offset, offset + limit) : homeFiltered;
+
+      console.log(`✅ [API /posts] Retornando ${paged.length} posts para sitio ${siteId}`);
+      if (paged.length > 0) {
+        console.log('   Primeros posts:', paged.slice(0, 3).map(p => p.slug));
       }
-      return NextResponse.json(visible, { status: 200 });
+      return NextResponse.json(paged, { status: 200 });
     }
     return NextResponse.json([], { status: 200 });
   } catch (err: any) {

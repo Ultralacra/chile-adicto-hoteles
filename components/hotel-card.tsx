@@ -1,3 +1,4 @@
+import { memo } from "react";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -8,19 +9,21 @@ interface HotelCardProps {
   description: string;
   image: string;
   imageVariant?: "default" | "tall";
+  imagePriority?: boolean;
   publishStartAt?: string | null;
   publishEndAt?: string | null;
   publicationEndsAt?: string | null;
   showPublicationDates?: boolean;
 }
 
-export function HotelCard({
+function HotelCardComponent({
   slug,
   name,
   subtitle,
   description,
   image,
   imageVariant = "default",
+  imagePriority = false,
   publishStartAt,
   publishEndAt,
   publicationEndsAt,
@@ -65,6 +68,8 @@ export function HotelCard({
             src={image || "/placeholder.svg"}
             alt={name}
             fill
+            sizes="(max-width: 767px) 100vw, (max-width: 1279px) 50vw, 33vw"
+            priority={imagePriority}
             className="object-cover transition-transform duration-300 group-hover:scale-105"
           />
         </div>
@@ -131,3 +136,5 @@ export function HotelCard({
     </Link>
   );
 }
+
+export const HotelCard = memo(HotelCardComponent);

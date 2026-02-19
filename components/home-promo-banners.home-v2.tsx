@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 
 export function PromoStackBanners() {
   return (
@@ -12,11 +13,15 @@ export function PromoStackBanners() {
           target="_blank"
           rel="noopener noreferrer"
         >
-          <img
+          <Image
             src="/bannerHome/70%20HOTELES.png"
             alt="Hoteles"
+            width={5120}
+            height={2240}
+            sizes="(max-width: 767px) 100vw, (max-width: 1279px) 33vw, 435px"
             className="block w-full h-auto md:h-full object-contain md:object-cover"
             style={{ objectPosition: "center", maxWidth: "100%" }}
+            priority={false}
           />
         </Link>
       </div>
@@ -27,12 +32,16 @@ export function PromoStackBanners() {
           className="block w-full h-full"
           aria-label="Ir a cafés"
         >
-          <img
+          <Image
             src="/bannerHome/30 CAFES.svg"
             alt="Cafés"
+            width={435}
+            height={210}
+            sizes="(max-width: 767px) 100vw, (max-width: 1279px) 33vw, 435px"
             className="block w-full h-auto md:h-full object-contain md:object-cover"
             style={{ objectPosition: "center", maxWidth: "100%" }}
             loading="lazy"
+            unoptimized
           />
         </Link>
       </div>
@@ -53,22 +62,29 @@ export function BottomHomeBanner({
   mobileSrc = "/bannerHome/monumentos movil.png",
   alt = "Monumentos Nacionales",
 }: BottomHomeBannerProps) {
-  const desktopSrc = encodeURI(src);
-  const mobileSrcSet = mobileSrc ? encodeURI(mobileSrc) : undefined;
-
   return (
     <Link href={href} className="block w-full">
-      <picture>
-        {mobileSrcSet ? (
-          <source media="(max-width: 767.98px)" srcSet={mobileSrcSet} />
-        ) : null}
-        <img
-          src={desktopSrc}
+      {mobileSrc ? (
+        <Image
+          src={mobileSrc}
           alt={alt}
-          className="w-full h-auto"
+          width={5120}
+          height={2240}
+          sizes="100vw"
+          className="block md:hidden w-full h-auto"
           loading="lazy"
         />
-      </picture>
+      ) : null}
+      <Image
+        src={src}
+        alt={alt}
+        width={1440}
+        height={360}
+        sizes="100vw"
+        className={`${mobileSrc ? "hidden md:block" : "block"} w-full h-auto`}
+        loading="lazy"
+        unoptimized={String(src).toLowerCase().endsWith(".svg")}
+      />
     </Link>
   );
 }

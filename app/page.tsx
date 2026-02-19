@@ -199,6 +199,7 @@ export default function Page() {
                     "/sliderHome/FUERA DE STGO.png",
                   ]}
                   objectPosition="left"
+                  mobileStaticFirst
                   slideHrefs={[
                     "/iconos",
                     "/arquitectura",

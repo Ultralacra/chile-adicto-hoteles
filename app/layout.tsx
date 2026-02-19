@@ -31,13 +31,29 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="es">
+      <head>
+        <link
+          rel="preload"
+          href="/Neutra-Book.woff2"
+          as="font"
+          type="font/woff2"
+          crossOrigin="anonymous"
+        />
+        <link
+          rel="preload"
+          href="/Neutra-Demi.woff2"
+          as="font"
+          type="font/woff2"
+          crossOrigin="anonymous"
+        />
+      </head>
       <body className={`${montserrat.className} font-sans antialiased`}>
         {/* Google Analytics (GA4) */}
         <Script
           src="https://www.googletagmanager.com/gtag/js?id=G-LDF4JN0LDG"
-          strategy="afterInteractive"
+          strategy="lazyOnload"
         />
-        <Script id="ga4-init" strategy="afterInteractive">
+        <Script id="ga4-init" strategy="lazyOnload">
           {`
             window.dataLayer = window.dataLayer || [];
             function gtag(){dataLayer.push(arguments);}
@@ -46,11 +62,10 @@ export default function RootLayout({
           `}
         </Script>
         <LanguageProvider>
-          {/* Suspense para cualquier hook de navegación dentro de hijos */}
           <Suspense fallback={null}>
             <GATracker />
-            {children}
           </Suspense>
+          {children}
           <ScrollToTop />
         </LanguageProvider>
         <Analytics />

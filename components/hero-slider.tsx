@@ -44,6 +44,7 @@ type HeroSliderProps = {
   preferApiHrefs?: boolean; // si true, los hrefs cargados por API tienen prioridad sobre los props
   autoplay?: boolean; // si false, desactiva avance automático
   showArrows?: boolean; // si true, muestra flechas de navegación manual
+  showDots?: boolean; // si false, oculta bullets/puntos de navegación
   autoHeight?: boolean; // si true, la altura se adapta a la imagen (w-full h-auto)
   desktopImageClassName?: string; // clases extra para imagen desktop
   mobileImageClassName?: string; // clases extra para imagen mobile
@@ -67,6 +68,7 @@ export function HeroSlider({
   preferApiHrefs = false,
   autoplay = true,
   showArrows = false,
+  showDots = true,
   autoHeight = false,
   desktopImageClassName,
   mobileImageClassName,
@@ -392,24 +394,25 @@ export function HeroSlider({
         </>
       )}
 
-      {/* dots: centered bottom */}
-      <div
-        className="absolute left-0 right-0 z-40 flex justify-center pointer-events-auto"
-        style={{ bottom: `${dotBottom}px` }}
-      >
-        <div className="flex gap-2">
-          {(isMobile ? mobile : desktop).map((_, dotIndex) => (
-            <button
-              key={`global-dot-${dotIndex}`}
-              onClick={() => goToSlide(dotIndex)}
-              className={`rounded-full transition-all focus:outline-none ${
-                dotIndex === selectedIndex ? dotActiveClass : dotInactiveClass
-              }`}
-              aria-label={`Go to slide ${dotIndex + 1}`}
-            />
-          ))}
+      {showDots && (
+        <div
+          className="absolute left-0 right-0 z-40 flex justify-center pointer-events-auto"
+          style={{ bottom: `${dotBottom}px` }}
+        >
+          <div className="flex gap-2">
+            {(isMobile ? mobile : desktop).map((_, dotIndex) => (
+              <button
+                key={`global-dot-${dotIndex}`}
+                onClick={() => goToSlide(dotIndex)}
+                className={`rounded-full transition-all focus:outline-none ${
+                  dotIndex === selectedIndex ? dotActiveClass : dotInactiveClass
+                }`}
+                aria-label={`Go to slide ${dotIndex + 1}`}
+              />
+            ))}
+          </div>
         </div>
-      </div>
+      )}
     </div>
   );
 }

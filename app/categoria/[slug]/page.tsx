@@ -930,6 +930,7 @@ export default function CategoryPage({ params }: { params: any }) {
                   // Ver imagen completa sin recortar y mantener el ancho del contenedor
                   autoplay={false}
                   showArrows
+                  showDots={false}
                   autoHeight
                   // keep default desktop height (closer to other sliders)
                   desktopHeight={437}

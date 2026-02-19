@@ -162,7 +162,7 @@ export default function Page() {
               </div>
             </div>
 
-            {/* Columna 2: Imagen vertical (placeholder: mismo banner, reemplazar cuando tengas el definitivo) */}
+            {/* Columna 2: Banner de restaurantes (móvil y escritorio) */}
             <div className="w-full mt-6 lg:mt-0">
               <Link
                 href="/restaurantes"

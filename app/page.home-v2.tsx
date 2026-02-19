@@ -171,9 +171,15 @@ export default function Page() {
               >
                 <div className="w-full h-[260px] md:h-[520px] lg:h-[437px] bg-black overflow-hidden flex items-center justify-center">
                   <img
+                    src="/bannerHome/restaurantes movil.png"
+                    alt="Restaurantes"
+                    className="max-w-full max-h-full object-contain p-3 md:hidden"
+                    loading="lazy"
+                  />
+                  <img
                     src="/bannerHome/65 RESTAURANTES.svg"
                     alt="Restaurantes"
-                    className="max-w-full max-h-full object-contain p-3 md:p-4 lg:p-5"
+                    className="hidden md:block max-w-full max-h-full object-contain p-3 md:p-4 lg:p-5"
                     loading="lazy"
                   />
                 </div>

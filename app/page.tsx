@@ -31,11 +31,13 @@ const homeFeedCache = new Map<string, HomeCacheEntry>();
 
 export default function Page() {
   return (
-    <Suspense fallback={
-      <div className="min-h-screen bg-white grid place-items-center">
-        <Spinner className="size-8" />
-      </div>
-    }>
+    <Suspense
+      fallback={
+        <div className="min-h-screen bg-white grid place-items-center">
+          <Spinner className="size-8" />
+        </div>
+      }
+    >
       <HomeContent />
     </Suspense>
   );

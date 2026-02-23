@@ -80,10 +80,7 @@ export function Header() {
             {/* Desktop: Language + Agenda Cultural banner */}
             <div className="hidden lg:flex items-center gap-6">
               <LanguageSwitcher />
-              <Link
-                href="/agenda-cultural"
-                aria-label="Ir a Agenda Cultural"
-              >
+              <Link href="/agenda-cultural" aria-label="Ir a Agenda Cultural">
                 <Image
                   src="/bannerHome/AGENDA CULTURAL HEADER.svg"
                   alt="Agenda Cultural"

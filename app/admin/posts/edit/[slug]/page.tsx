@@ -53,7 +53,7 @@ export default function EditPostPage({
   const { slug } = use(params);
   // Edición de slug
   const [editSlug, setEditSlug] = useState<string>("");
-  const slugRegex = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
+  const slugRegex = /^[a-z0-9](?:[a-z0-9-]*[a-z0-9])?$/;
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [deleting, setDeleting] = useState(false);
@@ -903,6 +903,7 @@ export default function EditPostPage({
                       .normalize("NFD")
                       .replace(/[\u0300-\u036f]/g, "")
                       .replace(/[^a-z0-9]+/g, "-")
+                      .replace(/-{2,}/g, "-")
                       .replace(/(^-|-$)/g, "");
                     setEditSlug(s);
                   }}

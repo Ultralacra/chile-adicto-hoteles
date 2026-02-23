@@ -43,7 +43,7 @@ export default function NewPostPage() {
 
   // Slug
   const [editSlug, setEditSlug] = useState<string>("");
-  const slugRegex = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
+  const slugRegex = /^[a-z0-9](?:[a-z0-9-]*[a-z0-9])?$/;
 
   // Contacto
   const [website, setWebsite] = useState("");
@@ -745,6 +745,7 @@ export default function NewPostPage() {
                       .normalize("NFD")
                       .replace(/[\u0300-\u036f]/g, "")
                       .replace(/[^a-z0-9]+/g, "-")
+                      .replace(/-{2,}/g, "-")
                       .replace(/(^-|-$)/g, "");
                     setEditSlug(s);
                   }}

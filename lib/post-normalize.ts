@@ -95,7 +95,7 @@ export function normalizePost(input: PostInput): PostInput {
     publishStartAt,
     publishEndAt,
     images: uniqueImages,
-    slug: String(input.slug).trim(),
+    slug: String(input.slug).trim().replace(/-{2,}/g, "-").replace(/(^-|-$)/g, ""),
     es: {
       ...esIn,
       name: String(esIn.name ?? "").trim(),

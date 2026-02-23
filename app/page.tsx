@@ -8,7 +8,7 @@ import { HotelCard } from "@/components/hotel-card";
 import { Footer } from "@/components/footer";
 import { CategoryNav } from "@/components/category-nav";
 import { buildCardExcerpt } from "@/lib/utils";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { Suspense, useCallback, useEffect, useRef, useState } from "react";
 import { Spinner } from "@/components/ui/spinner";
 import { useLanguage } from "@/contexts/language-context";
 import { useSiteApi } from "@/hooks/use-site-api";
@@ -30,6 +30,18 @@ type HomeCacheEntry = {
 const homeFeedCache = new Map<string, HomeCacheEntry>();
 
 export default function Page() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen bg-white grid place-items-center">
+        <Spinner className="size-8" />
+      </div>
+    }>
+      <HomeContent />
+    </Suspense>
+  );
+}
+
+function HomeContent() {
   const { language } = useLanguage();
   const { fetchWithSite, previewSite } = useSiteApi();
   const [hotels, setHotels] = useState<any[]>([]);

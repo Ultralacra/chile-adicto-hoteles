@@ -5,7 +5,7 @@ import { useCallback } from "react";
 
 /**
  * Hook para realizar fetch al API desde el frontend con el parámetro previewSite.
- * Lee el query parameter ?previewSite= y lo agrega automáticamente a todas las llamadas.
+ * Lee el query parameter ?previewSite= y lo agrega automáticamente a todas las llamadass
  */
 export function useSiteApi() {
   const searchParams = useSearchParams();

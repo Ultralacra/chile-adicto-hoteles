@@ -10,12 +10,12 @@ export function AgendaCulturalBanner() {
       aria-label="Agenda Cultural"
     >
       <Link
-        href="/categoria/agenda-cultural"
+        href="/agenda-cultural"
         aria-label="Ir a Agenda Cultural"
         className="block"
       >
         <Image
-          src="/bannerHome/AGENDA%20CULTURAL%20HEADER.png"
+          src="/bannerHome/AGENDA%20CULTURAL%20HEADER.svg"
           alt="Agenda Cultural"
           width={708}
           height={136}

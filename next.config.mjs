@@ -61,7 +61,7 @@ const nextConfig = {
     // - Categorías sin prefijo: /iconos -> /categoria/iconos, etc.
     // - Posts sin prefijo: /mi-post -> /lugar/mi-post (evitando colisiones con rutas reservadas)
     const categoryPattern =
-      ':slug(iconos|ninos|arquitectura|barrios|mercados|miradores|museos|palacios|parques|paseos-fuera-de-santiago|restaurantes|monumentos-nacionales|cafes)';
+      ':slug(iconos|ninos|arquitectura|barrios|mercados|miradores|museos|palacios|parques|paseos-fuera-de-santiago|restaurantes|monumentos-nacionales|cafes|agenda-cultural)';
     return [
       // Categorías sin prefijo
       {

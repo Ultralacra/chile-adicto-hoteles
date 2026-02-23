@@ -2,7 +2,6 @@ import { NextResponse } from "next/server";
 import { postSchema } from "@/lib/post-schema";
 import { normalizePost } from "@/lib/post-normalize";
 import { getCurrentSiteId } from "@/lib/site-utils";
-import { isPostCurrentlyPublished } from "@/lib/post-publication";
 
 function envOrNull(name: string) {
   const v = process.env[name];
@@ -246,7 +245,10 @@ export async function GET(
     );
     if (rows && rows.length > 0) {
       const mapped = mapRowToLegacy(rows[0]);
-      if (!isAdminRequest && !isPostCurrentlyPublished(mapped)) {
+      const status = String(mapped?.publicationStatus || "published")
+        .trim()
+        .toLowerCase();
+      if (!isAdminRequest && status === "unpublished") {
         return NextResponse.json({ error: "not_found" }, { status: 404 });
       }
       return NextResponse.json(mapped, { status: 200 });

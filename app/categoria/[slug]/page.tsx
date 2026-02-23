@@ -772,6 +772,53 @@ export default function CategoryPage({ params }: { params: any }) {
         )
     : cleanedList;
 
+  const toLocalDateKey = (date: Date) => {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const day = String(date.getDate()).padStart(2, "0");
+    return `${year}-${month}-${day}`;
+  };
+
+  const agendaBannerRanges = [
+    {
+      start: "2026-02-23",
+      end: "2026-03-08",
+      href: "/agenda-cultural",
+      src: "/bannersagenda/BANNER DESKTOP AGENDA 2 AL 8.png",
+      mobileSrc: "/bannersagenda/BANNER MOVIL AGENDA 2 AL 8.png",
+      alt: "Agenda Cultural del 2 al 8 de marzo",
+    },
+    {
+      start: "2026-03-09",
+      end: "2026-03-15",
+      href: "/agenda-cultural",
+      src: "/bannersagenda/BANNER DESKTOP AGENDA 2 AL 8.png",
+      mobileSrc: "/bannersagenda/BANNER MOVIL AGENDA 9 AL 15.png",
+      alt: "Agenda Cultural del 9 al 15 de marzo",
+    },
+    {
+      start: "2026-03-16",
+      end: "2026-03-22",
+      href: "/agenda-cultural",
+      src: "/bannersagenda/BANNER DESKTOP AGENDA 2 AL 8.png",
+      mobileSrc: "/bannersagenda/BANNER MOVIL AGENDA 16 AL 22.png",
+      alt: "Agenda Cultural del 16 al 22 de marzo",
+    },
+    {
+      start: "2026-03-23",
+      end: "2026-03-29",
+      href: "/agenda-cultural",
+      src: "/bannersagenda/BANNER DESKTOP AGENDA 2 AL 8.png",
+      mobileSrc: "/bannersagenda/BANNER MOVIL AGENDA 23 AL 29.png",
+      alt: "Agenda Cultural del 23 al 29 de marzo",
+    },
+  ];
+
+  const todayKey = toLocalDateKey(new Date());
+  const activeAgendaBanner = agendaBannerRanges.find(
+    (range) => todayKey >= range.start && todayKey <= range.end,
+  );
+
   return (
     <Suspense
       fallback={
@@ -859,28 +906,29 @@ export default function CategoryPage({ params }: { params: any }) {
                     ? "/cafes"
                     : slug === "monumentos-nacionales"
                       ? "/monumentos-nacionales"
-                      : "/categoria/agenda-cultural"
+                      : activeAgendaBanner?.href || "/agenda-cultural"
                 }
                 src={
                   slug === "cafes"
                     ? "/bannerHome/BANNER 30 CAFES.svg"
                     : slug === "monumentos-nacionales"
                       ? "/bannerHome/BANNER MONUMENTOS.svg"
-                      : "/bannerHome/BANNER AGENDA CILTURAL.svg"
+                      : activeAgendaBanner?.src ||
+                        "/bannerHome/BANNER AGENDA CILTURAL.svg"
                 }
                 mobileSrc={
                   slug === "cafes"
                     ? "/bannerHome/30 CAFES.png"
                     : slug === "monumentos-nacionales"
                       ? "/bannerHome/monumentos movil.png"
-                      : undefined
+                      : activeAgendaBanner?.mobileSrc
                 }
                 alt={
                   slug === "cafes"
                     ? "Cafés"
                     : slug === "monumentos-nacionales"
                       ? "Monumentos Nacionales"
-                      : "Agenda Cultural"
+                      : activeAgendaBanner?.alt || "Agenda Cultural"
                 }
               />
             </div>

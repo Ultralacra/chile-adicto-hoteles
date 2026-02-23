@@ -57,34 +57,6 @@ interface HotelDetailProps {
 export function HotelDetail({ hotel }: HotelDetailProps) {
   const { t } = useLanguage();
   const { fetchWithSite } = useSiteApi();
-
-  const formatPublicationDate = (value?: string | null): string | null => {
-    const raw = String(value || "").trim();
-    if (!raw) return null;
-    const parsed = new Date(raw);
-    if (Number.isNaN(parsed.getTime())) return raw;
-    const hasTime = /T\d{2}:\d{2}|\d{2}:\d{2}/.test(raw);
-    return new Intl.DateTimeFormat("es-CL", {
-      year: "numeric",
-      month: "2-digit",
-      day: "2-digit",
-      ...(hasTime
-        ? {
-            hour: "2-digit",
-            minute: "2-digit",
-          }
-        : {}),
-    }).format(parsed);
-  };
-
-  const publicationStartLabel = formatPublicationDate(hotel.publishStartAt);
-  const publicationEndLabel = formatPublicationDate(
-    hotel.publicationEndsAt || hotel.publishEndAt,
-  );
-  const showPublicationRange = Boolean(
-    publicationStartLabel || publicationEndLabel,
-  );
-
   const toSlug = (input: string) =>
     String(input || "")
       .normalize("NFD")
@@ -678,29 +650,6 @@ export function HotelDetail({ hotel }: HotelDetailProps) {
                 className="font-neutra text-[20px] leading-[24px] font-[100] text-black uppercase"
                 dangerouslySetInnerHTML={{ __html: hotel.subtitle }}
               />
-              {showPublicationRange && (
-                <div className="mt-2 font-neutra text-[13px] leading-[18px] text-black/80">
-                  <div className="font-semibold uppercase text-[12px] mb-1">
-                    {t("PUBLICACIÓN", "PUBLICATION")}
-                  </div>
-                  {publicationStartLabel && (
-                    <div>
-                      <span className="font-semibold">
-                        {t("DESDE", "FROM")}:
-                      </span>{" "}
-                      {publicationStartLabel}
-                    </div>
-                  )}
-                  {publicationEndLabel && (
-                    <div>
-                      <span className="font-semibold">
-                        {t("HASTA", "UNTIL")}:
-                      </span>{" "}
-                      {publicationEndLabel}
-                    </div>
-                  )}
-                </div>
-              )}
             </div>
           </div>
           <div

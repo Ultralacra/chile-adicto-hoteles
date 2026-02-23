@@ -250,6 +250,15 @@ async function fetchPostsWithPublicationFallback(pathWithSelectBase: string) {
 
 export async function GET(req: Request) {
   try {
+    const normalizeCategorySlug = (value: unknown) =>
+      String(value || "")
+        .toLowerCase()
+        .trim()
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .replace(/[^a-z0-9]+/g, "-")
+        .replace(/(^-|-$)/g, "");
+
     const siteId = await getCurrentSiteId(req);
     const url = new URL(req.url);
     const q = url.searchParams.get("q") || "";
@@ -275,6 +284,11 @@ export async function GET(req: Request) {
       ? Math.max(0, Math.trunc(offsetNumber))
       : 0;
     const isAdminRequest = !!url.searchParams.get("adminSite");
+    const normalizedCategorySlugFromQuery = normalizeCategorySlug(categorySlug);
+    const normalizedCategoryLabelFromQuery = normalizeCategorySlug(category);
+    const shouldBypassPublicationWindow =
+      normalizedCategorySlugFromQuery === "agenda-cultural" ||
+      normalizedCategoryLabelFromQuery === "agenda-cultural";
     
     // DEBUG: Log del sitio detectado
     console.log('🔍 [API /posts] Sitio detectado:', siteId);
@@ -290,15 +304,16 @@ export async function GET(req: Request) {
       if (category || categorySlug) {
         const catU = category ? category.toUpperCase() : null;
         const slugTarget = categorySlug ? categorySlug.toLowerCase().trim() : null;
+        const normalizedSlugTarget = slugTarget ? normalizeCategorySlug(slugTarget) : null;
 
         const matchesTranslationCategorySlug = (r: any) => {
-          if (!slugTarget) return false;
+          if (!normalizedSlugTarget) return false;
           const translations = Array.isArray(r.translations) ? r.translations : [];
           return translations.some((t: any) => {
             if (!t?.category) return false;
             const cat = String(t.category).toLowerCase().trim();
-            const catSlug = cat.replace(/\s+/g, "-");
-            return cat === slugTarget || catSlug === slugTarget;
+            const catSlug = normalizeCategorySlug(cat);
+            return cat === slugTarget || catSlug === normalizedSlugTarget;
           });
         };
 
@@ -313,7 +328,9 @@ export async function GET(req: Request) {
             : false;
           const matchBySlug = slugTarget
             ? (r.category_links || []).some(
-                (c: any) => String(c.category?.slug || "") === slugTarget
+                (c: any) =>
+                  normalizeCategorySlug(c.category?.slug || "") ===
+                  normalizedSlugTarget
               ) || matchesTranslationCategorySlug(r)
             : false;
 
@@ -343,7 +360,13 @@ export async function GET(req: Request) {
       const mapped = rows.map(mapRowToLegacy);
       const visible = isAdminRequest
         ? mapped
-        : mapped.filter((post: any) => isPostCurrentlyPublished(post));
+        : shouldBypassPublicationWindow
+          ? mapped.filter(
+              (post: any) =>
+                String(post?.publicationStatus || "published").toLowerCase() !==
+                "unpublished",
+            )
+          : mapped.filter((post: any) => isPostCurrentlyPublished(post));
       const homeFiltered = homeFeed
         ? visible.filter((post) => !isExcludedFromHomeFeed(post))
         : visible;

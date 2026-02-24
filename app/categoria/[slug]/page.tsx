@@ -1034,18 +1034,6 @@ export default function CategoryPage({ params }: { params: any }) {
                       />
                     ))}
                   </div>
-                  {/* Divider de puntos entre grupos */}
-                  {groupIdx < agendaGrouped.length - 1 && (
-                    <div className="mt-6">
-                      <div
-                        className="mx-auto h-[3px] w-full bg-transparent"
-                        style={{
-                          backgroundImage:
-                            "repeating-linear-gradient(to right, #b4b4b8 0 3px, transparent 3px 6px)",
-                        }}
-                      />
-                    </div>
-                  )}
                 </section>
               ))}
             </div>

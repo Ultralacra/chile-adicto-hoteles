@@ -171,6 +171,7 @@ function mapRowToLegacy(row: any) {
     publicationEndsAt: row.publish_end_at || null,
     featuredImage: row.featured_image || null,
     website: row.website || null,
+    websitePublic: row.website_public || null,
     instagram: row.instagram || null,
     website_display: row.website_display || null,
     instagram_display: row.instagram_display || null,
@@ -239,7 +240,7 @@ export async function GET(
 
     // Intentar Supabase
     const select =
-      "slug,publication_status,publish_start_at,publish_end_at,featured_image,website,instagram,website_display,instagram_display,email,phone,photos_credit,address,hours,reservation_link,reservation_policy,interesting_fact,site,images:post_images(url,position),locations:post_locations(*),translations:post_translations(*),useful:post_useful_info(*),category_links:post_category_map(category:categories(slug,label_es,label_en)),communes_links:post_communes(commune_slug,commune:communes(slug,label))";
+      "slug,publication_status,publish_start_at,publish_end_at,featured_image,website,website_public,instagram,website_display,instagram_display,email,phone,photos_credit,address,hours,reservation_link,reservation_policy,interesting_fact,site,images:post_images(url,position),locations:post_locations(*),translations:post_translations(*),useful:post_useful_info(*),category_links:post_category_map(category:categories(slug,label_es,label_en)),communes_links:post_communes(commune_slug,commune:communes(slug,label))";
     const rows: any[] | null = await fetchWithPublicationFallback(
       `/posts?slug=eq.${encodeURIComponent(slug)}&site=eq.${siteId}&select=${encodeURIComponent(select)}`
     );
@@ -333,6 +334,8 @@ export async function PUT(
               ? "reservation_link"
               : key === "reservationPolicy"
               ? "reservation_policy"
+              : key === "websitePublic"
+              ? "website_public"
               : key === "interestingFact"
               ? "interesting_fact"
               : key === "publicationStatus"
@@ -357,6 +360,7 @@ export async function PUT(
       setIfProvided("hours", normalized.hours);
       setIfProvided("reservationLink", normalized.reservationLink);
       setIfProvided("reservationPolicy", normalized.reservationPolicy);
+      setIfProvided("websitePublic", normalized.websitePublic);
       setIfProvided("interestingFact", normalized.interestingFact);
       setIfProvided("publicationStatus", normalized.publicationStatus);
       setIfProvided("publishStartAt", normalized.publishStartAt);

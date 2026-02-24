@@ -171,6 +171,7 @@ function mapRowToLegacy(row: any) {
     publicationEndsAt: row.publish_end_at || null,
     featuredImage: row.featured_image || null,
     website: row.website || null,
+    websitePublic: row.website_public || null,
     instagram: row.instagram || null,
     website_display: row.website_display || null,
     instagram_display: row.instagram_display || null,
@@ -295,7 +296,7 @@ export async function GET(req: Request) {
     console.log('🔍 [API /posts] Parámetros:', { q, category, categorySlug });
 
     const select =
-      "slug,publication_status,publish_start_at,publish_end_at,featured_image,website,instagram,website_display,instagram_display,email,phone,photos_credit,address,hours,reservation_link,reservation_policy,interesting_fact,site,images:post_images(url,position),locations:post_locations(*),translations:post_translations(*),useful:post_useful_info(*),category_links:post_category_map(category:categories(slug,label_es,label_en))";
+      "slug,publication_status,publish_start_at,publish_end_at,featured_image,website,website_public,instagram,website_display,instagram_display,email,phone,photos_credit,address,hours,reservation_link,reservation_policy,interesting_fact,site,images:post_images(url,position),locations:post_locations(*),translations:post_translations(*),useful:post_useful_info(*),category_links:post_category_map(category:categories(slug,label_es,label_en))";
     let rows: any[] | null = await fetchPostsWithPublicationFallback(
       `/posts?select=${encodeURIComponent(select)}&site=eq.${siteId}`
     );
@@ -418,6 +419,7 @@ export async function POST(req: Request) {
       publish_end_at: normalized.publishEndAt || null,
       featured_image: featured,
       website: normalized.website || null,
+      website_public: normalized.websitePublic || null,
       website_display: normalized.website_display || null,
       instagram: normalized.instagram || null,
       instagram_display: normalized.instagram_display || null,

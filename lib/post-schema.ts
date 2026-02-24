@@ -61,6 +61,7 @@ export const postSchema = z.object({
     .optional(),
   website: z.string().optional(),
   website_display: z.string().optional(),
+  websitePublic: z.string().optional(),
   instagram: z.string().optional(),
   instagram_display: z.string().optional(),
   // Email totalmente opcional, sin validar formato para no bloquear edición

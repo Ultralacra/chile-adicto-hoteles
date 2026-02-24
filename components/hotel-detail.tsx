@@ -44,6 +44,7 @@ interface HotelDetailProps {
     hours?: string;
     reservationLink?: string;
     reservationPolicy?: string;
+    websitePublic?: string;
     interestingFact?: string;
     publishStartAt?: string | null;
     publishEndAt?: string | null;
@@ -751,6 +752,15 @@ export function HotelDetail({ hotel }: HotelDetailProps) {
                       {formatWebsiteDisplay(
                         hotel.website_display || hotel.website,
                       )}
+                    </a>
+                  ) : hotel.websitePublic ? (
+                    <a
+                      href={formatWebsiteHref(hotel.websitePublic)}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-[var(--color-brand-red)] no-underline"
+                    >
+                      {formatWebsiteDisplay(hotel.websitePublic)}
                     </a>
                   ) : (
                     <span className="text-black">

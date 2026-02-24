@@ -61,6 +61,7 @@ function mapRowToLegacy(row: any) {
     publicationEndsAt: row.publish_end_at || null,
     featuredImage: row.featured_image || null,
     website: row.website || null,
+    websitePublic: row.website_public || null,
     instagram: row.instagram || null,
     website_display: row.website_display || null,
     instagram_display: row.instagram_display || null,
@@ -119,7 +120,7 @@ export async function GET(req: Request, { params }: { params: { slug: string } }
     const url = new URL(req.url);
     const q = url.searchParams.get("q") || "";
     const select =
-      "slug,publication_status,publish_start_at,publish_end_at,featured_image,website,instagram,website_display,instagram_display,email,phone,photos_credit,address,hours,reservation_link,reservation_policy,interesting_fact,images:post_images(url,position),locations:post_locations(*),translations:post_translations(*),category_links:post_category_map(category:categories(slug,label_es,label_en))";
+      "slug,publication_status,publish_start_at,publish_end_at,featured_image,website,website_public,instagram,website_display,instagram_display,email,phone,photos_credit,address,hours,reservation_link,reservation_policy,interesting_fact,images:post_images(url,position),locations:post_locations(*),translations:post_translations(*),category_links:post_category_map(category:categories(slug,label_es,label_en))";
     let rows: any[] | null = await fetchWithPublicationFallback(`/posts?select=${encodeURIComponent(select)}`);
     if (!rows) return NextResponse.json([], { status: 200 });
 

@@ -1026,7 +1026,7 @@ export default function CategoryPage({ params }: { params: any }) {
                             [],
                         )}
                         image={hotel.featuredImage || hotel.images?.[0] || ""}
-                        imageVariant="default"
+                        imageVariant="tall"
                         publishStartAt={hotel.publishStartAt}
                         publishEndAt={hotel.publishEndAt}
                         publicationEndsAt={hotel.publicationEndsAt}

@@ -792,7 +792,7 @@ export default function CategoryPage({ params }: { params: any }) {
       start: "2026-03-09",
       end: "2026-03-15",
       href: "/agenda-cultural",
-      src: "/bannersagenda/BANNER DESKTOP AGENDA 2 AL 8.png",
+      src: "/bannersagenda/BANNER DESKTOP AGENDA 9 AL 15.png",
       mobileSrc: "/bannersagenda/BANNER MOVIL AGENDA 9 AL 15.png",
       alt: "Agenda Cultural del 9 al 15 de marzo",
     },
@@ -800,7 +800,7 @@ export default function CategoryPage({ params }: { params: any }) {
       start: "2026-03-16",
       end: "2026-03-22",
       href: "/agenda-cultural",
-      src: "/bannersagenda/BANNER DESKTOP AGENDA 2 AL 8.png",
+      src: "/bannersagenda/BANNER DESKTOP AGENDA 16 AL 22.png",
       mobileSrc: "/bannersagenda/BANNER MOVIL AGENDA 16 AL 22.png",
       alt: "Agenda Cultural del 16 al 22 de marzo",
     },
@@ -808,7 +808,7 @@ export default function CategoryPage({ params }: { params: any }) {
       start: "2026-03-23",
       end: "2026-03-29",
       href: "/agenda-cultural",
-      src: "/bannersagenda/BANNER DESKTOP AGENDA 2 AL 8.png",
+      src: "/bannersagenda/BANNER DESKTOP AGENDA 23 AL 29.png",
       mobileSrc: "/bannersagenda/BANNER MOVIL AGENDA 23 AL 29.png",
       alt: "Agenda Cultural del 23 al 29 de marzo",
     },
@@ -818,6 +818,22 @@ export default function CategoryPage({ params }: { params: any }) {
   const activeAgendaBanner = agendaBannerRanges.find(
     (range) => todayKey >= range.start && todayKey <= range.end,
   );
+
+  // Agrupar posts de agenda cultural por rango de banner
+  const isAgendaCultural = slug === "agenda-cultural";
+  const agendaGrouped = isAgendaCultural
+    ? agendaBannerRanges
+        .map((range) => {
+          const posts = finalOrderedHotels.filter((h) => {
+            const raw = h.publishStartAt || h.publishEndAt;
+            if (!raw) return false;
+            const postDate = toLocalDateKey(new Date(raw));
+            return postDate >= range.start && postDate <= range.end;
+          });
+          return { ...range, posts };
+        })
+        .filter((g) => g.posts.length > 0)
+    : [];
 
   return (
     <Suspense
@@ -896,40 +912,21 @@ export default function CategoryPage({ params }: { params: any }) {
           )}
 
           {/* En Monumentos Nacionales y Cafés: banner largo bajo el menú, luego posts */}
-          {(slug === "monumentos-nacionales" ||
-            slug === "cafes" ||
-            slug === "agenda-cultural") && (
+          {(slug === "monumentos-nacionales" || slug === "cafes") && (
             <div className="w-full mt-2">
               <BottomHomeBanner
-                href={
-                  slug === "cafes"
-                    ? "/cafes"
-                    : slug === "monumentos-nacionales"
-                      ? "/monumentos-nacionales"
-                      : activeAgendaBanner?.href || "/agenda-cultural"
-                }
+                href={slug === "cafes" ? "/cafes" : "/monumentos-nacionales"}
                 src={
                   slug === "cafes"
                     ? "/bannerHome/BANNER 30 CAFES.svg"
-                    : slug === "monumentos-nacionales"
-                      ? "/bannerHome/BANNER MONUMENTOS.svg"
-                      : activeAgendaBanner?.src ||
-                        "/bannerHome/BANNER AGENDA CILTURAL.svg"
+                    : "/bannerHome/BANNER MONUMENTOS.svg"
                 }
                 mobileSrc={
                   slug === "cafes"
                     ? "/bannerHome/30 CAFES.png"
-                    : slug === "monumentos-nacionales"
-                      ? "/bannerHome/monumentos movil.png"
-                      : activeAgendaBanner?.mobileSrc
+                    : "/bannerHome/monumentos movil.png"
                 }
-                alt={
-                  slug === "cafes"
-                    ? "Cafés"
-                    : slug === "monumentos-nacionales"
-                      ? "Monumentos Nacionales"
-                      : activeAgendaBanner?.alt || "Agenda Cultural"
-                }
+                alt={slug === "cafes" ? "Cafés" : "Monumentos Nacionales"}
               />
             </div>
           )}
@@ -1000,6 +997,57 @@ export default function CategoryPage({ params }: { params: any }) {
               <div className="flex items-center gap-2">
                 <Spinner className="size-5" /> Cargando…
               </div>
+            </div>
+          ) : isAgendaCultural && agendaGrouped.length > 0 ? (
+            /* Agenda Cultural: banner de cada semana + sus posts debajo */
+            <div className="mt-4 space-y-8">
+              {agendaGrouped.map((group, groupIdx) => (
+                <section key={group.start}>
+                  <div className="w-full mb-4">
+                    <BottomHomeBanner
+                      href={group.href}
+                      src={group.src}
+                      mobileSrc={group.mobileSrc}
+                      alt={group.alt}
+                    />
+                  </div>
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+                    {group.posts.map((hotel) => (
+                      <HotelCard
+                        key={hotel.slug}
+                        slug={hotel.slug}
+                        name={hotel[language]?.name || hotel.es?.name}
+                        subtitle={
+                          hotel[language]?.subtitle || hotel.es?.subtitle
+                        }
+                        description={buildCardExcerpt(
+                          hotel[language]?.description ||
+                            hotel.es?.description ||
+                            [],
+                        )}
+                        image={hotel.featuredImage || hotel.images?.[0] || ""}
+                        imageVariant="default"
+                        publishStartAt={hotel.publishStartAt}
+                        publishEndAt={hotel.publishEndAt}
+                        publicationEndsAt={hotel.publicationEndsAt}
+                        showPublicationDates={false}
+                      />
+                    ))}
+                  </div>
+                  {/* Divider de puntos entre grupos */}
+                  {groupIdx < agendaGrouped.length - 1 && (
+                    <div className="mt-6">
+                      <div
+                        className="mx-auto h-[3px] w-full bg-transparent"
+                        style={{
+                          backgroundImage:
+                            "repeating-linear-gradient(to right, #b4b4b8 0 3px, transparent 3px 6px)",
+                        }}
+                      />
+                    </div>
+                  )}
+                </section>
+              ))}
             </div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 mt-4">

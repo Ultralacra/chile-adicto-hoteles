@@ -8,7 +8,7 @@ import { Footer } from "@/components/footer";
 import { CategoryNav } from "@/components/category-nav";
 import { buildCardExcerpt } from "@/lib/utils";
 import { isHiddenFrontPost } from "@/lib/post-visibility";
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import { Spinner } from "@/components/ui/spinner";
 import { useLanguage } from "@/contexts/language-context";
 import { useSiteApi } from "@/hooks/use-site-api";
@@ -18,6 +18,14 @@ import {
 } from "@/components/home-promo-banners.home-v2";
 
 export default function Page() {
+  return (
+    <Suspense fallback={null}>
+      <HomeContent />
+    </Suspense>
+  );
+}
+
+function HomeContent() {
   const { language } = useLanguage();
   const { fetchWithSite } = useSiteApi();
   const [hotels, setHotels] = useState<any[]>([]);

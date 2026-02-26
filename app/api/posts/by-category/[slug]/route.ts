@@ -53,6 +53,7 @@ function mapRowToLegacy(row: any) {
   const categories = Array.isArray(row.category_links)
     ? row.category_links.map((r: any) => r.category?.label_es || r.category?.slug).filter(Boolean)
     : [];
+  const websitePublic = row.website_public ?? row.websitePublic ?? null;
   return {
     slug: row.slug,
     publicationStatus: row.publication_status || "published",
@@ -61,7 +62,9 @@ function mapRowToLegacy(row: any) {
     publicationEndsAt: row.publish_end_at || null,
     featuredImage: row.featured_image || null,
     website: row.website || null,
-    websitePublic: row.website_public ?? row.websitePublic ?? null,
+    websitePublic,
+    websitepublic: websitePublic,
+    website_public: websitePublic,
     instagram: row.instagram || null,
     website_display: row.website_display ?? row.websiteDisplay ?? null,
     instagram_display: row.instagram_display ?? row.instagramDisplay ?? null,

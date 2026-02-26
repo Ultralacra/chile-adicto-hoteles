@@ -14,6 +14,7 @@ import { buildCardExcerpt } from "@/lib/utils";
 import Link from "next/link";
 import { Spinner } from "@/components/ui/spinner";
 import { useSiteApi } from "@/hooks/use-site-api";
+import { cachedFetch } from "@/lib/api-cache";
 import { isHiddenFrontPost } from "@/lib/post-visibility";
 import { BottomHomeBanner } from "@/components/home-promo-banners";
 
@@ -170,18 +171,17 @@ export default function CategoryPage({ params }: { params: any }) {
       return;
     }
     let cancelled = false;
-    fetchWithSite("/api/communes?nav=1", { cache: "no-store" })
-      .then((r) => (r.ok ? r.json() : []))
-      .then((rows) => {
+    cachedFetch("/api/communes?nav=1")
+      .then((data) => {
         if (cancelled) return;
-        const list: ApiCommuneRow[] = Array.isArray(rows) ? rows : [];
+        const list: ApiCommuneRow[] = Array.isArray(data) ? data : [];
         setDbCommunes(list.filter((x) => x && x.slug));
       })
       .catch(() => !cancelled && setDbCommunes([]));
     return () => {
       cancelled = true;
     };
-  }, [isRestaurantsPage, fetchWithSite]);
+  }, [isRestaurantsPage]);
 
   // Cargar mapeo postSlug -> [commune_slug] para el filtro (si existe en BD)
   useEffect(() => {
@@ -392,11 +392,8 @@ export default function CategoryPage({ params }: { params: any }) {
       language === "en" ? "restaurants-desktop-en" : "restaurants-desktop-es";
 
     // 1) Intentar BD primero (si existe)
-    fetchWithSite(`/api/sliders/${encodeURIComponent(desktopKey)}`, {
-      cache: "no-store",
-    })
-      .then((r) => (r.ok ? r.json() : null))
-      .then((db) => {
+    cachedFetch(`/api/sliders/${encodeURIComponent(desktopKey)}`)
+      .then((db: any) => {
         if (cancelled) return;
         const items = Array.isArray(db?.items) ? db.items : [];
         const activeItems = items.filter((it: any) => it?.active !== false);
@@ -543,7 +540,7 @@ export default function CategoryPage({ params }: { params: any }) {
     return () => {
       cancelled = true;
     };
-  }, [isRestaurantsPage, language, fetchWithSite]);
+  }, [isRestaurantsPage, language, fetchWithSite, cachedFetch]);
 
   // Cargar carpeta específica móvil de restaurantes (sin afectar desktop)
   useEffect(() => {
@@ -554,11 +551,8 @@ export default function CategoryPage({ params }: { params: any }) {
       language === "en" ? "restaurants-mobile-en" : "restaurants-mobile-es";
 
     // 1) Intentar BD primero (si existe)
-    fetchWithSite(`/api/sliders/${encodeURIComponent(mobileKey)}`, {
-      cache: "no-store",
-    })
-      .then((r) => (r.ok ? r.json() : null))
-      .then((db) => {
+    cachedFetch(`/api/sliders/${encodeURIComponent(mobileKey)}`)
+      .then((db: any) => {
         if (cancelled) return;
         const items = Array.isArray(db?.items) ? db.items : [];
         const activeItems = items.filter((it: any) => it?.active !== false);
@@ -578,13 +572,10 @@ export default function CategoryPage({ params }: { params: any }) {
 
         // 2) Fallback: carpeta pública vía API actual
         setRestaurantMobileLoadedFromDb(false);
-        return fetchWithSite("/api/restaurant-slider-mobile", {
-          cache: "no-store",
-        })
-          .then((r) => (r.ok ? r.json() : { images: [] }))
-          .then((json) => {
+        return cachedFetch("/api/restaurant-slider-mobile")
+          .then((json: any) => {
             if (cancelled) return;
-            const imgs: string[] = Array.isArray(json.images)
+            const imgs: string[] = Array.isArray(json?.images)
               ? json.images
               : [];
             setRestaurantMobileImages(imgs);
@@ -647,7 +638,7 @@ export default function CategoryPage({ params }: { params: any }) {
     return () => {
       cancelled = true;
     };
-  }, [isRestaurantsPage, filteredHotels, language, fetchWithSite]);
+  }, [isRestaurantsPage, filteredHotels, language, fetchWithSite, cachedFetch]);
 
   // Override de descripciones ES/EN para slugs específicos (p. ej., PRIMA BAR)
   const enrichedHotels = (filteredHotels || []).map((h) => {

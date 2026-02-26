@@ -64,17 +64,14 @@ export function CategoryNav({
   compact = false,
 }: CategoryNavProps) {
   const { language } = useLanguage();
-  const { fetchWithSite } = useSiteApi();
+  const { cachedFetchWithSite } = useSiteApi();
   const [items, setItems] = useState(fallbackCategories);
 
   useEffect(() => {
     let cancelled = false;
     async function load() {
       try {
-        const res = await fetchWithSite("/api/categories?full=1&nav=1", {
-          cache: "no-store",
-        });
-        const json = res.ok ? await res.json() : [];
+        const json = await cachedFetchWithSite("/api/categories?full=1&nav=1");
         const rows: ApiCategoryRow[] = Array.isArray(json) ? json : [];
         const mapped = rows
           .filter((r) => r && r.slug)
@@ -130,7 +127,7 @@ export function CategoryNav({
     return () => {
       cancelled = true;
     };
-  }, [fetchWithSite]);
+  }, [cachedFetchWithSite]);
 
   const hrefFor = (slug: string) => {
     if (slug === "todos") return "/";

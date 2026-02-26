@@ -9,6 +9,7 @@ import {
 } from "react";
 import type { SiteId } from "@/lib/sites-config";
 import { DEFAULT_SITE } from "@/lib/sites-config";
+import { invalidateCache } from "@/lib/api-cache";
 
 interface SiteContextType {
   currentSite: SiteId;
@@ -38,6 +39,9 @@ export function SiteProvider({ children }: { children: ReactNode }) {
 
     setIsChanging(true);
     setCurrentSite(siteId);
+
+    // Limpiar cache de API al cambiar de sitio (los datos son por sitio)
+    invalidateCache();
 
     if (typeof window !== "undefined") {
       localStorage.setItem("admin:currentSite", siteId);

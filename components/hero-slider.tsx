@@ -5,6 +5,7 @@ import Link from "next/link";
 import Image from "next/image";
 import useEmblaCarousel from "embla-carousel-react";
 import { useSiteApi } from "@/hooks/use-site-api";
+import { cachedFetch } from "@/lib/api-cache";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
 // Reordenado: ICONOS debe ser el primer slide según solicitud.
@@ -144,22 +145,18 @@ export function HeroSlider({
 
         // 1) Preferir sliders desde BD (si se indicó key)
         const loadSet = async (key: string) => {
-          const res = await fetchWithSite(
+          const json = await cachedFetch(
             `/api/sliders/${encodeURIComponent(key)}`,
-            {
-              cache: "no-store",
-            },
-          );
-          if (!res.ok) return { images: [], hrefs: [] };
-          const json = (await res.json()) as {
+          ) as {
             key?: string;
             items?: Array<{
               image_url?: string;
               href?: string | null;
               active?: boolean;
             }>;
-          };
+          } | null;
           const items = Array.isArray(json?.items) ? json.items : [];
+          if (!json) return { images: [], hrefs: [] };
           const activeItems = items.filter((it) => it?.active !== false);
           const images = activeItems
             .map((it) => String(it?.image_url || "").trim())
@@ -199,14 +196,11 @@ export function HeroSlider({
         if (usedDb) return;
 
         // 2) Fallback legacy: /api/slider-images (carpetas públicas)
-        const res = await fetchWithSite("/api/slider-images", {
-          cache: "no-store",
-        });
-        if (!res.ok) return;
-        const json = (await res.json()) as {
+        const json = await cachedFetch("/api/slider-images") as {
           desktop: string[];
           mobile: string[];
-        };
+        } | null;
+        if (!json) return;
         if (cancelled) return;
         if (needDesktop && Array.isArray(json.desktop)) {
           setDesktopFromApi(json.desktop);
@@ -228,6 +222,7 @@ export function HeroSlider({
     sliderKeyDesktop,
     sliderKeyMobile,
     fetchWithSite,
+    cachedFetch,
   ]);
 
   const hrefForIndex = (index: number, mode: "desktop" | "mobile") => {

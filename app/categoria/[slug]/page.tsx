@@ -813,6 +813,24 @@ export default function CategoryPage({ params }: { params: any }) {
 
   // Agrupar posts de agenda cultural por rango de banner
   const isAgendaCultural = slug === "agenda-cultural";
+  const agendaReturnStorageKey = "agenda-cultural:last-clicked-post";
+
+  const handleAgendaCardClick = (
+    postSlug: string,
+    cardElement?: HTMLElement,
+  ) => {
+    if (!isAgendaCultural || !postSlug) return;
+    sessionStorage.setItem(agendaReturnStorageKey, postSlug);
+
+    const article = cardElement?.querySelector("article");
+    if (article) {
+      article.classList.add("agenda-card-leaving");
+      window.setTimeout(() => {
+        article.classList.remove("agenda-card-leaving");
+      }, 260);
+    }
+  };
+
   const agendaGrouped = isAgendaCultural
     ? agendaBannerRanges
         .map((range) => {
@@ -826,6 +844,32 @@ export default function CategoryPage({ params }: { params: any }) {
         })
         .filter((g) => g.posts.length > 0)
     : [];
+
+  useEffect(() => {
+    if (!isAgendaCultural || loading) return;
+
+    const targetSlug = sessionStorage.getItem(agendaReturnStorageKey);
+    if (!targetSlug) return;
+
+    const timer = window.setTimeout(() => {
+      const target = document.getElementById(`post-card-${targetSlug}`);
+      if (target) {
+        target.scrollIntoView({ behavior: "smooth", block: "center" });
+        const article = target.querySelector("article");
+        if (article) {
+          article.classList.remove("agenda-card-return");
+          void article.clientHeight;
+          article.classList.add("agenda-card-return");
+          window.setTimeout(() => {
+            article.classList.remove("agenda-card-return");
+          }, 700);
+        }
+      }
+      sessionStorage.removeItem(agendaReturnStorageKey);
+    }, 40);
+
+    return () => window.clearTimeout(timer);
+  }, [isAgendaCultural, loading, agendaGrouped.length]);
 
   return (
     <Suspense
@@ -967,6 +1011,7 @@ export default function CategoryPage({ params }: { params: any }) {
                   // Ver imagen completa sin recortar y mantener el ancho del contenedor
                   autoplay={false}
                   showArrows
+                  showDots={false}
                   autoHeight
                   // keep default desktop height (closer to other sliders)
                   desktopHeight={437}
@@ -1023,6 +1068,7 @@ export default function CategoryPage({ params }: { params: any }) {
                         publishEndAt={hotel.publishEndAt}
                         publicationEndsAt={hotel.publicationEndsAt}
                         showPublicationDates={false}
+                        onCardClick={handleAgendaCardClick}
                       />
                     ))}
                   </div>
@@ -1049,6 +1095,9 @@ export default function CategoryPage({ params }: { params: any }) {
                     publishEndAt={hotel.publishEndAt}
                     publicationEndsAt={hotel.publicationEndsAt}
                     showPublicationDates={false}
+                    onCardClick={
+                      isAgendaCultural ? handleAgendaCardClick : undefined
+                    }
                   />
                 ))
               ) : (

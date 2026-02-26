@@ -14,6 +14,7 @@ interface HotelCardProps {
   publishEndAt?: string | null;
   publicationEndsAt?: string | null;
   showPublicationDates?: boolean;
+  onCardClick?: (slug: string, cardElement?: HTMLElement) => void;
 }
 
 function HotelCardComponent({
@@ -28,6 +29,7 @@ function HotelCardComponent({
   publishEndAt,
   publicationEndsAt,
   showPublicationDates = true,
+  onCardClick,
 }: HotelCardProps) {
   const imageContainerClass =
     imageVariant === "tall" ? "h-[400px]" : "aspect-[386/264]";
@@ -60,7 +62,14 @@ function HotelCardComponent({
     showPublicationDates && Boolean(startLabel || endLabel);
 
   return (
-    <Link href={`/${slug}`}>
+    <Link
+      href={`/${slug}`}
+      id={`post-card-${slug}`}
+      data-post-slug={slug}
+      onClick={(event) =>
+        onCardClick?.(slug, event.currentTarget as HTMLElement)
+      }
+    >
       <article className="group cursor-pointer flex flex-col h-full gap-3">
         {/* Image Container */}
         <div className={`relative ${imageContainerClass} overflow-hidden`}>

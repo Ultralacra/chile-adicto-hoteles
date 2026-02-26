@@ -77,19 +77,69 @@ export function Header() {
               </Link>
             </div>
 
-            {/* Desktop: Language + Agenda Cultural banner */}
-            <div className="hidden lg:flex items-center gap-6">
+            {/* Desktop: Right side logos */}
+            <div className="hidden lg:flex items-end gap-6">
               <LanguageSwitcher />
-              <Link href="/agenda-cultural" aria-label="Ir a Agenda Cultural">
+              <div className="flex items-center gap-4">
+                <a
+                  href="https://www.instagram.com/guiasantiagoadicto/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="Santiago Adicto Guia - Instagram"
+                >
+                  <Image
+                    src="/Santiago-adicto-Guia-nuevo.svg"
+                    alt="Santiago Adicto"
+                    width={70}
+                    height={50}
+                    className="h-10 w-auto"
+                  />
+                </a>
+
+                <a
+                  href="https://www.instagram.com/chileadictohoteles/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="Chile Adicto Hoteles - Instagram"
+                >
+                  <Image
+                    src="/Chile-adicto-Hotels-nuevo.svg"
+                    alt="Chile Adicto Hoteles"
+                    width={70}
+                    height={50}
+                    className="h-10 w-auto"
+                  />
+                </a>
+
+                <a
+                  href="https://www.instagram.com/adictoachile/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="Chile Adicto - Instagram"
+                >
+                  <Image
+                    src="/Chile-Adicto-logo-nuevo.svg"
+                    alt="Chile Adicto"
+                    width={70}
+                    height={50}
+                    className="h-10 w-auto"
+                  />
+                </a>
+              </div>
+              <a
+                href="https://www.marcachile.cl/"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="We Care - Marca Chile"
+              >
                 <Image
-                  src="/bannerHome/AGENDA CULTURAL HEADER.svg"
-                  alt="Agenda Cultural"
-                  width={460}
-                  height={120}
-                  className="h-[120px] w-auto"
-                  priority
+                  src="/wecare-nuevo-rojo.svg"
+                  alt="We Care"
+                  width={100}
+                  height={100}
+                  className="h-24 w-auto"
                 />
-              </Link>
+              </a>
             </div>
           </div>
         </div>

@@ -166,6 +166,7 @@ function mapRowToLegacy(row: any) {
   const websitePublic = row.website_public ?? row.websitePublic ?? null;
   return {
     slug: row.slug,
+    site: row.site || null,
     publicationStatus: row.publication_status || "published",
     publishStartAt: row.publish_start_at || null,
     publishEndAt: row.publish_end_at || null,
@@ -192,16 +193,16 @@ function mapRowToLegacy(row: any) {
       name: trEs.name || "",
       subtitle: trEs.subtitle || "",
       description: Array.isArray(trEs.description) ? trEs.description : [],
-      infoHtml: trEs.info_html || undefined,
-      infoHtmlNew: uEs.html || undefined,
+      infoHtml: trEs.info_html || null,
+      infoHtmlNew: uEs.html || null,
       category: trEs.category || null,
     },
     en: {
       name: trEn.name || "",
       subtitle: trEn.subtitle || "",
       description: Array.isArray(trEn.description) ? trEn.description : [],
-      infoHtml: trEn.info_html || undefined,
-      infoHtmlNew: uEn.html || undefined,
+      infoHtml: trEn.info_html || null,
+      infoHtmlNew: uEn.html || null,
       category: trEn.category || null,
     },
     categories,

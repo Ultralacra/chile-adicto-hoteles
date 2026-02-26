@@ -162,6 +162,15 @@ function mapRowToLegacy(row: any) {
   const categories = Array.isArray(row.category_links)
     ? row.category_links.map((r: any) => r.category?.label_es || r.category?.slug).filter(Boolean)
     : [];
+  const communes = Array.isArray(row.communes_links)
+    ? row.communes_links
+        .map((r: any) => {
+          const label = String(r?.commune?.label || "").trim();
+          const slug = String(r?.commune_slug || r?.commune?.slug || "").trim();
+          return label || slug;
+        })
+        .filter(Boolean)
+    : [];
   const websitePublic = row.website_public ?? row.websitePublic ?? null;
   return {
     slug: row.slug,
@@ -192,19 +201,20 @@ function mapRowToLegacy(row: any) {
       name: trEs.name || "",
       subtitle: trEs.subtitle || "",
       description: Array.isArray(trEs.description) ? trEs.description : [],
-      infoHtml: trEs.info_html || undefined,
-      infoHtmlNew: uEs.html || undefined,
+      infoHtml: trEs.info_html || null,
+      infoHtmlNew: uEs.html || null,
       category: trEs.category || null,
     },
     en: {
       name: trEn.name || "",
       subtitle: trEn.subtitle || "",
       description: Array.isArray(trEn.description) ? trEn.description : [],
-      infoHtml: trEn.info_html || undefined,
-      infoHtmlNew: uEn.html || undefined,
+      infoHtml: trEn.info_html || null,
+      infoHtmlNew: uEn.html || null,
       category: trEn.category || null,
     },
     categories,
+    communes,
   };
 }
 
@@ -299,7 +309,7 @@ export async function GET(req: Request) {
     console.log('🔍 [API /posts] Parámetros:', { q, category, categorySlug });
 
     const select =
-      "slug,publication_status,publish_start_at,publish_end_at,featured_image,website,website_public,instagram,website_display,instagram_display,email,phone,photos_credit,address,hours,reservation_link,reservation_policy,interesting_fact,site,images:post_images(url,position),locations:post_locations(*),translations:post_translations(*),useful:post_useful_info(*),category_links:post_category_map(category:categories(slug,label_es,label_en))";
+      "slug,publication_status,publish_start_at,publish_end_at,featured_image,website,website_public,instagram,website_display,instagram_display,email,phone,photos_credit,address,hours,reservation_link,reservation_policy,interesting_fact,site,images:post_images(url,position),locations:post_locations(*),translations:post_translations(*),useful:post_useful_info(*),category_links:post_category_map(category:categories(slug,label_es,label_en)),communes_links:post_communes(commune_slug,commune:communes(slug,label))";
     let rows: any[] | null = await fetchPostsWithPublicationFallback(
       `/posts?select=${encodeURIComponent(select)}&site=eq.${siteId}`
     );

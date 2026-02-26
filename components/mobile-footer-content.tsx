@@ -116,7 +116,7 @@ export function MobileFooterContent({ onNavigate }: MobileFooterContentProps) {
         "paseos-fuera-de-santiago",
         "restaurantes",
       ]),
-    []
+    [],
   );
 
   const hrefFor = (slug: string) => {
@@ -145,10 +145,10 @@ export function MobileFooterContent({ onNavigate }: MobileFooterContentProps) {
             }
 
             const labelEs = String(
-              r.label_es || fallback?.labelEs || slug.toUpperCase()
+              r.label_es || fallback?.labelEs || slug.toUpperCase(),
             ).toUpperCase();
             const labelEn = String(
-              r.label_en || fallback?.labelEn || slug
+              r.label_en || fallback?.labelEn || slug,
             ).toUpperCase();
             return { slug, labelEs, labelEn };
           })
@@ -157,13 +157,13 @@ export function MobileFooterContent({ onNavigate }: MobileFooterContentProps) {
 
         const restaurants = mapped.filter((x) => x.slug === "restaurantes");
         const tienda = mapped.filter(
-          (x) => x.slug === "tienda" || x.slug === "tiendas"
+          (x) => x.slug === "tienda" || x.slug === "tiendas",
         );
         const others = mapped.filter(
           (x) =>
             x.slug !== "restaurantes" &&
             x.slug !== "tienda" &&
-            x.slug !== "tiendas"
+            x.slug !== "tiendas",
         );
         const finalList = [
           fallbackItems[0],

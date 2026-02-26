@@ -145,9 +145,9 @@ export function HeroSlider({
 
         // 1) Preferir sliders desde BD (si se indicó key)
         const loadSet = async (key: string) => {
-          const json = await cachedFetch(
+          const json = (await cachedFetch(
             `/api/sliders/${encodeURIComponent(key)}`,
-          ) as {
+          )) as {
             key?: string;
             items?: Array<{
               image_url?: string;
@@ -196,7 +196,7 @@ export function HeroSlider({
         if (usedDb) return;
 
         // 2) Fallback legacy: /api/slider-images (carpetas públicas)
-        const json = await cachedFetch("/api/slider-images") as {
+        const json = (await cachedFetch("/api/slider-images")) as {
           desktop: string[];
           mobile: string[];
         } | null;

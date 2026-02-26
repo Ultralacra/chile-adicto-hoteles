@@ -572,8 +572,8 @@ export default function CategoryPage({ params }: { params: any }) {
 
         // 2) Fallback: carpeta pública vía API actual
         setRestaurantMobileLoadedFromDb(false);
-        return cachedFetch("/api/restaurant-slider-mobile")
-          .then((json: any) => {
+        return cachedFetch("/api/restaurant-slider-mobile").then(
+          (json: any) => {
             if (cancelled) return;
             const imgs: string[] = Array.isArray(json?.images)
               ? json.images
@@ -626,7 +626,8 @@ export default function CategoryPage({ params }: { params: any }) {
               return `/${matchSlug}`;
             });
             setRestaurantMobileHrefs(hrefs);
-          });
+          },
+        );
       })
       .catch(() => {
         if (!cancelled) {

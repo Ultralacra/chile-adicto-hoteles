@@ -90,6 +90,7 @@ export function normalizePost(input: PostInput): PostInput {
     email: normEmail,
     phone: normPhone,
     website: fixUrl((input as any).website),
+    websitePublic: (input as any).websitePublic ? String((input as any).websitePublic).trim() : undefined,
     reservationLink: fixUrl((input as any).reservationLink),
     publicationStatus: normalizedPublicationStatus,
     publishStartAt,

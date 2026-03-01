@@ -1,3 +1,4 @@
+import { memo } from "react";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -8,23 +9,27 @@ interface HotelCardProps {
   description: string;
   image: string;
   imageVariant?: "default" | "tall";
+  imagePriority?: boolean;
   publishStartAt?: string | null;
   publishEndAt?: string | null;
   publicationEndsAt?: string | null;
   showPublicationDates?: boolean;
+  onCardClick?: (slug: string, cardElement?: HTMLElement) => void;
 }
 
-export function HotelCard({
+function HotelCardComponent({
   slug,
   name,
   subtitle,
   description,
   image,
   imageVariant = "default",
+  imagePriority = false,
   publishStartAt,
   publishEndAt,
   publicationEndsAt,
   showPublicationDates = true,
+  onCardClick,
 }: HotelCardProps) {
   const imageContainerClass =
     imageVariant === "tall" ? "h-[400px]" : "aspect-[386/264]";
@@ -57,7 +62,14 @@ export function HotelCard({
     showPublicationDates && Boolean(startLabel || endLabel);
 
   return (
-    <Link href={`/${slug}`}>
+    <Link
+      href={`/${slug}`}
+      id={`post-card-${slug}`}
+      data-post-slug={slug}
+      onClick={(event) =>
+        onCardClick?.(slug, event.currentTarget as HTMLElement)
+      }
+    >
       <article className="group cursor-pointer flex flex-col h-full gap-3">
         {/* Image Container */}
         <div className={`relative ${imageContainerClass} overflow-hidden`}>
@@ -65,6 +77,8 @@ export function HotelCard({
             src={image || "/placeholder.svg"}
             alt={name}
             fill
+            sizes="(max-width: 767px) 100vw, (max-width: 1279px) 50vw, 33vw"
+            priority={imagePriority}
             className="object-cover transition-transform duration-300 group-hover:scale-105"
           />
         </div>
@@ -131,3 +145,5 @@ export function HotelCard({
     </Link>
   );
 }
+
+export const HotelCard = memo(HotelCardComponent);

@@ -14,6 +14,7 @@ import { buildCardExcerpt } from "@/lib/utils";
 import Link from "next/link";
 import { Spinner } from "@/components/ui/spinner";
 import { useSiteApi } from "@/hooks/use-site-api";
+import { cachedFetch } from "@/lib/api-cache";
 import { isHiddenFrontPost } from "@/lib/post-visibility";
 import { BottomHomeBanner } from "@/components/home-promo-banners";
 
@@ -170,18 +171,17 @@ export default function CategoryPage({ params }: { params: any }) {
       return;
     }
     let cancelled = false;
-    fetchWithSite("/api/communes?nav=1", { cache: "no-store" })
-      .then((r) => (r.ok ? r.json() : []))
-      .then((rows) => {
+    cachedFetch("/api/communes?nav=1")
+      .then((data) => {
         if (cancelled) return;
-        const list: ApiCommuneRow[] = Array.isArray(rows) ? rows : [];
+        const list: ApiCommuneRow[] = Array.isArray(data) ? data : [];
         setDbCommunes(list.filter((x) => x && x.slug));
       })
       .catch(() => !cancelled && setDbCommunes([]));
     return () => {
       cancelled = true;
     };
-  }, [isRestaurantsPage, fetchWithSite]);
+  }, [isRestaurantsPage]);
 
   // Cargar mapeo postSlug -> [commune_slug] para el filtro (si existe en BD)
   useEffect(() => {
@@ -392,11 +392,8 @@ export default function CategoryPage({ params }: { params: any }) {
       language === "en" ? "restaurants-desktop-en" : "restaurants-desktop-es";
 
     // 1) Intentar BD primero (si existe)
-    fetchWithSite(`/api/sliders/${encodeURIComponent(desktopKey)}`, {
-      cache: "no-store",
-    })
-      .then((r) => (r.ok ? r.json() : null))
-      .then((db) => {
+    cachedFetch(`/api/sliders/${encodeURIComponent(desktopKey)}`)
+      .then((db: any) => {
         if (cancelled) return;
         const items = Array.isArray(db?.items) ? db.items : [];
         const activeItems = items.filter((it: any) => it?.active !== false);
@@ -543,7 +540,7 @@ export default function CategoryPage({ params }: { params: any }) {
     return () => {
       cancelled = true;
     };
-  }, [isRestaurantsPage, language, fetchWithSite]);
+  }, [isRestaurantsPage, language, fetchWithSite, cachedFetch]);
 
   // Cargar carpeta específica móvil de restaurantes (sin afectar desktop)
   useEffect(() => {
@@ -554,11 +551,8 @@ export default function CategoryPage({ params }: { params: any }) {
       language === "en" ? "restaurants-mobile-en" : "restaurants-mobile-es";
 
     // 1) Intentar BD primero (si existe)
-    fetchWithSite(`/api/sliders/${encodeURIComponent(mobileKey)}`, {
-      cache: "no-store",
-    })
-      .then((r) => (r.ok ? r.json() : null))
-      .then((db) => {
+    cachedFetch(`/api/sliders/${encodeURIComponent(mobileKey)}`)
+      .then((db: any) => {
         if (cancelled) return;
         const items = Array.isArray(db?.items) ? db.items : [];
         const activeItems = items.filter((it: any) => it?.active !== false);
@@ -578,13 +572,10 @@ export default function CategoryPage({ params }: { params: any }) {
 
         // 2) Fallback: carpeta pública vía API actual
         setRestaurantMobileLoadedFromDb(false);
-        return fetchWithSite("/api/restaurant-slider-mobile", {
-          cache: "no-store",
-        })
-          .then((r) => (r.ok ? r.json() : { images: [] }))
-          .then((json) => {
+        return cachedFetch("/api/restaurant-slider-mobile").then(
+          (json: any) => {
             if (cancelled) return;
-            const imgs: string[] = Array.isArray(json.images)
+            const imgs: string[] = Array.isArray(json?.images)
               ? json.images
               : [];
             setRestaurantMobileImages(imgs);
@@ -635,7 +626,8 @@ export default function CategoryPage({ params }: { params: any }) {
               return `/${matchSlug}`;
             });
             setRestaurantMobileHrefs(hrefs);
-          });
+          },
+        );
       })
       .catch(() => {
         if (!cancelled) {
@@ -647,7 +639,7 @@ export default function CategoryPage({ params }: { params: any }) {
     return () => {
       cancelled = true;
     };
-  }, [isRestaurantsPage, filteredHotels, language, fetchWithSite]);
+  }, [isRestaurantsPage, filteredHotels, language, fetchWithSite, cachedFetch]);
 
   // Override de descripciones ES/EN para slugs específicos (p. ej., PRIMA BAR)
   const enrichedHotels = (filteredHotels || []).map((h) => {
@@ -772,6 +764,113 @@ export default function CategoryPage({ params }: { params: any }) {
         )
     : cleanedList;
 
+  const toLocalDateKey = (date: Date) => {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const day = String(date.getDate()).padStart(2, "0");
+    return `${year}-${month}-${day}`;
+  };
+
+  const agendaBannerRanges = [
+    {
+      start: "2026-02-23",
+      end: "2026-03-08",
+      href: "/agenda-cultural",
+      src: "/bannersagenda/BANNER DESKTOP AGENDA 2 AL 8.png",
+      mobileSrc: "/bannersagenda/BANNER MOVIL AGENDA 2 AL 8.png",
+      alt: "Agenda Cultural del 2 al 8 de marzo",
+    },
+    {
+      start: "2026-03-09",
+      end: "2026-03-15",
+      href: "/agenda-cultural",
+      src: "/bannersagenda/BANNER DESKTOP AGENDA 9 AL 15.png",
+      mobileSrc: "/bannersagenda/BANNER MOVIL AGENDA 9 AL 15.png",
+      alt: "Agenda Cultural del 9 al 15 de marzo",
+    },
+    {
+      start: "2026-03-16",
+      end: "2026-03-22",
+      href: "/agenda-cultural",
+      src: "/bannersagenda/BANNER DESKTOP AGENDA 16 AL 22.png",
+      mobileSrc: "/bannersagenda/BANNER MOVIL AGENDA 16 AL 22.png",
+      alt: "Agenda Cultural del 16 al 22 de marzo",
+    },
+    {
+      start: "2026-03-23",
+      end: "2026-03-29",
+      href: "/agenda-cultural",
+      src: "/bannersagenda/BANNER DESKTOP AGENDA 23 AL 29.png",
+      mobileSrc: "/bannersagenda/BANNER MOVIL AGENDA 23 AL 29.png",
+      alt: "Agenda Cultural del 23 al 29 de marzo",
+    },
+  ];
+
+  const todayKey = toLocalDateKey(new Date());
+  const activeAgendaBanner = agendaBannerRanges.find(
+    (range) => todayKey >= range.start && todayKey <= range.end,
+  );
+
+  // Agrupar posts de agenda cultural por rango de banner
+  const isAgendaCultural = slug === "agenda-cultural";
+  const agendaReturnStorageKey = "agenda-cultural:last-clicked-post";
+
+  const handleAgendaCardClick = (
+    postSlug: string,
+    cardElement?: HTMLElement,
+  ) => {
+    if (!isAgendaCultural || !postSlug) return;
+    sessionStorage.setItem(agendaReturnStorageKey, postSlug);
+
+    const article = cardElement?.querySelector("article");
+    if (article) {
+      article.classList.add("agenda-card-leaving");
+      window.setTimeout(() => {
+        article.classList.remove("agenda-card-leaving");
+      }, 260);
+    }
+  };
+
+  const agendaGrouped = isAgendaCultural
+    ? agendaBannerRanges
+        .map((range) => {
+          const posts = finalOrderedHotels.filter((h) => {
+            const raw = h.publishStartAt || h.publishEndAt;
+            if (!raw) return false;
+            const postDate = toLocalDateKey(new Date(raw));
+            return postDate >= range.start && postDate <= range.end;
+          });
+          return { ...range, posts };
+        })
+        .filter((g) => g.posts.length > 0)
+    : [];
+
+  useEffect(() => {
+    if (!isAgendaCultural || loading) return;
+
+    const targetSlug = sessionStorage.getItem(agendaReturnStorageKey);
+    if (!targetSlug) return;
+
+    const timer = window.setTimeout(() => {
+      const target = document.getElementById(`post-card-${targetSlug}`);
+      if (target) {
+        target.scrollIntoView({ behavior: "smooth", block: "center" });
+        const article = target.querySelector("article");
+        if (article) {
+          article.classList.remove("agenda-card-return");
+          void article.clientHeight;
+          article.classList.add("agenda-card-return");
+          window.setTimeout(() => {
+            article.classList.remove("agenda-card-return");
+          }, 700);
+        }
+      }
+      sessionStorage.removeItem(agendaReturnStorageKey);
+    }, 40);
+
+    return () => window.clearTimeout(timer);
+  }, [isAgendaCultural, loading, agendaGrouped.length]);
+
   return (
     <Suspense
       fallback={
@@ -849,45 +948,27 @@ export default function CategoryPage({ params }: { params: any }) {
           )}
 
           {/* En Monumentos Nacionales y Cafés: banner largo bajo el menú, luego posts */}
-          {(slug === "monumentos-nacionales" ||
-            slug === "cafes" ||
-            slug === "agenda-cultural") && (
+          {(slug === "monumentos-nacionales" || slug === "cafes") && (
             <div className="w-full mt-2">
               <BottomHomeBanner
-                href={
-                  slug === "cafes"
-                    ? "/cafes"
-                    : slug === "monumentos-nacionales"
-                      ? "/monumentos-nacionales"
-                      : "/categoria/agenda-cultural"
-                }
+                href={slug === "cafes" ? "/cafes" : "/monumentos-nacionales"}
                 src={
                   slug === "cafes"
                     ? "/bannerHome/BANNER 30 CAFES.svg"
-                    : slug === "monumentos-nacionales"
-                      ? "/bannerHome/BANNER MONUMENTOS.svg"
-                      : "/bannerHome/BANNER AGENDA CILTURAL.svg"
+                    : "/bannerHome/BANNER MONUMENTOS.svg"
                 }
                 mobileSrc={
                   slug === "cafes"
                     ? "/bannerHome/30 CAFES.png"
-                    : slug === "monumentos-nacionales"
-                      ? "/bannerHome/monumentos movil.png"
-                      : undefined
+                    : "/bannerHome/monumentos movil.png"
                 }
-                alt={
-                  slug === "cafes"
-                    ? "Cafés"
-                    : slug === "monumentos-nacionales"
-                      ? "Monumentos Nacionales"
-                      : "Agenda Cultural"
-                }
+                alt={slug === "cafes" ? "Cafés" : "Monumentos Nacionales"}
               />
             </div>
           )}
 
-          {/* Slider de restaurantes a ancho completo, sin banner, solo cuando no hay comuna seleccionada */}
-          {isRestaurantsPage && !selectedComuna && (
+          {/* Slider de restaurantes a ancho completo, sin banner */}
+          {isRestaurantsPage && (
             <div className="py-2">
               <div className="w-full overflow-hidden mb-0">
                 <HeroSlider
@@ -954,6 +1035,46 @@ export default function CategoryPage({ params }: { params: any }) {
                 <Spinner className="size-5" /> Cargando…
               </div>
             </div>
+          ) : isAgendaCultural && agendaGrouped.length > 0 ? (
+            /* Agenda Cultural: banner de cada semana + sus posts debajo */
+            <div className="mt-4 space-y-8">
+              {agendaGrouped.map((group, groupIdx) => (
+                <section key={group.start}>
+                  <div className="w-full mb-4">
+                    <BottomHomeBanner
+                      href={group.href}
+                      src={group.src}
+                      mobileSrc={group.mobileSrc}
+                      alt={group.alt}
+                    />
+                  </div>
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+                    {group.posts.map((hotel) => (
+                      <HotelCard
+                        key={hotel.slug}
+                        slug={hotel.slug}
+                        name={hotel[language]?.name || hotel.es?.name}
+                        subtitle={
+                          hotel[language]?.subtitle || hotel.es?.subtitle
+                        }
+                        description={buildCardExcerpt(
+                          hotel[language]?.description ||
+                            hotel.es?.description ||
+                            [],
+                        )}
+                        image={hotel.featuredImage || hotel.images?.[0] || ""}
+                        imageVariant="tall"
+                        publishStartAt={hotel.publishStartAt}
+                        publishEndAt={hotel.publishEndAt}
+                        publicationEndsAt={hotel.publicationEndsAt}
+                        showPublicationDates={false}
+                        onCardClick={handleAgendaCardClick}
+                      />
+                    ))}
+                  </div>
+                </section>
+              ))}
+            </div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 mt-4">
               {finalOrderedHotels.length > 0 ? (
@@ -974,6 +1095,9 @@ export default function CategoryPage({ params }: { params: any }) {
                     publishEndAt={hotel.publishEndAt}
                     publicationEndsAt={hotel.publicationEndsAt}
                     showPublicationDates={false}
+                    onCardClick={
+                      isAgendaCultural ? handleAgendaCardClick : undefined
+                    }
                   />
                 ))
               ) : (

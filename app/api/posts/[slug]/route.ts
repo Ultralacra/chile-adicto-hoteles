@@ -2,7 +2,6 @@ import { NextResponse } from "next/server";
 import { postSchema } from "@/lib/post-schema";
 import { normalizePost } from "@/lib/post-normalize";
 import { getCurrentSiteId } from "@/lib/site-utils";
-import { isPostCurrentlyPublished } from "@/lib/post-publication";
 
 function envOrNull(name: string) {
   const v = process.env[name];
@@ -137,9 +136,9 @@ function mapRowToLegacy(row: any) {
           address: l.address || null,
           hours: l.hours || null,
           website: l.website || null,
-          website_display: l.website_display || null,
+          website_display: l.website_display ?? l.websiteDisplay ?? null,
           instagram: l.instagram || null,
-          instagram_display: l.instagram_display || null,
+          instagram_display: l.instagram_display ?? l.instagramDisplay ?? null,
           reservationLink: l.reservation_link || null,
           reservationPolicy: l.reservation_policy || null,
           interestingFact: l.interesting_fact || null,
@@ -164,17 +163,22 @@ function mapRowToLegacy(row: any) {
         })
         .filter(Boolean)
     : [];
+  const websitePublic = row.website_public ?? row.websitePublic ?? null;
   return {
     slug: row.slug,
+    site: row.site || null,
     publicationStatus: row.publication_status || "published",
     publishStartAt: row.publish_start_at || null,
     publishEndAt: row.publish_end_at || null,
     publicationEndsAt: row.publish_end_at || null,
     featuredImage: row.featured_image || null,
     website: row.website || null,
+    websitePublic,
+    websitepublic: websitePublic,
+    website_public: websitePublic,
     instagram: row.instagram || null,
-    website_display: row.website_display || null,
-    instagram_display: row.instagram_display || null,
+    website_display: row.website_display ?? row.websiteDisplay ?? null,
+    instagram_display: row.instagram_display ?? row.instagramDisplay ?? null,
     email: row.email || null,
     phone: row.phone || null,
     photosCredit: row.photos_credit || null,
@@ -189,16 +193,16 @@ function mapRowToLegacy(row: any) {
       name: trEs.name || "",
       subtitle: trEs.subtitle || "",
       description: Array.isArray(trEs.description) ? trEs.description : [],
-      infoHtml: trEs.info_html || undefined,
-      infoHtmlNew: uEs.html || undefined,
+      infoHtml: trEs.info_html || null,
+      infoHtmlNew: uEs.html || null,
       category: trEs.category || null,
     },
     en: {
       name: trEn.name || "",
       subtitle: trEn.subtitle || "",
       description: Array.isArray(trEn.description) ? trEn.description : [],
-      infoHtml: trEn.info_html || undefined,
-      infoHtmlNew: uEn.html || undefined,
+      infoHtml: trEn.info_html || null,
+      infoHtmlNew: uEn.html || null,
       category: trEn.category || null,
     },
     categories,
@@ -240,13 +244,16 @@ export async function GET(
 
     // Intentar Supabase
     const select =
-      "slug,publication_status,publish_start_at,publish_end_at,featured_image,website,instagram,website_display,instagram_display,email,phone,photos_credit,address,hours,reservation_link,reservation_policy,interesting_fact,site,images:post_images(url,position),locations:post_locations(*),translations:post_translations(*),useful:post_useful_info(*),category_links:post_category_map(category:categories(slug,label_es,label_en)),communes_links:post_communes(commune_slug,commune:communes(slug,label))";
+      "slug,publication_status,publish_start_at,publish_end_at,featured_image,website,website_public,instagram,website_display,instagram_display,email,phone,photos_credit,address,hours,reservation_link,reservation_policy,interesting_fact,site,images:post_images(url,position),locations:post_locations(*),translations:post_translations(*),useful:post_useful_info(*),category_links:post_category_map(category:categories(slug,label_es,label_en)),communes_links:post_communes(commune_slug,commune:communes(slug,label))";
     const rows: any[] | null = await fetchWithPublicationFallback(
       `/posts?slug=eq.${encodeURIComponent(slug)}&site=eq.${siteId}&select=${encodeURIComponent(select)}`
     );
     if (rows && rows.length > 0) {
       const mapped = mapRowToLegacy(rows[0]);
-      if (!isAdminRequest && !isPostCurrentlyPublished(mapped)) {
+      const status = String(mapped?.publicationStatus || "published")
+        .trim()
+        .toLowerCase();
+      if (!isAdminRequest && status === "unpublished") {
         return NextResponse.json({ error: "not_found" }, { status: 404 });
       }
       return NextResponse.json(mapped, { status: 200 });
@@ -331,6 +338,8 @@ export async function PUT(
               ? "reservation_link"
               : key === "reservationPolicy"
               ? "reservation_policy"
+              : key === "websitePublic"
+              ? "website_public"
               : key === "interestingFact"
               ? "interesting_fact"
               : key === "publicationStatus"
@@ -355,6 +364,7 @@ export async function PUT(
       setIfProvided("hours", normalized.hours);
       setIfProvided("reservationLink", normalized.reservationLink);
       setIfProvided("reservationPolicy", normalized.reservationPolicy);
+      setIfProvided("websitePublic", normalized.websitePublic);
       setIfProvided("interestingFact", normalized.interestingFact);
       setIfProvided("publicationStatus", normalized.publicationStatus);
       setIfProvided("publishStartAt", normalized.publishStartAt);

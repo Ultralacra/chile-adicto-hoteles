@@ -195,3 +195,40 @@
     @apply uppercase;
   }
 }
+
+@keyframes agenda-card-return {
+  0% {
+    transform: translateY(6px);
+    opacity: 0.86;
+  }
+  100% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes agenda-card-leaving {
+  0% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(0.992);
+    opacity: 0.9;
+  }
+}
+
+.agenda-card-return {
+  animation: agenda-card-return 420ms ease-out;
+}
+
+.agenda-card-leaving {
+  animation: agenda-card-leaving 220ms ease-out;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .agenda-card-return,
+  .agenda-card-leaving {
+    animation: none;
+  }
+}

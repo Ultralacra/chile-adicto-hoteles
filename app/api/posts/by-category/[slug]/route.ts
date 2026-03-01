@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { isPostCurrentlyPublished } from "@/lib/post-publication";
+import { getCurrentSiteId } from "@/lib/site-utils";
 
 function envOrNull(name: string) {
   const v = process.env[name];
@@ -38,9 +39,9 @@ function mapRowToLegacy(row: any) {
         address: l.address || null,
         hours: l.hours || null,
         website: l.website || null,
-        website_display: l.website_display || null,
+      website_display: l.website_display ?? l.websiteDisplay ?? null,
         instagram: l.instagram || null,
-        instagram_display: l.instagram_display || null,
+      instagram_display: l.instagram_display ?? l.instagramDisplay ?? null,
         reservationLink: l.reservation_link || null,
         reservationPolicy: l.reservation_policy || null,
         interestingFact: l.interesting_fact || null,
@@ -50,20 +51,37 @@ function mapRowToLegacy(row: any) {
     : [];
   const trEs = (row.translations || []).find((t: any) => t.lang === "es") || {};
   const trEn = (row.translations || []).find((t: any) => t.lang === "en") || {};
+  const useful = Array.isArray(row.useful) ? row.useful : [];
+  const uEs = useful.find((u: any) => (u.lang || "").toLowerCase() === "es") || {};
+  const uEn = useful.find((u: any) => (u.lang || "").toLowerCase() === "en") || {};
   const categories = Array.isArray(row.category_links)
     ? row.category_links.map((r: any) => r.category?.label_es || r.category?.slug).filter(Boolean)
     : [];
+  const communes = Array.isArray(row.communes_links)
+    ? row.communes_links
+        .map((r: any) => {
+          const label = String(r?.commune?.label || "").trim();
+          const slug = String(r?.commune_slug || r?.commune?.slug || "").trim();
+          return label || slug;
+        })
+        .filter(Boolean)
+    : [];
+  const websitePublic = row.website_public ?? row.websitePublic ?? null;
   return {
     slug: row.slug,
+    site: row.site || null,
     publicationStatus: row.publication_status || "published",
     publishStartAt: row.publish_start_at || null,
     publishEndAt: row.publish_end_at || null,
     publicationEndsAt: row.publish_end_at || null,
     featuredImage: row.featured_image || null,
     website: row.website || null,
+    websitePublic,
+    websitepublic: websitePublic,
+    website_public: websitePublic,
     instagram: row.instagram || null,
-    website_display: row.website_display || null,
-    instagram_display: row.instagram_display || null,
+    website_display: row.website_display ?? row.websiteDisplay ?? null,
+    instagram_display: row.instagram_display ?? row.instagramDisplay ?? null,
     email: row.email || null,
     phone: row.phone || null,
     photosCredit: row.photos_credit || null,
@@ -78,15 +96,20 @@ function mapRowToLegacy(row: any) {
       name: trEs.name || "",
       subtitle: trEs.subtitle || "",
       description: Array.isArray(trEs.description) ? trEs.description : [],
+      infoHtml: trEs.info_html || null,
+      infoHtmlNew: uEs.html || null,
       category: trEs.category || null,
     },
     en: {
       name: trEn.name || "",
       subtitle: trEn.subtitle || "",
       description: Array.isArray(trEn.description) ? trEn.description : [],
+      infoHtml: trEn.info_html || null,
+      infoHtmlNew: uEn.html || null,
       category: trEn.category || null,
     },
     categories,
+    communes,
   };
 }
 
@@ -118,9 +141,10 @@ export async function GET(req: Request, { params }: { params: { slug: string } }
 
     const url = new URL(req.url);
     const q = url.searchParams.get("q") || "";
+    const siteId = await getCurrentSiteId(req);
     const select =
-      "slug,publication_status,publish_start_at,publish_end_at,featured_image,website,instagram,website_display,instagram_display,email,phone,photos_credit,address,hours,reservation_link,reservation_policy,interesting_fact,images:post_images(url,position),locations:post_locations(*),translations:post_translations(*),category_links:post_category_map(category:categories(slug,label_es,label_en))";
-    let rows: any[] | null = await fetchWithPublicationFallback(`/posts?select=${encodeURIComponent(select)}`);
+      "slug,publication_status,publish_start_at,publish_end_at,featured_image,website,website_public,instagram,website_display,instagram_display,email,phone,photos_credit,address,hours,reservation_link,reservation_policy,interesting_fact,site,images:post_images(url,position),locations:post_locations(*),translations:post_translations(*),useful:post_useful_info(*),category_links:post_category_map(category:categories(slug,label_es,label_en)),communes_links:post_communes(commune_slug,commune:communes(slug,label))";
+    let rows: any[] | null = await fetchWithPublicationFallback(`/posts?select=${encodeURIComponent(select)}&site=eq.${siteId}`);
     if (!rows) return NextResponse.json([], { status: 200 });
 
     // Filtrar por slug de categoría. Fallback: si no hay mapeo, usar category de traducciones.

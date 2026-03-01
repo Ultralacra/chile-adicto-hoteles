@@ -70,21 +70,33 @@ export function BottomHomeBanner({
   alt = "Monumentos Nacionales",
 }: BottomHomeBannerProps) {
   const desktopSrc = encodeURI(src);
-  const mobileSrcSet = mobileSrc ? encodeURI(mobileSrc) : undefined;
+  const mobileSrcEncoded = mobileSrc ? encodeURI(mobileSrc) : undefined;
 
   return (
     <Link href={href} className="block w-full">
-      <picture>
-        {mobileSrcSet ? (
-          <source media="(max-width: 767.98px)" srcSet={mobileSrcSet} />
-        ) : null}
+      {mobileSrcEncoded ? (
+        <>
+          <img
+            src={mobileSrcEncoded}
+            alt={alt}
+            className="w-full h-auto md:hidden"
+            loading="lazy"
+          />
+          <img
+            src={desktopSrc}
+            alt={alt}
+            className="w-full h-auto hidden md:block"
+            loading="lazy"
+          />
+        </>
+      ) : (
         <img
           src={desktopSrc}
           alt={alt}
           className="w-full h-auto"
           loading="lazy"
         />
-      </picture>
+      )}
     </Link>
   );
 }

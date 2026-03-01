@@ -4,20 +4,64 @@ const nextConfig = {
     ignoreBuildErrors: true,
   },
   images: {
-    unoptimized: true,
+    formats: ["image/avif", "image/webp"],
     remotePatterns: [
       {
-        protocol: 'https',
-        hostname: '**',
+        protocol: "https",
+        hostname: "azure-seal-918691.hostingersite.com",
+      },
+      {
+        protocol: "https",
+        hostname: "xtctddbjwmmeirjltatm.supabase.co",
       },
     ],
+  },
+  async headers() {
+    return [
+      {
+        source: "/_next/static/:path*",
+        headers: [
+          {
+            key: "Cache-Control",
+            value: "public, max-age=31536000, immutable",
+          },
+        ],
+      },
+      {
+        source: "/Neutra-:path*",
+        headers: [
+          {
+            key: "Cache-Control",
+            value: "public, max-age=31536000, immutable",
+          },
+        ],
+      },
+      {
+        source: "/bannerHome/:path*",
+        headers: [
+          {
+            key: "Cache-Control",
+            value: "public, max-age=604800, stale-while-revalidate=86400",
+          },
+        ],
+      },
+      {
+        source: "/sliderHome/:path*",
+        headers: [
+          {
+            key: "Cache-Control",
+            value: "public, max-age=604800, stale-while-revalidate=86400",
+          },
+        ],
+      },
+    ];
   },
   async rewrites() {
     // Rutas "bonitas":
     // - Categorías sin prefijo: /iconos -> /categoria/iconos, etc.
     // - Posts sin prefijo: /mi-post -> /lugar/mi-post (evitando colisiones con rutas reservadas)
     const categoryPattern =
-      ':slug(iconos|ninos|arquitectura|barrios|mercados|miradores|museos|palacios|parques|paseos-fuera-de-santiago|restaurantes|monumentos-nacionales|cafes)';
+      ':slug(iconos|ninos|arquitectura|barrios|mercados|miradores|museos|palacios|parques|paseos-fuera-de-santiago|restaurantes|monumentos-nacionales|cafes|agenda-cultural)';
     return [
       // Categorías sin prefijo
       {

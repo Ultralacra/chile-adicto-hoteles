@@ -2,8 +2,10 @@
 
 import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import useEmblaCarousel from "embla-carousel-react";
 import { useSiteApi } from "@/hooks/use-site-api";
+import { cachedFetch } from "@/lib/api-cache";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
 // Reordenado: ICONOS debe ser el primer slide según solicitud.
@@ -44,7 +46,7 @@ type HeroSliderProps = {
   preferApiHrefs?: boolean; // si true, los hrefs cargados por API tienen prioridad sobre los props
   autoplay?: boolean; // si false, desactiva avance automático
   showArrows?: boolean; // si true, muestra flechas de navegación manual
-  showDots?: boolean; // si false, oculta bullets/puntos de navegación
+  mobileStaticFirst?: boolean; // si true, en mobile muestra solo la primera imagen (sin carrusel)
   autoHeight?: boolean; // si true, la altura se adapta a la imagen (w-full h-auto)
   desktopImageClassName?: string; // clases extra para imagen desktop
   mobileImageClassName?: string; // clases extra para imagen mobile
@@ -68,7 +70,7 @@ export function HeroSlider({
   preferApiHrefs = false,
   autoplay = true,
   showArrows = false,
-  showDots = true,
+  mobileStaticFirst = false,
   autoHeight = false,
   desktopImageClassName,
   mobileImageClassName,
@@ -88,20 +90,23 @@ export function HeroSlider({
 
   // Elegir fuentes en orden de prioridad: props -> API -> defaults
   const desktop =
-    (desktopImages && desktopImages.length ? desktopImages : undefined) ??
-    (desktopFromApi && desktopFromApi.length ? desktopFromApi : undefined) ??
-    desktopImagesDefault;
+    desktopImages !== undefined
+      ? desktopImages
+      : ((desktopFromApi && desktopFromApi.length
+          ? desktopFromApi
+          : undefined) ?? desktopImagesDefault);
   const mobile =
-    (mobileImages && mobileImages.length ? mobileImages : undefined) ??
-    (mobileFromApi && mobileFromApi.length ? mobileFromApi : undefined) ??
-    mobileImagesDefault;
+    mobileImages !== undefined
+      ? mobileImages
+      : ((mobileFromApi && mobileFromApi.length ? mobileFromApi : undefined) ??
+        mobileImagesDefault);
 
   // Embla for desktop and mobile instances
   const [emblaDesktopRef, emblaDesktopApi] = useEmblaCarousel({ loop: true });
   const [emblaMobileRef, emblaMobileApi] = useEmblaCarousel({ loop: true });
 
   const [selectedIndex, setSelectedIndex] = useState(0);
-  const [isMobile, setIsMobile] = useState(false);
+  const [isMobile, setIsMobile] = useState<boolean | null>(null);
 
   // Detectar breakpoint activo (md: 768px)
   useEffect(() => {
@@ -134,28 +139,24 @@ export function HeroSlider({
         setMobileLoadedFromDb(false);
 
         // Si ya nos pasaron props, no hacemos fetch innecesario
-        const needDesktop = !(desktopImages && desktopImages.length);
-        const needMobile = !(mobileImages && mobileImages.length);
+        const needDesktop = desktopImages === undefined;
+        const needMobile = mobileImages === undefined;
         if (!needDesktop && !needMobile) return;
 
         // 1) Preferir sliders desde BD (si se indicó key)
         const loadSet = async (key: string) => {
-          const res = await fetchWithSite(
+          const json = (await cachedFetch(
             `/api/sliders/${encodeURIComponent(key)}`,
-            {
-              cache: "no-store",
-            },
-          );
-          if (!res.ok) return { images: [], hrefs: [] };
-          const json = (await res.json()) as {
+          )) as {
             key?: string;
             items?: Array<{
               image_url?: string;
               href?: string | null;
               active?: boolean;
             }>;
-          };
+          } | null;
           const items = Array.isArray(json?.items) ? json.items : [];
+          if (!json) return { images: [], hrefs: [] };
           const activeItems = items.filter((it) => it?.active !== false);
           const images = activeItems
             .map((it) => String(it?.image_url || "").trim())
@@ -195,14 +196,11 @@ export function HeroSlider({
         if (usedDb) return;
 
         // 2) Fallback legacy: /api/slider-images (carpetas públicas)
-        const res = await fetchWithSite("/api/slider-images", {
-          cache: "no-store",
-        });
-        if (!res.ok) return;
-        const json = (await res.json()) as {
+        const json = (await cachedFetch("/api/slider-images")) as {
           desktop: string[];
           mobile: string[];
-        };
+        } | null;
+        if (!json) return;
         if (cancelled) return;
         if (needDesktop && Array.isArray(json.desktop)) {
           setDesktopFromApi(json.desktop);
@@ -224,6 +222,7 @@ export function HeroSlider({
     sliderKeyDesktop,
     sliderKeyMobile,
     fetchWithSite,
+    cachedFetch,
   ]);
 
   const hrefForIndex = (index: number, mode: "desktop" | "mobile") => {
@@ -275,8 +274,9 @@ export function HeroSlider({
     api?.scrollNext();
   }, [isMobile, emblaDesktopApi, emblaMobileApi]);
 
-  const canShowArrows =
-    showArrows && (isMobile ? mobile.length : desktop.length) > 1;
+  const activeSlides = (isMobile ?? false) ? mobile : desktop;
+  const shouldUseMobileStatic = Boolean(isMobile && mobileStaticFirst);
+  const canShowArrows = showArrows && activeSlides.length > 1;
 
   const imageClassName = (extraClass?: string) => {
     const baseClass = autoHeight
@@ -297,83 +297,268 @@ export function HeroSlider({
     return `${baseClass} ${extraClass || ""}`.trim();
   };
 
-  return (
-    <div className="relative w-full overflow-hidden">
-      {/* Desktop Embla */}
-      <div className="hidden md:block">
-        <div className="embla" ref={emblaDesktopRef as any}>
-          <div className="embla__container flex">
-            {desktop.map((image, index) => (
-              <div
-                key={`d-${index}`}
-                className="embla__slide min-w-full"
-                style={
-                  autoHeight ? undefined : { height: `${desktopHeight}px` }
-                }
-              >
-                {hrefForIndex(index, "desktop") ? (
-                  <Link
-                    href={hrefForIndex(index, "desktop")}
-                    className={`block w-full ${
-                      autoHeight ? "h-auto" : "h-full"
-                    }`}
-                  >
-                    <img
-                      src={image || "/placeholder.svg"}
-                      alt={`Slide ${index + 1}`}
-                      className={imageClassName(desktopImageClassName)}
-                    />
-                  </Link>
-                ) : (
-                  <img
-                    src={image || "/placeholder.svg"}
-                    alt={`Slide ${index + 1}`}
-                    className={imageClassName(desktopImageClassName)}
-                  />
-                )}
-              </div>
-            ))}
-          </div>
+  if (isMobile === null && !autoHeight) {
+    const firstDesktop = desktop[0] || "/placeholder.svg";
+    const firstMobile = mobile[0] || "/placeholder.svg";
+    const desktopHref = hrefForIndex(0, "desktop");
+    const mobileHref = hrefForIndex(0, "mobile");
+
+    return (
+      <div className="relative w-full overflow-hidden bg-black">
+        <div
+          className="md:hidden relative bg-black"
+          style={{ height: `${mobileHeight}px` }}
+        >
+          {mobileHref ? (
+            <Link href={mobileHref} className="block h-full w-full relative">
+              <Image
+                src={firstMobile}
+                alt="Slide 1"
+                fill
+                sizes="100vw"
+                priority
+                loading="eager"
+                fetchPriority="high"
+                className={imageClassName(mobileImageClassName)}
+              />
+            </Link>
+          ) : (
+            <Image
+              src={firstMobile}
+              alt="Slide 1"
+              fill
+              sizes="100vw"
+              priority
+              loading="eager"
+              fetchPriority="high"
+              className={imageClassName(mobileImageClassName)}
+            />
+          )}
+        </div>
+
+        <div
+          className="hidden md:block relative bg-black"
+          style={{ height: `${desktopHeight}px` }}
+        >
+          {desktopHref ? (
+            <Link href={desktopHref} className="block h-full w-full relative">
+              <img
+                src={firstDesktop}
+                alt="Slide 1"
+                className={imageClassName(desktopImageClassName)}
+              />
+            </Link>
+          ) : (
+            <img
+              src={firstDesktop}
+              alt="Slide 1"
+              className={imageClassName(desktopImageClassName)}
+            />
+          )}
         </div>
       </div>
+    );
+  }
 
-      {/* Mobile Embla */}
-      <div className="md:hidden">
-        <div className="embla" ref={emblaMobileRef as any}>
-          <div className="embla__container flex">
-            {mobile.map((image, index) => (
-              <div
-                key={`m-${index}`}
-                className="embla__slide min-w-full"
-                style={autoHeight ? undefined : { height: `${mobileHeight}px` }}
-              >
-                {hrefForIndex(index, "mobile") ? (
-                  <Link
-                    href={hrefForIndex(index, "mobile")}
-                    className={`block w-full ${
-                      autoHeight ? "h-auto" : "h-full"
-                    }`}
-                  >
-                    <img
-                      src={image || "/placeholder.svg"}
-                      alt={`Slide ${index + 1}`}
+  return (
+    <div className="relative w-full overflow-hidden bg-black">
+      {isMobile ? (
+        <div className="bg-black">
+          {shouldUseMobileStatic ? (
+            <div
+              className="relative"
+              style={autoHeight ? undefined : { height: `${mobileHeight}px` }}
+            >
+              {hrefForIndex(0, "mobile") ? (
+                <Link
+                  href={hrefForIndex(0, "mobile")}
+                  className={`block w-full ${autoHeight ? "h-auto" : "h-full"}`}
+                >
+                  {autoHeight ? (
+                    <Image
+                      src={mobile[0] || "/placeholder.svg"}
+                      alt="Slide 1"
+                      width={900}
+                      height={1400}
+                      sizes="100vw"
+                      priority
+                      loading="eager"
+                      fetchPriority="high"
                       className={imageClassName(mobileImageClassName)}
                     />
-                  </Link>
-                ) : (
-                  <img
-                    src={image || "/placeholder.svg"}
-                    alt={`Slide ${index + 1}`}
-                    className={imageClassName(mobileImageClassName)}
-                  />
-                )}
+                  ) : (
+                    <Image
+                      src={mobile[0] || "/placeholder.svg"}
+                      alt="Slide 1"
+                      fill
+                      sizes="100vw"
+                      priority
+                      loading="eager"
+                      fetchPriority="high"
+                      className={imageClassName(mobileImageClassName)}
+                    />
+                  )}
+                </Link>
+              ) : autoHeight ? (
+                <Image
+                  src={mobile[0] || "/placeholder.svg"}
+                  alt="Slide 1"
+                  width={900}
+                  height={1400}
+                  sizes="100vw"
+                  priority
+                  loading="eager"
+                  fetchPriority="high"
+                  className={imageClassName(mobileImageClassName)}
+                />
+              ) : (
+                <Image
+                  src={mobile[0] || "/placeholder.svg"}
+                  alt="Slide 1"
+                  fill
+                  sizes="100vw"
+                  priority
+                  loading="eager"
+                  fetchPriority="high"
+                  className={imageClassName(mobileImageClassName)}
+                />
+              )}
+            </div>
+          ) : (
+            <div className="embla bg-black" ref={emblaMobileRef as any}>
+              <div className="embla__container flex">
+                {mobile.map((image, index) => (
+                  <div
+                    key={`m-${index}`}
+                    className="embla__slide min-w-full relative bg-black"
+                    style={
+                      autoHeight ? undefined : { height: `${mobileHeight}px` }
+                    }
+                  >
+                    {hrefForIndex(index, "mobile") ? (
+                      <Link
+                        href={hrefForIndex(index, "mobile")}
+                        className={`block w-full ${
+                          autoHeight ? "h-auto" : "h-full"
+                        }`}
+                      >
+                        {autoHeight ? (
+                          <Image
+                            src={image || "/placeholder.svg"}
+                            alt={`Slide ${index + 1}`}
+                            width={900}
+                            height={1400}
+                            sizes="100vw"
+                            priority={index === 0}
+                            loading={index === 0 ? "eager" : "lazy"}
+                            fetchPriority={index === 0 ? "high" : "auto"}
+                            className={imageClassName(mobileImageClassName)}
+                          />
+                        ) : (
+                          <Image
+                            src={image || "/placeholder.svg"}
+                            alt={`Slide ${index + 1}`}
+                            fill
+                            sizes="100vw"
+                            priority={index === 0}
+                            loading={index === 0 ? "eager" : "lazy"}
+                            fetchPriority={index === 0 ? "high" : "auto"}
+                            className={imageClassName(mobileImageClassName)}
+                          />
+                        )}
+                      </Link>
+                    ) : (
+                      <>
+                        {autoHeight ? (
+                          <Image
+                            src={image || "/placeholder.svg"}
+                            alt={`Slide ${index + 1}`}
+                            width={900}
+                            height={1400}
+                            sizes="100vw"
+                            priority={index === 0}
+                            loading={index === 0 ? "eager" : "lazy"}
+                            fetchPriority={index === 0 ? "high" : "auto"}
+                            className={imageClassName(mobileImageClassName)}
+                          />
+                        ) : (
+                          <Image
+                            src={image || "/placeholder.svg"}
+                            alt={`Slide ${index + 1}`}
+                            fill
+                            sizes="100vw"
+                            priority={index === 0}
+                            loading={index === 0 ? "eager" : "lazy"}
+                            fetchPriority={index === 0 ? "high" : "auto"}
+                            className={imageClassName(mobileImageClassName)}
+                          />
+                        )}
+                      </>
+                    )}
+                  </div>
+                ))}
               </div>
-            ))}
+            </div>
+          )}
+        </div>
+      ) : (
+        <div className="bg-black">
+          <div className="embla bg-black" ref={emblaDesktopRef as any}>
+            <div className="embla__container flex">
+              {desktop.map((image, index) => (
+                <div
+                  key={`d-${index}`}
+                  className="embla__slide min-w-full relative bg-black"
+                  style={
+                    autoHeight ? undefined : { height: `${desktopHeight}px` }
+                  }
+                >
+                  {hrefForIndex(index, "desktop") ? (
+                    <Link
+                      href={hrefForIndex(index, "desktop")}
+                      className={`block w-full ${
+                        autoHeight ? "h-auto" : "h-full"
+                      }`}
+                    >
+                      {autoHeight ? (
+                        <img
+                          src={image || "/placeholder.svg"}
+                          alt={`Slide ${index + 1}`}
+                          className={imageClassName(desktopImageClassName)}
+                        />
+                      ) : (
+                        <img
+                          src={image || "/placeholder.svg"}
+                          alt={`Slide ${index + 1}`}
+                          className={imageClassName(desktopImageClassName)}
+                        />
+                      )}
+                    </Link>
+                  ) : (
+                    <>
+                      {autoHeight ? (
+                        <img
+                          src={image || "/placeholder.svg"}
+                          alt={`Slide ${index + 1}`}
+                          className={imageClassName(desktopImageClassName)}
+                        />
+                      ) : (
+                        <img
+                          src={image || "/placeholder.svg"}
+                          alt={`Slide ${index + 1}`}
+                          className={imageClassName(desktopImageClassName)}
+                        />
+                      )}
+                    </>
+                  )}
+                </div>
+              ))}
+            </div>
           </div>
         </div>
-      </div>
+      )}
 
-      {canShowArrows && (
+      {!shouldUseMobileStatic && canShowArrows && (
         <>
           <button
             type="button"
@@ -394,13 +579,14 @@ export function HeroSlider({
         </>
       )}
 
-      {showDots && (
+      {/* dots: centered bottom */}
+      {!shouldUseMobileStatic && (
         <div
           className="absolute left-0 right-0 z-40 flex justify-center pointer-events-auto"
           style={{ bottom: `${dotBottom}px` }}
         >
           <div className="flex gap-2">
-            {(isMobile ? mobile : desktop).map((_, dotIndex) => (
+            {activeSlides.map((_, dotIndex) => (
               <button
                 key={`global-dot-${dotIndex}`}
                 onClick={() => goToSlide(dotIndex)}

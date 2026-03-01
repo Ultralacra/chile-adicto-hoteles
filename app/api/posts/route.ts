@@ -5,6 +5,16 @@ import { normalizePost } from "@/lib/post-normalize";
 import { getCurrentSiteId } from "@/lib/site-utils";
 import { isPostCurrentlyPublished } from "@/lib/post-publication";
 
+const HOME_FEED_EXCLUDED = new Set<string>([
+  "RESTAURANTES",
+  "RESTAURANTS",
+  "CAFES",
+  "CAFÉ",
+  "CAFÉS",
+  "AGENDA CULTURAL",
+  "MONUMENTOS NACIONALES",
+]);
+
 function envOrNull(name: string) {
   const v = process.env[name];
   return v && v.length > 0 ? v : null;
@@ -134,9 +144,9 @@ function mapRowToLegacy(row: any) {
           address: l.address || null,
           hours: l.hours || null,
           website: l.website || null,
-          website_display: l.website_display || null,
+          website_display: l.website_display ?? l.websiteDisplay ?? null,
           instagram: l.instagram || null,
-          instagram_display: l.instagram_display || null,
+          instagram_display: l.instagram_display ?? l.instagramDisplay ?? null,
           reservationLink: l.reservation_link || null,
           reservationPolicy: l.reservation_policy || null,
           interestingFact: l.interesting_fact || null,
@@ -152,6 +162,16 @@ function mapRowToLegacy(row: any) {
   const categories = Array.isArray(row.category_links)
     ? row.category_links.map((r: any) => r.category?.label_es || r.category?.slug).filter(Boolean)
     : [];
+  const communes = Array.isArray(row.communes_links)
+    ? row.communes_links
+        .map((r: any) => {
+          const label = String(r?.commune?.label || "").trim();
+          const slug = String(r?.commune_slug || r?.commune?.slug || "").trim();
+          return label || slug;
+        })
+        .filter(Boolean)
+    : [];
+  const websitePublic = row.website_public ?? row.websitePublic ?? null;
   return {
     slug: row.slug,
     site: row.site || null, // ¡Importante! Campo para multi-sitio
@@ -161,9 +181,12 @@ function mapRowToLegacy(row: any) {
     publicationEndsAt: row.publish_end_at || null,
     featuredImage: row.featured_image || null,
     website: row.website || null,
+    websitePublic,
+    websitepublic: websitePublic,
+    website_public: websitePublic,
     instagram: row.instagram || null,
-    website_display: row.website_display || null,
-    instagram_display: row.instagram_display || null,
+    website_display: row.website_display ?? row.websiteDisplay ?? null,
+    instagram_display: row.instagram_display ?? row.instagramDisplay ?? null,
     email: row.email || null,
     phone: row.phone || null,
     photosCredit: row.photos_credit || null,
@@ -178,20 +201,45 @@ function mapRowToLegacy(row: any) {
       name: trEs.name || "",
       subtitle: trEs.subtitle || "",
       description: Array.isArray(trEs.description) ? trEs.description : [],
-      infoHtml: trEs.info_html || undefined,
-      infoHtmlNew: uEs.html || undefined,
+      infoHtml: trEs.info_html || null,
+      infoHtmlNew: uEs.html || null,
       category: trEs.category || null,
     },
     en: {
       name: trEn.name || "",
       subtitle: trEn.subtitle || "",
       description: Array.isArray(trEn.description) ? trEn.description : [],
-      infoHtml: trEn.info_html || undefined,
-      infoHtmlNew: uEn.html || undefined,
+      infoHtml: trEn.info_html || null,
+      infoHtmlNew: uEn.html || null,
       category: trEn.category || null,
     },
     categories,
+    communes,
   };
+}
+
+function isExcludedFromHomeFeed(post: any): boolean {
+  if (String(post?.slug || "").trim() === "w-santiago") return true;
+
+  const cats = new Set<string>([
+    ...((post?.categories || []) as any[]).map((c) =>
+      String(c || "").toUpperCase(),
+    ),
+  ]);
+
+  const esCat = post?.es?.category
+    ? String(post.es.category).toUpperCase()
+    : null;
+  const enCat = post?.en?.category
+    ? String(post.en.category).toUpperCase()
+    : null;
+
+  const hasExcludedCat = [...cats].some((c) => HOME_FEED_EXCLUDED.has(c));
+  const hasExcludedTranslation =
+    (esCat && HOME_FEED_EXCLUDED.has(esCat)) ||
+    (enCat && HOME_FEED_EXCLUDED.has(enCat));
+
+  return Boolean(hasExcludedCat || hasExcludedTranslation);
 }
 
 async function fetchPostsWithPublicationFallback(pathWithSelectBase: string) {
@@ -216,19 +264,52 @@ async function fetchPostsWithPublicationFallback(pathWithSelectBase: string) {
 
 export async function GET(req: Request) {
   try {
+    const normalizeCategorySlug = (value: unknown) =>
+      String(value || "")
+        .toLowerCase()
+        .trim()
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .replace(/[^a-z0-9]+/g, "-")
+        .replace(/(^-|-$)/g, "");
+
     const siteId = await getCurrentSiteId(req);
     const url = new URL(req.url);
     const q = url.searchParams.get("q") || "";
     const category = url.searchParams.get("category");
     const categorySlug = url.searchParams.get("categorySlug");
+    const homeFeed =
+      url.searchParams.get("homeFeed") === "1" ||
+      url.searchParams.get("homeFeed") === "true";
+    const limitParam = url.searchParams.get("limit");
+    const offsetParam = url.searchParams.get("offset");
+    const limitNumber =
+      limitParam !== null && limitParam.trim() !== ""
+        ? Number(limitParam)
+        : NaN;
+    const offsetNumber =
+      offsetParam !== null && offsetParam.trim() !== ""
+        ? Number(offsetParam)
+        : NaN;
+    const limit = Number.isFinite(limitNumber)
+      ? Math.max(1, Math.min(100, Math.trunc(limitNumber)))
+      : null;
+    const offset = Number.isFinite(offsetNumber)
+      ? Math.max(0, Math.trunc(offsetNumber))
+      : 0;
     const isAdminRequest = !!url.searchParams.get("adminSite");
+    const normalizedCategorySlugFromQuery = normalizeCategorySlug(categorySlug);
+    const normalizedCategoryLabelFromQuery = normalizeCategorySlug(category);
+    const shouldBypassPublicationWindow =
+      normalizedCategorySlugFromQuery === "agenda-cultural" ||
+      normalizedCategoryLabelFromQuery === "agenda-cultural";
     
     // DEBUG: Log del sitio detectado
     console.log('🔍 [API /posts] Sitio detectado:', siteId);
     console.log('🔍 [API /posts] Parámetros:', { q, category, categorySlug });
 
     const select =
-      "slug,publication_status,publish_start_at,publish_end_at,featured_image,website,instagram,website_display,instagram_display,email,phone,photos_credit,address,hours,reservation_link,reservation_policy,interesting_fact,site,images:post_images(url,position),locations:post_locations(*),translations:post_translations(*),useful:post_useful_info(*),category_links:post_category_map(category:categories(slug,label_es,label_en))";
+      "slug,publication_status,publish_start_at,publish_end_at,featured_image,website,website_public,instagram,website_display,instagram_display,email,phone,photos_credit,address,hours,reservation_link,reservation_policy,interesting_fact,site,images:post_images(url,position),locations:post_locations(*),translations:post_translations(*),useful:post_useful_info(*),category_links:post_category_map(category:categories(slug,label_es,label_en)),communes_links:post_communes(commune_slug,commune:communes(slug,label))";
     let rows: any[] | null = await fetchPostsWithPublicationFallback(
       `/posts?select=${encodeURIComponent(select)}&site=eq.${siteId}`
     );
@@ -237,15 +318,16 @@ export async function GET(req: Request) {
       if (category || categorySlug) {
         const catU = category ? category.toUpperCase() : null;
         const slugTarget = categorySlug ? categorySlug.toLowerCase().trim() : null;
+        const normalizedSlugTarget = slugTarget ? normalizeCategorySlug(slugTarget) : null;
 
         const matchesTranslationCategorySlug = (r: any) => {
-          if (!slugTarget) return false;
+          if (!normalizedSlugTarget) return false;
           const translations = Array.isArray(r.translations) ? r.translations : [];
           return translations.some((t: any) => {
             if (!t?.category) return false;
             const cat = String(t.category).toLowerCase().trim();
-            const catSlug = cat.replace(/\s+/g, "-");
-            return cat === slugTarget || catSlug === slugTarget;
+            const catSlug = normalizeCategorySlug(cat);
+            return cat === slugTarget || catSlug === normalizedSlugTarget;
           });
         };
 
@@ -260,7 +342,9 @@ export async function GET(req: Request) {
             : false;
           const matchBySlug = slugTarget
             ? (r.category_links || []).some(
-                (c: any) => String(c.category?.slug || "") === slugTarget
+                (c: any) =>
+                  normalizeCategorySlug(c.category?.slug || "") ===
+                  normalizedSlugTarget
               ) || matchesTranslationCategorySlug(r)
             : false;
 
@@ -290,12 +374,24 @@ export async function GET(req: Request) {
       const mapped = rows.map(mapRowToLegacy);
       const visible = isAdminRequest
         ? mapped
-        : mapped.filter((post: any) => isPostCurrentlyPublished(post));
-      console.log(`✅ [API /posts] Retornando ${visible.length} posts para sitio ${siteId}`);
-      if (visible.length > 0) {
-        console.log('   Primeros posts:', visible.slice(0, 3).map(p => p.slug));
+        : shouldBypassPublicationWindow
+          ? mapped.filter(
+              (post: any) =>
+                String(post?.publicationStatus || "published").toLowerCase() !==
+                "unpublished",
+            )
+          : mapped.filter((post: any) => isPostCurrentlyPublished(post));
+      const homeFiltered = homeFeed
+        ? visible.filter((post) => !isExcludedFromHomeFeed(post))
+        : visible;
+      const paged =
+        limit !== null ? homeFiltered.slice(offset, offset + limit) : homeFiltered;
+
+      console.log(`✅ [API /posts] Retornando ${paged.length} posts para sitio ${siteId}`);
+      if (paged.length > 0) {
+        console.log('   Primeros posts:', paged.slice(0, 3).map(p => p.slug));
       }
-      return NextResponse.json(visible, { status: 200 });
+      return NextResponse.json(paged, { status: 200 });
     }
     return NextResponse.json([], { status: 200 });
   } catch (err: any) {
@@ -336,6 +432,7 @@ export async function POST(req: Request) {
       publish_end_at: normalized.publishEndAt || null,
       featured_image: featured,
       website: normalized.website || null,
+      website_public: normalized.websitePublic || null,
       website_display: normalized.website_display || null,
       instagram: normalized.instagram || null,
       instagram_display: normalized.instagram_display || null,

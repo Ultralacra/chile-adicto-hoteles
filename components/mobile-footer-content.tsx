@@ -15,7 +15,7 @@ export function MobileFooterContent({ onNavigate }: MobileFooterContentProps) {
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const { language } = useLanguage();
-  const { fetchWithSite } = useSiteApi();
+  const { fetchWithSite, cachedFetchWithSite } = useSiteApi();
 
   type ApiCategoryRow = {
     slug: string;
@@ -57,10 +57,10 @@ export function MobileFooterContent({ onNavigate }: MobileFooterContentProps) {
   useEffect(() => {
     if (!isRestaurantsCategory) return;
     let cancelled = false;
-    fetch("/api/communes?nav=1", { cache: "no-store" })
-      .then((r) => (r.ok ? r.json() : []))
-      .then((rows) => {
+    cachedFetchWithSite("/api/communes?nav=1")
+      .then((data) => {
         if (cancelled) return;
+        const rows = data;
         const list: ApiCommuneRow[] = Array.isArray(rows) ? rows : [];
         const mapped = list
           .filter((x) => x && x.slug && x.show_in_menu !== false)
@@ -76,7 +76,7 @@ export function MobileFooterContent({ onNavigate }: MobileFooterContentProps) {
     return () => {
       cancelled = true;
     };
-  }, [isRestaurantsCategory, fetchWithSite]);
+  }, [isRestaurantsCategory, cachedFetchWithSite]);
 
   // Fallback hardcodeado (mismo orden histórico)
   const fallbackItems = [
@@ -116,7 +116,7 @@ export function MobileFooterContent({ onNavigate }: MobileFooterContentProps) {
         "paseos-fuera-de-santiago",
         "restaurantes",
       ]),
-    []
+    [],
   );
 
   const hrefFor = (slug: string) => {
@@ -129,10 +129,7 @@ export function MobileFooterContent({ onNavigate }: MobileFooterContentProps) {
     let cancelled = false;
     async function load() {
       try {
-        const res = await fetchWithSite("/api/categories?full=1&nav=1", {
-          cache: "no-store",
-        });
-        const json = res.ok ? await res.json() : [];
+        const json = await cachedFetchWithSite("/api/categories?full=1&nav=1");
         const rows: ApiCategoryRow[] = Array.isArray(json) ? json : [];
 
         // Mapear categorías (si el slug no tiene rewrite, igual funciona con /categoria/<slug>)
@@ -148,10 +145,10 @@ export function MobileFooterContent({ onNavigate }: MobileFooterContentProps) {
             }
 
             const labelEs = String(
-              r.label_es || fallback?.labelEs || slug.toUpperCase()
+              r.label_es || fallback?.labelEs || slug.toUpperCase(),
             ).toUpperCase();
             const labelEn = String(
-              r.label_en || fallback?.labelEn || slug
+              r.label_en || fallback?.labelEn || slug,
             ).toUpperCase();
             return { slug, labelEs, labelEn };
           })
@@ -160,13 +157,13 @@ export function MobileFooterContent({ onNavigate }: MobileFooterContentProps) {
 
         const restaurants = mapped.filter((x) => x.slug === "restaurantes");
         const tienda = mapped.filter(
-          (x) => x.slug === "tienda" || x.slug === "tiendas"
+          (x) => x.slug === "tienda" || x.slug === "tiendas",
         );
         const others = mapped.filter(
           (x) =>
             x.slug !== "restaurantes" &&
             x.slug !== "tienda" &&
-            x.slug !== "tiendas"
+            x.slug !== "tiendas",
         );
         const finalList = [
           fallbackItems[0],
@@ -184,7 +181,7 @@ export function MobileFooterContent({ onNavigate }: MobileFooterContentProps) {
     return () => {
       cancelled = true;
     };
-  }, [fetchWithSite]);
+  }, [cachedFetchWithSite]);
 
   return (
     <div>

@@ -7,6 +7,7 @@ import useEmblaCarousel from "embla-carousel-react";
 import { useLanguage } from "@/contexts/language-context";
 import { CategoryNav } from "@/components/category-nav";
 import { useSiteApi } from "@/hooks/use-site-api";
+import { cachedFetch } from "@/lib/api-cache";
 import { BottomHomeBanner } from "@/components/home-promo-banners";
 
 interface LocationInfo {
@@ -44,6 +45,7 @@ interface HotelDetailProps {
     hours?: string;
     reservationLink?: string;
     reservationPolicy?: string;
+    websitePublic?: string;
     interestingFact?: string;
     publishStartAt?: string | null;
     publishEndAt?: string | null;
@@ -57,34 +59,6 @@ interface HotelDetailProps {
 export function HotelDetail({ hotel }: HotelDetailProps) {
   const { t } = useLanguage();
   const { fetchWithSite } = useSiteApi();
-
-  const formatPublicationDate = (value?: string | null): string | null => {
-    const raw = String(value || "").trim();
-    if (!raw) return null;
-    const parsed = new Date(raw);
-    if (Number.isNaN(parsed.getTime())) return raw;
-    const hasTime = /T\d{2}:\d{2}|\d{2}:\d{2}/.test(raw);
-    return new Intl.DateTimeFormat("es-CL", {
-      year: "numeric",
-      month: "2-digit",
-      day: "2-digit",
-      ...(hasTime
-        ? {
-            hour: "2-digit",
-            minute: "2-digit",
-          }
-        : {}),
-    }).format(parsed);
-  };
-
-  const publicationStartLabel = formatPublicationDate(hotel.publishStartAt);
-  const publicationEndLabel = formatPublicationDate(
-    hotel.publicationEndsAt || hotel.publishEndAt,
-  );
-  const showPublicationRange = Boolean(
-    publicationStartLabel || publicationEndLabel,
-  );
-
   const toSlug = (input: string) =>
     String(input || "")
       .normalize("NFD")
@@ -164,8 +138,8 @@ export function HotelDetail({ hotel }: HotelDetailProps) {
     if (!isRestaurant) return;
 
     let cancelled = false;
-    fetchWithSite("/api/communes?nav=1", { cache: "no-store" })
-      .then((r) => (r.ok ? r.json() : []))
+    cachedFetch("/api/communes?nav=1")
+      .then((data) => data || [])
       .then((rows) => {
         if (cancelled) return;
         const list = Array.isArray(rows) ? rows : [];
@@ -678,29 +652,6 @@ export function HotelDetail({ hotel }: HotelDetailProps) {
                 className="font-neutra text-[20px] leading-[24px] font-[100] text-black uppercase"
                 dangerouslySetInnerHTML={{ __html: hotel.subtitle }}
               />
-              {showPublicationRange && (
-                <div className="mt-2 font-neutra text-[13px] leading-[18px] text-black/80">
-                  <div className="font-semibold uppercase text-[12px] mb-1">
-                    {t("PUBLICACIÓN", "PUBLICATION")}
-                  </div>
-                  {publicationStartLabel && (
-                    <div>
-                      <span className="font-semibold">
-                        {t("DESDE", "FROM")}:
-                      </span>{" "}
-                      {publicationStartLabel}
-                    </div>
-                  )}
-                  {publicationEndLabel && (
-                    <div>
-                      <span className="font-semibold">
-                        {t("HASTA", "UNTIL")}:
-                      </span>{" "}
-                      {publicationEndLabel}
-                    </div>
-                  )}
-                </div>
-              )}
             </div>
           </div>
           <div
@@ -802,6 +753,15 @@ export function HotelDetail({ hotel }: HotelDetailProps) {
                       {formatWebsiteDisplay(
                         hotel.website_display || hotel.website,
                       )}
+                    </a>
+                  ) : hotel.websitePublic ? (
+                    <a
+                      href={formatWebsiteHref(hotel.websitePublic)}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-[var(--color-brand-red)] no-underline"
+                    >
+                      {formatWebsiteDisplay(hotel.websitePublic)}
                     </a>
                   ) : (
                     <span className="text-black">

@@ -57,6 +57,7 @@ export default function NewPostPage() {
   const [hours, setHours] = useState("");
   const [reservationLink, setReservationLink] = useState("");
   const [reservationPolicy, setReservationPolicy] = useState("");
+  const [websitePublic, setWebsitePublic] = useState("");
   const [interestingFact, setInterestingFact] = useState("");
   const [publicationStatus, setPublicationStatus] = useState<
     "published" | "unpublished"
@@ -536,6 +537,7 @@ export default function NewPostPage() {
       hours,
       reservationLink,
       reservationPolicy,
+      websitePublic,
       interestingFact,
       images: galleryImages,
       categories,
@@ -561,6 +563,7 @@ export default function NewPostPage() {
         reservationLink.trim() === "" ? "" : normalized.reservationLink,
       reservationPolicy:
         reservationPolicy.trim() === "" ? "" : reservationPolicy,
+      websitePublic: websitePublic.trim() === "" ? "" : websitePublic,
       interestingFact: interestingFact.trim() === "" ? "" : interestingFact,
       publicationStatus: normalized.publicationStatus || "published",
       publishStartAt:
@@ -949,6 +952,44 @@ export default function NewPostPage() {
         {/* Contacto oculto por solicitud (solo se usarán los bloques de Datos útiles) */}
 
         {/* Sucursales ocultas por solicitud */}
+
+        {/* Link de reserva y Sitio web (opcionales) */}
+        <Card className="p-6">
+          <div className="flex items-center gap-2 mb-4">
+            <Globe className="text-blue-600" size={20} />
+            <h2 className="font-semibold text-lg">Links externos</h2>
+          </div>
+          <div className="space-y-3">
+            <div>
+              <Label
+                htmlFor="websitePublic"
+                className="text-xs font-medium text-gray-600"
+              >
+                Sitio web (opcional)
+              </Label>
+              <Input
+                id="websitePublic"
+                placeholder="https://www.ejemplo.com"
+                value={websitePublic}
+                onChange={(e) => setWebsitePublic(e.target.value)}
+              />
+            </div>
+            <div>
+              <Label
+                htmlFor="reservationLink"
+                className="text-xs font-medium text-gray-600"
+              >
+                URL de reserva (opcional)
+              </Label>
+              <Input
+                id="reservationLink"
+                placeholder="https://..."
+                value={reservationLink}
+                onChange={(e) => setReservationLink(e.target.value)}
+              />
+            </div>
+          </div>
+        </Card>
 
         {/* Imágenes */}
         <Card

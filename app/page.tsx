@@ -235,15 +235,12 @@ function HomeContent() {
                   aria-label="Ir a Agenda Cultural"
                   className="block w-full"
                 >
-                  <Image
+                  <img
                     src="/bannerHome/AGENDA%20CULTURAL%20HOME%20MOVIL.png"
                     alt="Agenda Cultural"
-                    width={1200}
-                    height={675}
-                    sizes="100vw"
                     className="block w-full h-auto object-contain"
-                    loading="lazy"
-                    unoptimized
+                    loading="eager"
+                    decoding="async"
                   />
                 </Link>
               </div>

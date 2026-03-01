@@ -228,10 +228,29 @@ function HomeContent() {
                   dotBottom={24}
                 />
               </div>
+
+              <div className="mt-4 md:hidden">
+                <Link
+                  href="/agenda-cultural"
+                  aria-label="Ir a Agenda Cultural"
+                  className="block w-full"
+                >
+                  <Image
+                    src="/bannerHome/AGENDA%20CULTURAL%20HOME%20MOVIL.png"
+                    alt="Agenda Cultural"
+                    width={1200}
+                    height={675}
+                    sizes="100vw"
+                    className="block w-full h-auto object-contain"
+                    loading="lazy"
+                    unoptimized
+                  />
+                </Link>
+              </div>
             </div>
 
             {/* Columna 2: Imagen vertical (placeholder: mismo banner, reemplazar cuando tengas el definitivo) */}
-            <div className="w-full mt-6 lg:mt-0">
+            <div className="w-full mt-4 lg:mt-0">
               <Link
                 href="/restaurantes"
                 aria-label="Ir a restaurantes"

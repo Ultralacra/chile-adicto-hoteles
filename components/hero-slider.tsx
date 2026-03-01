@@ -342,26 +342,16 @@ export function HeroSlider({
         >
           {desktopHref ? (
             <Link href={desktopHref} className="block h-full w-full relative">
-              <Image
+              <img
                 src={firstDesktop}
                 alt="Slide 1"
-                fill
-                sizes="(max-width: 767px) 100vw, 67vw"
-                priority
-                loading="eager"
-                fetchPriority="high"
                 className={imageClassName(desktopImageClassName)}
               />
             </Link>
           ) : (
-            <Image
+            <img
               src={firstDesktop}
               alt="Slide 1"
-              fill
-              sizes="(max-width: 767px) 100vw, 67vw"
-              priority
-              loading="eager"
-              fetchPriority="high"
               className={imageClassName(desktopImageClassName)}
             />
           )}
@@ -531,26 +521,15 @@ export function HeroSlider({
                       }`}
                     >
                       {autoHeight ? (
-                        <Image
+                        <img
                           src={image || "/placeholder.svg"}
                           alt={`Slide ${index + 1}`}
-                          width={1600}
-                          height={900}
-                          sizes="(max-width: 767px) 100vw, 67vw"
-                          priority={index === 0}
-                          loading={index === 0 ? "eager" : "lazy"}
-                          fetchPriority={index === 0 ? "high" : "auto"}
                           className={imageClassName(desktopImageClassName)}
                         />
                       ) : (
-                        <Image
+                        <img
                           src={image || "/placeholder.svg"}
                           alt={`Slide ${index + 1}`}
-                          fill
-                          sizes="(max-width: 767px) 100vw, 67vw"
-                          priority={index === 0}
-                          loading={index === 0 ? "eager" : "lazy"}
-                          fetchPriority={index === 0 ? "high" : "auto"}
                           className={imageClassName(desktopImageClassName)}
                         />
                       )}
@@ -558,26 +537,15 @@ export function HeroSlider({
                   ) : (
                     <>
                       {autoHeight ? (
-                        <Image
+                        <img
                           src={image || "/placeholder.svg"}
                           alt={`Slide ${index + 1}`}
-                          width={1600}
-                          height={900}
-                          sizes="(max-width: 767px) 100vw, 67vw"
-                          priority={index === 0}
-                          loading={index === 0 ? "eager" : "lazy"}
-                          fetchPriority={index === 0 ? "high" : "auto"}
                           className={imageClassName(desktopImageClassName)}
                         />
                       ) : (
-                        <Image
+                        <img
                           src={image || "/placeholder.svg"}
                           alt={`Slide ${index + 1}`}
-                          fill
-                          sizes="(max-width: 767px) 100vw, 67vw"
-                          priority={index === 0}
-                          loading={index === 0 ? "eager" : "lazy"}
-                          fetchPriority={index === 0 ? "high" : "auto"}
                           className={imageClassName(desktopImageClassName)}
                         />
                       )}

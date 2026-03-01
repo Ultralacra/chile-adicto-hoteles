@@ -201,19 +201,8 @@ function HomeContent() {
                     "/sliderHome/PARQUES.png",
                     "/sliderHome/FUERA DE STGO.png",
                   ]}
-                  mobileImages={[
-                    "/sliderHome/ICONOS.png",
-                    "/sliderHome/ARQ.png",
-                    "/sliderHome/BARRIOS.png",
-                    "/sliderHome/MERCADOS.png",
-                    "/sliderHome/MIRADORES.png",
-                    "/sliderHome/CULTURA.png",
-                    "/sliderHome/PALACIOS.png",
-                    "/sliderHome/PARQUES.png",
-                    "/sliderHome/FUERA DE STGO.png",
-                  ]}
+                  sliderKeyMobile="home-mobile"
                   objectPosition="left"
-                  mobileStaticFirst
                   slideHrefs={[
                     "/iconos",
                     "/arquitectura",

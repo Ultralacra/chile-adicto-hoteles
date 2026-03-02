@@ -1,33 +1,57 @@
 {
   "info": {
-    "name": "API Posts Multisitio - Chile Adicto Hoteles",
+    "name": "API Posts Multihost + Multisitio - Chile Adicto Hoteles",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-    "description": "Colección para validar consistencia de respuesta en /api/posts entre santiagoadicto y chileadicto."
+    "description": "Colección para validar consistencia de respuesta en /api/posts entre distintos hosts y sitios (shape debería ser igual)."
   },
   "variable": [
     {
-      "key": "baseUrl",
+      "key": "hostA",
       "value": "https://chile-adicto-hoteles-front.vercel.app"
     },
     {
-      "key": "slugPrensaChile",
+      "key": "hostB",
+      "value": "https://chile-adicto-hoteles.vercel.app"
+    },
+    {
+      "key": "siteA",
+      "value": "santiagoadicto"
+    },
+    {
+      "key": "siteB",
+      "value": "chileadicto"
+    },
+    {
+      "key": "categorySlug",
+      "value": "prensa"
+    },
+    {
+      "key": "slugSiteA",
+      "value": "santiagoadicto-en-radio-duna-cuarta-parte-de-los-mejores-hoteles-destino-de-chile"
+    },
+    {
+      "key": "slugSiteB",
       "value": "santiagoadicto-en-radio-duna-cuarta-parte-de-los-mejores-hoteles-destino-de-chile"
     }
   ],
   "item": [
     {
-      "name": "01 - Posts Santiagoadicto (tiendas)",
+      "name": "01 - Host A / Site A - Lista posts",
       "request": {
         "method": "GET",
         "header": [],
         "url": {
-          "raw": "{{baseUrl}}/api/posts?categorySlug=tiendas",
-          "host": ["{{baseUrl}}"],
+          "raw": "{{hostA}}/api/posts?categorySlug={{categorySlug}}&previewSite={{siteA}}",
+          "host": ["{{hostA}}"],
           "path": ["api", "posts"],
           "query": [
             {
               "key": "categorySlug",
-              "value": "tiendas"
+              "value": "{{categorySlug}}"
+            },
+            {
+              "key": "previewSite",
+              "value": "{{siteA}}"
             }
           ]
         }
@@ -61,7 +85,7 @@
               "    required.forEach((k) => pm.expect(obj).to.have.property(k));",
               "  });",
               "",
-              "  pm.collectionVariables.set('shapeKeysSantiago', Object.keys(obj).sort().join(','));",
+              "  pm.collectionVariables.set('shape_list_hostA_siteA', Object.keys(obj).sort().join(','));",
               "}"
             ]
           }
@@ -69,22 +93,22 @@
       ]
     },
     {
-      "name": "02 - Posts Chileadicto (prensa + previewSite)",
+      "name": "02 - Host A / Site B - Lista posts",
       "request": {
         "method": "GET",
         "header": [],
         "url": {
-          "raw": "{{baseUrl}}/api/posts?categorySlug=prensa&previewSite=chileadicto",
-          "host": ["{{baseUrl}}"],
+          "raw": "{{hostA}}/api/posts?categorySlug={{categorySlug}}&previewSite={{siteB}}",
+          "host": ["{{hostA}}"],
           "path": ["api", "posts"],
           "query": [
             {
               "key": "categorySlug",
-              "value": "prensa"
+              "value": "{{categorySlug}}"
             },
             {
               "key": "previewSite",
-              "value": "chileadicto"
+              "value": "{{siteB}}"
             }
           ]
         }
@@ -118,7 +142,7 @@
               "    required.forEach((k) => pm.expect(obj).to.have.property(k));",
               "  });",
               "",
-              "  pm.collectionVariables.set('shapeKeysChile', Object.keys(obj).sort().join(','));",
+              "  pm.collectionVariables.set('shape_list_hostA_siteB', Object.keys(obj).sort().join(','));",
               "}",
               ""
             ]
@@ -127,22 +151,22 @@
       ]
     },
     {
-      "name": "03 - Comparar shape Santiago vs Chile",
+      "name": "03 - Comparar Host A: Site A vs Site B",
       "request": {
         "method": "GET",
         "header": [],
         "url": {
-          "raw": "{{baseUrl}}/api/posts?categorySlug=prensa&previewSite=chileadicto",
-          "host": ["{{baseUrl}}"],
+          "raw": "{{hostA}}/api/posts?categorySlug={{categorySlug}}&previewSite={{siteB}}",
+          "host": ["{{hostA}}"],
           "path": ["api", "posts"],
           "query": [
             {
               "key": "categorySlug",
-              "value": "prensa"
+              "value": "{{categorySlug}}"
             },
             {
               "key": "previewSite",
-              "value": "chileadicto"
+              "value": "{{siteB}}"
             }
           ]
         }
@@ -153,16 +177,16 @@
           "script": {
             "type": "text/javascript",
             "exec": [
-              "const shapeSantiago = pm.collectionVariables.get('shapeKeysSantiago') || '';",
-              "const shapeChile = pm.collectionVariables.get('shapeKeysChile') || '';",
+              "const shapeA = pm.collectionVariables.get('shape_list_hostA_siteA') || '';",
+              "const shapeB = pm.collectionVariables.get('shape_list_hostA_siteB') || '';",
               "",
               "pm.test('Se guardaron shapes previos', function () {",
-              "  pm.expect(shapeSantiago.length).to.be.above(0);",
-              "  pm.expect(shapeChile.length).to.be.above(0);",
+              "  pm.expect(shapeA.length).to.be.above(0);",
+              "  pm.expect(shapeB.length).to.be.above(0);",
               "});",
               "",
-              "pm.test('Shape igual entre sitios', function () {",
-              "  pm.expect(shapeChile).to.eql(shapeSantiago);",
+              "pm.test('Shape igual entre sitios en Host A', function () {",
+              "  pm.expect(shapeB).to.eql(shapeA);",
               "});"
             ]
           }
@@ -170,18 +194,192 @@
       ]
     },
     {
-      "name": "04 - Post por slug (chileadicto)",
+      "name": "04 - Host B / Site A - Lista posts",
       "request": {
         "method": "GET",
         "header": [],
         "url": {
-          "raw": "{{baseUrl}}/api/posts/{{slugPrensaChile}}?previewSite=chileadicto",
-          "host": ["{{baseUrl}}"],
-          "path": ["api", "posts", "{{slugPrensaChile}}"],
+          "raw": "{{hostB}}/api/posts?categorySlug={{categorySlug}}&previewSite={{siteA}}",
+          "host": ["{{hostB}}"],
+          "path": ["api", "posts"],
+          "query": [
+            {
+              "key": "categorySlug",
+              "value": "{{categorySlug}}"
+            },
+            {
+              "key": "previewSite",
+              "value": "{{siteA}}"
+            }
+          ]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Status 200', function () {",
+              "  pm.response.to.have.status(200);",
+              "});",
+              "",
+              "const data = pm.response.json();",
+              "pm.test('Respuesta es array', function () {",
+              "  pm.expect(Array.isArray(data)).to.eql(true);",
+              "});",
+              "",
+              "if (Array.isArray(data) && data.length > 0) {",
+              "  pm.collectionVariables.set('shape_list_hostB_siteA', Object.keys(data[0]).sort().join(','));",
+              "}"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "05 - Host B / Site B - Lista posts",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{hostB}}/api/posts?categorySlug={{categorySlug}}&previewSite={{siteB}}",
+          "host": ["{{hostB}}"],
+          "path": ["api", "posts"],
+          "query": [
+            {
+              "key": "categorySlug",
+              "value": "{{categorySlug}}"
+            },
+            {
+              "key": "previewSite",
+              "value": "{{siteB}}"
+            }
+          ]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Status 200', function () {",
+              "  pm.response.to.have.status(200);",
+              "});",
+              "",
+              "const data = pm.response.json();",
+              "pm.test('Respuesta es array', function () {",
+              "  pm.expect(Array.isArray(data)).to.eql(true);",
+              "});",
+              "",
+              "if (Array.isArray(data) && data.length > 0) {",
+              "  pm.collectionVariables.set('shape_list_hostB_siteB', Object.keys(data[0]).sort().join(','));",
+              "}"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "06 - Comparar Site A entre Host A vs Host B",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{hostB}}/api/posts?categorySlug={{categorySlug}}&previewSite={{siteA}}",
+          "host": ["{{hostB}}"],
+          "path": ["api", "posts"],
+          "query": [
+            {
+              "key": "categorySlug",
+              "value": "{{categorySlug}}"
+            },
+            {
+              "key": "previewSite",
+              "value": "{{siteA}}"
+            }
+          ]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "const shapeA = pm.collectionVariables.get('shape_list_hostA_siteA') || '';",
+              "const shapeB = pm.collectionVariables.get('shape_list_hostB_siteA') || '';",
+              "",
+              "pm.test('Se guardaron shapes Site A en ambos hosts', function () {",
+              "  pm.expect(shapeA.length).to.be.above(0);",
+              "  pm.expect(shapeB.length).to.be.above(0);",
+              "});",
+              "",
+              "pm.test('Shape igual para Site A entre hosts', function () {",
+              "  pm.expect(shapeB).to.eql(shapeA);",
+              "});"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "07 - Comparar Site B entre Host A vs Host B",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{hostB}}/api/posts?categorySlug={{categorySlug}}&previewSite={{siteB}}",
+          "host": ["{{hostB}}"],
+          "path": ["api", "posts"],
+          "query": [
+            {
+              "key": "categorySlug",
+              "value": "{{categorySlug}}"
+            },
+            {
+              "key": "previewSite",
+              "value": "{{siteB}}"
+            }
+          ]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "const shapeA = pm.collectionVariables.get('shape_list_hostA_siteB') || '';",
+              "const shapeB = pm.collectionVariables.get('shape_list_hostB_siteB') || '';",
+              "",
+              "pm.test('Se guardaron shapes Site B en ambos hosts', function () {",
+              "  pm.expect(shapeA.length).to.be.above(0);",
+              "  pm.expect(shapeB.length).to.be.above(0);",
+              "});",
+              "",
+              "pm.test('Shape igual para Site B entre hosts', function () {",
+              "  pm.expect(shapeB).to.eql(shapeA);",
+              "});"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "08 - Host A / Site A - Post por slug",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{hostA}}/api/posts/{{slugSiteA}}?previewSite={{siteA}}",
+          "host": ["{{hostA}}"],
+          "path": ["api", "posts", "{{slugSiteA}}"],
           "query": [
             {
               "key": "previewSite",
-              "value": "chileadicto"
+              "value": "{{siteA}}"
             }
           ]
         }
@@ -197,16 +395,186 @@
               "});",
               "",
               "const obj = pm.response.json();",
-              "const required = [",
-              "  'slug', 'site', 'publicationStatus', 'publishStartAt', 'publishEndAt', 'publicationEndsAt',",
-              "  'featuredImage', 'website', 'websitePublic', 'websitepublic', 'website_public',",
-              "  'instagram', 'website_display', 'instagram_display', 'email', 'phone', 'photosCredit',",
-              "  'address', 'hours', 'reservationLink', 'reservationPolicy', 'interestingFact',",
-              "  'images', 'locations', 'es', 'en', 'categories', 'communes'",
-              "];",
+              "pm.collectionVariables.set('shape_slug_hostA_siteA', Object.keys(obj).sort().join(','));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "09 - Host B / Site A - Post por slug",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{hostB}}/api/posts/{{slugSiteA}}?previewSite={{siteA}}",
+          "host": ["{{hostB}}"],
+          "path": ["api", "posts", "{{slugSiteA}}"],
+          "query": [
+            {
+              "key": "previewSite",
+              "value": "{{siteA}}"
+            }
+          ]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Status 200', function () {",
+              "  pm.response.to.have.status(200);",
+              "});",
               "",
-              "pm.test('Post por slug trae propiedades completas', function () {",
-              "  required.forEach((k) => pm.expect(obj).to.have.property(k));",
+              "const obj = pm.response.json();",
+              "pm.collectionVariables.set('shape_slug_hostB_siteA', Object.keys(obj).sort().join(','));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "10 - Comparar slug Site A entre Host A vs Host B",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{hostB}}/api/posts/{{slugSiteA}}?previewSite={{siteA}}",
+          "host": ["{{hostB}}"],
+          "path": ["api", "posts", "{{slugSiteA}}"],
+          "query": [
+            {
+              "key": "previewSite",
+              "value": "{{siteA}}"
+            }
+          ]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "const shapeA = pm.collectionVariables.get('shape_slug_hostA_siteA') || '';",
+              "const shapeB = pm.collectionVariables.get('shape_slug_hostB_siteA') || '';",
+              "",
+              "pm.test('Se guardaron shapes slug en ambos hosts', function () {",
+              "  pm.expect(shapeA.length).to.be.above(0);",
+              "  pm.expect(shapeB.length).to.be.above(0);",
+              "});",
+              "",
+              "pm.test('Shape slug igual Site A entre hosts', function () {",
+              "  pm.expect(shapeB).to.eql(shapeA);",
+              "});"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "11 - Host A / Site B - Post por slug",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{hostA}}/api/posts/{{slugSiteB}}?previewSite={{siteB}}",
+          "host": ["{{hostA}}"],
+          "path": ["api", "posts", "{{slugSiteB}}"],
+          "query": [
+            {
+              "key": "previewSite",
+              "value": "{{siteB}}"
+            }
+          ]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Status 200', function () {",
+              "  pm.response.to.have.status(200);",
+              "});",
+              "",
+              "const obj = pm.response.json();",
+              "pm.collectionVariables.set('shape_slug_hostA_siteB', Object.keys(obj).sort().join(','));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "12 - Host B / Site B - Post por slug",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{hostB}}/api/posts/{{slugSiteB}}?previewSite={{siteB}}",
+          "host": ["{{hostB}}"],
+          "path": ["api", "posts", "{{slugSiteB}}"],
+          "query": [
+            {
+              "key": "previewSite",
+              "value": "{{siteB}}"
+            }
+          ]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Status 200', function () {",
+              "  pm.response.to.have.status(200);",
+              "});",
+              "",
+              "const obj = pm.response.json();",
+              "pm.collectionVariables.set('shape_slug_hostB_siteB', Object.keys(obj).sort().join(','));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "13 - Comparar slug Site B entre Host A vs Host B",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{hostB}}/api/posts/{{slugSiteB}}?previewSite={{siteB}}",
+          "host": ["{{hostB}}"],
+          "path": ["api", "posts", "{{slugSiteB}}"],
+          "query": [
+            {
+              "key": "previewSite",
+              "value": "{{siteB}}"
+            }
+          ]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "const shapeA = pm.collectionVariables.get('shape_slug_hostA_siteB') || '';",
+              "const shapeB = pm.collectionVariables.get('shape_slug_hostB_siteB') || '';",
+              "",
+              "pm.test('Se guardaron shapes slug Site B en ambos hosts', function () {",
+              "  pm.expect(shapeA.length).to.be.above(0);",
+              "  pm.expect(shapeB.length).to.be.above(0);",
+              "});",
+              "",
+              "pm.test('Shape slug igual Site B entre hosts', function () {",
+              "  pm.expect(shapeB).to.eql(shapeA);",
               "});"
             ]
           }

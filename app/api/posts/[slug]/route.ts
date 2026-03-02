@@ -2,7 +2,10 @@ import { NextResponse } from "next/server";
 import { postSchema } from "@/lib/post-schema";
 import { normalizePost } from "@/lib/post-normalize";
 import { getCurrentSiteId } from "@/lib/site-utils";
-import { ensureLegacyPostShape } from "@/lib/post-response-shape";
+import {
+  ensureLegacyPostShape,
+  mergeLegacyPostMissingValues,
+} from "@/lib/post-response-shape";
 
 function envOrNull(name: string) {
   const v = process.env[name];
@@ -231,6 +234,14 @@ async function fetchWithPublicationFallback(pathWithSelectBase: string) {
   }
 }
 
+async function fetchSinglePostBySlugAnySite(slug: string, select: string) {
+  const rows: any[] | null = await fetchWithPublicationFallback(
+    `/posts?slug=eq.${encodeURIComponent(slug)}&select=${encodeURIComponent(select)}`
+  );
+  if (!Array.isArray(rows) || rows.length === 0) return null;
+  return rows[0];
+}
+
 // GET /api/posts/[slug]
 export async function GET(
   _req: Request,
@@ -250,7 +261,14 @@ export async function GET(
       `/posts?slug=eq.${encodeURIComponent(slug)}&site=eq.${siteId}&select=${encodeURIComponent(select)}`
     );
     if (rows && rows.length > 0) {
-      const mapped = ensureLegacyPostShape(mapRowToLegacy(rows[0]));
+      let mapped = ensureLegacyPostShape(mapRowToLegacy(rows[0]));
+
+      const fallbackRow = await fetchSinglePostBySlugAnySite(slug, select);
+      if (fallbackRow) {
+        const fallbackMapped = ensureLegacyPostShape(mapRowToLegacy(fallbackRow));
+        mapped = mergeLegacyPostMissingValues(mapped, fallbackMapped);
+      }
+
       const status = String(mapped?.publicationStatus || "published")
         .trim()
         .toLowerCase();

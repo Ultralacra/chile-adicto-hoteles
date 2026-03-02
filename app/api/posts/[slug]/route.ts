@@ -219,10 +219,10 @@ async function fetchWithPublicationFallback(pathWithSelectBase: string) {
     return await fetchFromSupabase(pathWithSelectBase);
   } catch (err: any) {
     const msg = String(err?.message || "");
-    const missingColumn =
-      /Could not find the '([a-zA-Z0-9_]+)' column/i.test(msg) ||
-      /column\s+[^.]*\.?([a-zA-Z0-9_]+)\s+does not exist/i.test(msg);
-    if (!missingColumn) throw err;
+    const missingPublicationColumn =
+      /Could not find the '(publication_status|publish_start_at|publish_end_at)' column/i.test(msg) ||
+      /column\s+[^.]*\.?(publication_status|publish_start_at|publish_end_at)\s+does not exist/i.test(msg);
+    if (!missingPublicationColumn) throw err;
     const fallback = pathWithSelectBase
       .replace("publication_status,", "")
       .replace("publish_start_at,", "")

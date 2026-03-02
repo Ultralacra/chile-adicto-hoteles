@@ -4,6 +4,7 @@ import { postSchema } from "@/lib/post-schema";
 import { normalizePost } from "@/lib/post-normalize";
 import { getCurrentSiteId } from "@/lib/site-utils";
 import { isPostCurrentlyPublished } from "@/lib/post-publication";
+import { ensureLegacyPostShape } from "@/lib/post-response-shape";
 
 const HOME_FEED_EXCLUDED = new Set<string>([
   "RESTAURANTES",
@@ -371,7 +372,7 @@ export async function GET(req: Request) {
           return fields.some((f: string) => f.includes(qc));
         });
       }
-      const mapped = rows.map(mapRowToLegacy);
+      const mapped = rows.map((row) => ensureLegacyPostShape(mapRowToLegacy(row)));
       const visible = isAdminRequest
         ? mapped
         : shouldBypassPublicationWindow

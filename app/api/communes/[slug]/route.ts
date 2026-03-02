@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { ensureLegacyPostShape } from "@/lib/post-response-shape";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -88,17 +89,42 @@ export async function GET(_req: Request, { params }: { params: any }) {
     const inList = ids.map((id) => `"${id.replace(/\"/g, "")}"`).join(",");
     const posts: any[] =
       (await serviceRest(
-        `/posts?id=in.(${inList})&select=id,slug,featured_image,translations:post_translations(lang,name)`
+        `/posts?id=in.(${inList})&select=id,slug,site,publication_status,publish_start_at,publish_end_at,featured_image,translations:post_translations(lang,name)`
       )) || [];
 
     const mapped = (Array.isArray(posts) ? posts : [])
       .map((p: any) => {
         const trEs = (p.translations || []).find((t: any) => t.lang === "es") || {};
         const trEn = (p.translations || []).find((t: any) => t.lang === "en") || {};
-        return {
-          id: p.id,
+        const shaped = ensureLegacyPostShape({
           slug: String(p.slug || ""),
+          site: p.site || null,
+          publicationStatus: p.publication_status || "published",
+          publishStartAt: p.publish_start_at || null,
+          publishEndAt: p.publish_end_at || null,
+          publicationEndsAt: p.publish_end_at || null,
           featuredImage: p.featured_image || null,
+          es: {
+            name: trEs.name || "",
+            subtitle: "",
+            description: [],
+            infoHtml: null,
+            infoHtmlNew: null,
+            category: null,
+          },
+          en: {
+            name: trEn.name || "",
+            subtitle: "",
+            description: [],
+            infoHtml: null,
+            infoHtmlNew: null,
+            category: null,
+          },
+        });
+
+        return {
+          ...shaped,
+          id: p.id,
           name_es: trEs.name || "",
           name_en: trEn.name || "",
         };

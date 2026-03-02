@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { postSchema } from "@/lib/post-schema";
 import { normalizePost } from "@/lib/post-normalize";
 import { getCurrentSiteId } from "@/lib/site-utils";
+import { ensureLegacyPostShape } from "@/lib/post-response-shape";
 
 function envOrNull(name: string) {
   const v = process.env[name];
@@ -249,7 +250,7 @@ export async function GET(
       `/posts?slug=eq.${encodeURIComponent(slug)}&site=eq.${siteId}&select=${encodeURIComponent(select)}`
     );
     if (rows && rows.length > 0) {
-      const mapped = mapRowToLegacy(rows[0]);
+      const mapped = ensureLegacyPostShape(mapRowToLegacy(rows[0]));
       const status = String(mapped?.publicationStatus || "published")
         .trim()
         .toLowerCase();

@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { isPostCurrentlyPublished } from "@/lib/post-publication";
+import { ensureLegacyPostShape } from "@/lib/post-response-shape";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -57,15 +58,37 @@ export async function GET(req: Request) {
       const trEn = (p.translations || []).find((t: any) => t.lang === "en") || {};
       return {
         slug: String(p.slug || ""),
+        site: p.site || null,
         featuredImage: p.featured_image || null,
         publicationStatus: p.publication_status || "published",
         publishStartAt: p.publish_start_at || null,
         publishEndAt: p.publish_end_at || null,
         publicationEndsAt: p.publish_end_at || null,
+        es: {
+          name: trEs.name || "",
+          subtitle: "",
+          description: [],
+          infoHtml: null,
+          infoHtmlNew: null,
+          category: null,
+        },
+        en: {
+          name: trEn.name || "",
+          subtitle: "",
+          description: [],
+          infoHtml: null,
+          infoHtmlNew: null,
+          category: null,
+        },
         name_es: trEs.name || "",
         name_en: trEn.name || "",
       };
     })
+    .map((p: any) => ({
+      ...ensureLegacyPostShape(p),
+      name_es: p.name_es || "",
+      name_en: p.name_en || "",
+    }))
     .filter((p: any) => p.slug)
     .filter((p: any) => (isAdminRequest ? true : isPostCurrentlyPublished(p)));
 

@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { isPostCurrentlyPublished } from "@/lib/post-publication";
 import { getCurrentSiteId } from "@/lib/site-utils";
+import { ensureLegacyPostShape } from "@/lib/post-response-shape";
 
 function envOrNull(name: string) {
   const v = process.env[name];
@@ -176,7 +177,9 @@ export async function GET(req: Request, { params }: { params: { slug: string } }
       });
     }
 
-    const mapped = rows.map(mapRowToLegacy).filter((post: any) => isPostCurrentlyPublished(post));
+    const mapped = rows
+      .map((row) => ensureLegacyPostShape(mapRowToLegacy(row)))
+      .filter((post: any) => isPostCurrentlyPublished(post));
     return NextResponse.json(mapped, { status: 200 });
   } catch (err: any) {
     console.error("[GET /api/posts/by-category/[slug]] error", err);

@@ -5,7 +5,10 @@
     "description": "Colección completa de endpoints de app/api: categories, communes, posts, media, sliders y utilidades."
   },
   "variable": [
-    { "key": "baseUrl", "value": "http://localhost:3000" },
+    {
+      "key": "baseUrl",
+      "value": "https://chile-adicto-hoteles-front.vercel.app"
+    },
     { "key": "previewSite", "value": "chileadicto" },
     { "key": "adminSite", "value": "santiagoadicto" },
     { "key": "adminApiKey", "value": "" },

@@ -1,0 +1,679 @@
+{
+  "info": {
+    "name": "Chile Adicto Hoteles - API Completa CRUD",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": "Colección completa de endpoints de app/api: categories, communes, posts, media, sliders y utilidades."
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "http://localhost:3000" },
+    { "key": "previewSite", "value": "chileadicto" },
+    { "key": "adminSite", "value": "santiagoadicto" },
+    { "key": "adminApiKey", "value": "" },
+    {
+      "key": "postSlug",
+      "value": "santiagoadicto-en-radio-duna-cuarta-parte-de-los-mejores-hoteles-destino-de-chile"
+    },
+    { "key": "categorySlug", "value": "prensa" },
+    { "key": "communeSlug", "value": "providencia" },
+    {
+      "key": "postSlugForCommune",
+      "value": "santiagoadicto-en-radio-duna-cuarta-parte-de-los-mejores-hoteles-destino-de-chile"
+    },
+    { "key": "sliderKey", "value": "home-mobile" }
+  ],
+  "item": [
+    {
+      "name": "Categories",
+      "item": [
+        {
+          "name": "GET /api/categories",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/categories",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "categories"]
+            }
+          }
+        },
+        {
+          "name": "GET /api/categories?full=1&nav=1",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/categories?full=1&nav=1&previewSite={{previewSite}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "categories"],
+              "query": [
+                { "key": "full", "value": "1" },
+                { "key": "nav", "value": "1" },
+                { "key": "previewSite", "value": "{{previewSite}}" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "POST /api/categories (upsert)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "x-admin-key", "value": "{{adminApiKey}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"slug\": \"prensa\",\n  \"label_es\": \"PRENSA\",\n  \"label_en\": \"PRESS\",\n  \"show_in_menu\": true\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/categories?previewSite={{previewSite}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "categories"],
+              "query": [{ "key": "previewSite", "value": "{{previewSite}}" }]
+            }
+          }
+        },
+        {
+          "name": "PUT /api/categories (alias POST)",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "x-admin-key", "value": "{{adminApiKey}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "[{\n  \"slug\": \"prensa\",\n  \"label_es\": \"PRENSA\"\n}]"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/categories?previewSite={{previewSite}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "categories"],
+              "query": [{ "key": "previewSite", "value": "{{previewSite}}" }]
+            }
+          }
+        },
+        {
+          "name": "DELETE /api/categories?slug=...",
+          "request": {
+            "method": "DELETE",
+            "header": [{ "key": "x-admin-key", "value": "{{adminApiKey}}" }],
+            "url": {
+              "raw": "{{baseUrl}}/api/categories?slug=prensa&previewSite={{previewSite}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "categories"],
+              "query": [
+                { "key": "slug", "value": "prensa" },
+                { "key": "previewSite", "value": "{{previewSite}}" }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Communes",
+      "item": [
+        {
+          "name": "GET /api/communes",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/communes?previewSite={{previewSite}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "communes"],
+              "query": [{ "key": "previewSite", "value": "{{previewSite}}" }]
+            }
+          }
+        },
+        {
+          "name": "GET /api/communes?full=1&nav=1",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/communes?full=1&nav=1&previewSite={{previewSite}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "communes"],
+              "query": [
+                { "key": "full", "value": "1" },
+                { "key": "nav", "value": "1" },
+                { "key": "previewSite", "value": "{{previewSite}}" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "POST /api/communes (upsert)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "x-admin-key", "value": "{{adminApiKey}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"slug\": \"providencia\",\n  \"label\": \"Providencia\",\n  \"show_in_menu\": true,\n  \"menu_order\": 1\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/communes?previewSite={{previewSite}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "communes"],
+              "query": [{ "key": "previewSite", "value": "{{previewSite}}" }]
+            }
+          }
+        },
+        {
+          "name": "PUT /api/communes (alias POST)",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "x-admin-key", "value": "{{adminApiKey}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "[{\n  \"slug\": \"santiago\",\n  \"label\": \"Santiago\"\n}]"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/communes?previewSite={{previewSite}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "communes"],
+              "query": [{ "key": "previewSite", "value": "{{previewSite}}" }]
+            }
+          }
+        },
+        {
+          "name": "DELETE /api/communes?slug=...",
+          "request": {
+            "method": "DELETE",
+            "header": [{ "key": "x-admin-key", "value": "{{adminApiKey}}" }],
+            "url": {
+              "raw": "{{baseUrl}}/api/communes?slug={{communeSlug}}&previewSite={{previewSite}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "communes"],
+              "query": [
+                { "key": "slug", "value": "{{communeSlug}}" },
+                { "key": "previewSite", "value": "{{previewSite}}" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET /api/communes/:slug",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/communes/{{communeSlug}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "communes", "{{communeSlug}}"]
+            }
+          }
+        },
+        {
+          "name": "POST /api/communes/:slug (asignar post)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "x-admin-key", "value": "{{adminApiKey}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"postSlug\": \"{{postSlugForCommune}}\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/communes/{{communeSlug}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "communes", "{{communeSlug}}"]
+            }
+          }
+        },
+        {
+          "name": "DELETE /api/communes/:slug?postSlug=...",
+          "request": {
+            "method": "DELETE",
+            "header": [{ "key": "x-admin-key", "value": "{{adminApiKey}}" }],
+            "url": {
+              "raw": "{{baseUrl}}/api/communes/{{communeSlug}}?postSlug={{postSlugForCommune}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "communes", "{{communeSlug}}"],
+              "query": [
+                { "key": "postSlug", "value": "{{postSlugForCommune}}" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "POST /api/communes/map",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"slugs\": [\"{{postSlug}}\"]\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/communes/map",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "communes", "map"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Posts",
+      "item": [
+        {
+          "name": "GET /api/posts (filtro categoría)",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/posts?categorySlug={{categorySlug}}&previewSite={{previewSite}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "posts"],
+              "query": [
+                { "key": "categorySlug", "value": "{{categorySlug}}" },
+                { "key": "previewSite", "value": "{{previewSite}}" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET /api/posts (home feed paginado)",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/posts?homeFeed=1&limit=25&offset=0&previewSite={{previewSite}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "posts"],
+              "query": [
+                { "key": "homeFeed", "value": "1" },
+                { "key": "limit", "value": "25" },
+                { "key": "offset", "value": "0" },
+                { "key": "previewSite", "value": "{{previewSite}}" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "POST /api/posts (crear)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"slug\": \"post-demo-postman\",\n  \"publicationStatus\": \"published\",\n  \"featuredImage\": \"https://example.com/featured.webp\",\n  \"images\": [\"https://example.com/1.webp\", \"https://example.com/2.webp\"],\n  \"categories\": [\"PRENSA\"],\n  \"communes\": [\"providencia\"],\n  \"es\": {\n    \"name\": \"POST DEMO\",\n    \"subtitle\": \"SUBTÍTULO\",\n    \"description\": [\"Párrafo 1\"],\n    \"category\": \"prensa\",\n    \"infoHtml\": \"<b>Dato útil</b>\"\n  },\n  \"en\": {\n    \"name\": \"DEMO POST\",\n    \"subtitle\": \"SUBTITLE\",\n    \"description\": [\"Paragraph 1\"],\n    \"category\": \"press\",\n    \"infoHtml\": \"<b>Useful info</b>\"\n  }\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/posts?previewSite={{previewSite}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "posts"],
+              "query": [{ "key": "previewSite", "value": "{{previewSite}}" }]
+            }
+          }
+        },
+        {
+          "name": "POST /api/posts/validate",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"slug\": \"post-demo-postman\",\n  \"es\": {\n    \"name\": \"POST DEMO\",\n    \"subtitle\": \"SUBTÍTULO\",\n    \"description\": [\"Párrafo 1\"]\n  },\n  \"en\": {\n    \"name\": \"DEMO POST\",\n    \"subtitle\": \"SUBTITLE\",\n    \"description\": [\"Paragraph 1\"]\n  }\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/posts/validate",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "posts", "validate"]
+            }
+          }
+        },
+        {
+          "name": "GET /api/posts/search?q=",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/posts/search?q=hotel&limit=30&adminSite=1",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "posts", "search"],
+              "query": [
+                { "key": "q", "value": "hotel" },
+                { "key": "limit", "value": "30" },
+                { "key": "adminSite", "value": "1" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET /api/posts/by-category/:slug",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/posts/by-category/{{categorySlug}}?q=&previewSite={{previewSite}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "posts", "by-category", "{{categorySlug}}"],
+              "query": [
+                { "key": "q", "value": "" },
+                { "key": "previewSite", "value": "{{previewSite}}" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET /api/posts/:slug",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/posts/{{postSlug}}?previewSite={{previewSite}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "posts", "{{postSlug}}"],
+              "query": [{ "key": "previewSite", "value": "{{previewSite}}" }]
+            }
+          }
+        },
+        {
+          "name": "PUT /api/posts/:slug (editar)",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"slug\": \"{{postSlug}}\",\n  \"publicationStatus\": \"published\",\n  \"websitePublic\": \"https://example.com\",\n  \"categories\": [\"PRENSA\"],\n  \"communes\": [\"providencia\"],\n  \"es\": {\n    \"name\": \"TÍTULO ACTUALIZADO\",\n    \"subtitle\": \"SUBTÍTULO\",\n    \"description\": [\"Texto actualizado\"]\n  },\n  \"en\": {\n    \"name\": \"UPDATED TITLE\",\n    \"subtitle\": \"SUBTITLE\",\n    \"description\": [\"Updated text\"]\n  }\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/posts/{{postSlug}}?previewSite={{previewSite}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "posts", "{{postSlug}}"],
+              "query": [{ "key": "previewSite", "value": "{{previewSite}}" }]
+            }
+          }
+        },
+        {
+          "name": "POST /api/posts/:slug/images (JSON urls)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"urls\": [\n    \"https://example.com/new-1.webp\",\n    \"https://example.com/new-2.webp\"\n  ]\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/posts/{{postSlug}}/images",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "posts", "{{postSlug}}", "images"]
+            }
+          }
+        },
+        {
+          "name": "DELETE /api/posts/:slug",
+          "request": {
+            "method": "DELETE",
+            "url": {
+              "raw": "{{baseUrl}}/api/posts/{{postSlug}}?previewSite={{previewSite}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "posts", "{{postSlug}}"],
+              "query": [{ "key": "previewSite", "value": "{{previewSite}}" }]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Media",
+      "item": [
+        {
+          "name": "GET /api/media",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/media?limit=120&offset=0",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "media"],
+              "query": [
+                { "key": "limit", "value": "120" },
+                { "key": "offset", "value": "0" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET /api/media?q=...&refresh=1",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/media?q=hotel&refresh=1",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "media"],
+              "query": [
+                { "key": "q", "value": "hotel" },
+                { "key": "refresh", "value": "1" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "POST /api/media",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"urls\": [\"https://example.com/media-a.webp\", \"https://example.com/media-b.webp\"]\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/media",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "media"]
+            }
+          }
+        },
+        {
+          "name": "POST /api/media/upload (multipart)",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [{ "key": "files", "type": "file", "src": [] }]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/media/upload",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "media", "upload"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Sliders",
+      "item": [
+        {
+          "name": "GET /api/sliders",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/sliders?previewSite={{previewSite}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "sliders"],
+              "query": [{ "key": "previewSite", "value": "{{previewSite}}" }]
+            }
+          }
+        },
+        {
+          "name": "GET /api/sliders/:key",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/sliders/{{sliderKey}}?previewSite={{previewSite}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "sliders", "{{sliderKey}}"],
+              "query": [{ "key": "previewSite", "value": "{{previewSite}}" }]
+            }
+          }
+        },
+        {
+          "name": "GET /api/sliders/:key?all=1",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/sliders/{{sliderKey}}?all=1&previewSite={{previewSite}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "sliders", "{{sliderKey}}"],
+              "query": [
+                { "key": "all", "value": "1" },
+                { "key": "previewSite", "value": "{{previewSite}}" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "PUT /api/sliders/:key",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"items\": [\n    {\n      \"image_url\": \"/sliderHome/ICONOS.png\",\n      \"href\": \"/iconos\",\n      \"position\": 0,\n      \"active\": true\n    },\n    {\n      \"image_url\": \"/sliderHome/ARQ.png\",\n      \"href\": \"/arquitectura\",\n      \"position\": 1,\n      \"active\": true\n    }\n  ]\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/sliders/{{sliderKey}}?previewSite={{previewSite}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "sliders", "{{sliderKey}}"],
+              "query": [{ "key": "previewSite", "value": "{{previewSite}}" }]
+            }
+          }
+        },
+        {
+          "name": "POST /api/sliders/sync",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"sets\": [\n    {\n      \"key\": \"home-mobile\",\n      \"items\": [\n        { \"image_url\": \"/sliderHome/ICONOS.png\", \"href\": \"/iconos\" }\n      ]\n    }\n  ]\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/sliders/sync",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "sliders", "sync"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Static Slider Files",
+      "item": [
+        {
+          "name": "GET /api/slider-images",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/slider-images",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "slider-images"]
+            }
+          }
+        },
+        {
+          "name": "PUT /api/slider-images (guardar orden)",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"desktop\": [\"/slider-desktop/1.png\", \"/slider-desktop/2.png\"],\n  \"mobile\": [\"/slider-movil/1.png\", \"/slider-movil/2.png\"]\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/slider-images",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "slider-images"]
+            }
+          }
+        },
+        {
+          "name": "GET /api/slider-destinations",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/slider-destinations",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "slider-destinations"]
+            }
+          }
+        },
+        {
+          "name": "PUT /api/slider-destinations",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"desktop\": [\"/iconos\", \"/arquitectura\"],\n  \"mobile\": [\"/iconos\", \"/arquitectura\"]\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/slider-destinations",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "slider-destinations"]
+            }
+          }
+        },
+        {
+          "name": "GET /api/restaurant-slider-mobile",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/restaurant-slider-mobile",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "restaurant-slider-mobile"]
+            }
+          }
+        },
+        {
+          "name": "PUT /api/restaurant-slider-mobile",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"lang\": \"es\",\n  \"order\": [\"slide-1-1.webp\", \"slide-2-1.webp\"]\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/restaurant-slider-mobile",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "restaurant-slider-mobile"]
+            }
+          }
+        },
+        {
+          "name": "GET /api/imagenes-slider/manifest",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/imagenes-slider/manifest",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "imagenes-slider", "manifest"]
+            }
+          }
+        },
+        {
+          "name": "PUT /api/imagenes-slider/manifest",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"es\": [\"/imagenes-slider/a.webp\"],\n  \"en\": [\"/imagenes-slider/b.webp\"]\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/imagenes-slider/manifest",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "imagenes-slider", "manifest"]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,217 @@
+{
+  "info": {
+    "name": "API Posts Multisitio - Chile Adicto Hoteles",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": "Colección para validar consistencia de respuesta en /api/posts entre santiagoadicto y chileadicto."
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:3000"
+    },
+    {
+      "key": "slugPrensaChile",
+      "value": "santiagoadicto-en-radio-duna-cuarta-parte-de-los-mejores-hoteles-destino-de-chile"
+    }
+  ],
+  "item": [
+    {
+      "name": "01 - Posts Santiagoadicto (tiendas)",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/posts?categorySlug=tiendas",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "posts"],
+          "query": [
+            {
+              "key": "categorySlug",
+              "value": "tiendas"
+            }
+          ]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Status 200', function () {",
+              "  pm.response.to.have.status(200);",
+              "});",
+              "",
+              "const data = pm.response.json();",
+              "pm.test('Respuesta es array', function () {",
+              "  pm.expect(Array.isArray(data)).to.eql(true);",
+              "});",
+              "",
+              "if (Array.isArray(data) && data.length > 0) {",
+              "  const obj = data[0];",
+              "  const required = [",
+              "    'slug', 'site', 'publicationStatus', 'publishStartAt', 'publishEndAt', 'publicationEndsAt',",
+              "    'featuredImage', 'website', 'websitePublic', 'websitepublic', 'website_public',",
+              "    'instagram', 'website_display', 'instagram_display', 'email', 'phone', 'photosCredit',",
+              "    'address', 'hours', 'reservationLink', 'reservationPolicy', 'interestingFact',",
+              "    'images', 'locations', 'es', 'en', 'categories', 'communes'",
+              "  ];",
+              "",
+              "  pm.test('Tiene propiedades base completas', function () {",
+              "    required.forEach((k) => pm.expect(obj).to.have.property(k));",
+              "  });",
+              "",
+              "  pm.collectionVariables.set('shapeKeysSantiago', Object.keys(obj).sort().join(','));",
+              "}"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "02 - Posts Chileadicto (prensa + previewSite)",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/posts?categorySlug=prensa&previewSite=chileadicto",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "posts"],
+          "query": [
+            {
+              "key": "categorySlug",
+              "value": "prensa"
+            },
+            {
+              "key": "previewSite",
+              "value": "chileadicto"
+            }
+          ]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Status 200', function () {",
+              "  pm.response.to.have.status(200);",
+              "});",
+              "",
+              "const data = pm.response.json();",
+              "pm.test('Respuesta es array', function () {",
+              "  pm.expect(Array.isArray(data)).to.eql(true);",
+              "});",
+              "",
+              "if (Array.isArray(data) && data.length > 0) {",
+              "  const obj = data[0];",
+              "  const required = [",
+              "    'slug', 'site', 'publicationStatus', 'publishStartAt', 'publishEndAt', 'publicationEndsAt',",
+              "    'featuredImage', 'website', 'websitePublic', 'websitepublic', 'website_public',",
+              "    'instagram', 'website_display', 'instagram_display', 'email', 'phone', 'photosCredit',",
+              "    'address', 'hours', 'reservationLink', 'reservationPolicy', 'interestingFact',",
+              "    'images', 'locations', 'es', 'en', 'categories', 'communes'",
+              "  ];",
+              "",
+              "  pm.test('Tiene propiedades base completas', function () {",
+              "    required.forEach((k) => pm.expect(obj).to.have.property(k));",
+              "  });",
+              "",
+              "  pm.collectionVariables.set('shapeKeysChile', Object.keys(obj).sort().join(','));",
+              "}",
+              ""
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "03 - Comparar shape Santiago vs Chile",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/posts?categorySlug=prensa&previewSite=chileadicto",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "posts"],
+          "query": [
+            {
+              "key": "categorySlug",
+              "value": "prensa"
+            },
+            {
+              "key": "previewSite",
+              "value": "chileadicto"
+            }
+          ]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "const shapeSantiago = pm.collectionVariables.get('shapeKeysSantiago') || '';",
+              "const shapeChile = pm.collectionVariables.get('shapeKeysChile') || '';",
+              "",
+              "pm.test('Se guardaron shapes previos', function () {",
+              "  pm.expect(shapeSantiago.length).to.be.above(0);",
+              "  pm.expect(shapeChile.length).to.be.above(0);",
+              "});",
+              "",
+              "pm.test('Shape igual entre sitios', function () {",
+              "  pm.expect(shapeChile).to.eql(shapeSantiago);",
+              "});"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "04 - Post por slug (chileadicto)",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/posts/{{slugPrensaChile}}?previewSite=chileadicto",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "posts", "{{slugPrensaChile}}"],
+          "query": [
+            {
+              "key": "previewSite",
+              "value": "chileadicto"
+            }
+          ]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Status 200', function () {",
+              "  pm.response.to.have.status(200);",
+              "});",
+              "",
+              "const obj = pm.response.json();",
+              "const required = [",
+              "  'slug', 'site', 'publicationStatus', 'publishStartAt', 'publishEndAt', 'publicationEndsAt',",
+              "  'featuredImage', 'website', 'websitePublic', 'websitepublic', 'website_public',",
+              "  'instagram', 'website_display', 'instagram_display', 'email', 'phone', 'photosCredit',",
+              "  'address', 'hours', 'reservationLink', 'reservationPolicy', 'interestingFact',",
+              "  'images', 'locations', 'es', 'en', 'categories', 'communes'",
+              "];",
+              "",
+              "pm.test('Post por slug trae propiedades completas', function () {",
+              "  required.forEach((k) => pm.expect(obj).to.have.property(k));",
+              "});"
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

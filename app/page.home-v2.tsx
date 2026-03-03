@@ -101,7 +101,6 @@ export default function Page() {
             {/* Columna 1: Slider */}
             <div className="w-full">
               <div className="w-full md:h-[520px] lg:h-[437px] overflow-visible">
-                {/*
                 <HeroSlider
                   sliderKeyDesktop="home-desktop"
                   sliderKeyMobile="home-mobile"
@@ -121,7 +120,7 @@ export default function Page() {
                   preferApiHrefs
                   dotBottom={24}
                 />
-                */}
+                {/*
                 <HeroSlider
                   desktopImages={[
                     "/sliderHome/ICONOS.png",
@@ -149,6 +148,7 @@ export default function Page() {
                   ]}
                   dotBottom={24}
                 />
+                */}
               </div>
             </div>
 

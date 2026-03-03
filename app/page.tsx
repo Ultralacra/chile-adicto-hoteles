@@ -168,7 +168,6 @@ function HomeContent() {
             {/* Columna 1: Slider */}
             <div className="w-full">
               <div className="w-full md:h-[520px] lg:h-[437px] overflow-visible">
-                {/*
                 <HeroSlider
                   sliderKeyDesktop="home-desktop"
                   sliderKeyMobile="home-mobile"
@@ -188,7 +187,7 @@ function HomeContent() {
                   preferApiHrefs
                   dotBottom={24}
                 />
-                */}
+                {/*
                 <HeroSlider
                   desktopImages={[
                     "/sliderHome/ICONOS.png",
@@ -216,9 +215,9 @@ function HomeContent() {
                   ]}
                   dotBottom={24}
                 />
+                */}
               </div>
 
-              {/* Banner Agenda Cultural móvil — comentado temporalmente
               <div className="mt-4 md:hidden">
                 <Link
                   href="/agenda-cultural"
@@ -226,7 +225,7 @@ function HomeContent() {
                   className="block w-full"
                 >
                   <img
-                    src="/bannerHome/AGENDA%20CULTURAL%20HOME%20MOVIL.png"
+                    src="/bannerHome/AGENDA CULTURAL HOME MOVIL.png"
                     alt="Agenda Cultural"
                     className="block w-full h-auto object-contain"
                     loading="eager"
@@ -234,7 +233,6 @@ function HomeContent() {
                   />
                 </Link>
               </div>
-              */}
             </div>
 
             {/* Columna 2: Imagen vertical (placeholder: mismo banner, reemplazar cuando tengas el definitivo) */}

@@ -77,7 +77,7 @@ export function Header() {
               </Link>
             </div>
 
-            {/* Desktop: Right side logos (same as normal header) */}
+            {/* Desktop: Right side logos (same as normal header)
             <div className="hidden lg:flex items-end gap-6">
               <LanguageSwitcher />
               <div className="flex items-center gap-4">
@@ -141,13 +141,14 @@ export function Header() {
                 />
               </a>
             </div>
+            */}
 
-            {/* Banner Agenda Cultural — comentado temporalmente, se reactivará después
+            {/* Banner Agenda Cultural */}
             <div className="hidden lg:flex items-center gap-6">
               <LanguageSwitcher />
               <Link href="/agenda-cultural" aria-label="Ir a Agenda Cultural">
                 <Image
-                  src="/bannerHome/AGENDA CULTURAL HEADER.svg"
+                  src="/bannerHome/AGENDA CULTURAL HEADER.png"
                   alt="Agenda Cultural"
                   width={460}
                   height={120}
@@ -156,7 +157,6 @@ export function Header() {
                 />
               </Link>
             </div>
-            */}
           </div>
         </div>
       </header>

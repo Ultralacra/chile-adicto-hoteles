@@ -218,6 +218,7 @@ function HomeContent() {
                 />
               </div>
 
+              {/* Banner Agenda Cultural móvil — comentado temporalmente
               <div className="mt-4 md:hidden">
                 <Link
                   href="/agenda-cultural"
@@ -233,6 +234,7 @@ function HomeContent() {
                   />
                 </Link>
               </div>
+              */}
             </div>
 
             {/* Columna 2: Imagen vertical (placeholder: mismo banner, reemplazar cuando tengas el definitivo) */}

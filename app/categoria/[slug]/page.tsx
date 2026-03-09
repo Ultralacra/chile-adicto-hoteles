@@ -90,7 +90,9 @@ export default function CategoryPage({ params }: { params: any }) {
     let cancelled = false;
     setLoading(true);
     // Preferimos filtrar por slug de categoría en el backend
-    fetchWithSite(`/api/posts?categorySlug=${encodeURIComponent(slug)}`)
+    fetchWithSite(
+      `/api/posts?categorySlug=${encodeURIComponent(slug)}&includeExpired=1`,
+    )
       .then((r) => (r.ok ? r.json() : []))
       .then((rows) => {
         if (cancelled) return;

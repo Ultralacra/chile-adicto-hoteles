@@ -1,6 +1,7 @@
 import { memo } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { hasPostPublicationEnded } from "@/lib/post-publication";
 
 interface HotelCardProps {
   slug: string;
@@ -60,6 +61,10 @@ function HotelCardComponent({
   const endLabel = formatPublicationDate(endValue);
   const shouldShowPublicationDates =
     showPublicationDates && Boolean(startLabel || endLabel);
+  const isExpired = hasPostPublicationEnded({
+    publicationEndsAt,
+    publishEndAt,
+  });
 
   return (
     <Link
@@ -79,8 +84,11 @@ function HotelCardComponent({
             fill
             sizes="(max-width: 767px) 100vw, (max-width: 1279px) 50vw, 33vw"
             priority={imagePriority}
-            className="object-cover transition-transform duration-300 group-hover:scale-105"
+            className={`object-cover transition-transform duration-300 group-hover:scale-105 ${
+              isExpired ? "grayscale" : ""
+            }`}
           />
+          {isExpired && <div className="absolute inset-0 bg-black/15" />}
         </div>
 
         {/* Content */}

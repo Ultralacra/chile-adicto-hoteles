@@ -57,6 +57,19 @@ export function isPostCurrentlyPublished(post: any, now = new Date()): boolean {
   return isWithinPublicationWindow(post, now);
 }
 
+export function hasPostPublicationEnded(post: any, now = new Date()): boolean {
+  const rawEnd =
+    post?.publicationEndsAt ?? post?.publishEndAt ?? post?.publish_end_at;
+
+  const endDateTime = normalizeDateTime(rawEnd);
+  if (endDateTime) return now > endDateTime;
+
+  const end = normalizeDateOnly(rawEnd);
+  if (!end) return false;
+
+  return todayChileDateOnly(now) > end;
+}
+
 export function getPostPublicationBadge(post: any): "Publicado" | "No publicado" {
   return isPostCurrentlyPublished(post) ? "Publicado" : "No publicado";
 }

@@ -301,13 +301,17 @@ export async function GET(req: Request) {
     const isAdminRequest = !!url.searchParams.get("adminSite");
     const normalizedCategorySlugFromQuery = normalizeCategorySlug(categorySlug);
     const normalizedCategoryLabelFromQuery = normalizeCategorySlug(category);
+    const includeExpired =
+      url.searchParams.get("includeExpired") === "1" ||
+      url.searchParams.get("includeExpired") === "true";
     const shouldBypassPublicationWindow =
+      includeExpired ||
       normalizedCategorySlugFromQuery === "agenda-cultural" ||
       normalizedCategoryLabelFromQuery === "agenda-cultural";
     
     // DEBUG: Log del sitio detectado
     console.log('🔍 [API /posts] Sitio detectado:', siteId);
-    console.log('🔍 [API /posts] Parámetros:', { q, category, categorySlug });
+    console.log('🔍 [API /posts] Parámetros:', { q, category, categorySlug, includeExpired });
 
     const select =
       "slug,publication_status,publish_start_at,publish_end_at,featured_image,website,website_public,instagram,website_display,instagram_display,email,phone,photos_credit,address,hours,reservation_link,reservation_policy,interesting_fact,site,images:post_images(url,position),locations:post_locations(*),translations:post_translations(*),useful:post_useful_info(*),category_links:post_category_map(category:categories(slug,label_es,label_en)),communes_links:post_communes(commune_slug,commune:communes(slug,label))";

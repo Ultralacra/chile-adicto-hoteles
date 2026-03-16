@@ -16,6 +16,7 @@ import { Spinner } from "@/components/ui/spinner";
 import { useSiteApi } from "@/hooks/use-site-api";
 import { cachedFetch } from "@/lib/api-cache";
 import { isHiddenFrontPost } from "@/lib/post-visibility";
+import { hasPostPublicationEnded } from "@/lib/post-publication";
 import { BottomHomeBanner } from "@/components/home-promo-banners";
 
 // Antes se validaba contra una lista fija, pero ahora el menú y las categorías
@@ -884,6 +885,8 @@ export default function CategoryPage({ params }: { params: any }) {
     ? agendaBannerRanges
         .map((range) => {
           const posts = finalOrderedHotels.filter((h) => {
+            // Excluir posts cuya publicación ya terminó
+            if (hasPostPublicationEnded(h)) return false;
             const raw = h.publishStartAt || h.publishEndAt;
             if (!raw) return false;
             const postDate = toLocalDateKey(new Date(raw));

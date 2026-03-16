@@ -766,6 +766,53 @@ export default function CategoryPage({ params }: { params: any }) {
         )
     : cleanedList;
 
+  const getPostCategorySlugs = (post: any) => {
+    const source = new Set<string>();
+
+    if (Array.isArray(post?.categories)) {
+      for (const category of post.categories) {
+        const normalized = String(category || "")
+          .trim()
+          .toLowerCase()
+          .normalize("NFD")
+          .replace(/[\u0300-\u036f]/g, "")
+          .replace(/[^a-z0-9]+/g, "-")
+          .replace(/(^-|-$)/g, "");
+
+        if (normalized) source.add(normalized);
+      }
+    }
+
+    const translationCategories = [post?.es?.category, post?.en?.category];
+    for (const category of translationCategories) {
+      const normalized = String(category || "")
+        .trim()
+        .toLowerCase()
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .replace(/[^a-z0-9]+/g, "-")
+        .replace(/(^-|-$)/g, "");
+
+      if (normalized) source.add(normalized);
+    }
+
+    return source;
+  };
+
+  const restaurantOnlyHotels = isRestaurantsPage
+    ? finalOrderedHotels.filter((hotel) => {
+        const categorySlugs = getPostCategorySlugs(hotel);
+        return !categorySlugs.has("bares") && !categorySlugs.has("bars");
+      })
+    : [];
+
+  const restaurantBarsHotels = isRestaurantsPage
+    ? finalOrderedHotels.filter((hotel) => {
+        const categorySlugs = getPostCategorySlugs(hotel);
+        return categorySlugs.has("bares") || categorySlugs.has("bars");
+      })
+    : [];
+
   const toLocalDateKey = (date: Date) => {
     const year = date.getFullYear();
     const month = String(date.getMonth() + 1).padStart(2, "0");
@@ -1028,6 +1075,17 @@ export default function CategoryPage({ params }: { params: any }) {
             </div>
           )}
 
+          {isRestaurantsPage && restaurantOnlyHotels.length > 0 && (
+            <div className="w-full mt-4">
+              <BottomHomeBanner
+                href="/restaurantes"
+                src="/bannerRestaurantes/BANER DESKTOP 50 RESTORANES.png"
+                mobileSrc="/bannerRestaurantes/BANER MOVIL 50 RESTORANES.png"
+                alt="50 restaurantes de Santiago"
+              />
+            </div>
+          )}
+
           {/* Contador oculto por solicitud: se elimina el conteo de posts */}
 
           {/* Hotel Grid */}
@@ -1076,6 +1134,74 @@ export default function CategoryPage({ params }: { params: any }) {
                   </div>
                 </section>
               ))}
+            </div>
+          ) : isRestaurantsPage ? (
+            <div className="mt-4 space-y-8">
+              {restaurantOnlyHotels.length > 0 && (
+                <section>
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+                    {restaurantOnlyHotels.map((hotel) => (
+                      <HotelCard
+                        key={hotel.slug}
+                        slug={hotel.slug}
+                        name={hotel[language].name}
+                        subtitle={hotel[language].subtitle}
+                        description={buildCardExcerpt(
+                          hotel[language].description,
+                        )}
+                        image={hotel.featuredImage || hotel.images?.[0] || ""}
+                        publishStartAt={hotel.publishStartAt}
+                        publishEndAt={hotel.publishEndAt}
+                        publicationEndsAt={hotel.publicationEndsAt}
+                        showPublicationDates={false}
+                      />
+                    ))}
+                  </div>
+                </section>
+              )}
+
+              {restaurantBarsHotels.length > 0 && (
+                <section>
+                  <div className="w-full mb-4">
+                    <BottomHomeBanner
+                      href="/restaurantes"
+                      src="/bannerRestaurantes/BANER DESKTOP 50 BARES.png"
+                      mobileSrc="/bannerRestaurantes/BANER MOVIL 50 BARES.png"
+                      alt="50 bares de Santiago"
+                    />
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+                    {restaurantBarsHotels.map((hotel) => (
+                      <HotelCard
+                        key={hotel.slug}
+                        slug={hotel.slug}
+                        name={hotel[language].name}
+                        subtitle={hotel[language].subtitle}
+                        description={buildCardExcerpt(
+                          hotel[language].description,
+                        )}
+                        image={hotel.featuredImage || hotel.images?.[0] || ""}
+                        publishStartAt={hotel.publishStartAt}
+                        publishEndAt={hotel.publishEndAt}
+                        publicationEndsAt={hotel.publicationEndsAt}
+                        showPublicationDates={false}
+                      />
+                    ))}
+                  </div>
+                </section>
+              )}
+
+              {finalOrderedHotels.length === 0 && (
+                <div className="col-span-full text-center py-12 text-gray-500">
+                  <p>
+                    {t(
+                      "No hay hoteles disponibles en esta categoría.",
+                      "No hotels available in this category.",
+                    )}
+                  </p>
+                </div>
+              )}
             </div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 mt-4">

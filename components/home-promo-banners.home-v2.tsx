@@ -33,7 +33,7 @@ export function PromoStackBanners() {
           aria-label="Ir a cafés"
         >
           <Image
-            src="/bannerHome/30 CAFES.svg"
+            src="/bannerHome/30 CAFES.png"
             alt="Cafés"
             width={435}
             height={210}
@@ -41,7 +41,6 @@ export function PromoStackBanners() {
             className="block w-full h-auto md:h-full object-contain md:object-cover"
             style={{ objectPosition: "center", maxWidth: "100%" }}
             loading="lazy"
-            unoptimized
           />
         </Link>
       </div>

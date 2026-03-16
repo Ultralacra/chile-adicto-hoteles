@@ -956,7 +956,7 @@ export default function CategoryPage({ params }: { params: any }) {
                 href={slug === "cafes" ? "/cafes" : "/monumentos-nacionales"}
                 src={
                   slug === "cafes"
-                    ? "/bannerHome/BANNER 30 CAFES.svg"
+                    ? "/bannerHome/BANNER DESKTOP 50 CAFES.png"
                     : "/bannerHome/BANNER MONUMENTOS.svg"
                 }
                 mobileSrc={

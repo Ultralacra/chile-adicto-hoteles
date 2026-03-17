@@ -57,6 +57,11 @@ export default function AdminLayout({
     }
   }, [router, pathname]);
 
+  useEffect(() => {
+    // Cerrar el drawer móvil al navegar para evitar estados inconsistentes.
+    setIsSidebarOpen(false);
+  }, [pathname]);
+
   const handleLogout = () => {
     sessionStorage.removeItem("adminAuthenticated");
     router.push("/admin/login");
@@ -104,11 +109,15 @@ export default function AdminLayout({
         className={`${inter.className} min-h-screen bg-gray-100 overflow-x-hidden`}
       >
         {/* Mobile Header */}
-        <div className="lg:hidden bg-white border-b border-gray-200 px-4 py-3 flex items-center justify-between">
+        <div className="lg:hidden sticky top-0 z-[60] bg-transparent px-4 py-3 flex items-center justify-between">
           <h1 className="text-xl font-bold">Administrador Chile Adicto</h1>
           <button
+            type="button"
             onClick={() => setIsSidebarOpen(!isSidebarOpen)}
             className="p-2 hover:bg-gray-100 rounded-lg"
+            aria-label={isSidebarOpen ? "Cerrar menú" : "Abrir menú"}
+            aria-expanded={isSidebarOpen}
+            aria-controls="admin-mobile-sidebar"
           >
             {isSidebarOpen ? <X size={24} /> : <Menu size={24} />}
           </button>
@@ -116,9 +125,12 @@ export default function AdminLayout({
 
         {/* Sidebar */}
         <aside
-          className={`fixed top-0 left-0 h-full w-64 bg-[var(--color-brand-black)] text-white transform transition-transform duration-300 z-50 flex flex-col ${
-            isSidebarOpen ? "translate-x-0" : "-translate-x-full"
-          } lg:translate-x-0`}
+          id="admin-mobile-sidebar"
+          className={`fixed top-0 left-0 h-full w-64 bg-[var(--color-brand-black)] text-white transform transition-transform duration-300 z-[70] flex flex-col ${
+            isSidebarOpen
+              ? "translate-x-0 pointer-events-auto"
+              : "-translate-x-full pointer-events-none"
+          } lg:translate-x-0 lg:pointer-events-auto`}
         >
           <div className="p-6 border-b border-gray-700">
             <h1 className="text-2xl font-bold">Chile Adicto</h1>
@@ -168,14 +180,14 @@ export default function AdminLayout({
         {/* Overlay for mobile */}
         {isSidebarOpen && (
           <div
-            className="fixed inset-0 bg-black bg-opacity-50 z-40 lg:hidden"
+            className="fixed inset-0 bg-black bg-opacity-50 z-[65] lg:hidden"
             onClick={() => setIsSidebarOpen(false)}
           />
         )}
 
         {/* Main Content */}
         <main className="lg:ml-64 min-h-screen">
-          <div className="w-full px-3 py-5 sm:px-4 lg:px-5 xl:px-6 2xl:px-8">
+          <div className="mx-auto w-full max-w-5xl px-3 py-5 sm:px-4 lg:px-5 xl:px-6">
             {children}
           </div>
         </main>

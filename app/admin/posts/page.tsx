@@ -264,7 +264,7 @@ export default function PostsListPage() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <div className="w-full px-4 lg:px-8 py-6 space-y-6">
+      <div className="w-full py-2 space-y-6">
         {/* Header */}
         <div className="flex items-center justify-between">
           <div>

@@ -231,6 +231,72 @@ export default function NewPostPage() {
   const [previewOpen, setPreviewOpen] = useState(false);
   const [previewJson, setPreviewJson] = useState<string>("{}");
 
+  const isBlockHtml = (value: string) => {
+    const tag = value
+      .trim()
+      .match(/^<([a-z0-9-]+)/i)?.[1]
+      ?.toLowerCase();
+    if (!tag) return false;
+    return [
+      "address",
+      "article",
+      "aside",
+      "blockquote",
+      "div",
+      "figcaption",
+      "figure",
+      "footer",
+      "h1",
+      "h2",
+      "h3",
+      "h4",
+      "h5",
+      "h6",
+      "header",
+      "main",
+      "nav",
+      "ol",
+      "p",
+      "pre",
+      "section",
+      "table",
+      "ul",
+    ].includes(tag);
+  };
+
+  const htmlToParagraphs = (html: string): string[] => {
+    const container = document.createElement("div");
+    container.innerHTML = html || "";
+
+    const blocks = Array.from(container.childNodes)
+      .map((node) => {
+        if (node.nodeType === Node.TEXT_NODE) {
+          const text = node.textContent?.trim();
+          return text || "";
+        }
+
+        if (node.nodeType !== Node.ELEMENT_NODE) return "";
+
+        const element = node as HTMLElement;
+        const content = element.outerHTML.trim();
+        if (!content) return "";
+
+        return isBlockHtml(content) ? content : element.innerHTML.trim();
+      })
+      .filter(Boolean);
+
+    if (blocks.length > 0) return blocks;
+
+    const cleaned = container.innerHTML
+      .replace(/(?:<br\s*\/?>(\s|&nbsp;)*){2,}/gi, "\n\n")
+      .replace(/<br\s*\/?>(\s|&nbsp;)*/gi, "\n")
+      .replace(/<[^>]+>/g, "");
+    return cleaned
+      .split(/\n{2,}/)
+      .map((s) => s.trim())
+      .filter(Boolean);
+  };
+
   const uploadFiles = async (files: FileList | File[]) => {
     const arr = Array.from(files || []);
     if (arr.length === 0) return;
@@ -275,21 +341,6 @@ export default function NewPostPage() {
 
   const buildPayload = () => {
     // Convertir HTML del editor a array de párrafos
-    const htmlToParagraphs = (html: string): string[] => {
-      const container = document.createElement("div");
-      container.innerHTML = html || "";
-      const ps = Array.from(container.querySelectorAll("p"));
-      if (ps.length > 0)
-        return ps.map((p) => p.innerHTML.trim()).filter(Boolean);
-      const cleaned = container.innerHTML
-        .replace(/(?:<br\s*\/?>(\s|&nbsp;)*){2,}/gi, "\n\n")
-        .replace(/<br\s*\/?>(\s|&nbsp;)*/gi, "\n")
-        .replace(/<[^>]+>/g, "");
-      return cleaned
-        .split(/\n{2,}/)
-        .map((s) => s.trim())
-        .filter(Boolean);
-    };
     const descriptionEs = htmlToParagraphs(String(descriptionUnified));
     const descriptionEn = htmlToParagraphs(String(descriptionUnifiedEn));
 
@@ -666,7 +717,7 @@ export default function NewPostPage() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <div className="w-full px-4 lg:px-8 py-6 space-y-6">
+      <div className="w-full py-2 space-y-6">
         {(creating || uploading) && (
           <div className="fixed inset-0 z-50 bg-black/30 backdrop-blur-sm grid place-items-center">
             <div className="bg-white rounded-lg shadow-lg p-6 flex items-center gap-3">

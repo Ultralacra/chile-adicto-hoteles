@@ -35,15 +35,25 @@ export default function AdminLayout({
 }) {
   const router = useRouter();
   const pathname = usePathname();
+  const [authChecked, setAuthChecked] = useState(false);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   useEffect(() => {
+    if (pathname === "/admin/login") {
+      setIsAuthenticated(false);
+      setAuthChecked(true);
+      return;
+    }
+
     const auth = sessionStorage.getItem("adminAuthenticated");
-    if (!auth && pathname !== "/admin/login") {
+    if (!auth) {
+      setIsAuthenticated(false);
+      setAuthChecked(true);
       router.push("/admin/login");
     } else {
       setIsAuthenticated(true);
+      setAuthChecked(true);
     }
   }, [router, pathname]);
 
@@ -53,10 +63,26 @@ export default function AdminLayout({
   };
 
   // Don't show sidebar on login page
-  if (pathname === "/admin/login" || !isAuthenticated) {
+  if (pathname === "/admin/login") {
     return (
       <SiteProvider>
         <div className={inter.className}>{children}</div>
+      </SiteProvider>
+    );
+  }
+
+  if (!authChecked) {
+    return (
+      <SiteProvider>
+        <div className={`${inter.className} min-h-screen bg-gray-100`} />
+      </SiteProvider>
+    );
+  }
+
+  if (!isAuthenticated) {
+    return (
+      <SiteProvider>
+        <div className={`${inter.className} min-h-screen bg-gray-100`} />
       </SiteProvider>
     );
   }
@@ -149,7 +175,9 @@ export default function AdminLayout({
 
         {/* Main Content */}
         <main className="lg:ml-64 min-h-screen">
-          <div className="p-6 max-w-6xl mx-auto w-full">{children}</div>
+          <div className="w-full px-3 py-5 sm:px-4 lg:px-5 xl:px-6 2xl:px-8">
+            {children}
+          </div>
         </main>
       </div>
     </SiteProvider>

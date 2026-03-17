@@ -655,7 +655,7 @@ export function HotelDetail({ hotel }: HotelDetailProps) {
             </div>
           </div>
           <div
-            className="prose prose-lg max-w-none mb-8 font-neutra text-black leading-relaxed [&>h3]:text-[15px] [&>h3]:font-[700] [&>h3]:mt-8 [&>h3]:mb-4 [&>h3]:leading-[22px] [&>h3]:lowercase [&>h3]:first-letter:uppercase [&>p]:mb-4 [&>p]:text-[15px] [&>p]:leading-[22px] [&>p]:font-[400] [&_a]:text-[var(--color-brand-red)] [&_a]:no-underline hover:[&_a]:underline [&_.divider]:text-gray-300 [&_.divider]:text-center [&_.divider]:my-8"
+            className="prose prose-lg max-w-none mb-8 font-neutra text-black leading-relaxed [&>h3]:text-[15px] [&>h3]:font-[700] [&>h3]:mt-8 [&>h3]:mb-4 [&>h3]:leading-[22px] [&>h3]:lowercase [&>h3]:first-letter:uppercase [&>p]:mb-4 [&>p]:text-[15px] [&>p]:leading-[22px] [&>p]:font-[400] [&_a]:text-[var(--color-brand-red)] [&_a]:no-underline hover:[&_a]:underline [&_ol]:list-decimal [&_ol]:ml-6 [&_ol]:my-4 [&_ul]:list-disc [&_ul]:ml-6 [&_ul]:my-4 [&_li]:my-1 [&_.divider]:text-gray-300 [&_.divider]:text-center [&_.divider]:my-8"
             dangerouslySetInnerHTML={{ __html: cleanedFullContent }}
           />
           <div className="my-5">

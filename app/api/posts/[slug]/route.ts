@@ -58,6 +58,76 @@ async function serviceRest(path: string, init?: RequestInit) {
   return res.json();
 }
 
+function encodeStoragePath(path: string) {
+  return String(path || "")
+    .split("/")
+    .filter(Boolean)
+    .map((segment) => encodeURIComponent(segment))
+    .join("/");
+}
+
+function getStorageObjectFromUrl(rawUrl: string) {
+  const base = envOrNull("NEXT_PUBLIC_SUPABASE_URL");
+
+  try {
+    const parsedBase = base ? new URL(base) : null;
+    const parsedUrl = new URL(rawUrl);
+    if (parsedBase && parsedUrl.host !== parsedBase.host) return null;
+
+    const parts = parsedUrl.pathname
+      .split("/")
+      .map((segment) => decodeURIComponent(segment))
+      .filter(Boolean);
+    const objectIndex = parts.findIndex(
+      (segment, index) => segment === "object" && parts[index - 1] === "v1"
+    );
+
+    if (objectIndex < 0) return null;
+
+    const mode = parts[objectIndex + 1];
+    const bucketIndex = ["public", "authenticated", "sign"].includes(mode)
+      ? objectIndex + 2
+      : objectIndex + 1;
+    const bucket = parts[bucketIndex];
+    const pathParts = parts.slice(bucketIndex + 1);
+
+    if (!bucket || pathParts.length === 0) return null;
+
+    return {
+      bucket,
+      path: pathParts.join("/"),
+    };
+  } catch {
+    return null;
+  }
+}
+
+async function deleteStorageObject(bucket: string, path: string) {
+  const base = envOrNull("NEXT_PUBLIC_SUPABASE_URL");
+  const service = envOrNull("SUPABASE_SERVICE_ROLE_KEY");
+  if (!base || !service) throw new Error("Supabase Service Role no configurado");
+
+  const res = await fetch(
+    `${base}/storage/v1/object/${encodeURIComponent(bucket)}/${encodeStoragePath(path)}`,
+    {
+      method: "DELETE",
+      headers: {
+        apikey: service,
+        Authorization: `Bearer ${service}`,
+      },
+      cache: "no-store",
+    }
+  );
+
+  if (res.status === 404) return false;
+  if (!res.ok) {
+    const text = await res.text();
+    throw new Error(`Storage delete error ${res.status}: ${text}`);
+  }
+
+  return true;
+}
+
 function normalizeCommuneKey(value: string) {
   return String(value || "")
     .normalize("NFD")
@@ -590,12 +660,105 @@ export async function DELETE(
     console.log("[DELETE POST]", slug, "site:", siteId);
     
     // Verificar que el post exista y pertenezca al sitio actual
-    const rows: any[] = await serviceRest(`/posts?slug=eq.${encodeURIComponent(slug)}&site=eq.${siteId}&select=id`);
+    const rows: any[] = await serviceRest(
+      `/posts?slug=eq.${encodeURIComponent(slug)}&site=eq.${siteId}&select=id,slug,site,featured_image`
+    );
     if (!rows || rows.length === 0) {
       return NextResponse.json({ error: "not_found" }, { status: 404 });
     }
-    
-    const postId = rows[0].id;
+
+    const postRow = rows[0];
+    const postId = postRow.id;
+
+    const [categoryRows, communeRows, locationRows, imageRows, translationRows, usefulRows] =
+      await Promise.all([
+        serviceRest(`/post_category_map?post_id=eq.${postId}&select=*`).catch(() => []),
+        serviceRest(`/post_communes?post_id=eq.${postId}&select=*`).catch(() => []),
+        serviceRest(`/post_locations?post_id=eq.${postId}&select=*`).catch(() => []),
+        serviceRest(`/post_images?post_id=eq.${postId}&select=*`).catch(() => []),
+        serviceRest(`/post_translations?post_id=eq.${postId}&select=*`).catch(() => []),
+        serviceRest(`/post_useful_info?post_id=eq.${postId}&select=*`).catch(() => []),
+      ]);
+
+    const imageUrls = Array.from(
+      new Set(
+        [
+          String(postRow?.featured_image || "").trim(),
+          ...((Array.isArray(imageRows) ? imageRows : []).map((row: any) =>
+            String(row?.url || "").trim()
+          )),
+        ].filter(Boolean)
+      )
+    );
+
+    const imageDeletionPlan = await Promise.all(
+      imageUrls.map(async (url) => {
+        const storageObject = getStorageObjectFromUrl(url);
+        const [otherPostImageRefs, otherFeaturedRefs, sliderRefs] = await Promise.all([
+          serviceRest(
+            `/post_images?url=eq.${encodeURIComponent(url)}&post_id=neq.${postId}&select=post_id,url`
+          ).catch(() => []),
+          serviceRest(
+            `/posts?featured_image=eq.${encodeURIComponent(url)}&id=neq.${postId}&select=id,slug,site`
+          ).catch(() => []),
+          serviceRest(
+            `/sliders?image_url=eq.${encodeURIComponent(url)}&select=id,set_key,site,lang,position`
+          ).catch(() => []),
+        ]);
+
+        const referencedElsewhere =
+          (Array.isArray(otherPostImageRefs) ? otherPostImageRefs.length : 0) > 0 ||
+          (Array.isArray(otherFeaturedRefs) ? otherFeaturedRefs.length : 0) > 0 ||
+          (Array.isArray(sliderRefs) ? sliderRefs.length : 0) > 0;
+
+        return {
+          url,
+          storageObject,
+          canDeleteFromStorage: !!storageObject && !referencedElsewhere,
+          skipReason: !storageObject
+            ? "url_not_in_supabase_storage"
+            : referencedElsewhere
+              ? "referenced_elsewhere"
+              : null,
+          references: {
+            postImages: Array.isArray(otherPostImageRefs) ? otherPostImageRefs : [],
+            featuredPosts: Array.isArray(otherFeaturedRefs) ? otherFeaturedRefs : [],
+            sliders: Array.isArray(sliderRefs) ? sliderRefs : [],
+          },
+        };
+      })
+    );
+
+    console.log(
+      "[DELETE POST] plan previo de borrado:\n" +
+        JSON.stringify(
+          {
+            post: postRow,
+            related: {
+              categories: categoryRows,
+              communes: communeRows,
+              locations: locationRows,
+              images: imageRows,
+              translations: translationRows,
+              usefulInfo: usefulRows,
+            },
+            imagesToEvaluate: imageDeletionPlan,
+          },
+          null,
+          2
+        )
+    );
+
+    const deletedStorageObjects: Array<{ url: string; bucket: string; path: string }> = [];
+    for (const item of imageDeletionPlan) {
+      if (!item.canDeleteFromStorage || !item.storageObject) continue;
+      await deleteStorageObject(item.storageObject.bucket, item.storageObject.path);
+      deletedStorageObjects.push({
+        url: item.url,
+        bucket: item.storageObject.bucket,
+        path: item.storageObject.path,
+      });
+    }
 
     // Eliminar todo lo relacionado a este post (defensivo, sin depender de cascadas)
     const delOpts = { method: "DELETE", headers: { Prefer: "return=minimal" } } as const;
@@ -605,6 +768,12 @@ export async function DELETE(
     await serviceRest(`/post_images?post_id=eq.${postId}`, delOpts);
     await serviceRest(`/post_translations?post_id=eq.${postId}`, delOpts);
     await serviceRest(`/post_useful_info?post_id=eq.${postId}`, delOpts);
+
+    for (const item of deletedStorageObjects) {
+      await serviceRest(`/media?url=eq.${encodeURIComponent(item.url)}`, delOpts).catch(
+        () => null
+      );
+    }
 
     // Finalmente eliminar el post (acotado al site por seguridad)
     await serviceRest(`/posts?id=eq.${postId}&site=eq.${siteId}`, delOpts);

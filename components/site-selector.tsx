@@ -53,7 +53,7 @@ export function SiteSelector() {
         <SelectTrigger className="w-full bg-gray-800 border-gray-600 text-white">
           <SelectValue />
         </SelectTrigger>
-        <SelectContent>
+        <SelectContent className="z-[80]">
           {Object.values(SITES).map((site) => (
             <SelectItem key={site.id} value={site.id}>
               {site.displayName}

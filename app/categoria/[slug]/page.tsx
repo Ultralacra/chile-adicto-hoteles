@@ -854,6 +854,14 @@ export default function CategoryPage({ params }: { params: any }) {
       mobileSrc: "/bannersagenda/BANNER MOVIL AGENDA 23 AL 29.png",
       alt: "Agenda Cultural del 23 al 29 de marzo",
     },
+    {
+      start: "2026-03-30",
+      end: "2026-04-05",
+      href: "/agenda-cultural",
+      src: "/bannersagenda/BANNER DESKTOP AGENDA 30 AL 5 DE ABRIL.png",
+      mobileSrc: "/bannersagenda/BANNER MOVIL AGENDA 30 AL 5 DE ABRIL.png",
+      alt: "Agenda Cultural del 30 de marzo al 5 de abril",
+    },
   ];
 
   const todayKey = toLocalDateKey(new Date());

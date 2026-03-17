@@ -137,6 +137,23 @@ async function fetchWithPublicationFallback(pathWithSelectBase: string) {
 // GET /api/posts/by-category/[slug]
 export async function GET(req: Request, { params }: { params: { slug: string } }) {
   try {
+    const normalizeCategorySlug = (value: unknown) =>
+      String(value || "")
+        .toLowerCase()
+        .trim()
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .replace(/[^a-z0-9]+/g, "-")
+        .replace(/(^-|-$)/g, "");
+
+    const expandCategorySlugAliases = (value: string) => {
+      const normalized = normalizeCategorySlug(value);
+      if (normalized === "restaurantes" || normalized === "restaurants") {
+        return ["restaurantes", "restaurants", "bares", "bars"];
+      }
+      return [normalized];
+    };
+
     const ctx = (await (params as any)) as { slug?: string };
     const categorySlug = String(ctx?.slug || "").trim();
 
@@ -150,18 +167,20 @@ export async function GET(req: Request, { params }: { params: { slug: string } }
 
     // Filtrar por slug de categoría. Fallback: si no hay mapeo, usar category de traducciones.
     const slugTarget = categorySlug.toLowerCase().trim();
+    const slugAliases = expandCategorySlugAliases(slugTarget);
     const matchesTranslationCategory = (r: any) => {
       const translations = Array.isArray(r.translations) ? r.translations : [];
       return translations.some((t: any) => {
         if (!t?.category) return false;
         const cat = String(t.category).toLowerCase().trim();
-        // Normalizar espacios a guiones para casos futuros ("Alta Cocina" -> "alta-cocina")
-        const catSlug = cat.replace(/\s+/g, "-");
-        return cat === slugTarget || catSlug === slugTarget;
+        const catSlug = normalizeCategorySlug(cat);
+        return cat === slugTarget || catSlug === slugTarget || slugAliases.includes(catSlug);
       });
     };
     rows = rows.filter((r: any) => {
-      const mapped = (r.category_links || []).some((c: any) => (c.category?.slug || "") === slugTarget);
+      const mapped = (r.category_links || []).some((c: any) =>
+        slugAliases.includes(normalizeCategorySlug(c.category?.slug || "")),
+      );
       return mapped || matchesTranslationCategory(r);
     });
 

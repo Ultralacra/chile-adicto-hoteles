@@ -274,6 +274,15 @@ export async function GET(req: Request) {
         .replace(/[^a-z0-9]+/g, "-")
         .replace(/(^-|-$)/g, "");
 
+    const expandCategorySlugAliases = (value: string | null) => {
+      const normalized = value ? normalizeCategorySlug(value) : null;
+      if (!normalized) return [] as string[];
+      if (normalized === "restaurantes" || normalized === "restaurants") {
+        return ["restaurantes", "restaurants", "bares", "bars"];
+      }
+      return [normalized];
+    };
+
     const siteId = await getCurrentSiteId(req);
     const url = new URL(req.url);
     const q = url.searchParams.get("q") || "";
@@ -324,6 +333,7 @@ export async function GET(req: Request) {
         const catU = category ? category.toUpperCase() : null;
         const slugTarget = categorySlug ? categorySlug.toLowerCase().trim() : null;
         const normalizedSlugTarget = slugTarget ? normalizeCategorySlug(slugTarget) : null;
+        const slugAliases = expandCategorySlugAliases(slugTarget);
 
         const matchesTranslationCategorySlug = (r: any) => {
           if (!normalizedSlugTarget) return false;
@@ -332,7 +342,11 @@ export async function GET(req: Request) {
             if (!t?.category) return false;
             const cat = String(t.category).toLowerCase().trim();
             const catSlug = normalizeCategorySlug(cat);
-            return cat === slugTarget || catSlug === normalizedSlugTarget;
+            return (
+              cat === slugTarget ||
+              catSlug === normalizedSlugTarget ||
+              slugAliases.includes(catSlug)
+            );
           });
         };
 
@@ -348,8 +362,9 @@ export async function GET(req: Request) {
           const matchBySlug = slugTarget
             ? (r.category_links || []).some(
                 (c: any) =>
-                  normalizeCategorySlug(c.category?.slug || "") ===
-                  normalizedSlugTarget
+                  slugAliases.includes(
+                    normalizeCategorySlug(c.category?.slug || ""),
+                  )
               ) || matchesTranslationCategorySlug(r)
             : false;
 

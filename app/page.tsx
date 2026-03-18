@@ -169,26 +169,6 @@ function HomeContent() {
             <div className="w-full">
               <div className="w-full md:h-[520px] lg:h-[437px] overflow-visible">
                 <HeroSlider
-                  sliderKeyDesktop="home-desktop"
-                  sliderKeyMobile="home-mobile"
-                  objectPosition="left"
-                  // Reordenado: iconos primero para alinear con nuevo orden de imágenes
-                  slideHrefs={[
-                    "/iconos",
-                    "/barrios",
-                    "/mercados",
-                    "/miradores",
-                    "/museos",
-                    "/palacios",
-                    "/parques",
-                    "/paseos-fuera-de-santiago",
-                    "/arquitectura",
-                  ]}
-                  preferApiHrefs
-                  dotBottom={24}
-                />
-                {/*
-                <HeroSlider
                   desktopImages={[
                     "/sliderHome/ICONOS.png",
                     "/sliderHome/ARQ.png",
@@ -213,9 +193,19 @@ function HomeContent() {
                     "/parques",
                     "/paseos-fuera-de-santiago",
                   ]}
+                  slideHrefsMobile={[
+                    "/iconos",
+                    "/barrios",
+                    "/mercados",
+                    "/miradores",
+                    "/museos",
+                    "/palacios",
+                    "/parques",
+                    "/paseos-fuera-de-santiago",
+                    "/arquitectura",
+                  ]}
                   dotBottom={24}
                 />
-                */}
               </div>
 
               <div className="mt-4 md:hidden">

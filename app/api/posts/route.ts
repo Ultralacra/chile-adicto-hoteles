@@ -7,14 +7,29 @@ import { isPostCurrentlyPublished } from "@/lib/post-publication";
 import { ensureLegacyPostShape } from "@/lib/post-response-shape";
 
 const HOME_FEED_EXCLUDED = new Set<string>([
-  "RESTAURANTES",
-  "RESTAURANTS",
-  "CAFES",
-  "CAFÉ",
-  "CAFÉS",
-  "AGENDA CULTURAL",
-  "MONUMENTOS NACIONALES",
+  "restaurantes",
+  "restaurante",
+  "restaurants",
+  "restaurant",
+  "restos",
+  "rest",
+  "bares",
+  "bar",
+  "bars",
+  "cafes",
+  "cafe",
+  "agenda cultural",
+  "monumentos nacionales",
 ]);
+
+function normalizeCategoryKey(value: unknown) {
+  return String(value || "")
+    .toLowerCase()
+    .trim()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/\s+/g, " ");
+}
 
 function envOrNull(name: string) {
   const v = process.env[name];
@@ -224,15 +239,15 @@ function isExcludedFromHomeFeed(post: any): boolean {
 
   const cats = new Set<string>([
     ...((post?.categories || []) as any[]).map((c) =>
-      String(c || "").toUpperCase(),
+      normalizeCategoryKey(c),
     ),
   ]);
 
   const esCat = post?.es?.category
-    ? String(post.es.category).toUpperCase()
+    ? normalizeCategoryKey(post.es.category)
     : null;
   const enCat = post?.en?.category
-    ? String(post.en.category).toUpperCase()
+    ? normalizeCategoryKey(post.en.category)
     : null;
 
   const hasExcludedCat = [...cats].some((c) => HOME_FEED_EXCLUDED.has(c));

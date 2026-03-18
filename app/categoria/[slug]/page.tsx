@@ -759,7 +759,9 @@ export default function CategoryPage({ params }: { params: any }) {
   const cleanedList = finalHotels.filter(
     (h: any) => String(h.slug) !== "w-santiago",
   );
-  const finalOrderedHotels = isRestaurantsPage
+  const shouldSortAlphabetically = isRestaurantsPage || slug === "cafes";
+
+  const finalOrderedHotels = shouldSortAlphabetically
     ? cleanedList
         .slice()
         .sort((a, b) =>

@@ -9,14 +9,13 @@ const ALLOWED_TAGS = new Set([
   "blockquote",
   "br",
   "div",
-  "em",
+  "i",
   "h1",
   "h2",
   "h3",
   "h4",
   "h5",
   "h6",
-  "i",
   "li",
   "ol",
   "p",
@@ -26,6 +25,7 @@ const ALLOWED_TAGS = new Set([
   "sup",
   "u",
   "ul",
+  "em",
 ]);
 
 const BLOCK_TAGS = new Set([
@@ -43,24 +43,8 @@ const BLOCK_TAGS = new Set([
   "ul",
 ]);
 
-const ALLOWED_STYLE_PROPERTIES = new Set([
-  "background-color",
-  "color",
-  "font-size",
-  "font-style",
-  "font-weight",
-  "text-align",
-  "text-decoration",
-]);
-
-const CSS_COLOR_PATTERN =
-  /^(#[0-9a-f]{3,8}|rgba?\([^)]*\)|hsla?\([^)]*\)|[a-z]+)$/i;
-const FONT_SIZE_PATTERN = /^\d+(?:\.\d+)?(?:px|pt|em|rem|%)$/i;
-const FONT_WEIGHT_PATTERN = /^(?:normal|bold|bolder|lighter|[1-9]00)$/i;
-const TEXT_ALIGN_PATTERN = /^(?:left|right|center|justify|start|end)$/i;
-const FONT_STYLE_PATTERN = /^(?:normal|italic|oblique)$/i;
-const TEXT_DECORATION_PATTERN =
-  /^(?:none|underline|line-through|overline)(?:\s+(?:underline|line-through|overline))*$/i;
+const BOLD_WEIGHT_PATTERN = /^(?:bold|bolder|[6-9]00)$/i;
+const ITALIC_STYLE_PATTERN = /^(?:italic|oblique)$/i;
 
 interface AdminRichTextProps {
   value: string;
@@ -134,53 +118,45 @@ export default function AdminRichText({ value, onChange }: AdminRichTextProps) {
     return "";
   };
 
-  const sanitizeStyleValue = (property: string, value: string) => {
-    const normalized = value.trim().replace(/\s+/g, " ");
-    if (!normalized) return "";
-    if (/url\(|expression\(|javascript:/i.test(normalized)) return "";
+  const getSemanticFormats = (
+    element: HTMLElement,
+  ): Array<"strong" | "em" | "u"> => {
+    const formats = new Set<"strong" | "em" | "u">();
+    const tag = element.tagName.toLowerCase();
 
-    switch (property) {
-      case "background-color":
-      case "color":
-        return CSS_COLOR_PATTERN.test(normalized) ? normalized : "";
-      case "font-size":
-        return FONT_SIZE_PATTERN.test(normalized) ? normalized : "";
-      case "font-style":
-        return FONT_STYLE_PATTERN.test(normalized) ? normalized : "";
-      case "font-weight":
-        return FONT_WEIGHT_PATTERN.test(normalized) ? normalized : "";
-      case "text-align":
-        return TEXT_ALIGN_PATTERN.test(normalized) ? normalized : "";
-      case "text-decoration":
-        return TEXT_DECORATION_PATTERN.test(normalized) ? normalized : "";
-      default:
-        return "";
-    }
-  };
+    if (tag === "b" || tag === "strong") formats.add("strong");
+    if (tag === "i" || tag === "em") formats.add("em");
+    if (tag === "u") formats.add("u");
 
-  const sanitizeInlineStyle = (styleValue: string | null) => {
-    if (!styleValue) return "";
-
-    return styleValue
+    const styleValue = element.getAttribute("style") || "";
+    styleValue
       .split(";")
       .map((part) => part.trim())
       .filter(Boolean)
-      .map((part) => {
+      .forEach((part) => {
         const separator = part.indexOf(":");
-        if (separator === -1) return "";
+        if (separator === -1) return;
 
         const property = part.slice(0, separator).trim().toLowerCase();
-        if (!ALLOWED_STYLE_PROPERTIES.has(property)) return "";
+        const value = part
+          .slice(separator + 1)
+          .trim()
+          .replace(/\s+/g, " ");
 
-        const sanitizedValue = sanitizeStyleValue(
-          property,
-          part.slice(separator + 1),
-        );
+        if (property === "font-weight" && BOLD_WEIGHT_PATTERN.test(value)) {
+          formats.add("strong");
+        }
 
-        return sanitizedValue ? `${property}: ${sanitizedValue}` : "";
-      })
-      .filter(Boolean)
-      .join("; ");
+        if (property === "font-style" && ITALIC_STYLE_PATTERN.test(value)) {
+          formats.add("em");
+        }
+
+        if (property === "text-decoration" && /underline/i.test(value)) {
+          formats.add("u");
+        }
+      });
+
+    return Array.from(formats);
   };
 
   const hasMeaningfulContent = (node: Node): boolean => {
@@ -263,7 +239,26 @@ export default function AdminRichText({ value, onChange }: AdminRichTextProps) {
       }
     }
 
-    const outputTag = tag === "div" ? "p" : tag;
+    const outputTag =
+      tag === "div" ? "p" : tag === "b" ? "strong" : tag === "i" ? "em" : tag;
+
+    if (outputTag === "span") {
+      if (childNodes.length === 0) return null;
+
+      const fragment = document.createDocumentFragment();
+      childNodes.forEach((child) => fragment.appendChild(child));
+
+      let formattedNode: Node = fragment;
+      const formats = getSemanticFormats(element);
+      formats.forEach((formatTag) => {
+        const wrapper = document.createElement(formatTag);
+        wrapper.appendChild(formattedNode);
+        formattedNode = wrapper;
+      });
+
+      return formattedNode;
+    }
+
     const sanitizedElement = document.createElement(outputTag);
 
     if (outputTag === "a") {
@@ -277,12 +272,17 @@ export default function AdminRichText({ value, onChange }: AdminRichTextProps) {
       }
     }
 
-    const sanitizedStyle = sanitizeInlineStyle(element.getAttribute("style"));
-    if (sanitizedStyle) {
-      sanitizedElement.setAttribute("style", sanitizedStyle);
-    }
-
     childNodes.forEach((child) => sanitizedElement.appendChild(child));
+
+    getSemanticFormats(element).forEach((formatTag) => {
+      if (formatTag !== outputTag) {
+        const wrapper = document.createElement(formatTag);
+        while (sanitizedElement.firstChild) {
+          wrapper.appendChild(sanitizedElement.firstChild);
+        }
+        sanitizedElement.appendChild(wrapper);
+      }
+    });
 
     if (BLOCK_TAGS.has(outputTag) && !hasMeaningfulContent(sanitizedElement)) {
       return null;
@@ -477,8 +477,8 @@ export default function AdminRichText({ value, onChange }: AdminRichTextProps) {
       />
 
       <div className="text-[11px] text-gray-500">
-        Pega contenido desde Word conservando formato básico como negrita,
-        cursiva, tamaños, listas y enlaces.
+        Pega contenido desde Word conservando negrita, cursiva, subrayado,
+        listas, títulos y enlaces. El tamaño y la fuente los maneja el front.
       </div>
     </div>
   );

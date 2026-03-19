@@ -3,6 +3,65 @@
 import { MouseEvent, useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
 
+const ALLOWED_TAGS = new Set([
+  "a",
+  "b",
+  "blockquote",
+  "br",
+  "div",
+  "em",
+  "h1",
+  "h2",
+  "h3",
+  "h4",
+  "h5",
+  "h6",
+  "i",
+  "li",
+  "ol",
+  "p",
+  "span",
+  "strong",
+  "sub",
+  "sup",
+  "u",
+  "ul",
+]);
+
+const BLOCK_TAGS = new Set([
+  "blockquote",
+  "div",
+  "h1",
+  "h2",
+  "h3",
+  "h4",
+  "h5",
+  "h6",
+  "li",
+  "ol",
+  "p",
+  "ul",
+]);
+
+const ALLOWED_STYLE_PROPERTIES = new Set([
+  "background-color",
+  "color",
+  "font-size",
+  "font-style",
+  "font-weight",
+  "text-align",
+  "text-decoration",
+]);
+
+const CSS_COLOR_PATTERN =
+  /^(#[0-9a-f]{3,8}|rgba?\([^)]*\)|hsla?\([^)]*\)|[a-z]+)$/i;
+const FONT_SIZE_PATTERN = /^\d+(?:\.\d+)?(?:px|pt|em|rem|%)$/i;
+const FONT_WEIGHT_PATTERN = /^(?:normal|bold|bolder|lighter|[1-9]00)$/i;
+const TEXT_ALIGN_PATTERN = /^(?:left|right|center|justify|start|end)$/i;
+const FONT_STYLE_PATTERN = /^(?:normal|italic|oblique)$/i;
+const TEXT_DECORATION_PATTERN =
+  /^(?:none|underline|line-through|overline)(?:\s+(?:underline|line-through|overline))*$/i;
+
 interface AdminRichTextProps {
   value: string;
   onChange: (html: string) => void;
@@ -60,12 +119,215 @@ export default function AdminRichText({ value, onChange }: AdminRichTextProps) {
     if (editorRef.current) onChange(editorRef.current.innerHTML);
   };
 
+  const sanitizeHref = (href: string) => {
+    const normalized = href.trim().replace(/^['\"]+|['\"]+$/g, "");
+    if (!normalized) return "";
+
+    if (/^(?:https?:|mailto:|tel:|\/|#)/i.test(normalized)) {
+      return normalized;
+    }
+
+    if (/^[a-z0-9.-]+\.[a-z]{2,}(?:\/.*)?$/i.test(normalized)) {
+      return `https://${normalized}`;
+    }
+
+    return "";
+  };
+
+  const sanitizeStyleValue = (property: string, value: string) => {
+    const normalized = value.trim().replace(/\s+/g, " ");
+    if (!normalized) return "";
+    if (/url\(|expression\(|javascript:/i.test(normalized)) return "";
+
+    switch (property) {
+      case "background-color":
+      case "color":
+        return CSS_COLOR_PATTERN.test(normalized) ? normalized : "";
+      case "font-size":
+        return FONT_SIZE_PATTERN.test(normalized) ? normalized : "";
+      case "font-style":
+        return FONT_STYLE_PATTERN.test(normalized) ? normalized : "";
+      case "font-weight":
+        return FONT_WEIGHT_PATTERN.test(normalized) ? normalized : "";
+      case "text-align":
+        return TEXT_ALIGN_PATTERN.test(normalized) ? normalized : "";
+      case "text-decoration":
+        return TEXT_DECORATION_PATTERN.test(normalized) ? normalized : "";
+      default:
+        return "";
+    }
+  };
+
+  const sanitizeInlineStyle = (styleValue: string | null) => {
+    if (!styleValue) return "";
+
+    return styleValue
+      .split(";")
+      .map((part) => part.trim())
+      .filter(Boolean)
+      .map((part) => {
+        const separator = part.indexOf(":");
+        if (separator === -1) return "";
+
+        const property = part.slice(0, separator).trim().toLowerCase();
+        if (!ALLOWED_STYLE_PROPERTIES.has(property)) return "";
+
+        const sanitizedValue = sanitizeStyleValue(
+          property,
+          part.slice(separator + 1),
+        );
+
+        return sanitizedValue ? `${property}: ${sanitizedValue}` : "";
+      })
+      .filter(Boolean)
+      .join("; ");
+  };
+
+  const hasMeaningfulContent = (node: Node): boolean => {
+    if (node.nodeType === Node.TEXT_NODE) {
+      return Boolean(node.textContent?.replace(/\u00a0/g, " ").trim());
+    }
+
+    if (node.nodeType !== Node.ELEMENT_NODE) return false;
+
+    const element = node as HTMLElement;
+    if (element.tagName.toLowerCase() === "br") return true;
+
+    return Array.from(element.childNodes).some((child) =>
+      hasMeaningfulContent(child),
+    );
+  };
+
+  const trimBoundaryWhitespace = (nodes: Node[]): Node[] => {
+    const normalized = [...nodes];
+
+    while (
+      normalized[0]?.nodeType === Node.TEXT_NODE &&
+      !normalized[0].textContent?.replace(/\u00a0/g, " ").trim()
+    ) {
+      normalized.shift();
+    }
+
+    while (
+      normalized[normalized.length - 1]?.nodeType === Node.TEXT_NODE &&
+      !normalized[normalized.length - 1].textContent
+        ?.replace(/\u00a0/g, " ")
+        .trim()
+    ) {
+      normalized.pop();
+    }
+
+    return normalized;
+  };
+
+  const sanitizeNode = (node: Node): Node | null => {
+    if (node.nodeType === Node.TEXT_NODE) {
+      const normalizedText = (node.textContent || "").replace(/\u00a0/g, " ");
+      return document.createTextNode(normalizedText);
+    }
+
+    if (node.nodeType !== Node.ELEMENT_NODE) return null;
+
+    const element = node as HTMLElement;
+    const tag = element.tagName.toLowerCase();
+
+    if (["meta", "link", "script", "style", "xml"].includes(tag)) {
+      return null;
+    }
+
+    const childNodes = trimBoundaryWhitespace(
+      Array.from(element.childNodes)
+        .map((child) => sanitizeNode(child))
+        .filter((child): child is Node => Boolean(child)),
+    );
+
+    if (!ALLOWED_TAGS.has(tag)) {
+      if (childNodes.length === 0) return null;
+      const fragment = document.createDocumentFragment();
+      childNodes.forEach((child) => fragment.appendChild(child));
+      return fragment;
+    }
+
+    if (tag === "div") {
+      const hasBlockChildren = childNodes.some(
+        (child) =>
+          child.nodeType === Node.ELEMENT_NODE &&
+          BLOCK_TAGS.has((child as HTMLElement).tagName.toLowerCase()),
+      );
+
+      if (hasBlockChildren) {
+        if (childNodes.length === 0) return null;
+        const fragment = document.createDocumentFragment();
+        childNodes.forEach((child) => fragment.appendChild(child));
+        return fragment;
+      }
+    }
+
+    const outputTag = tag === "div" ? "p" : tag;
+    const sanitizedElement = document.createElement(outputTag);
+
+    if (outputTag === "a") {
+      const href = sanitizeHref(element.getAttribute("href") || "");
+      if (href) {
+        sanitizedElement.setAttribute("href", href);
+        if (/^https?:\/\//i.test(href)) {
+          sanitizedElement.setAttribute("target", "_blank");
+          sanitizedElement.setAttribute("rel", "noopener noreferrer");
+        }
+      }
+    }
+
+    const sanitizedStyle = sanitizeInlineStyle(element.getAttribute("style"));
+    if (sanitizedStyle) {
+      sanitizedElement.setAttribute("style", sanitizedStyle);
+    }
+
+    childNodes.forEach((child) => sanitizedElement.appendChild(child));
+
+    if (BLOCK_TAGS.has(outputTag) && !hasMeaningfulContent(sanitizedElement)) {
+      return null;
+    }
+
+    return sanitizedElement;
+  };
+
+  const sanitizePastedHtml = (html: string) => {
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(html, "text/html");
+    const container = document.createElement("div");
+
+    Array.from(doc.body.childNodes)
+      .map((node) => sanitizeNode(node))
+      .filter((node): node is Node => Boolean(node))
+      .forEach((node) => container.appendChild(node));
+
+    return container.innerHTML;
+  };
+
+  const insertHtml = (html: string) => {
+    editorRef.current?.focus();
+    restoreSelection();
+    document.execCommand("insertHTML", false, html);
+    saveSelection();
+    if (editorRef.current) onChange(editorRef.current.innerHTML);
+  };
+
   const onPaste = (e: React.ClipboardEvent<HTMLDivElement>) => {
-    // Pegar como HTML limpio básico (permitimos el propio contenteditable formatear)
-    // Para simplificar, pegamos texto plano y dejamos que el usuario
     e.preventDefault();
+
+    const html = e.clipboardData.getData("text/html");
+    if (html) {
+      const sanitizedHtml = sanitizePastedHtml(html);
+      if (sanitizedHtml.trim()) {
+        insertHtml(sanitizedHtml);
+        return;
+      }
+    }
+
     const text = e.clipboardData.getData("text/plain");
     document.execCommand("insertText", false, text);
+    saveSelection();
+    if (editorRef.current) onChange(editorRef.current.innerHTML);
   };
 
   return (
@@ -210,14 +472,13 @@ export default function AdminRichText({ value, onChange }: AdminRichTextProps) {
         onBlur={onInput}
         onPaste={onPaste}
         className="font-neutra text-[15px] leading-[22px] min-h-[140px] p-3 border rounded focus:outline-none focus:ring-2 focus:ring-green-500 bg-white [&_h2]:text-[18px] [&_h2]:font-semibold [&_h2]:mt-4 [&_h2]:mb-2 [&_h3]:text-[16px] [&_h3]:font-semibold [&_h3]:mt-4 [&_h3]:mb-2 [&_ol]:list-decimal [&_ol]:ml-6 [&_ol]:my-3 [&_ul]:list-disc [&_ul]:ml-6 [&_ul]:my-3 [&_li]:my-1 [&_p]:my-2 [&_a]:text-green-700 [&_a]:underline"
-        style={{ whiteSpace: "pre-wrap" }}
         suppressContentEditableWarning
         aria-label="Editor de texto enriquecido"
       />
 
       <div className="text-[11px] text-gray-500">
-        Escribe como en Word: selecciona texto y usa la barra para negrita,
-        cursiva, títulos, listas y enlaces.
+        Pega contenido desde Word conservando formato básico como negrita,
+        cursiva, tamaños, listas y enlaces.
       </div>
     </div>
   );

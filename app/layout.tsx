@@ -1,11 +1,13 @@
 import type React from "react";
 import type { Metadata } from "next";
+import { Suspense } from "react";
 import { Analytics } from "@vercel/analytics/next";
 import { Montserrat } from "next/font/google";
 import Script from "next/script";
 import "./globals.css";
 import { LanguageProvider } from "@/contexts/language-context";
 import ScrollToTop from "@/components/ScrollToTop";
+import GATracker from "../components/ga-tracker";
 
 const montserrat = Montserrat({
   subsets: ["latin"],
@@ -50,20 +52,36 @@ export default function RootLayout({
           new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
           j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
           'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-          })(window,document,'script','dataLayer','GTM-NV8ZJL4F');`}
+          })(window,document,'script','dataLayer','GTM-WVNQLZT5');`}
         </Script>
       </head>
       <body className={`${montserrat.className} font-sans antialiased`}>
         {/* Google Tag Manager (noscript) */}
         <noscript>
           <iframe
-            src="https://www.googletagmanager.com/ns.html?id=GTM-NV8ZJL4F"
+            src="https://www.googletagmanager.com/ns.html?id=GTM-WVNQLZT5"
             height="0"
             width="0"
             style={{ display: "none", visibility: "hidden" }}
           />
         </noscript>
+        {/* Google Analytics (GA4) */}
+        <Script
+          src="https://www.googletagmanager.com/gtag/js?id=G-LDF4JN0LDG"
+          strategy="lazyOnload"
+        />
+        <Script id="ga4-init" strategy="lazyOnload">
+          {`
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', 'G-LDF4JN0LDG');
+          `}
+        </Script>
         <LanguageProvider>
+          <Suspense fallback={null}>
+            <GATracker />
+          </Suspense>
           {children}
           <ScrollToTop />
         </LanguageProvider>

@@ -179,6 +179,7 @@ function HomeContent() {
                     "/sliderHome/PALACIOS.png",
                     "/sliderHome/PARQUES.png",
                     "/sliderHome/FUERA DE STGO.png",
+                    "/sliderHome/PATRIMONIO.png",
                   ]}
                   sliderKeyMobile="home-mobile"
                   objectPosition="left"
@@ -192,6 +193,7 @@ function HomeContent() {
                     "/palacios",
                     "/parques",
                     "/paseos-fuera-de-santiago",
+                    "/monumentos-nacionales",
                   ]}
                   slideHrefsMobile={[
                     "/iconos",

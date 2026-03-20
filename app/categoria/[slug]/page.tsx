@@ -92,7 +92,7 @@ export default function CategoryPage({ params }: { params: any }) {
     setLoading(true);
     // Preferimos filtrar por slug de categoría en el backend
     fetchWithSite(
-      `/api/posts?categorySlug=${encodeURIComponent(slug)}&includeExpired=1`,
+      `/api/posts?categorySlug=${encodeURIComponent(slug)}&includeExpired=1&sort=alpha&lang=${language}`,
     )
       .then((r) => (r.ok ? r.json() : []))
       .then((rows) => {
@@ -105,7 +105,7 @@ export default function CategoryPage({ params }: { params: any }) {
     return () => {
       cancelled = true;
     };
-  }, [slug, fetchWithSite]);
+  }, [slug, language, fetchWithSite]);
 
   const isRestaurantsPage = slug === "restaurantes";
 

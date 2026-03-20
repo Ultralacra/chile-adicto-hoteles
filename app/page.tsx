@@ -54,7 +54,7 @@ function HomeContent() {
   const loadMoreRef = useRef<HTMLDivElement | null>(null);
   const loadingMoreRef = useRef(false);
 
-  const cacheKey = previewSite || "default";
+  const cacheKey = `${previewSite || "default"}:${language}`;
 
   const updateCache = useCallback(
     (items: any[], offset: number, more: boolean) => {
@@ -71,7 +71,7 @@ function HomeContent() {
   const loadPage = useCallback(
     async (offset: number, append: boolean) => {
       const res = await fetchWithSite(
-        `/api/posts?homeFeed=1&limit=${HOME_PAGE_SIZE}&offset=${offset}`,
+        `/api/posts?homeFeed=1&sort=alpha&lang=${language}&limit=${HOME_PAGE_SIZE}&offset=${offset}`,
         { cache: "no-store" },
       );
       const rows = res.ok ? await res.json() : [];
@@ -87,7 +87,7 @@ function HomeContent() {
         return nextItems;
       });
     },
-    [fetchWithSite, updateCache],
+    [fetchWithSite, language, updateCache],
   );
 
   useEffect(() => {

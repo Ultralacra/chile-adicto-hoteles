@@ -26,7 +26,7 @@ export default function Page() {
   useEffect(() => {
     let cancelled = false;
     setLoading(true);
-    fetchWithSite("/api/posts")
+    fetchWithSite(`/api/posts?sort=alpha&lang=${language}`)
       .then((r) => (r.ok ? r.json() : []))
       .then((rows) => {
         if (cancelled) return;
@@ -63,16 +63,7 @@ export default function Page() {
 
           return !(hasExcludedCat || transExcluded);
         });
-        // Orden aleatorio en Home cada vez que se entra
-        const shuffled = (() => {
-          const arr = filtered.slice();
-          for (let i = arr.length - 1; i > 0; i--) {
-            const j = Math.floor(Math.random() * (i + 1));
-            [arr[i], arr[j]] = [arr[j], arr[i]];
-          }
-          return arr;
-        })();
-        setHotels(shuffled);
+        setHotels(filtered);
         setLoading(false);
       })
       .catch(() => {
@@ -84,7 +75,7 @@ export default function Page() {
     return () => {
       cancelled = true;
     };
-  }, [fetchWithSite]);
+  }, [fetchWithSite, language]);
 
   return (
     <div className="min-h-screen bg-white">

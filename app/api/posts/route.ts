@@ -31,6 +31,35 @@ function normalizeCategoryKey(value: unknown) {
     .replace(/\s+/g, " ");
 }
 
+function normalizeAlphabeticalText(value: unknown) {
+  return String(value || "")
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .trim()
+    .toUpperCase();
+}
+
+function getAlphabeticalSortKey(post: any, language: string) {
+  const preferredName =
+    language === "en"
+      ? post?.en?.name || post?.es?.name
+      : post?.es?.name || post?.en?.name;
+
+  return normalizeAlphabeticalText(preferredName || post?.slug || "");
+}
+
+function sortPostsAlphabetically(posts: any[], language: string) {
+  return posts
+    .slice()
+    .sort((left, right) =>
+      getAlphabeticalSortKey(left, language).localeCompare(
+        getAlphabeticalSortKey(right, language),
+        language === "en" ? "en" : "es",
+        { sensitivity: "base" },
+      ),
+    );
+}
+
 function envOrNull(name: string) {
   const v = process.env[name];
   return v && v.length > 0 ? v : null;
@@ -303,6 +332,8 @@ export async function GET(req: Request) {
     const q = url.searchParams.get("q") || "";
     const category = url.searchParams.get("category");
     const categorySlug = url.searchParams.get("categorySlug");
+    const sort = url.searchParams.get("sort") || "";
+    const language = url.searchParams.get("lang") === "en" ? "en" : "es";
     const homeFeed =
       url.searchParams.get("homeFeed") === "1" ||
       url.searchParams.get("homeFeed") === "true";
@@ -419,8 +450,12 @@ export async function GET(req: Request) {
       const homeFiltered = homeFeed
         ? visible.filter((post) => !isExcludedFromHomeFeed(post))
         : visible;
+      const ordered =
+        sort === "alpha"
+          ? sortPostsAlphabetically(homeFiltered, language)
+          : homeFiltered;
       const paged =
-        limit !== null ? homeFiltered.slice(offset, offset + limit) : homeFiltered;
+        limit !== null ? ordered.slice(offset, offset + limit) : ordered;
 
       console.log(`✅ [API /posts] Retornando ${paged.length} posts para sitio ${siteId}`);
       if (paged.length > 0) {

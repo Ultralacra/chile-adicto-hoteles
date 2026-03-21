@@ -35,7 +35,7 @@ export default function CategoryPage({ params }: { params: any }) {
   const resolvedParams = use(params as any) as ResolvedParams;
   const { slug } = resolvedParams;
   const { language, t } = useLanguage();
-  const { fetchWithSite } = useSiteApi();
+  const { fetchWithSite, cachedFetchWithSite } = useSiteApi();
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -174,7 +174,7 @@ export default function CategoryPage({ params }: { params: any }) {
       return;
     }
     let cancelled = false;
-    cachedFetch("/api/communes?nav=1")
+    cachedFetchWithSite("/api/communes?nav=1")
       .then((data) => {
         if (cancelled) return;
         const list: ApiCommuneRow[] = Array.isArray(data) ? data : [];
@@ -184,58 +184,51 @@ export default function CategoryPage({ params }: { params: any }) {
     return () => {
       cancelled = true;
     };
-  }, [isRestaurantsPage]);
+  }, [isRestaurantsPage, cachedFetchWithSite]);
 
-  // Cargar mapeo postSlug -> [commune_slug] para el filtro (si existe en BD)
+  // Reusar comunas ya embebidas en /api/posts para evitar una lectura extra a /api/communes/map.
   useEffect(() => {
     if (!isRestaurantsPage) {
       setDbPostCommuneMap({});
       return;
     }
-    const slugs = (filteredHotels as any[])
-      .map((h) => String(h?.slug || "").trim())
-      .filter(Boolean);
-    if (slugs.length === 0) {
+
+    if (!Array.isArray(filteredHotels) || filteredHotels.length === 0) {
       setDbPostCommuneMap({});
       return;
     }
 
-    let cancelled = false;
-    fetchWithSite("/api/communes/map", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ slugs }),
-      cache: "no-store",
-    })
-      .then((r) => (r.ok ? r.json() : null))
-      .then((data) => {
-        if (cancelled) return;
-        const map = data?.map;
-        const communesRows = data?.communes;
-        if (Array.isArray(communesRows) && communesRows.length > 0) {
-          setDbCommunes(
-            communesRows
-              .filter((x: any) => x && x.slug)
-              .map((x: any) => ({
-                slug: String(x.slug),
-                label: x.label ?? null,
-                show_in_menu: x.show_in_menu ?? true,
-                menu_order: x.menu_order ?? 0,
-              })),
-          );
-        }
-        if (map && typeof map === "object") {
-          setDbPostCommuneMap(map as Record<string, string[]>);
-        } else {
-          setDbPostCommuneMap({});
-        }
-      })
-      .catch(() => !cancelled && setDbPostCommuneMap({}));
+    const communeLookup = new Map<string, string>();
+    for (const commune of dbCommunes) {
+      const slugValue = String(commune?.slug || "").trim();
+      if (!slugValue) continue;
+      communeLookup.set(normalizeComuna(slugValue), slugValue);
+      communeLookup.set(
+        normalizeComuna(communeLabelFromRow(commune)),
+        slugValue,
+      );
+    }
 
-    return () => {
-      cancelled = true;
-    };
-  }, [isRestaurantsPage, filteredHotels, fetchWithSite]);
+    const nextMap: Record<string, string[]> = {};
+    for (const hotel of filteredHotels as any[]) {
+      const postSlug = String(hotel?.slug || "").trim();
+      if (!postSlug) continue;
+
+      const matched = Array.isArray(hotel?.communes)
+        ? hotel.communes
+            .map((value: unknown) =>
+              communeLookup.get(normalizeComuna(String(value || ""))),
+            )
+            .filter((value): value is string => Boolean(value))
+        : [];
+
+      if (matched.length > 0) {
+        nextMap[postSlug] = Array.from(new Set(matched));
+      }
+    }
+
+    setDbPostCommuneMap(nextMap);
+  }, [isRestaurantsPage, filteredHotels, dbCommunes]);
 
   // Overrides de comuna por slug (prioridad sobre búsqueda por texto)
   // Permite uno o múltiples match de comuna por slug.
@@ -395,7 +388,7 @@ export default function CategoryPage({ params }: { params: any }) {
       language === "en" ? "restaurants-desktop-en" : "restaurants-desktop-es";
 
     // 1) Intentar BD primero (si existe)
-    cachedFetch(`/api/sliders/${encodeURIComponent(desktopKey)}`)
+    cachedFetchWithSite(`/api/sliders/${encodeURIComponent(desktopKey)}`)
       .then((db: any) => {
         if (cancelled) return;
         const items = Array.isArray(db?.items) ? db.items : [];
@@ -543,7 +536,7 @@ export default function CategoryPage({ params }: { params: any }) {
     return () => {
       cancelled = true;
     };
-  }, [isRestaurantsPage, language, fetchWithSite, cachedFetch]);
+  }, [isRestaurantsPage, language, cachedFetchWithSite]);
 
   // Cargar carpeta específica móvil de restaurantes (sin afectar desktop)
   useEffect(() => {
@@ -554,7 +547,7 @@ export default function CategoryPage({ params }: { params: any }) {
       language === "en" ? "restaurants-mobile-en" : "restaurants-mobile-es";
 
     // 1) Intentar BD primero (si existe)
-    cachedFetch(`/api/sliders/${encodeURIComponent(mobileKey)}`)
+    cachedFetchWithSite(`/api/sliders/${encodeURIComponent(mobileKey)}`)
       .then((db: any) => {
         if (cancelled) return;
         const items = Array.isArray(db?.items) ? db.items : [];
@@ -575,7 +568,7 @@ export default function CategoryPage({ params }: { params: any }) {
 
         // 2) Fallback: carpeta pública vía API actual
         setRestaurantMobileLoadedFromDb(false);
-        return cachedFetch("/api/restaurant-slider-mobile").then(
+        return cachedFetchWithSite("/api/restaurant-slider-mobile").then(
           (json: any) => {
             if (cancelled) return;
             const imgs: string[] = Array.isArray(json?.images)
@@ -642,7 +635,7 @@ export default function CategoryPage({ params }: { params: any }) {
     return () => {
       cancelled = true;
     };
-  }, [isRestaurantsPage, filteredHotels, language, fetchWithSite, cachedFetch]);
+  }, [isRestaurantsPage, filteredHotels, language, cachedFetchWithSite]);
 
   // Override de descripciones ES/EN para slugs específicos (p. ej., PRIMA BAR)
   const enrichedHotels = (filteredHotels || []).map((h) => {

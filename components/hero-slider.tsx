@@ -5,7 +5,6 @@ import Link from "next/link";
 import Image from "next/image";
 import useEmblaCarousel from "embla-carousel-react";
 import { useSiteApi } from "@/hooks/use-site-api";
-import { cachedFetch } from "@/lib/api-cache";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
 // Reordenado: ICONOS debe ser el primer slide según solicitud.
@@ -75,7 +74,7 @@ export function HeroSlider({
   desktopImageClassName,
   mobileImageClassName,
 }: HeroSliderProps) {
-  const { fetchWithSite } = useSiteApi();
+  const { cachedFetchWithSite } = useSiteApi();
   // Estado para imágenes obtenidas desde API (si existen en /public/slider-*)
   const [desktopFromApi, setDesktopFromApi] = useState<string[] | null>(null);
   const [mobileFromApi, setMobileFromApi] = useState<string[] | null>(null);
@@ -145,7 +144,7 @@ export function HeroSlider({
 
         // 1) Preferir sliders desde BD (si se indicó key)
         const loadSet = async (key: string) => {
-          const json = (await cachedFetch(
+          const json = (await cachedFetchWithSite(
             `/api/sliders/${encodeURIComponent(key)}`,
           )) as {
             key?: string;
@@ -196,7 +195,7 @@ export function HeroSlider({
         if (usedDb) return;
 
         // 2) Fallback legacy: /api/slider-images (carpetas públicas)
-        const json = (await cachedFetch("/api/slider-images")) as {
+        const json = (await cachedFetchWithSite("/api/slider-images")) as {
           desktop: string[];
           mobile: string[];
         } | null;
@@ -221,8 +220,7 @@ export function HeroSlider({
     mobileImages,
     sliderKeyDesktop,
     sliderKeyMobile,
-    fetchWithSite,
-    cachedFetch,
+    cachedFetchWithSite,
   ]);
 
   const hrefForIndex = (index: number, mode: "desktop" | "mobile") => {

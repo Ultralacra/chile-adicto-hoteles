@@ -1,5 +1,11 @@
 import { NextResponse } from "next/server";
 import { getCurrentSiteId } from "@/lib/site-utils";
+import {
+  getCachedServerData,
+  invalidateServerDataCache,
+} from "@/lib/server-read-cache";
+
+const CATEGORIES_CACHE_TTL_MS = 10 * 60 * 1000;
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -85,63 +91,71 @@ export async function GET(req: Request) {
     const nav = url.searchParams.get("nav") === "1";
     const includeHidden = url.searchParams.get("includeHidden") === "1";
 
-    // Intentar leer columnas extendidas. En algunos entornos puede existir
-    // show_in_menu pero NO menu_order (o viceversa). Probamos en cascada.
-    const extendedWithOrder: any[] | null = await fetchFromSupabase(
-      `/categories?select=slug,label_es,label_en,show_in_menu,menu_order,site&site=eq.${siteId}&order=menu_order.asc,slug.asc`
+    const payload = await getCachedServerData(
+      `categories:${siteId}:${full ? 1 : 0}:${nav ? 1 : 0}:${includeHidden ? 1 : 0}`,
+      CATEGORIES_CACHE_TTL_MS,
+      async () => {
+        const extendedWithOrder: any[] | null = await fetchFromSupabase(
+          `/categories?select=slug,label_es,label_en,show_in_menu,menu_order,site&site=eq.${siteId}&order=menu_order.asc,slug.asc`
+        );
+        const extendedNoOrder: any[] | null = extendedWithOrder
+          ? null
+          : await fetchFromSupabase(
+              `/categories?select=slug,label_es,label_en,show_in_menu,site&site=eq.${siteId}&order=slug.asc`
+            );
+        const basic: any[] | null = extendedWithOrder || extendedNoOrder
+          ? null
+          : await fetchFromSupabase(
+              `/categories?select=slug,label_es,label_en,site&site=eq.${siteId}&order=slug.asc`
+            );
+        const rows: any[] | null = extendedWithOrder || extendedNoOrder || basic;
+
+        if (!rows) {
+          return [];
+        }
+
+        const normalized = rows
+          .map((r: any) => {
+            const slug = String(r.slug || "");
+            if (!slug) return null;
+            const hasVisibility = Object.prototype.hasOwnProperty.call(r, "show_in_menu");
+            const hasOrder = Object.prototype.hasOwnProperty.call(r, "menu_order");
+            return {
+              slug,
+              label_es: r.label_es ?? null,
+              label_en: r.label_en ?? null,
+              show_in_menu: hasVisibility ? (r.show_in_menu ?? true) : true,
+              menu_order: hasOrder
+                ? Number.isFinite(Number(r.menu_order))
+                  ? Number(r.menu_order)
+                  : 0
+                : 0,
+            };
+          })
+          .filter(Boolean) as Array<{
+          slug: string;
+          label_es: string | null;
+          label_en: string | null;
+          show_in_menu: boolean;
+          menu_order: number;
+        }>;
+
+        const filtered = nav && !includeHidden
+          ? normalized.filter((r) => r.show_in_menu !== false)
+          : normalized;
+
+        if (full) {
+          return filtered;
+        }
+
+        return filtered
+          .map((r: any) => String(r.label_es || r.slug || "").toUpperCase())
+          .filter(Boolean)
+          .sort();
+      },
     );
-    const extendedNoOrder: any[] | null = extendedWithOrder
-      ? null
-      : await fetchFromSupabase(
-          `/categories?select=slug,label_es,label_en,show_in_menu,site&site=eq.${siteId}&order=slug.asc`
-        );
-    const basic: any[] | null = extendedWithOrder || extendedNoOrder
-      ? null
-      : await fetchFromSupabase(
-          `/categories?select=slug,label_es,label_en,site&site=eq.${siteId}&order=slug.asc`
-        );
-    const rows: any[] | null = extendedWithOrder || extendedNoOrder || basic;
 
-    if (rows) {
-      const normalized = rows
-        .map((r: any) => {
-          const slug = String(r.slug || "");
-          if (!slug) return null;
-          const hasVisibility = Object.prototype.hasOwnProperty.call(r, "show_in_menu");
-          const hasOrder = Object.prototype.hasOwnProperty.call(r, "menu_order");
-          return {
-            slug,
-            label_es: r.label_es ?? null,
-            label_en: r.label_en ?? null,
-            // Si no existe la columna, asumimos true.
-            show_in_menu: hasVisibility ? (r.show_in_menu ?? true) : true,
-            menu_order: hasOrder ? (Number.isFinite(Number(r.menu_order)) ? Number(r.menu_order) : 0) : 0,
-          };
-        })
-        .filter(Boolean) as Array<{
-        slug: string;
-        label_es: string | null;
-        label_en: string | null;
-        show_in_menu: boolean;
-        menu_order: number;
-      }>;
-
-      const filtered = nav && !includeHidden
-        ? normalized.filter((r) => r.show_in_menu !== false)
-        : normalized;
-
-      if (full) {
-        return NextResponse.json(filtered, { status: 200 });
-      }
-      // Devolver lista de etiquetas ES en mayúsculas para compatibilidad
-      const cats = filtered
-        .map((r: any) => String(r.label_es || r.slug || "").toUpperCase())
-        .filter(Boolean)
-        .sort();
-      return NextResponse.json(cats, { status: 200 });
-    }
-    // Sin fallback a data.json
-    return NextResponse.json([], { status: 200 });
+    return NextResponse.json(payload, { status: 200 });
   } catch (err: any) {
     console.error("[GET /api/categories] error", err);
     return NextResponse.json({ error: "internal_error" }, { status: 500 });
@@ -194,6 +208,8 @@ export async function POST(req: Request) {
       body: JSON.stringify(rows),
     });
 
+    invalidateServerDataCache(new RegExp(`^categories:${siteId}:`));
+
     return NextResponse.json({ ok: true, rows: created }, { status: 200 });
   } catch (err: any) {
     const msg = String(err?.message || err);
@@ -214,6 +230,7 @@ export async function PUT(req: Request) {
 export async function DELETE(req: Request) {
   try {
     requireAdminKey(req);
+    const siteId = await getCurrentSiteId(req);
     const url = new URL(req.url);
     const slug = String(url.searchParams.get("slug") || "").trim();
     if (!slug) {
@@ -223,12 +240,14 @@ export async function DELETE(req: Request) {
       );
     }
 
-    await serviceRest(`/categories?slug=eq.${encodeURIComponent(slug)}`,
+    await serviceRest(`/categories?slug=eq.${encodeURIComponent(slug)}&site=eq.${siteId}`,
       {
         method: "DELETE",
         headers: { Prefer: "return=representation" },
       }
     );
+
+    invalidateServerDataCache(new RegExp(`^categories:${siteId}:`));
 
     return NextResponse.json({ ok: true }, { status: 200 });
   } catch (err: any) {

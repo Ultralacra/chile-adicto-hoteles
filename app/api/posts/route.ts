@@ -5,6 +5,12 @@ import { normalizePost } from "@/lib/post-normalize";
 import { getCurrentSiteId } from "@/lib/site-utils";
 import { isPostCurrentlyPublished } from "@/lib/post-publication";
 import { ensureLegacyPostShape } from "@/lib/post-response-shape";
+import {
+  getCachedServerData,
+  invalidateServerDataCache,
+} from "@/lib/server-read-cache";
+
+const POSTS_CACHE_TTL_MS = 60 * 1000;
 
 const HOME_FEED_EXCLUDED = new Set<string>([
   "restaurantes",
@@ -363,107 +369,119 @@ export async function GET(req: Request) {
       includeExpired ||
       normalizedCategorySlugFromQuery === "agenda-cultural" ||
       normalizedCategoryLabelFromQuery === "agenda-cultural";
-    
-    // DEBUG: Log del sitio detectado
-    console.log('🔍 [API /posts] Sitio detectado:', siteId);
-    console.log('🔍 [API /posts] Parámetros:', { q, category, categorySlug, includeExpired });
 
-    const select =
-      "slug,publication_status,publish_start_at,publish_end_at,featured_image,website,website_public,instagram,website_display,instagram_display,email,phone,photos_credit,address,hours,reservation_link,reservation_policy,interesting_fact,site,images:post_images(url,position),locations:post_locations(*),translations:post_translations(*),useful:post_useful_info(*),category_links:post_category_map(category:categories(slug,label_es,label_en)),communes_links:post_communes(commune_slug,commune:communes(slug,label))";
-    let rows: any[] | null = await fetchPostsWithPublicationFallback(
-      `/posts?select=${encodeURIComponent(select)}&site=eq.${siteId}`
+    const payload = await getCachedServerData(
+      `posts:${siteId}:${url.searchParams.toString()}`,
+      POSTS_CACHE_TTL_MS,
+      async () => {
+        console.log("[API /posts] cache miss", {
+          siteId,
+          q,
+          category,
+          categorySlug,
+          includeExpired,
+        });
+
+        const select =
+          "slug,publication_status,publish_start_at,publish_end_at,featured_image,website,website_public,instagram,website_display,instagram_display,email,phone,photos_credit,address,hours,reservation_link,reservation_policy,interesting_fact,site,images:post_images(url,position),locations:post_locations(*),translations:post_translations(*),useful:post_useful_info(*),category_links:post_category_map(category:categories(slug,label_es,label_en)),communes_links:post_communes(commune_slug,commune:communes(slug,label))";
+        let rows: any[] | null = await fetchPostsWithPublicationFallback(
+          `/posts?select=${encodeURIComponent(select)}&site=eq.${siteId}`
+        );
+
+        if (!rows) {
+          return [];
+        }
+
+        if (category || categorySlug) {
+          const catU = category ? category.toUpperCase() : null;
+          const slugTarget = categorySlug ? categorySlug.toLowerCase().trim() : null;
+          const normalizedSlugTarget = slugTarget ? normalizeCategorySlug(slugTarget) : null;
+          const slugAliases = expandCategorySlugAliases(slugTarget);
+
+          const matchesTranslationCategorySlug = (r: any) => {
+            if (!normalizedSlugTarget) return false;
+            const translations = Array.isArray(r.translations) ? r.translations : [];
+            return translations.some((t: any) => {
+              if (!t?.category) return false;
+              const cat = String(t.category).toLowerCase().trim();
+              const catSlug = normalizeCategorySlug(cat);
+              return (
+                cat === slugTarget ||
+                catSlug === normalizedSlugTarget ||
+                slugAliases.includes(catSlug)
+              );
+            });
+          };
+
+          rows = rows.filter((r: any) => {
+            const matchByLabel = catU
+              ? (r.translations || []).some(
+                  (t: any) => (t.category || "").toUpperCase() === catU
+                ) ||
+                (r.category_links || []).some(
+                  (c: any) => (c.category?.label_es || "").toUpperCase() === catU
+                )
+              : false;
+            const matchBySlug = slugTarget
+              ? (r.category_links || []).some(
+                  (c: any) =>
+                    slugAliases.includes(
+                      normalizeCategorySlug(c.category?.slug || ""),
+                    )
+                ) || matchesTranslationCategorySlug(r)
+              : false;
+
+            return (catU ? matchByLabel : false) || (slugTarget ? matchBySlug : false);
+          });
+        }
+
+        const qc = q.trim().toLowerCase();
+        if (qc) {
+          rows = rows.filter((r: any) => {
+            const trEs = (r.translations || []).find((t: any) => t.lang === "es") || {};
+            const trEn = (r.translations || []).find((t: any) => t.lang === "en") || {};
+            const fields = [
+              r.slug,
+              trEs.name,
+              trEn.name,
+              trEs.subtitle,
+              trEn.subtitle,
+              r.address,
+              r.website_display,
+              r.instagram_display,
+            ]
+              .filter(Boolean)
+              .map((x: string) => x.toLowerCase());
+            return fields.some((f: string) => f.includes(qc));
+          });
+        }
+
+        const mapped = rows.map((row) => ensureLegacyPostShape(mapRowToLegacy(row)));
+        const visible = isAdminRequest
+          ? mapped
+          : shouldBypassPublicationWindow
+            ? mapped.filter(
+                (post: any) =>
+                  String(post?.publicationStatus || "published").toLowerCase() !==
+                  "unpublished",
+              )
+            : mapped.filter((post: any) => isPostCurrentlyPublished(post));
+        const homeFiltered = homeFeed
+          ? visible.filter((post) => !isExcludedFromHomeFeed(post))
+          : visible;
+        const ordered =
+          sort === "alpha"
+            ? sortPostsAlphabetically(homeFiltered, language)
+            : homeFiltered;
+        const paged =
+          limit !== null ? ordered.slice(offset, offset + limit) : ordered;
+
+        console.log(`[API /posts] retornando ${paged.length} posts para ${siteId}`);
+        return paged;
+      },
     );
 
-    if (rows) {
-      if (category || categorySlug) {
-        const catU = category ? category.toUpperCase() : null;
-        const slugTarget = categorySlug ? categorySlug.toLowerCase().trim() : null;
-        const normalizedSlugTarget = slugTarget ? normalizeCategorySlug(slugTarget) : null;
-        const slugAliases = expandCategorySlugAliases(slugTarget);
-
-        const matchesTranslationCategorySlug = (r: any) => {
-          if (!normalizedSlugTarget) return false;
-          const translations = Array.isArray(r.translations) ? r.translations : [];
-          return translations.some((t: any) => {
-            if (!t?.category) return false;
-            const cat = String(t.category).toLowerCase().trim();
-            const catSlug = normalizeCategorySlug(cat);
-            return (
-              cat === slugTarget ||
-              catSlug === normalizedSlugTarget ||
-              slugAliases.includes(catSlug)
-            );
-          });
-        };
-
-        rows = rows.filter((r: any) => {
-          const matchByLabel = catU
-            ? (r.translations || []).some(
-                (t: any) => (t.category || "").toUpperCase() === catU
-              ) ||
-              (r.category_links || []).some(
-                (c: any) => (c.category?.label_es || "").toUpperCase() === catU
-              )
-            : false;
-          const matchBySlug = slugTarget
-            ? (r.category_links || []).some(
-                (c: any) =>
-                  slugAliases.includes(
-                    normalizeCategorySlug(c.category?.slug || ""),
-                  )
-              ) || matchesTranslationCategorySlug(r)
-            : false;
-
-          return (catU ? matchByLabel : false) || (slugTarget ? matchBySlug : false);
-        });
-      }
-      const qc = q.trim().toLowerCase();
-      if (qc) {
-        rows = rows.filter((r: any) => {
-          const trEs = (r.translations || []).find((t: any) => t.lang === "es") || {};
-          const trEn = (r.translations || []).find((t: any) => t.lang === "en") || {};
-          const fields = [
-            r.slug,
-            trEs.name,
-            trEn.name,
-            trEs.subtitle,
-            trEn.subtitle,
-            r.address,
-            r.website_display,
-            r.instagram_display,
-          ]
-            .filter(Boolean)
-            .map((x: string) => x.toLowerCase());
-          return fields.some((f: string) => f.includes(qc));
-        });
-      }
-      const mapped = rows.map((row) => ensureLegacyPostShape(mapRowToLegacy(row)));
-      const visible = isAdminRequest
-        ? mapped
-        : shouldBypassPublicationWindow
-          ? mapped.filter(
-              (post: any) =>
-                String(post?.publicationStatus || "published").toLowerCase() !==
-                "unpublished",
-            )
-          : mapped.filter((post: any) => isPostCurrentlyPublished(post));
-      const homeFiltered = homeFeed
-        ? visible.filter((post) => !isExcludedFromHomeFeed(post))
-        : visible;
-      const ordered =
-        sort === "alpha"
-          ? sortPostsAlphabetically(homeFiltered, language)
-          : homeFiltered;
-      const paged =
-        limit !== null ? ordered.slice(offset, offset + limit) : ordered;
-
-      console.log(`✅ [API /posts] Retornando ${paged.length} posts para sitio ${siteId}`);
-      if (paged.length > 0) {
-        console.log('   Primeros posts:', paged.slice(0, 3).map(p => p.slug));
-      }
-      return NextResponse.json(paged, { status: 200 });
-    }
-    return NextResponse.json([], { status: 200 });
+    return NextResponse.json(payload, { status: 200 });
   } catch (err: any) {
     console.error("[GET /api/posts] error", err);
     return NextResponse.json({ error: "internal_error" }, { status: 500 });
@@ -630,6 +648,7 @@ export async function POST(req: Request) {
       await replacePostCommunes(postId, siteId, (normalized as any).communes);
     }
 
+    invalidateServerDataCache(new RegExp(`^posts:${siteId}:`));
     return NextResponse.json({ ok: true, slug: normalized.slug }, { status: 201 });
   } catch (err: any) {
     console.error("[POST /api/posts] error", err);

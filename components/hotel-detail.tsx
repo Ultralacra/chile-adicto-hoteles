@@ -7,7 +7,6 @@ import useEmblaCarousel from "embla-carousel-react";
 import { useLanguage } from "@/contexts/language-context";
 import { CategoryNav } from "@/components/category-nav";
 import { useSiteApi } from "@/hooks/use-site-api";
-import { cachedFetch } from "@/lib/api-cache";
 import { BottomHomeBanner } from "@/components/home-promo-banners";
 
 interface LocationInfo {
@@ -58,7 +57,7 @@ interface HotelDetailProps {
 
 export function HotelDetail({ hotel }: HotelDetailProps) {
   const { t } = useLanguage();
-  const { fetchWithSite } = useSiteApi();
+  const { cachedFetchWithSite } = useSiteApi();
   const toSlug = (input: string) =>
     String(input || "")
       .normalize("NFD")
@@ -138,7 +137,7 @@ export function HotelDetail({ hotel }: HotelDetailProps) {
     if (!isRestaurant) return;
 
     let cancelled = false;
-    cachedFetch("/api/communes?nav=1")
+    cachedFetchWithSite("/api/communes?nav=1")
       .then((data) => data || [])
       .then((rows) => {
         if (cancelled) return;
@@ -160,7 +159,7 @@ export function HotelDetail({ hotel }: HotelDetailProps) {
     return () => {
       cancelled = true;
     };
-  }, [hotel?.categories, fallbackRestaurantCommunes, fetchWithSite]);
+  }, [hotel?.categories, fallbackRestaurantCommunes, cachedFetchWithSite]);
 
   // Log de datos útiles al entrar al post (estado crudo)
   useEffect(() => {

@@ -6,6 +6,12 @@ import {
   ensureLegacyPostShape,
   mergeLegacyPostMissingValues,
 } from "@/lib/post-response-shape";
+import {
+  getCachedServerData,
+  invalidateServerDataCache,
+} from "@/lib/server-read-cache";
+
+const POST_DETAIL_CACHE_TTL_MS = 5 * 60 * 1000;
 
 function envOrNull(name: string) {
   const v = process.env[name];
@@ -323,33 +329,42 @@ export async function GET(
     const siteId = await getCurrentSiteId(_req);
     const ctx = (await (params as any)) as { slug?: string };
     const slug = String(ctx?.slug || "").trim();
-
-    // Intentar Supabase
-    const select =
-      "slug,publication_status,publish_start_at,publish_end_at,featured_image,website,website_public,instagram,website_display,instagram_display,email,phone,photos_credit,address,hours,reservation_link,reservation_policy,interesting_fact,site,images:post_images(url,position),locations:post_locations(*),translations:post_translations(*),useful:post_useful_info(*),category_links:post_category_map(category:categories(slug,label_es,label_en)),communes_links:post_communes(commune_slug,commune:communes(slug,label))";
-    const rows: any[] | null = await fetchWithPublicationFallback(
-      `/posts?slug=eq.${encodeURIComponent(slug)}&site=eq.${siteId}&select=${encodeURIComponent(select)}`
-    );
-    if (rows && rows.length > 0) {
-      let mapped = ensureLegacyPostShape(mapRowToLegacy(rows[0]));
-
-      const fallbackRow = await fetchSinglePostBySlugAnySite(slug, select);
-      if (fallbackRow) {
-        const fallbackMapped = ensureLegacyPostShape(mapRowToLegacy(fallbackRow));
-        mapped = mergeLegacyPostMissingValues(mapped, fallbackMapped);
-      }
-
-      const status = String(mapped?.publicationStatus || "published")
-        .trim()
-        .toLowerCase();
-      if (!isAdminRequest && status === "unpublished") {
-        return NextResponse.json({ error: "not_found" }, { status: 404 });
-      }
-      return NextResponse.json(mapped, { status: 200 });
+    if (!slug) {
+      return NextResponse.json({ error: "not_found" }, { status: 404 });
     }
 
-  // Sin fallback a data.json
-  return NextResponse.json({ error: "not_found" }, { status: 404 });
+    const result = await getCachedServerData(
+      `post:${siteId}:${slug}:${isAdminRequest ? "admin" : "public"}`,
+      POST_DETAIL_CACHE_TTL_MS,
+      async () => {
+        const select =
+          "slug,publication_status,publish_start_at,publish_end_at,featured_image,website,website_public,instagram,website_display,instagram_display,email,phone,photos_credit,address,hours,reservation_link,reservation_policy,interesting_fact,site,images:post_images(url,position),locations:post_locations(*),translations:post_translations(*),useful:post_useful_info(*),category_links:post_category_map(category:categories(slug,label_es,label_en)),communes_links:post_communes(commune_slug,commune:communes(slug,label))";
+        const rows: any[] | null = await fetchWithPublicationFallback(
+          `/posts?slug=eq.${encodeURIComponent(slug)}&site=eq.${siteId}&select=${encodeURIComponent(select)}`
+        );
+        if (rows && rows.length > 0) {
+          let mapped = ensureLegacyPostShape(mapRowToLegacy(rows[0]));
+
+          const fallbackRow = await fetchSinglePostBySlugAnySite(slug, select);
+          if (fallbackRow) {
+            const fallbackMapped = ensureLegacyPostShape(mapRowToLegacy(fallbackRow));
+            mapped = mergeLegacyPostMissingValues(mapped, fallbackMapped);
+          }
+
+          const status = String(mapped?.publicationStatus || "published")
+            .trim()
+            .toLowerCase();
+          if (!isAdminRequest && status === "unpublished") {
+            return { status: 404, body: { error: "not_found" } };
+          }
+          return { status: 200, body: mapped };
+        }
+
+        return { status: 404, body: { error: "not_found" } };
+      },
+    );
+
+    return NextResponse.json(result.body, { status: result.status });
   } catch (err: any) {
     console.error("[GET /api/posts/[slug]] error", err);
     return NextResponse.json({ error: "internal_error" }, { status: 500 });
@@ -634,6 +649,8 @@ export async function PUT(
       await replacePostCommunes(postId, siteId, (normalized as any).communes);
     }
 
+    invalidateServerDataCache(new RegExp(`^posts:${siteId}:`));
+    invalidateServerDataCache(new RegExp(`^post:${siteId}:`));
     return NextResponse.json({ ok: true, slug: normalized.slug || slugParam }, { status: 200 });
   } catch (err: any) {
     console.error("[PUT /api/posts/[slug]] error final", err);
@@ -777,6 +794,9 @@ export async function DELETE(
 
     // Finalmente eliminar el post (acotado al site por seguridad)
     await serviceRest(`/posts?id=eq.${postId}&site=eq.${siteId}`, delOpts);
+
+    invalidateServerDataCache(new RegExp(`^posts:${siteId}:`));
+    invalidateServerDataCache(new RegExp(`^post:${siteId}:`));
     
     return NextResponse.json({ ok: true }, { status: 200 });
   } catch (err: any) {

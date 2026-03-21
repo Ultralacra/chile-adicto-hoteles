@@ -1,5 +1,11 @@
 import { NextResponse } from "next/server";
 import { getCurrentSiteId } from "@/lib/site-utils";
+import {
+  getCachedServerData,
+  invalidateServerDataCache,
+} from "@/lib/server-read-cache";
+
+const COMMUNES_CACHE_TTL_MS = 10 * 60 * 1000;
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -87,73 +93,76 @@ export async function GET(req: Request) {
     const nav = url.searchParams.get("nav") === "1";
     const includeHidden = url.searchParams.get("includeHidden") === "1";
 
-    // Intentar leer columnas extendidas (menu_order/show_in_menu) si existen.
-    const extendedWithOrder: any[] | null = await anonRest(
-      `/communes?select=slug,label,show_in_menu,menu_order&site=eq.${siteId}&order=menu_order.asc,label.asc`
-    );
-    const extendedNoOrder: any[] | null = extendedWithOrder
-      ? null
-      : await anonRest(
-          `/communes?select=slug,label,show_in_menu&site=eq.${siteId}&order=label.asc`
+    const payload = await getCachedServerData(
+      `communes:${siteId}:${full ? 1 : 0}:${nav ? 1 : 0}:${includeHidden ? 1 : 0}`,
+      COMMUNES_CACHE_TTL_MS,
+      async () => {
+        const extendedWithOrder: any[] | null = await anonRest(
+          `/communes?select=slug,label,show_in_menu,menu_order&site=eq.${siteId}&order=menu_order.asc,label.asc`
         );
-    const basic: any[] | null = extendedWithOrder || extendedNoOrder
-      ? null
-      : await anonRest(`/communes?select=slug,label&site=eq.${siteId}&order=label.asc`);
+        const extendedNoOrder: any[] | null = extendedWithOrder
+          ? null
+          : await anonRest(
+              `/communes?select=slug,label,show_in_menu&site=eq.${siteId}&order=label.asc`
+            );
+        const basic: any[] | null = extendedWithOrder || extendedNoOrder
+          ? null
+          : await anonRest(`/communes?select=slug,label&site=eq.${siteId}&order=label.asc`);
 
-    const rows: any[] | null = extendedWithOrder || extendedNoOrder || basic;
-    if (!rows) return NextResponse.json([], { status: 200 });
+        const rows: any[] | null = extendedWithOrder || extendedNoOrder || basic;
+        if (!rows) return [];
 
-    const normalized = rows
-      .map((r: any) => {
-        const slug = String(r.slug || "").trim();
-        if (!slug) return null;
-        const hasVisibility = Object.prototype.hasOwnProperty.call(r, "show_in_menu");
-        const hasOrder = Object.prototype.hasOwnProperty.call(r, "menu_order");
-        return {
-          slug,
-          label: r.label ?? null,
-          show_in_menu: hasVisibility ? (r.show_in_menu ?? true) : true,
-          menu_order: hasOrder
-            ? Number.isFinite(Number(r.menu_order))
-              ? Number(r.menu_order)
-              : 0
-            : 0,
-        } satisfies CommuneRow;
-      })
-      .filter(Boolean) as CommuneRow[];
+        const normalized = rows
+          .map((r: any) => {
+            const slug = String(r.slug || "").trim();
+            if (!slug) return null;
+            const hasVisibility = Object.prototype.hasOwnProperty.call(r, "show_in_menu");
+            const hasOrder = Object.prototype.hasOwnProperty.call(r, "menu_order");
+            return {
+              slug,
+              label: r.label ?? null,
+              show_in_menu: hasVisibility ? (r.show_in_menu ?? true) : true,
+              menu_order: hasOrder
+                ? Number.isFinite(Number(r.menu_order))
+                  ? Number(r.menu_order)
+                  : 0
+                : 0,
+            } satisfies CommuneRow;
+          })
+          .filter(Boolean) as CommuneRow[];
 
-    const hiddenNavSlugs = new Set(["independencia"]);
-    // Menú histórico de restaurantes (lo que se mostraba antes), sin agregar comunas nuevas.
-    const restaurantMenuSlugs = new Set([
-      "vitacura",
-      "las-condes",
-      "santiago",
-      "lo-barnechea",
-      "providencia",
-      "alto-jahuel",
-      "la-reina",
-    ]);
+        const hiddenNavSlugs = new Set(["independencia"]);
+        const restaurantMenuSlugs = new Set([
+          "vitacura",
+          "las-condes",
+          "santiago",
+          "lo-barnechea",
+          "providencia",
+          "alto-jahuel",
+          "la-reina",
+        ]);
 
-    const filtered = nav && !includeHidden
-      ? normalized.filter((r) => {
-          const slug = String(r.slug || "").trim().toLowerCase();
-          if (!slug) return false;
-          if (r.show_in_menu === false) return false;
-          if (hiddenNavSlugs.has(slug)) return false;
-          return restaurantMenuSlugs.has(slug);
-        })
-      : normalized;
+        const filtered = nav && !includeHidden
+          ? normalized.filter((r) => {
+              const slug = String(r.slug || "").trim().toLowerCase();
+              if (!slug) return false;
+              if (r.show_in_menu === false) return false;
+              if (hiddenNavSlugs.has(slug)) return false;
+              return restaurantMenuSlugs.has(slug);
+            })
+          : normalized;
 
-    // Si es navegación (nav=1) o modo full/includeHidden, devolvemos filas con slug/label.
-    if (full || nav || includeHidden) return NextResponse.json(filtered, { status: 200 });
+        if (full || nav || includeHidden) {
+          return filtered;
+        }
 
-    // Compat simple: lista de labels en mayúsculas
-    return NextResponse.json(
-      filtered
-        .map((r) => String(r.label || r.slug || "").toUpperCase())
-        .filter(Boolean),
-      { status: 200 }
+        return filtered
+          .map((r) => String(r.label || r.slug || "").toUpperCase())
+          .filter(Boolean);
+      },
     );
+
+    return NextResponse.json(payload, { status: 200 });
   } catch {
     return NextResponse.json([], { status: 200 });
   }
@@ -205,6 +214,8 @@ export async function POST(req: Request) {
       body: JSON.stringify(rows),
     });
 
+    invalidateServerDataCache(new RegExp(`^communes:${siteId}:`));
+
     return NextResponse.json({ ok: true, rows: created }, { status: 200 });
   } catch (err: any) {
     const msg = String(err?.message || err);
@@ -233,6 +244,8 @@ export async function DELETE(req: Request) {
       method: "DELETE",
       headers: { Prefer: "return=representation" },
     });
+
+    invalidateServerDataCache(new RegExp(`^communes:${siteId}:`));
 
     return NextResponse.json({ ok: true }, { status: 200 });
   } catch (err: any) {

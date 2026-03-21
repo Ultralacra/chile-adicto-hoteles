@@ -1,7 +1,13 @@
 import { NextResponse } from "next/server";
 import { getCurrentSiteId } from "@/lib/site-utils";
+import {
+	getCachedServerData,
+	invalidateServerDataCache,
+} from "@/lib/server-read-cache";
 
 export const runtime = "nodejs";
+
+const SLIDER_CACHE_TTL_MS = 5 * 60 * 1000;
 
 function envOrNull(name: string) {
 	const v = process.env[name];
@@ -89,26 +95,34 @@ export async function GET(req: Request, { params }: { params: { key: string } })
 		const url = new URL(req.url);
 		const all = url.searchParams.get("all") === "1";
 
-		const rows = (await supabaseRest(
-			`/sliders?set_key=eq.${encodeURIComponent(
-				key
-			)}&site=eq.${siteId}&select=set_key,image_url,href,position,active,lang&order=position.asc`,
-			undefined,
-			canUseService() ? "service" : "anon"
-		)) as any[];
+		const payload = await getCachedServerData(
+			`slider:${siteId}:${key}:${all ? "all" : "active"}`,
+			SLIDER_CACHE_TTL_MS,
+			async () => {
+				const rows = (await supabaseRest(
+					`/sliders?set_key=eq.${encodeURIComponent(
+						key
+					)}&site=eq.${siteId}&select=set_key,image_url,href,position,active,lang&order=position.asc`,
+					undefined,
+					canUseService() ? "service" : "anon"
+				)) as any[];
 
-		const items = (Array.isArray(rows) ? rows : [])
-			.map((r) => ({
-				image_url: String(r.image_url || ""),
-				href: r.href ? String(r.href) : null,
-				position: Number.isFinite(r.position) ? Number(r.position) : undefined,
-				active: typeof r.active === "boolean" ? r.active : true,
-				lang: inferredLang || (r.lang ? String(r.lang) : null),
-			}))
-			.filter((it) => it.image_url)
-			.filter((it) => (all ? true : it.active !== false));
+				const items = (Array.isArray(rows) ? rows : [])
+					.map((r) => ({
+						image_url: String(r.image_url || ""),
+						href: r.href ? String(r.href) : null,
+						position: Number.isFinite(r.position) ? Number(r.position) : undefined,
+						active: typeof r.active === "boolean" ? r.active : true,
+						lang: inferredLang || (r.lang ? String(r.lang) : null),
+					}))
+					.filter((it) => it.image_url)
+					.filter((it) => (all ? true : it.active !== false));
 
-		return NextResponse.json({ key, items }, { status: 200 });
+				return { key, items };
+			},
+		);
+
+		return NextResponse.json(payload, { status: 200 });
 	} catch (err: any) {
 		return NextResponse.json(
 			{ key: "", items: [], error: "internal_error", message: String(err?.message || err) },
@@ -154,6 +168,7 @@ export async function PUT(req: Request, { params }: { params: { key: string } })
 		if (payload.length > 0) {
 			await supabaseRest(`/sliders`, { method: "POST", body: JSON.stringify(payload) }, "service");
 		}
+		invalidateServerDataCache(new RegExp(`^slider:${siteId}:${key}:`));
 		return NextResponse.json({ ok: true }, { status: 200 });
 	} catch (err: any) {
 		return NextResponse.json(

@@ -1,8 +1,14 @@
 import { NextResponse } from "next/server";
 import { promises as fs } from "fs";
 import path from "path";
+import {
+  getCachedServerData,
+  invalidateServerDataCache,
+} from "@/lib/server-read-cache";
 
 export const runtime = "nodejs";
+
+const SLIDER_IMAGES_CACHE_TTL_MS = 5 * 60 * 1000;
 
 function isImage(filename: string) {
   const ext = filename.split(".").pop()?.toLowerCase();
@@ -25,113 +31,109 @@ function baseName(p: string) {
 
 export async function GET() {
   try {
-    const base = process.cwd();
-    const desktopDir = path.join(base, "public", "slider-desktop");
-    const mobileDir = path.join(base, "public", "slider-movil");
+    const payload = await getCachedServerData(
+      "slider-images:public",
+      SLIDER_IMAGES_CACHE_TTL_MS,
+      async () => {
+        const base = process.cwd();
+        const desktopDir = path.join(base, "public", "slider-desktop");
+        const mobileDir = path.join(base, "public", "slider-movil");
 
-    let desktop: string[] = [];
-    let mobile: string[] = [];
+        let desktop: string[] = [];
+        let mobile: string[] = [];
 
-    // Orden objetivo igual al menú del Home
-    const ORDER = [
-      "ICONOS", // solicitado: que ICONOS sea el primero
-      "NINOS",
-      "ARQUITECTURA",
-      "BARRIOS",
-      "MERCADOS",
-      "MIRADORES",
-      "CULTURA", // (museos)
-      "PALACIOS",
-      "PARQUES",
-      "FUERA-DE-STGO",
-      "RESTAURANTES",
-    ];
+        const ORDER = [
+          "ICONOS",
+          "NINOS",
+          "ARQUITECTURA",
+          "BARRIOS",
+          "MERCADOS",
+          "MIRADORES",
+          "CULTURA",
+          "PALACIOS",
+          "PARQUES",
+          "FUERA-DE-STGO",
+          "RESTAURANTES",
+        ];
 
-    const norm = (s: string) =>
-      s
-        .normalize("NFD")
-        .replace(/[\u0300-\u036f]/g, "")
-        .toUpperCase();
+        const norm = (s: string) =>
+          s
+            .normalize("NFD")
+            .replace(/[\u0300-\u036f]/g, "")
+            .toUpperCase();
 
-    const keyIndex = (filename: string) => {
-      const name = norm(filename.replace(/\.[^.]+$/, ""));
-      // Heurísticas para mapear nombres levemente distintos
-      if (name.includes("NINOS") || name.includes("NIÑOS"))
-        return ORDER.indexOf("NINOS");
-      if (/^(ARQ|ARQU|AQU|AQI)/.test(name) || name.includes("ARQUITECTURA"))
-        return ORDER.indexOf("ARQUITECTURA");
-      if (name.includes("BARRIOS")) return ORDER.indexOf("BARRIOS");
-      if (name.includes("ICONOS")) return ORDER.indexOf("ICONOS");
-      if (name.includes("MERCADOS")) return ORDER.indexOf("MERCADOS");
-      if (name.includes("MIRADORES")) return ORDER.indexOf("MIRADORES");
-      if (name.includes("CULTURA") || name.includes("MUSEOS"))
-        return ORDER.indexOf("CULTURA");
-      if (name.includes("PALACIOS")) return ORDER.indexOf("PALACIOS");
-      if (name.includes("PARQUES")) return ORDER.indexOf("PARQUES");
-      if (
-        name.includes("FUERA") ||
-        name.includes("FUERA-DE-STGO") ||
-        name.includes("OUTSIDE")
-      )
-        return ORDER.indexOf("FUERA-DE-STGO");
-      if (name.includes("RESTAURANTES") || name.includes("RESTAURANTS"))
-        return ORDER.indexOf("RESTAURANTES");
-      return 999; // al final si no se reconoce
-    };
+        const keyIndex = (filename: string) => {
+          const name = norm(filename.replace(/\.[^.]+$/, ""));
+          if (name.includes("NINOS") || name.includes("NIÑOS")) return ORDER.indexOf("NINOS");
+          if (/^(ARQ|ARQU|AQU|AQI)/.test(name) || name.includes("ARQUITECTURA")) return ORDER.indexOf("ARQUITECTURA");
+          if (name.includes("BARRIOS")) return ORDER.indexOf("BARRIOS");
+          if (name.includes("ICONOS")) return ORDER.indexOf("ICONOS");
+          if (name.includes("MERCADOS")) return ORDER.indexOf("MERCADOS");
+          if (name.includes("MIRADORES")) return ORDER.indexOf("MIRADORES");
+          if (name.includes("CULTURA") || name.includes("MUSEOS")) return ORDER.indexOf("CULTURA");
+          if (name.includes("PALACIOS")) return ORDER.indexOf("PALACIOS");
+          if (name.includes("PARQUES")) return ORDER.indexOf("PARQUES");
+          if (name.includes("FUERA") || name.includes("FUERA-DE-STGO") || name.includes("OUTSIDE")) return ORDER.indexOf("FUERA-DE-STGO");
+          if (name.includes("RESTAURANTES") || name.includes("RESTAURANTS")) return ORDER.indexOf("RESTAURANTES");
+          return 999;
+        };
 
-    const sortByOrder = (a: string, b: string) => {
-      const ia = keyIndex(a);
-      const ib = keyIndex(b);
-      if (ia !== ib) return ia - ib;
-      // desempate estable alfabético/numerico
-      return a.localeCompare(b, undefined, { numeric: true });
-    };
+        const sortByOrder = (a: string, b: string) => {
+          const ia = keyIndex(a);
+          const ib = keyIndex(b);
+          if (ia !== ib) return ia - ib;
+          return a.localeCompare(b, undefined, { numeric: true });
+        };
 
-    const ord = await readOrder();
+        const ord = await readOrder();
 
-    try {
-      const desktopFiles = await fs.readdir(desktopDir);
-      let list = desktopFiles.filter(isImage).map((f) => `/slider-desktop/${f}`);
-      if (Array.isArray(ord.desktop) && ord.desktop.length) {
-        const idx = new Map(ord.desktop.map((n, i) => [baseName(n), i]));
-        list = list.slice().sort((a, b) => {
-          const ia = idx.get(baseName(a));
-          const ib = idx.get(baseName(b));
-          if (typeof ia === "number" && typeof ib === "number") return ia - ib;
-          if (typeof ia === "number") return -1;
-          if (typeof ib === "number") return 1;
-          return sortByOrder(a, b);
-        });
-      } else {
-        list = list.sort(sortByOrder);
-      }
-      desktop = list;
-    } catch {
-      // carpeta inexistente o sin permisos -> lista vacía
-      desktop = [];
-    }
-    try {
-      const mobileFiles = await fs.readdir(mobileDir);
-      let list = mobileFiles.filter(isImage).map((f) => `/slider-movil/${f}`);
-      if (Array.isArray(ord.mobile) && ord.mobile.length) {
-        const idx = new Map(ord.mobile.map((n, i) => [baseName(n), i]));
-        list = list.slice().sort((a, b) => {
-          const ia = idx.get(baseName(a));
-          const ib = idx.get(baseName(b));
-          if (typeof ia === "number" && typeof ib === "number") return ia - ib;
-          if (typeof ia === "number") return -1;
-          if (typeof ib === "number") return 1;
-          return sortByOrder(a, b);
-        });
-      } else {
-        list = list.sort(sortByOrder);
-      }
-      mobile = list;
-    } catch {
-      mobile = [];
-    }
+        try {
+          const desktopFiles = await fs.readdir(desktopDir);
+          let list = desktopFiles.filter(isImage).map((f) => `/slider-desktop/${f}`);
+          if (Array.isArray(ord.desktop) && ord.desktop.length) {
+            const idx = new Map(ord.desktop.map((n, i) => [baseName(n), i]));
+            list = list.slice().sort((a, b) => {
+              const ia = idx.get(baseName(a));
+              const ib = idx.get(baseName(b));
+              if (typeof ia === "number" && typeof ib === "number") return ia - ib;
+              if (typeof ia === "number") return -1;
+              if (typeof ib === "number") return 1;
+              return sortByOrder(a, b);
+            });
+          } else {
+            list = list.sort(sortByOrder);
+          }
+          desktop = list;
+        } catch {
+          desktop = [];
+        }
 
-    return NextResponse.json({ desktop, mobile });
+        try {
+          const mobileFiles = await fs.readdir(mobileDir);
+          let list = mobileFiles.filter(isImage).map((f) => `/slider-movil/${f}`);
+          if (Array.isArray(ord.mobile) && ord.mobile.length) {
+            const idx = new Map(ord.mobile.map((n, i) => [baseName(n), i]));
+            list = list.slice().sort((a, b) => {
+              const ia = idx.get(baseName(a));
+              const ib = idx.get(baseName(b));
+              if (typeof ia === "number" && typeof ib === "number") return ia - ib;
+              if (typeof ia === "number") return -1;
+              if (typeof ib === "number") return 1;
+              return sortByOrder(a, b);
+            });
+          } else {
+            list = list.sort(sortByOrder);
+          }
+          mobile = list;
+        } catch {
+          mobile = [];
+        }
+
+        return { desktop, mobile };
+      },
+    );
+
+    return NextResponse.json(payload);
   } catch (err) {
     return NextResponse.json({ desktop: [], mobile: [] }, { status: 200 });
   }
@@ -148,6 +150,7 @@ export async function PUT(req: Request) {
     };
     const file = path.join(process.cwd(), "public", "slider-order.json");
     await fs.writeFile(file, JSON.stringify(payload, null, 2), "utf-8");
+    invalidateServerDataCache(/^slider-images:/);
     return NextResponse.json({ ok: true });
   } catch (e: any) {
     return NextResponse.json({ ok: false, message: String(e?.message || e) }, { status: 400 });

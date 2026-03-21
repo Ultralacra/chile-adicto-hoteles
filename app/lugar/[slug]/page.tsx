@@ -17,7 +17,7 @@ type ResolvedParams = { slug: string };
 
 export default function LugarPage(props: any) {
   const { language, t } = useLanguage();
-  const { fetchWithSite } = useSiteApi();
+  const { cachedFetchWithSite } = useSiteApi();
 
   // Next.js: params es un Promise en Client Components, usar React.use() para resolverlo
   const resolvedParams = use(props.params as any) as ResolvedParams;
@@ -37,8 +37,7 @@ export default function LugarPage(props: any) {
     let cancelled = false;
     if (!resolvedParams?.slug) return;
     setLoading(true);
-    fetchWithSite(`/api/posts/${encodeURIComponent(resolvedParams.slug)}`)
-      .then((r) => (r.ok ? r.json() : null))
+    cachedFetchWithSite(`/api/posts/${encodeURIComponent(resolvedParams.slug)}`)
       .then((row) => {
         if (cancelled) return;
         if (row && isHiddenFrontPost(row)) {
@@ -52,7 +51,7 @@ export default function LugarPage(props: any) {
     return () => {
       cancelled = true;
     };
-  }, [resolvedParams?.slug, fetchWithSite]);
+  }, [resolvedParams?.slug, cachedFetchWithSite]);
 
   if (loading) {
     return (

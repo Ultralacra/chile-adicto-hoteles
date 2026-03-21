@@ -35,7 +35,7 @@ export default function CategoryPage({ params }: { params: any }) {
   const resolvedParams = use(params as any) as ResolvedParams;
   const { slug } = resolvedParams;
   const { language, t } = useLanguage();
-  const { fetchWithSite, cachedFetchWithSite } = useSiteApi();
+  const { cachedFetchWithSite } = useSiteApi();
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -91,10 +91,9 @@ export default function CategoryPage({ params }: { params: any }) {
     let cancelled = false;
     setLoading(true);
     // Preferimos filtrar por slug de categoría en el backend
-    fetchWithSite(
+    cachedFetchWithSite(
       `/api/posts?categorySlug=${encodeURIComponent(slug)}&includeExpired=1&sort=alpha&lang=${language}`,
     )
-      .then((r) => (r.ok ? r.json() : []))
       .then((rows) => {
         if (cancelled) return;
         const list = Array.isArray(rows) ? rows : [];
@@ -105,7 +104,7 @@ export default function CategoryPage({ params }: { params: any }) {
     return () => {
       cancelled = true;
     };
-  }, [slug, language, fetchWithSite]);
+  }, [slug, language, cachedFetchWithSite]);
 
   const isRestaurantsPage = slug === "restaurantes";
 

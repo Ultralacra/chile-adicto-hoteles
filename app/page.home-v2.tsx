@@ -19,15 +19,14 @@ import {
 
 export default function Page() {
   const { language } = useLanguage();
-  const { fetchWithSite } = useSiteApi();
+  const { cachedFetchWithSite } = useSiteApi();
   const [hotels, setHotels] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     let cancelled = false;
     setLoading(true);
-    fetchWithSite(`/api/posts?sort=alpha&lang=${language}`)
-      .then((r) => (r.ok ? r.json() : []))
+    cachedFetchWithSite(`/api/posts?sort=alpha&lang=${language}`)
       .then((rows) => {
         if (cancelled) return;
         const list = Array.isArray(rows) ? rows : [];
@@ -75,7 +74,7 @@ export default function Page() {
     return () => {
       cancelled = true;
     };
-  }, [fetchWithSite, language]);
+  }, [cachedFetchWithSite, language]);
 
   return (
     <div className="min-h-screen bg-white">

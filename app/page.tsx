@@ -45,7 +45,7 @@ export default function Page() {
 
 function HomeContent() {
   const { language } = useLanguage();
-  const { fetchWithSite, previewSite } = useSiteApi();
+  const { cachedFetchWithSite, previewSite } = useSiteApi();
   const [hotels, setHotels] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [loadingMore, setLoadingMore] = useState(false);
@@ -70,11 +70,9 @@ function HomeContent() {
 
   const loadPage = useCallback(
     async (offset: number, append: boolean) => {
-      const res = await fetchWithSite(
+      const rows = await cachedFetchWithSite(
         `/api/posts?homeFeed=1&sort=alpha&lang=${language}&limit=${HOME_PAGE_SIZE}&offset=${offset}`,
-        { cache: "no-store" },
       );
-      const rows = res.ok ? await res.json() : [];
       const batch = Array.isArray(rows) ? rows : [];
       const more = batch.length === HOME_PAGE_SIZE;
       const newOffset = offset + batch.length;
@@ -87,7 +85,7 @@ function HomeContent() {
         return nextItems;
       });
     },
-    [fetchWithSite, language, updateCache],
+    [cachedFetchWithSite, language, updateCache],
   );
 
   useEffect(() => {

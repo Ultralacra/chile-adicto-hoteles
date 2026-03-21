@@ -44,6 +44,8 @@ const TTL_RULES: Array<{ pattern: RegExp; ttl: number }> = [
   { pattern: /\/api\/restaurant-slider-mobile/, ttl: 5 * 60 * 1000 },
   // Posts (lista) → 2 min para mantener algo de frescura
   { pattern: /\/api\/posts(?:\?|$)/, ttl: 2 * 60 * 1000 },
+  // Detalle de post → 5 min
+  { pattern: /\/api\/posts\/[^/?#]+(?:\?|$)/, ttl: 5 * 60 * 1000 },
 ];
 
 function resolveTtl(url: string, explicitTtl?: number): number {

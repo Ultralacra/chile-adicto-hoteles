@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { invalidateServerDataCache } from "@/lib/server-read-cache";
 
 export const runtime = "nodejs";
 
@@ -198,6 +199,9 @@ export async function POST(
         body: JSON.stringify(payload),
       });
     }
+
+    // Invalidar caché del post para que el GET siguiente devuelva datos frescos
+    invalidateServerDataCache(new RegExp(`^post:.*:${slug.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}:`));
 
     return NextResponse.json({ ok: true, urls }, { status: 201 });
   } catch (err: any) {

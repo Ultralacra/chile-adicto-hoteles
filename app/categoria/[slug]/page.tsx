@@ -856,6 +856,38 @@ export default function CategoryPage({ params }: { params: any }) {
       mobileSrc: "/bannersagenda/BANNER MOVIL AGENDA 30 AL 5 DE ABRIL.png",
       alt: "Agenda Cultural del 30 de marzo al 5 de abril",
     },
+    {
+      start: "2026-04-06",
+      end: "2026-04-12",
+      href: "/agenda-cultural",
+      src: "/bannersagenda/BANNER DESKTOP AGENDA 6 AL 12 DE ABRIL.png",
+      mobileSrc: "/bannersagenda/BANNER MOVIL AGENDA 6 AL 12 DE ABRIL.png",
+      alt: "Agenda Cultural del 6 al 12 de abril",
+    },
+    {
+      start: "2026-04-13",
+      end: "2026-04-19",
+      href: "/agenda-cultural",
+      src: "/bannersagenda/BANNER DESKTOP AGENDA 13 AL 19 DE ABRIL.png",
+      mobileSrc: "/bannersagenda/BANNER MOVIL AGENDA 13 AL 19 DE ABRIL.png",
+      alt: "Agenda Cultural del 13 al 19 de abril",
+    },
+    {
+      start: "2026-04-20",
+      end: "2026-04-26",
+      href: "/agenda-cultural",
+      src: "/bannersagenda/BANNER DESKTOP AGENDA 20 AL 26 DE ABRIL.png",
+      mobileSrc: "/bannersagenda/BANNER MOVIL AGENDA 20 AL 26 DE ABRIL.png",
+      alt: "Agenda Cultural del 20 al 26 de abril",
+    },
+    {
+      start: "2026-04-27",
+      end: "2026-05-03",
+      href: "/agenda-cultural",
+      src: "/bannersagenda/BANNER DESKTOP AGENDA 27 AL 3  DE MAYO.png",
+      mobileSrc: "/bannersagenda/BANNER MOVIL AGENDA 27 AL 3  DE MAYO.png",
+      alt: "Agenda Cultural del 27 de abril al 3 de mayo",
+    },
   ];
 
   const todayKey = toLocalDateKey(new Date());

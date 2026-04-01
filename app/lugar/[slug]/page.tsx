@@ -116,6 +116,7 @@ export default function LugarPage(props: any) {
         infoHtml: source[language]?.infoHtml || "",
         infoHtmlNew: source[language]?.infoHtmlNew || "",
         website: source.website || "",
+        websitePublic: source.websitePublic || source.website_public || "",
         website_display: source.website_display || "",
         instagram: source.instagram || "",
         instagram_display: source.instagram_display || "",

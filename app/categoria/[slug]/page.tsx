@@ -894,6 +894,10 @@ export default function CategoryPage({ params }: { params: any }) {
   const activeAgendaBanner = agendaBannerRanges.find(
     (range) => todayKey >= range.start && todayKey <= range.end,
   );
+  const repeatingAgendaWeeklySlugs = new Set([
+    "ciclo-especial-mes-de-la-danza-en-matucana-100",
+    "artes-visuales-enter-to-the-exit-de-fabiola-morcillo",
+  ]);
 
   // Agrupar posts de agenda cultural por rango de banner
   const isAgendaCultural = slug === "agenda-cultural";
@@ -917,8 +921,14 @@ export default function CategoryPage({ params }: { params: any }) {
 
   const agendaGrouped = isAgendaCultural
     ? agendaBannerRanges
+        .filter((range) => range.end >= todayKey)
         .map((range) => {
           const posts = finalOrderedHotels.filter((h) => {
+            const postSlug = String(h?.slug || "")
+              .trim()
+              .toLowerCase();
+            if (repeatingAgendaWeeklySlugs.has(postSlug)) return true;
+
             // Excluir posts cuya publicación ya terminó
             if (hasPostPublicationEnded(h)) return false;
             const raw = h.publishStartAt || h.publishEndAt;

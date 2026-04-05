@@ -1,0 +1,1152 @@
+[
+  {
+    "slug": "los-11-mejores-hoteles-en-torres-del-paine-segun-chileadicto-hoteles-ed-viajes",
+    "created_at": "2026-03-23T15:44:12.385472+00:00",
+    "site": "chileadicto",
+    "publication_status": "published",
+    "publish_start_at": null,
+    "publish_end_at": null,
+    "featured_image": "https://xtctddbjwmmeirjltatm.supabase.co/storage/v1/object/public/public/uploads/2026/03/1774280628609-portadas-ED-PATAGONIA.webp",
+    "website": null,
+    "website_public": "https://www.ed.cl/archivo/viajes/patagonia-imprescindible-nueve-alojamientos-para-vivir-el-extremo-sur-en-su-estado-mas-puro/",
+    "instagram": "",
+    "website_display": "",
+    "instagram_display": "",
+    "email": null,
+    "phone": null,
+    "photos_credit": "",
+    "address": "",
+    "hours": "",
+    "reservation_link": null,
+    "reservation_policy": "",
+    "interesting_fact": "",
+    "images": [],
+    "locations": [],
+    "translations": [
+      {
+        "lang": "en",
+        "name": "THE 11 BEST HOTELS IN TORRES DEL PAINE",
+        "post_id": "930dc483-0c23-40f0-a869-93b08239e8d3",
+        "category": null,
+        "subtitle": "ACCORDING TO CHILE ADICTO HOTELES ED TRAVEL",
+        "description": [
+          "Luxury “destination hotels” are not found only abroad. In our country we have many of them, and that is exactly what Chile Adicto Hoteles, the first guide of its kind in Chile, aims to highlight. Here, we have selected the 11 best places in this category in Torres del Paine, in collaboration with ED magazine."
+        ]
+      },
+      {
+        "lang": "es",
+        "name": "LOS 11 MEJORES HOTELES EN TORRES DEL PAINE",
+        "post_id": "930dc483-0c23-40f0-a869-93b08239e8d3",
+        "category": null,
+        "subtitle": "SEGÚN CHILEADICTO HOTELES ED VIAJES",
+        "description": [
+          "<p>Los “hoteles destino” de lujo no existen solo en el extranjero. En \nnuestro país tenemos muchos de ellos y eso es lo que busca destacar \nChile Adicto Hoteles, la primera guía de su tipo en Chile. Acá, elegimos\n los 11 mejores lugares de esta categoría en Torres del Paine, en \ncolaboración con revista ED.</p>"
+        ]
+      }
+    ],
+    "useful": [
+      {
+        "html": "<br>",
+        "lang": "es",
+        "post_id": "930dc483-0c23-40f0-a869-93b08239e8d3",
+        "created_at": "2026-03-23T15:44:12.872643+00:00",
+        "updated_at": "2026-03-24T20:55:14.032599+00:00"
+      }
+    ],
+    "category_links": [
+      {
+        "category": {
+          "slug": "prensa",
+          "label_es": "PRENSA"
+        }
+      }
+    ],
+    "communes_links": []
+  },
+  {
+    "slug": "emol-lo-penso-lo-hizo-con-patricio-minano-y-chileadictohoteles",
+    "created_at": "2026-03-23T15:29:05.957314+00:00",
+    "site": "chileadicto",
+    "publication_status": "published",
+    "publish_start_at": null,
+    "publish_end_at": null,
+    "featured_image": "https://xtctddbjwmmeirjltatm.supabase.co/storage/v1/object/public/public/uploads/2026/03/1774279716103-portada-emol.webp",
+    "website": null,
+    "website_public": "https://www.emol.com/noticias/Economia/2024/10/03/1144343/patricio-minano-chile-adicto-hoteles.html",
+    "instagram": "",
+    "website_display": "",
+    "instagram_display": "",
+    "email": null,
+    "phone": null,
+    "photos_credit": "",
+    "address": "",
+    "hours": "",
+    "reservation_link": null,
+    "reservation_policy": "",
+    "interesting_fact": "",
+    "images": [],
+    "locations": [],
+    "translations": [
+      {
+        "lang": "en",
+        "name": "EMOL, “HE THOUGHT IT / HE DID IT”",
+        "post_id": "ecf81da3-0d4e-4c68-8a32-267c2bd58434",
+        "category": null,
+        "subtitle": "WITH PATRICIO MIÑANO AND CHILEADICTOHOTELES",
+        "description": [
+          "The luxury accommodation guide for various destinations was founded eight years ago by Miñano and Rodrigo Guendelman, where they combined their experience in media and tourism to create this platform."
+        ]
+      },
+      {
+        "lang": "es",
+        "name": "EMOL, \"LO PENSO /LO HIZO\"",
+        "post_id": "ecf81da3-0d4e-4c68-8a32-267c2bd58434",
+        "category": null,
+        "subtitle": "CON PATRICIO MIÑANO Y CHILEADICTOHOTELES",
+        "description": [
+          "<p>La guía de alojamientos de lujo para diversos destinos, Fue fundada hace\n ocho años por Miñano y Rodrigo Guendelman, donde ambos combinaron su \nexperiencia en medios y turismo para crear esta plataforma.</p>"
+        ]
+      }
+    ],
+    "useful": [
+      {
+        "html": "<br>",
+        "lang": "es",
+        "post_id": "ecf81da3-0d4e-4c68-8a32-267c2bd58434",
+        "created_at": "2026-03-23T15:29:06.300941+00:00",
+        "updated_at": "2026-03-24T21:06:06.181889+00:00"
+      }
+    ],
+    "category_links": [
+      {
+        "category": {
+          "slug": "prensa",
+          "label_es": "PRENSA"
+        }
+      }
+    ],
+    "communes_links": []
+  },
+  {
+    "slug": "ed-viajes-cuales-son-los-mejores-hoteles-de-chile",
+    "created_at": "2026-03-23T15:30:24.693134+00:00",
+    "site": "chileadicto",
+    "publication_status": "published",
+    "publish_start_at": null,
+    "publish_end_at": null,
+    "featured_image": "https://xtctddbjwmmeirjltatm.supabase.co/storage/v1/object/public/public/uploads/2026/03/1774279819809-Portada-ED.webp",
+    "website": null,
+    "website_public": "https://www.ed.cl/archivo/actualidad/cuales-son-los-mejores-hoteles-de-chile-esta-nueva-guia-con-la-firma-de-santiago-adicto-promete-entregar-la-respuesta/",
+    "instagram": "",
+    "website_display": "",
+    "instagram_display": "",
+    "email": null,
+    "phone": null,
+    "photos_credit": "",
+    "address": "",
+    "hours": "",
+    "reservation_link": null,
+    "reservation_policy": "",
+    "interesting_fact": "",
+    "images": [],
+    "locations": [],
+    "translations": [
+      {
+        "lang": "en",
+        "name": "ED – TRAVEL",
+        "post_id": "39939ed6-42b2-4c92-a899-9b1eb36608ed",
+        "category": null,
+        "subtitle": "WHAT ARE THE BEST HOTELS IN CHILE?",
+        "description": [
+          "The director of Closer Publishing, Patricio Miñano, teamed up with Rodrigo Guendelman and Imagen País to combine their expertise in creating a guide to the finest hotels in Chile. These hotels blend architecture, gastronomy, design, and, of course, stunning landscapes."
+        ]
+      },
+      {
+        "lang": "es",
+        "name": "ED – VIAJES",
+        "post_id": "39939ed6-42b2-4c92-a899-9b1eb36608ed",
+        "category": null,
+        "subtitle": "¿CUALES SON LOS MEJORES HOTELES DE CHILE?",
+        "description": [
+          "<p>El director de la editorial Closer, Patricio Miñano, se unió a Rodrigo \nGuendelman y a Imagen País, donde ambos combinaron su experiencia para \ncrear una guía con los mejores hoteles de nuestro país. Esos que \ncombinan arquitectura, gastronomía, diseño y, por supuesto, un paisaje \núnico.</p>"
+        ]
+      }
+    ],
+    "useful": [
+      {
+        "html": "<br>",
+        "lang": "es",
+        "post_id": "39939ed6-42b2-4c92-a899-9b1eb36608ed",
+        "created_at": "2026-03-23T15:30:24.917278+00:00",
+        "updated_at": "2026-03-24T20:55:58.221982+00:00"
+      }
+    ],
+    "category_links": [
+      {
+        "category": {
+          "slug": "prensa",
+          "label_es": "PRENSA"
+        }
+      }
+    ],
+    "communes_links": []
+  },
+  {
+    "slug": "columna-de-rodrigo-guendelman-la-tercera-sabado",
+    "created_at": "2026-03-23T15:31:37.753414+00:00",
+    "site": "chileadicto",
+    "publication_status": "published",
+    "publish_start_at": null,
+    "publish_end_at": null,
+    "featured_image": "https://xtctddbjwmmeirjltatm.supabase.co/storage/v1/object/public/public/uploads/2026/03/1774279884214-noticia-la-tercera.webp",
+    "website": null,
+    "website_public": "https://www.latercera.com/la-tercera-sabado/noticia/columna-de-rodrigo-guendelman-chile-tierra-de-hoteles-destino/D6M2XI7MUJF2VLZD2VDLZIVT7M/",
+    "instagram": "",
+    "website_display": "",
+    "instagram_display": "",
+    "email": null,
+    "phone": null,
+    "photos_credit": "",
+    "address": "",
+    "hours": "",
+    "reservation_link": null,
+    "reservation_policy": "",
+    "interesting_fact": "",
+    "images": [],
+    "locations": [],
+    "translations": [
+      {
+        "lang": "en",
+        "name": "RODRIGO GUENDELMAN COLUMN",
+        "post_id": "6042dede-66ae-4fae-b6e3-6be6c7d637cc",
+        "category": null,
+        "subtitle": "LA TERCERA - SATURDAY",
+        "description": [
+          "In his regular Saturday column in La Tercera, Guendelman discusses “destination hotels,” a concept that spans the entire range of options featured on www.chileadictohoteles.cl."
+        ]
+      },
+      {
+        "lang": "es",
+        "name": "COLUMNA DE RODRIGO GUENDELMAN",
+        "post_id": "6042dede-66ae-4fae-b6e3-6be6c7d637cc",
+        "category": null,
+        "subtitle": "LA TERCERA SÁBADO",
+        "description": [
+          "<p>En su espacio habitual de los dias sábado en la tercera, Guendelman \nhabla sobre los hoteles-destino, concepto que atraviesa todo el espectro\n de exponentes en www.chileadictohoteles.cl</p>"
+        ]
+      }
+    ],
+    "useful": [
+      {
+        "html": "<br>",
+        "lang": "es",
+        "post_id": "6042dede-66ae-4fae-b6e3-6be6c7d637cc",
+        "created_at": "2026-03-23T15:31:38.121861+00:00",
+        "updated_at": "2026-03-24T20:56:36.488566+00:00"
+      }
+    ],
+    "category_links": [
+      {
+        "category": {
+          "slug": "prensa",
+          "label_es": "PRENSA"
+        }
+      }
+    ],
+    "communes_links": []
+  },
+  {
+    "slug": "los-10-mejores-hoteles-del-sur-de-chile-segun-chile-adicto-hoteles-finde-la-tercera",
+    "created_at": "2026-03-23T15:33:06.97864+00:00",
+    "site": "chileadicto",
+    "publication_status": "published",
+    "publish_start_at": null,
+    "publish_end_at": null,
+    "featured_image": "https://xtctddbjwmmeirjltatm.supabase.co/storage/v1/object/public/public/uploads/2026/03/1774279971043-10_mejores_hoteles.webp",
+    "website": null,
+    "website_public": "https://finde.latercera.com/viajes/los-10-mejores-hoteles-de-lujo-del-sur-de-chile-chile-adicto-2025/",
+    "instagram": "",
+    "website_display": "",
+    "instagram_display": "",
+    "email": null,
+    "phone": null,
+    "photos_credit": "",
+    "address": "",
+    "hours": "",
+    "reservation_link": null,
+    "reservation_policy": "",
+    "interesting_fact": "",
+    "images": [],
+    "locations": [],
+    "translations": [
+      {
+        "lang": "en",
+        "name": "THE 10 BEST HOTELS IN SOUTHERN CHILE",
+        "post_id": "0489bf59-e23f-4cd0-a25b-83db8c80bcaf",
+        "category": null,
+        "subtitle": "ACCORDING TO CHILE ADICTO HOTELES FINDE LA TERCERA",
+        "description": [
+          "Luxury “destination hotels” aren’t exclusive to international locations. Chile is home to many of them, and that’s precisely what Chile Adicto Hoteles—the first guide of its kind in the country—aims to showcase. Here, one of its creators selects the ten best spots in this category between the Araucanía and Aysén regions."
+        ]
+      },
+      {
+        "lang": "es",
+        "name": "LOS 10 MEJORES HOTELES DEL SUR DE CHILE",
+        "post_id": "0489bf59-e23f-4cd0-a25b-83db8c80bcaf",
+        "category": null,
+        "subtitle": "SEGÚN CHILE ADICTO HOTELES FINDE LA TERCERA",
+        "description": [
+          "<p>Los “hoteles destino” de lujo no existen solo en el extranjero. En \nnuestro país tenemos muchos de ellos y eso es lo que busca destacar \nChile Adicto Hoteles, la primera guía de su tipo en Chile. Acá, uno de \nsus creadores elige los diez mejores lugares de esta categoría entre la \nAraucanía y Aysén.</p>"
+        ]
+      }
+    ],
+    "useful": [
+      {
+        "html": "<br>",
+        "lang": "es",
+        "post_id": "0489bf59-e23f-4cd0-a25b-83db8c80bcaf",
+        "created_at": "2026-03-23T15:33:07.19235+00:00",
+        "updated_at": "2026-03-24T20:59:00.657051+00:00"
+      }
+    ],
+    "category_links": [
+      {
+        "category": {
+          "slug": "prensa",
+          "label_es": "PRENSA"
+        }
+      }
+    ],
+    "communes_links": []
+  },
+  {
+    "slug": "los-9-mejores-hoteles-del-norte-de-chile-segun-chile-adicto-hoteles-ed-viajes",
+    "created_at": "2026-03-23T15:38:28.974995+00:00",
+    "site": "chileadicto",
+    "publication_status": "published",
+    "publish_start_at": null,
+    "publish_end_at": null,
+    "featured_image": "https://xtctddbjwmmeirjltatm.supabase.co/storage/v1/object/public/public/uploads/2026/03/1774280304390-prensa_ed3.webp",
+    "website": null,
+    "website_public": "https://www.ed.cl/archivo/viajes/nueve-hoteles-imperdibles-en-el-norte-de-chile-para-escaparse-y-reconectar/",
+    "instagram": "",
+    "website_display": "",
+    "instagram_display": "",
+    "email": null,
+    "phone": null,
+    "photos_credit": "",
+    "address": "",
+    "hours": "",
+    "reservation_link": null,
+    "reservation_policy": "",
+    "interesting_fact": "",
+    "images": [],
+    "locations": [],
+    "translations": [
+      {
+        "lang": "en",
+        "name": "THE 9 BEST HOTELS IN NORTHERN CHILE",
+        "post_id": "3aace263-c8af-4f41-b333-3dce012f4b8e",
+        "category": null,
+        "subtitle": "ACCORDING TO CHILE ADICTO HOTELES ED TRAVEL",
+        "description": [
+          "Luxury “destination hotels” aren’t exclusive to international travel. Chile is home to many exceptional properties of this kind—and that’s exactly what Chile Adicto Hoteles, the first guide of its kind in the country, aims to highlight. Here, we’ve selected the 9 top hotels in this category located in the north of Chile."
+        ]
+      },
+      {
+        "lang": "es",
+        "name": "LOS 9 MEJORES HOTELES DEL NORTE DE CHILE",
+        "post_id": "3aace263-c8af-4f41-b333-3dce012f4b8e",
+        "category": null,
+        "subtitle": "SEGÚN CHILE ADICTO HOTELES ED VIAJES",
+        "description": [
+          "<p>Los “hoteles destino” de lujo no existen solo en el extranjero. En \nnuestro país tenemos muchos de ellos y eso es lo que busca destacar \nChile Adicto Hoteles, la primera guía de su tipo en Chile. Acá, eligmos \nlos 9 mejores lugares de esta categoría en el norte de Chile.</p>"
+        ]
+      }
+    ],
+    "useful": [
+      {
+        "html": "<br>",
+        "lang": "es",
+        "post_id": "3aace263-c8af-4f41-b333-3dce012f4b8e",
+        "created_at": "2026-03-23T15:38:29.165002+00:00",
+        "updated_at": "2026-03-24T21:08:55.875629+00:00"
+      }
+    ],
+    "category_links": [
+      {
+        "category": {
+          "slug": "prensa",
+          "label_es": "PRENSA"
+        }
+      }
+    ],
+    "communes_links": []
+  },
+  {
+    "slug": "santiagoadicto-en-radio-duna-tercera-parte-de-los-mejores-hoteles-destino-de-chile",
+    "created_at": "2026-03-22T17:01:56.346937+00:00",
+    "site": "chileadicto",
+    "publication_status": "published",
+    "publish_start_at": null,
+    "publish_end_at": null,
+    "featured_image": "https://xtctddbjwmmeirjltatm.supabase.co/storage/v1/object/public/public/uploads/2026/03/1774198903469-radio-duna.webp",
+    "website": null,
+    "website_public": "https://www.duna.cl/podcasts/el-repaso-a-los-mejores-hoteles-de-chile/",
+    "instagram": "",
+    "website_display": "",
+    "instagram_display": "",
+    "email": null,
+    "phone": null,
+    "photos_credit": "",
+    "address": "",
+    "hours": "",
+    "reservation_link": null,
+    "reservation_policy": "",
+    "interesting_fact": "",
+    "images": [],
+    "locations": [],
+    "translations": [
+      {
+        "lang": "en",
+        "name": "EMOL, “HE THOUGHT IT / HE DID IT”",
+        "post_id": "2af62beb-ed0f-41bd-bbf4-58cd52fa362a",
+        "category": null,
+        "subtitle": "PART THREE: CHILE'S TOP DESTINATION HOTELS",
+        "description": [
+          "Rodrigo Guendelman was joined by advertiser and hotel expert Patricio Miñano, who discussed the third part of the list of Chile’s best hotels from Chile Adicto Hoteles."
+        ]
+      },
+      {
+        "lang": "es",
+        "name": "SANTIAGOADICTO EN RADIO DUNA",
+        "post_id": "2af62beb-ed0f-41bd-bbf4-58cd52fa362a",
+        "category": null,
+        "subtitle": "TERCERA PARTE DE LOS MEJORES HOTELES - DESTINO DE CHILE",
+        "description": [
+          "<p>Rodrigo Guendelman estuvo con el publicista y experto en hoteles, \nPatricio Miñano, quien comentó la segunda parte de la lista de los \nmejores hoteles de nuestro país de Chile Adicto hoteles.</p>"
+        ]
+      }
+    ],
+    "useful": [
+      {
+        "html": "<br>",
+        "lang": "es",
+        "post_id": "2af62beb-ed0f-41bd-bbf4-58cd52fa362a",
+        "created_at": "2026-03-22T17:01:56.504186+00:00",
+        "updated_at": "2026-03-24T21:06:58.040438+00:00"
+      }
+    ],
+    "category_links": [
+      {
+        "category": {
+          "slug": "prensa",
+          "label_es": "PRENSA"
+        }
+      }
+    ],
+    "communes_links": []
+  },
+  {
+    "slug": "chile-adicto-hoteles-the-singular-santiago-y-cumbres-lastarria-en-conde-nast-traveler",
+    "created_at": "2026-03-23T15:36:34.296037+00:00",
+    "site": "chileadicto",
+    "publication_status": "published",
+    "publish_start_at": null,
+    "publish_end_at": null,
+    "featured_image": "https://xtctddbjwmmeirjltatm.supabase.co/storage/v1/object/public/public/uploads/2026/03/1774280191086-prensa_lastarrias.webp",
+    "website": null,
+    "website_public": "https://www.traveler.es/articulos/lastarria-barrio-santiago-de-chile",
+    "instagram": "",
+    "website_display": "",
+    "instagram_display": "",
+    "email": null,
+    "phone": null,
+    "photos_credit": "",
+    "address": "",
+    "hours": "",
+    "reservation_link": null,
+    "reservation_policy": "",
+    "interesting_fact": "",
+    "images": [],
+    "locations": [],
+    "translations": [
+      {
+        "lang": "en",
+        "name": "CHILE ADICTO HOTELES +",
+        "post_id": "9539e054-95fc-4cf7-a4b1-01ef1c2197cd",
+        "category": null,
+        "subtitle": "THE SINGULAR SANTIAGO & CUMBRES LASTARRIA IN CONDÉ NAST TRAVELER",
+        "description": [
+          "<p>Marta Sahelices, a prominent contributor to</p>",
+          "<p>Condé Nast Traveler</p>",
+          "<p>—one of the world’s leading travel platforms—visited Chile to learn more about our project and to explore two of our partner hotels in Santiago.</p>"
+        ]
+      },
+      {
+        "lang": "es",
+        "name": "CHILE ADICTO HOTELES +",
+        "post_id": "9539e054-95fc-4cf7-a4b1-01ef1c2197cd",
+        "category": null,
+        "subtitle": "THE SINGULAR SANTIAGO Y CUMBRES LASTARRIA EN CONDE NAST TRAVELER",
+        "description": [
+          "<p>Marta Sahelices, destacada colaboradora de Conde Nast Traveler, unas de \nlas plataformas de viajes mas importantes del mundo, vino a Chile a \ninteriozarse mas acerca de nuestro proyecto, y a visitar dos de nuestros\n socios en Santiago</p>"
+        ]
+      }
+    ],
+    "useful": [
+      {
+        "html": "<br>",
+        "lang": "es",
+        "post_id": "9539e054-95fc-4cf7-a4b1-01ef1c2197cd",
+        "created_at": "2026-03-23T15:37:15.141266+00:00",
+        "updated_at": "2026-03-24T21:04:10.107072+00:00"
+      }
+    ],
+    "category_links": [
+      {
+        "category": {
+          "slug": "prensa",
+          "label_es": "PRENSA"
+        }
+      }
+    ],
+    "communes_links": []
+  },
+  {
+    "slug": "los-6-mejores-hoteles-del-santiago-segun-chile-adicto-hoteles-ed-viajes",
+    "created_at": "2026-03-23T15:40:52.651882+00:00",
+    "site": "chileadicto",
+    "publication_status": "published",
+    "publish_start_at": null,
+    "publish_end_at": null,
+    "featured_image": "https://xtctddbjwmmeirjltatm.supabase.co/storage/v1/object/public/public/uploads/2026/03/1774280428359-10_mejores_hoteles2.webp",
+    "website": null,
+    "website_public": "https://www.ed.cl/archivo/actualidad/escapadas-urbanas-seis-hoteles-en-santiago-para-vivir-la-ciudad/",
+    "instagram": "",
+    "website_display": "",
+    "instagram_display": "",
+    "email": null,
+    "phone": null,
+    "photos_credit": "",
+    "address": "",
+    "hours": "",
+    "reservation_link": null,
+    "reservation_policy": "",
+    "interesting_fact": "",
+    "images": [],
+    "locations": [],
+    "translations": [
+      {
+        "lang": "en",
+        "name": "THE 6 BEST HOTELS IN SANTIAGO",
+        "post_id": "aacbdd45-bfeb-4767-ab44-8b7167dab88d",
+        "category": null,
+        "subtitle": "ACCORDING TO CHILE ADICT HOTELS ED TRAVEL",
+        "description": [
+          "From spas overlooking the Andes to rooftops with fine dining: discover a curated guide by Chile Adicto Hoteles for those seeking unique experiences without leaving the city."
+        ]
+      },
+      {
+        "lang": "es",
+        "name": "LOS 6 MEJORES HOTELES DEL SANTIAGO",
+        "post_id": "aacbdd45-bfeb-4767-ab44-8b7167dab88d",
+        "category": null,
+        "subtitle": "SEGÚN CHILE ADICTO HOTELES ED VIAJES",
+        "description": [
+          "<p>Desde spas con vistas a la cordillera hasta rooftops con gastronomía de \nlujo: descubre una guía curada por Chile Adicto Hoteles para quienes \nbuscan experiencias únicas sin salir de la ciudad.</p>"
+        ]
+      }
+    ],
+    "useful": [
+      {
+        "html": "<br>",
+        "lang": "es",
+        "post_id": "aacbdd45-bfeb-4767-ab44-8b7167dab88d",
+        "created_at": "2026-03-23T15:40:52.85347+00:00",
+        "updated_at": "2026-03-24T21:05:02.197959+00:00"
+      }
+    ],
+    "category_links": [
+      {
+        "category": {
+          "slug": "prensa",
+          "label_es": "PRENSA"
+        }
+      }
+    ],
+    "communes_links": []
+  },
+  {
+    "slug": "santiagoadicto-en-radio-duna-segunda-parte-de-los-mejores-hoteles-destino-de-chile",
+    "created_at": "2026-03-23T15:22:31.277098+00:00",
+    "site": "chileadicto",
+    "publication_status": "published",
+    "publish_start_at": null,
+    "publish_end_at": null,
+    "featured_image": "https://xtctddbjwmmeirjltatm.supabase.co/storage/v1/object/public/public/uploads/2026/03/1774279313722-radio-duna.webp",
+    "website": null,
+    "website_public": "https://www.duna.cl/podcasts/el-repaso-a-los-mejores-hoteles-de-chile/",
+    "instagram": "",
+    "website_display": "",
+    "instagram_display": "",
+    "email": null,
+    "phone": null,
+    "photos_credit": "",
+    "address": "",
+    "hours": "",
+    "reservation_link": null,
+    "reservation_policy": "",
+    "interesting_fact": "",
+    "images": [],
+    "locations": [],
+    "translations": [
+      {
+        "lang": "en",
+        "name": "EMOL, “HE THOUGHT IT / HE DID IT”",
+        "post_id": "41800526-8b3d-4514-97b6-7ac3b7847cf4",
+        "category": null,
+        "subtitle": "WITH PATRICIO MIÑANO AND CHILEADICTOHOTELES",
+        "description": [
+          "<p>Rodrigo Guendelman was joined by advertiser and hotel expert Patricio Miñano, who discussed the second part of the list of Chile’s best hotels from Chile Adicto Hoteles.</p>"
+        ]
+      },
+      {
+        "lang": "es",
+        "name": "SANTIAGOADICTO EN RADIO DUNA",
+        "post_id": "41800526-8b3d-4514-97b6-7ac3b7847cf4",
+        "category": null,
+        "subtitle": "SEGUNDA PARTE DE LOS MEJORES HOTELES - DESTINO DE CHILE",
+        "description": [
+          "<p>Rodrigo Guendelman estuvo con el publicista y experto en hoteles, \nPatricio Miñano, quien comentó la segunda parte de la lista de los \nmejores hoteles de nuestro país de Chile Adicto hoteles.</p>"
+        ]
+      }
+    ],
+    "useful": [
+      {
+        "html": "<br>",
+        "lang": "es",
+        "post_id": "41800526-8b3d-4514-97b6-7ac3b7847cf4",
+        "created_at": "2026-03-23T15:22:31.554306+00:00",
+        "updated_at": "2026-03-24T20:52:51.271866+00:00"
+      }
+    ],
+    "category_links": [
+      {
+        "category": {
+          "slug": "prensa",
+          "label_es": "PRENSA"
+        }
+      }
+    ],
+    "communes_links": []
+  },
+  {
+    "slug": "chile-adicto-hoteles-casamolle-elqui-en-conde-nast-traveler",
+    "created_at": "2026-03-23T15:33:46.039439+00:00",
+    "site": "chileadicto",
+    "publication_status": "published",
+    "publish_start_at": null,
+    "publish_end_at": null,
+    "featured_image": "https://xtctddbjwmmeirjltatm.supabase.co/storage/v1/object/public/public/uploads/2026/03/1774280020689-portadas-prensa-casamolle.webp",
+    "website": null,
+    "website_public": "https://www.traveler.es/articulos/valle-del-elqui-experiencias-bajo-las-estrellas-en-chile",
+    "instagram": "",
+    "website_display": "",
+    "instagram_display": "",
+    "email": null,
+    "phone": null,
+    "photos_credit": "",
+    "address": "",
+    "hours": "",
+    "reservation_link": null,
+    "reservation_policy": "",
+    "interesting_fact": "",
+    "images": [],
+    "locations": [],
+    "translations": [
+      {
+        "lang": "en",
+        "name": "CHILE ADICTO HOTELES +",
+        "post_id": "593be6ea-3213-4a37-9e8f-434c21b35a2e",
+        "category": null,
+        "subtitle": "CASAMOLLE ELQUI FEATURED IN CONDÉ NAST TRAVELER",
+        "description": [
+          "Thanks to the efforts of Chile Adicto Hoteles, Marta Sahelices — a prominent contributor to Condé Nast Traveler, one of the most renowned travel platforms in the world — visited Chile to learn more about our project and explore two of our partner hotels.",
+          "Here is the first of three articles to be published."
+        ]
+      },
+      {
+        "lang": "es",
+        "name": "CHILE ADICTO HOTELES +",
+        "post_id": "593be6ea-3213-4a37-9e8f-434c21b35a2e",
+        "category": null,
+        "subtitle": "CASAMOLLE ELQUI EN CONDE NAST TRAVELER",
+        "description": [
+          "<p>Gracias a la gestión de Chile Adicto Hoteles, Marta Sahelices, \ndestacada colaboradora de Conde Nast Traveler, unas de las plataformas \nde viajes mas importantes del mundo, vino a Chile a interiozarse mas \nacerca de nuestro proyecto, y a visitar dos de nuestros socios.</p>",
+          "<p>Aquí la primera nota de 3 que saldrán al aire.</p>"
+        ]
+      }
+    ],
+    "useful": [
+      {
+        "html": "<br>",
+        "lang": "es",
+        "post_id": "593be6ea-3213-4a37-9e8f-434c21b35a2e",
+        "created_at": "2026-03-23T15:34:05.540094+00:00",
+        "updated_at": "2026-03-24T21:00:28.813487+00:00"
+      }
+    ],
+    "category_links": [
+      {
+        "category": {
+          "slug": "prensa",
+          "label_es": "PRENSA"
+        }
+      }
+    ],
+    "communes_links": []
+  },
+  {
+    "slug": "chile-adicto-hoteles-mari-mari-natural-reserve-en-conde-nast-traveler",
+    "created_at": "2026-03-23T15:35:00.839276+00:00",
+    "site": "chileadicto",
+    "publication_status": "published",
+    "publish_start_at": null,
+    "publish_end_at": null,
+    "featured_image": "https://xtctddbjwmmeirjltatm.supabase.co/storage/v1/object/public/public/uploads/2026/03/1774280099573-portadas-travel.webp",
+    "website": null,
+    "website_public": "https://www.traveler.es/hotels/los-muermos-los-lagos/hotel-mari-mari-reserva-natural-patagonia-chile",
+    "instagram": "",
+    "website_display": "",
+    "instagram_display": "",
+    "email": null,
+    "phone": null,
+    "photos_credit": "",
+    "address": "",
+    "hours": "",
+    "reservation_link": null,
+    "reservation_policy": "",
+    "interesting_fact": "",
+    "images": [],
+    "locations": [],
+    "translations": [
+      {
+        "lang": "en",
+        "name": "CHILE ADICTO HOTELES +",
+        "post_id": "d7710307-5b92-42d2-9fd7-98f506831d68",
+        "category": null,
+        "subtitle": "MARI MARI NATURAL RESERVE IN CONDE NAST TRAVELER",
+        "description": [
+          "Thanks to the efforts of Chile Adicto Hoteles, Marta Sahelices — a prominent contributor to Conde Nast Traveler, one of the most important travel platforms in the world — came to Chile to learn more about our project and to visit two of our partner properties."
+        ]
+      },
+      {
+        "lang": "es",
+        "name": "CHILE ADICTO HOTELES +",
+        "post_id": "d7710307-5b92-42d2-9fd7-98f506831d68",
+        "category": null,
+        "subtitle": "MARI MARI NATURAL RESERVE EN CONDE NAST TRAVELER",
+        "description": [
+          "<p>Gracias a la gestión de Chile Adicto Hoteles, Marta Sahelices, destacada\n colaboradora de Conde Nast Traveler, unas de las plataformas de viajes \nmas importantes del mundo, vino a Chile a interiozarse mas acerca de \nnuestro proyecto, y a visitar dos de nuestros socios.</p>"
+        ]
+      }
+    ],
+    "useful": [
+      {
+        "html": "<br>",
+        "lang": "es",
+        "post_id": "d7710307-5b92-42d2-9fd7-98f506831d68",
+        "created_at": "2026-03-23T15:35:28.815685+00:00",
+        "updated_at": "2026-03-24T21:03:05.967175+00:00"
+      }
+    ],
+    "category_links": [
+      {
+        "category": {
+          "slug": "prensa",
+          "label_es": "PRENSA"
+        }
+      }
+    ],
+    "communes_links": []
+  },
+  {
+    "slug": "santiagoadicto-en-radio-duna-primera-parte-los-mejores-hoteles-destino-de-chile",
+    "created_at": "2026-03-23T15:23:29.970147+00:00",
+    "site": "chileadicto",
+    "publication_status": "published",
+    "publish_start_at": null,
+    "publish_end_at": null,
+    "featured_image": "https://xtctddbjwmmeirjltatm.supabase.co/storage/v1/object/public/public/uploads/2026/03/1774279371596-radio-duna.webp",
+    "website": null,
+    "website_public": "https://www.duna.cl/podcasts/los-mejores-hoteles-destino-de-chile/",
+    "instagram": "",
+    "website_display": "",
+    "instagram_display": "",
+    "email": null,
+    "phone": null,
+    "photos_credit": "",
+    "address": "",
+    "hours": "",
+    "reservation_link": null,
+    "reservation_policy": "",
+    "interesting_fact": "",
+    "images": [],
+    "locations": [],
+    "translations": [
+      {
+        "lang": "en",
+        "name": "SANTIAGOADICTO ON RADIO DUNA",
+        "post_id": "1975625c-9ed5-49a8-8840-75a2acd857fc",
+        "category": null,
+        "subtitle": "CHILE'S TOP DESTINATION HOTELS",
+        "description": [
+          "Rodrigo Guendelman was joined by advertiser and hotel expert Patricio Miñano, who shared insights on the first part of the list of Chile’s best hotels from Chile Adicto Hoteles."
+        ]
+      },
+      {
+        "lang": "es",
+        "name": "SANTIAGOADICTO EN RADIO DUNA",
+        "post_id": "1975625c-9ed5-49a8-8840-75a2acd857fc",
+        "category": null,
+        "subtitle": "PRIMERA PARTE LOS MEJORES HOTELES - DESTINO DE CHILE",
+        "description": [
+          "<p>Rodrigo Guendelman estuvo con el publicista y experto en hoteles, \nPatricio Miñano, quien comentó la primera parte de la lista de los \nmejores hoteles de nuestro país de Chile Adicto hoteles.</p>"
+        ]
+      }
+    ],
+    "useful": [
+      {
+        "html": "<br>",
+        "lang": "es",
+        "post_id": "1975625c-9ed5-49a8-8840-75a2acd857fc",
+        "created_at": "2026-03-23T15:23:30.216542+00:00",
+        "updated_at": "2026-03-24T20:48:25.635237+00:00"
+      }
+    ],
+    "category_links": [
+      {
+        "category": {
+          "slug": "prensa",
+          "label_es": "PRENSA"
+        }
+      }
+    ],
+    "communes_links": []
+  },
+  {
+    "slug": "los-13-mejores-hoteles-en-el-centro-de-chile-segun-chile-adicto-hoteles-ed-viajes",
+    "created_at": "2026-03-23T15:42:09.443468+00:00",
+    "site": "chileadicto",
+    "publication_status": "published",
+    "publish_start_at": null,
+    "publish_end_at": null,
+    "featured_image": "https://xtctddbjwmmeirjltatm.supabase.co/storage/v1/object/public/public/uploads/2026/03/1774280501657-portada-ed-13-centro-de-chiel.webp",
+    "website": null,
+    "website_public": "https://www.ed.cl/archivo/viajes/hoteles-en-el-centro-de-chile-para-desconectar-entre-vinas-mar-y-montana/",
+    "instagram": "",
+    "website_display": "",
+    "instagram_display": "",
+    "email": null,
+    "phone": null,
+    "photos_credit": "",
+    "address": "",
+    "hours": "",
+    "reservation_link": null,
+    "reservation_policy": "",
+    "interesting_fact": "",
+    "images": [],
+    "locations": [],
+    "translations": [
+      {
+        "lang": "en",
+        "name": "THE 13 BEST HOTELS IN CENTRAL CHILE",
+        "post_id": "f8211bcd-82ab-45d2-9c25-ba4fa9659180",
+        "category": null,
+        "subtitle": "ACCORDING TO CHILE ADICTO HOTELES ED TRAVEL",
+        "description": [
+          "<p>Luxury “destination hotels” are not exclusive to abroad. In Chile, we have many of them, and that is exactly what Chile Adicto Hoteles, the first guide of its kind in the country, seeks to highlight. Here, in collaboration with</p>",
+          "<p>Revista ED</p>",
+          "<p>, we showcase the 13 best destinations of this category in central Chile.</p>"
+        ]
+      },
+      {
+        "lang": "es",
+        "name": "LOS 13 MEJORES HOTELES EN EL CENTRO DE CHILE",
+        "post_id": "f8211bcd-82ab-45d2-9c25-ba4fa9659180",
+        "category": null,
+        "subtitle": "SEGÚN CHILE ADICTO HOTELES ED VIAJES",
+        "description": [
+          "<p>Los “hoteles destino” de lujo no existen solo en el extranjero. En \nnuestro país tenemos muchos de ellos y eso es lo que busca destacar \nChile Adicto Hoteles, la primera guía de su tipo en Chile. Acá, elegimos\n los 13 mejores lugares de esta categoría en el centro de Chile, en \ncolaboración con revista ED.</p>"
+        ]
+      }
+    ],
+    "useful": [
+      {
+        "html": "<br>",
+        "lang": "es",
+        "post_id": "f8211bcd-82ab-45d2-9c25-ba4fa9659180",
+        "created_at": "2026-03-23T15:42:09.678066+00:00",
+        "updated_at": "2026-03-24T21:10:57.057593+00:00"
+      }
+    ],
+    "category_links": [
+      {
+        "category": {
+          "slug": "prensa",
+          "label_es": "PRENSA"
+        }
+      }
+    ],
+    "communes_links": []
+  },
+  {
+    "slug": "patricio-minano-en-money-talks-2",
+    "created_at": "2026-03-23T15:26:21.202002+00:00",
+    "site": "chileadicto",
+    "publication_status": "published",
+    "publish_start_at": null,
+    "publish_end_at": null,
+    "featured_image": "https://xtctddbjwmmeirjltatm.supabase.co/storage/v1/object/public/public/uploads/2026/03/1774279562478-portadas_MT.webp",
+    "website": null,
+    "website_public": "https://www.latercera.com/videopodcast/money-talks/los-imperdibles-tesoros-hoteleros-del-norte-de-chile/",
+    "instagram": "",
+    "website_display": "",
+    "instagram_display": "",
+    "email": null,
+    "phone": null,
+    "photos_credit": "",
+    "address": "",
+    "hours": "",
+    "reservation_link": null,
+    "reservation_policy": "",
+    "interesting_fact": "",
+    "images": [],
+    "locations": [],
+    "translations": [
+      {
+        "lang": "en",
+        "name": "PATRICIO MIÑANO ON MONEY TALKS 2",
+        "post_id": "e3d584f7-2101-448d-adf0-49ac9b7c0c88",
+        "category": null,
+        "subtitle": "NEW TREASURES OF CHILEAN HOSPITALITY",
+        "description": [
+          "<p>In a new episode of Money Talks, we had a conversation with publicist Patricio Miñano, founder of Chile Adicto Hoteles, about his website and the best hotels in the northern part of the country. While it includes major hotel brands, it also features “treasures” of hospitality—less conventional accommodations that combine unique architecture, gastronomy, design, and stunning landscapes.</p>"
+        ]
+      },
+      {
+        "lang": "es",
+        "name": "PATRICIO MIÑANO EN MONEY TALKS 2",
+        "post_id": "e3d584f7-2101-448d-adf0-49ac9b7c0c88",
+        "category": null,
+        "subtitle": "NUEVOS TESOROS DE LA HOTELERÍA CHILENA",
+        "description": [
+          "<p>En un nuevo capítulo de Money Talks, conversamos con el publicista \nPatricio Miñano, fundador de Chile Adicto Hoteles, respecto a su página \nweb y los mejores hoteles al norte del país, que si bien contiene las \ngrandes marcas, también ofrece “tesoros” hoteleros, es decir, \nalojamientos menos típicos, pero que combinan una arquitectura, \ngastronomía, diseño y paisajes únicos.</p>"
+        ]
+      }
+    ],
+    "useful": [
+      {
+        "html": "<br>",
+        "lang": "es",
+        "post_id": "e3d584f7-2101-448d-adf0-49ac9b7c0c88",
+        "created_at": "2026-03-23T15:26:21.393081+00:00",
+        "updated_at": "2026-03-24T21:07:56.545418+00:00"
+      }
+    ],
+    "category_links": [
+      {
+        "category": {
+          "slug": "prensa",
+          "label_es": "PRENSA"
+        }
+      }
+    ],
+    "communes_links": []
+  },
+  {
+    "slug": "los-14-mejores-hoteles-en-el-sur-de-chile-segun-chile-adicto-hoteles-ed-viajes",
+    "created_at": "2026-03-23T15:43:11.531792+00:00",
+    "site": "chileadicto",
+    "publication_status": "published",
+    "publish_start_at": null,
+    "publish_end_at": null,
+    "featured_image": "https://xtctddbjwmmeirjltatm.supabase.co/storage/v1/object/public/public/uploads/2026/03/1774280564993-portadas-1.webp",
+    "website": null,
+    "website_public": "https://www.ed.cl/archivo/viajes/hoteles-en-el-sur-de-chile-para-reconectar-entre-lagos-bosques-y-paisajes-inolvidables/",
+    "instagram": "",
+    "website_display": "",
+    "instagram_display": "",
+    "email": null,
+    "phone": null,
+    "photos_credit": "",
+    "address": "",
+    "hours": "",
+    "reservation_link": null,
+    "reservation_policy": "",
+    "interesting_fact": "",
+    "images": [],
+    "locations": [],
+    "translations": [
+      {
+        "lang": "en",
+        "name": "THE 14 BEST HOTELS IN SOUTHERN CHILE",
+        "post_id": "0b8e8bfd-bf5f-487a-b8f0-4b41b01e38e7",
+        "category": null,
+        "subtitle": "ACCORDING TO CHILE ADICTO HOTELES ED TRAVEL",
+        "description": [
+          "“Destination” luxury hotels don’t exist only abroad. In our country we have many of them, and that’s exactly what Chile Adicto Hoteles —the first guide of its kind in Chile— seeks to highlight. Here, we’ve selected the 14 best places in this category in Southern Chile, in collaboration with ED magazine."
+        ]
+      },
+      {
+        "lang": "es",
+        "name": "LOS 14 MEJORES HOTELES EN EL SUR DE CHILE",
+        "post_id": "0b8e8bfd-bf5f-487a-b8f0-4b41b01e38e7",
+        "category": null,
+        "subtitle": "SEGÚN CHILE ADICTO HOTELES ED VIAJES",
+        "description": [
+          "<p>Los “hoteles destino” de lujo no existen solo en el extranjero. En \nnuestro país tenemos muchos de ellos y eso es lo que busca destacar \nChile Adicto Hoteles, la primera guía de su tipo en Chile. Acá, elegimos\n los 14mejores lugares de esta categoría en el Sur de Chile, en \ncolaboración con revista ED.</p>"
+        ]
+      }
+    ],
+    "useful": [
+      {
+        "html": "<br>",
+        "lang": "es",
+        "post_id": "0b8e8bfd-bf5f-487a-b8f0-4b41b01e38e7",
+        "created_at": "2026-03-23T15:43:11.828362+00:00",
+        "updated_at": "2026-03-24T21:10:03.099691+00:00"
+      }
+    ],
+    "category_links": [
+      {
+        "category": {
+          "slug": "prensa",
+          "label_es": "PRENSA"
+        }
+      }
+    ],
+    "communes_links": []
+  },
+  {
+    "slug": "santiagoadicto-en-radio-duna-cuarta-parte-de-los-mejores-hoteles-destino-de-chile",
+    "created_at": "2026-02-24T15:32:59.866065+00:00",
+    "site": "chileadicto",
+    "publication_status": "published",
+    "publish_start_at": "2026-03-05T16:01:00+00:00",
+    "publish_end_at": "2026-03-22T16:01:00+00:00",
+    "featured_image": "https://xtctddbjwmmeirjltatm.supabase.co/storage/v1/object/public/public/uploads/2026/02/1771947153034-radio-duna.webp",
+    "website": null,
+    "website_public": "https://www.ed.cl/archivo/viajes/patagonia-imprescindible-nueve-alojamientos-para-vivir-el-extremo-sur-en-su-estado-mas-puro/",
+    "instagram": "",
+    "website_display": "",
+    "instagram_display": "",
+    "email": null,
+    "phone": null,
+    "photos_credit": "",
+    "address": "",
+    "hours": "",
+    "reservation_link": "https://www.ed.cl/archivo/viajes/patagonia-imprescindible-nueve-alojamientos-para-vivir-el-extremo-sur-en-su-estado-mas-puro/",
+    "reservation_policy": "",
+    "interesting_fact": "",
+    "images": [],
+    "locations": [],
+    "translations": [
+      {
+        "lang": "en",
+        "name": "EMOL, “HE THOUGHT IT / HE DID IT”",
+        "post_id": "54fed5d3-52a3-44a9-abd2-d9f7c92f5fdf",
+        "category": null,
+        "subtitle": "FOURTH PART: CHILE'S TOP DESTINATION HOTELS",
+        "description": [
+          "Rodrigo Guendelman was joined by advertiser and hotel expert Patricio Miñano, who shared insights on the fourth part of the list of Chile’s best hotels from Chile Adicto Hoteles."
+        ]
+      },
+      {
+        "lang": "es",
+        "name": "SANTIAGOADICTO EN RADIO DUNA",
+        "post_id": "54fed5d3-52a3-44a9-abd2-d9f7c92f5fdf",
+        "category": null,
+        "subtitle": "CUARTA PARTE DE LOS MEJORES HOTELES DESTINO DE CHILE",
+        "description": [
+          "<p>Rodrigo Guendelman estuvo con el publicista y experto en hoteles, Patricio Miñano, quien comentó la cuarta parte de la lista de los mejores hoteles de nuestro país de Chile Adicto hoteles.</p>"
+        ]
+      }
+    ],
+    "useful": [],
+    "category_links": [
+      {
+        "category": {
+          "slug": "prensa",
+          "label_es": "PRENSA"
+        }
+      }
+    ],
+    "communes_links": []
+  },
+  {
+    "slug": "patricio-minano-en-money-talks-seis-de-los-mejores-hoteles-que-ofrece-la-patagonia-chilena",
+    "created_at": "2026-03-23T15:27:45.612549+00:00",
+    "site": "chileadicto",
+    "publication_status": "published",
+    "publish_start_at": null,
+    "publish_end_at": null,
+    "featured_image": "https://xtctddbjwmmeirjltatm.supabase.co/storage/v1/object/public/public/uploads/2026/03/1774279658108-meny-talk.webp",
+    "website": null,
+    "website_public": "https://www.latercera.com/videopodcast/money-talks/guide-desk-los-seis-mejores-hoteles-que-ofrece-la-patagonia-chilena/",
+    "instagram": "",
+    "website_display": "",
+    "instagram_display": "",
+    "email": null,
+    "phone": null,
+    "photos_credit": "",
+    "address": "",
+    "hours": "",
+    "reservation_link": null,
+    "reservation_policy": "",
+    "interesting_fact": "",
+    "images": [],
+    "locations": [],
+    "translations": [
+      {
+        "lang": "en",
+        "name": "PATRICIO MIÑANO ON MONEY TALKS",
+        "post_id": "c67f84ce-cfcb-4c93-9828-378d3c65323f",
+        "category": null,
+        "subtitle": "SIX OF THE BEST HOTELS IN CHILEAN PATAGONIA",
+        "description": [
+          "In a new episode of Money Talks, we spoke with advertising professional Patricio Miñano about one of his editorial products, Chile Adicto Hoteles, a luxury printed guide that brings together the best hotels in Chile and Latin America. The discussion delves into the most outstanding hotel services in Chilean Patagonia, one of the country’s most breathtaking tourist destinations."
+        ]
+      },
+      {
+        "lang": "es",
+        "name": "PATRICIO MIÑANO EN MONEY TALKS",
+        "post_id": "c67f84ce-cfcb-4c93-9828-378d3c65323f",
+        "category": null,
+        "subtitle": "SEIS DE LOS MEJORES HOTELES QUE OFRECE LA PATAGONIA CHILENA",
+        "description": [
+          "<p>En un nuevo capítulo de Money Talks, conversamos con el publicista \nPatricio Miñano, respecto a uno de sus productos editoriales, Chile \nAdicto Hoteles, una guía impresa de lujo que reúne los mejores hoteles \nde Chile y Latinoamérica, para profundizar en los servicios hoteleros \nmás destacados de la Patagonia chilena, que es uno de los lugares \nturísticos más impresionantes del país.</p>"
+        ]
+      }
+    ],
+    "useful": [
+      {
+        "html": "<br>",
+        "lang": "es",
+        "post_id": "c67f84ce-cfcb-4c93-9828-378d3c65323f",
+        "created_at": "2026-03-23T15:27:45.847753+00:00",
+        "updated_at": "2026-03-24T20:53:35.960912+00:00"
+      }
+    ],
+    "category_links": [
+      {
+        "category": {
+          "slug": "prensa",
+          "label_es": "PRENSA"
+        }
+      }
+    ],
+    "communes_links": []
+  }
+]

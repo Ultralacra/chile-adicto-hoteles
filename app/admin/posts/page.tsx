@@ -17,7 +17,10 @@ import {
 } from "@/components/ui/pagination";
 import { Spinner } from "@/components/ui/spinner";
 import { useAdminApi } from "@/hooks/use-admin-api";
-import { getPostPublicationBadge } from "@/lib/post-publication";
+import {
+  getPostPublicationBadge,
+  hasPostPublicationEnded,
+} from "@/lib/post-publication";
 
 export default function PostsListPage() {
   const router = useRouter();
@@ -25,6 +28,9 @@ export default function PostsListPage() {
   const [query, setQuery] = useState("");
   const [category, setCategory] = useState<string>("ALL");
   const [selectedComuna, setSelectedComuna] = useState<string | null>(null);
+  const [publicationDateFilter, setPublicationDateFilter] = useState<
+    "ALL" | "NOT_ENDED" | "ENDED"
+  >("ALL");
   const categoryIcons: Record<string, string> = {
     ALL: "🌐",
     NIÑOS: "🧒",
@@ -211,10 +217,21 @@ export default function PostsListPage() {
       return comms.includes(selectedComuna);
     };
 
+    const matchesPublicationDate = (h: any) => {
+      if (publicationDateFilter === "ALL") return true;
+      const ended = hasPostPublicationEnded(h);
+      if (publicationDateFilter === "ENDED") return ended;
+      return !ended;
+    };
+
     return hotelsData.filter(
-      (h) => matchesQuery(h) && matchesCategory(h) && matchesComuna(h),
+      (h) =>
+        matchesQuery(h) &&
+        matchesCategory(h) &&
+        matchesComuna(h) &&
+        matchesPublicationDate(h),
     );
-  }, [query, category, hotelsData, selectedComuna]);
+  }, [query, category, hotelsData, selectedComuna, publicationDateFilter]);
 
   const availableRestaurantCommunes = useMemo(() => {
     if (category !== "RESTAURANTES") return [] as string[];
@@ -331,6 +348,56 @@ export default function PostsListPage() {
             </div>
           </div>
 
+          <div className="pt-2">
+            <p className="text-xs font-medium text-gray-500 mb-2 uppercase tracking-wide">
+              Filtrar por fecha de publicación
+            </p>
+            <div className="flex flex-wrap gap-2">
+              <button
+                onClick={() => {
+                  setPublicationDateFilter("ALL");
+                  setPage(1);
+                }}
+                className={`border rounded-md px-3 py-2 text-xs font-medium transition-all focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 ${
+                  publicationDateFilter === "ALL"
+                    ? "bg-red-600 text-white border-red-600 shadow"
+                    : "bg-white text-gray-700 border-gray-200 hover:border-gray-300"
+                }`}
+                aria-pressed={publicationDateFilter === "ALL"}
+              >
+                TODAS
+              </button>
+              <button
+                onClick={() => {
+                  setPublicationDateFilter("NOT_ENDED");
+                  setPage(1);
+                }}
+                className={`border rounded-md px-3 py-2 text-xs font-medium transition-all focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 ${
+                  publicationDateFilter === "NOT_ENDED"
+                    ? "bg-red-600 text-white border-red-600 shadow"
+                    : "bg-white text-gray-700 border-gray-200 hover:border-gray-300"
+                }`}
+                aria-pressed={publicationDateFilter === "NOT_ENDED"}
+              >
+                NO VENCIDAS
+              </button>
+              <button
+                onClick={() => {
+                  setPublicationDateFilter("ENDED");
+                  setPage(1);
+                }}
+                className={`border rounded-md px-3 py-2 text-xs font-medium transition-all focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 ${
+                  publicationDateFilter === "ENDED"
+                    ? "bg-red-600 text-white border-red-600 shadow"
+                    : "bg-white text-gray-700 border-gray-200 hover:border-gray-300"
+                }`}
+                aria-pressed={publicationDateFilter === "ENDED"}
+              >
+                VENCIDAS
+              </button>
+            </div>
+          </div>
+
           {category === "RESTAURANTES" && (
             <div className="pt-2">
               <p className="text-xs font-medium text-gray-500 mb-2 uppercase tracking-wide">
@@ -390,14 +457,27 @@ export default function PostsListPage() {
             </div>
           )}
 
-          {category !== "ALL" && (
+          {(category !== "ALL" || publicationDateFilter !== "ALL") && (
             <div className="flex flex-wrap items-center gap-2 pt-1">
               <span className="text-xs text-gray-500">Mostrando:</span>
-              <span className="text-xs font-semibold px-2 py-1 bg-red-50 text-red-700 rounded">
-                {category}
-              </span>
+              {category !== "ALL" && (
+                <span className="text-xs font-semibold px-2 py-1 bg-red-50 text-red-700 rounded">
+                  {category}
+                </span>
+              )}
+              {publicationDateFilter !== "ALL" && (
+                <span className="text-xs font-semibold px-2 py-1 bg-red-50 text-red-700 rounded">
+                  {publicationDateFilter === "ENDED"
+                    ? "VENCIDAS"
+                    : "NO VENCIDAS"}
+                </span>
+              )}
               <button
-                onClick={() => setCategory("ALL")}
+                onClick={() => {
+                  setCategory("ALL");
+                  setPublicationDateFilter("ALL");
+                  setPage(1);
+                }}
                 className="text-xs text-blue-600 hover:underline"
               >
                 Quitar filtro

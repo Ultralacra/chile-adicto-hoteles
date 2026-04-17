@@ -888,6 +888,38 @@ export default function CategoryPage({ params }: { params: any }) {
       mobileSrc: "/bannersagenda/BANNER MOVIL AGENDA 27 AL 3  DE MAYO.png",
       alt: "Agenda Cultural del 27 de abril al 3 de mayo",
     },
+    {
+      start: "2026-05-04",
+      end: "2026-05-10",
+      href: "/agenda-cultural",
+      src: "/bannersagenda/DESKTOP AGENDA 4 AL 10 DE MAYO.png",
+      mobileSrc: "/bannersagenda/MOVIL AGENDA 4 AL 10 DE MAYO.png",
+      alt: "Agenda Cultural del 4 al 10 de mayo",
+    },
+    {
+      start: "2026-05-11",
+      end: "2026-05-17",
+      href: "/agenda-cultural",
+      src: "/bannersagenda/DESKTOP AGENDA 11 AL 17 DE MAYO.png",
+      mobileSrc: "/bannersagenda/MOVIL AGENDA 11 AL 17 DE MAYO.png",
+      alt: "Agenda Cultural del 11 al 17 de mayo",
+    },
+    {
+      start: "2026-05-18",
+      end: "2026-05-24",
+      href: "/agenda-cultural",
+      src: "/bannersagenda/DESKTOP AGENDA 18 AL 24 DE MAYO.png",
+      mobileSrc: "/bannersagenda/MOVIL AGENDA 18 AL 24 DE MAYO.png",
+      alt: "Agenda Cultural del 18 al 24 de mayo",
+    },
+    {
+      start: "2026-05-25",
+      end: "2026-05-31",
+      href: "/agenda-cultural",
+      src: "/bannersagenda/DESKTOP AGENDA 25 AL 31 DE MAYO.png",
+      mobileSrc: "/bannersagenda/MOVIL AGENDA 25 AL 31 DE MAYO.png",
+      alt: "Agenda Cultural del 25 al 31 de mayo",
+    },
   ];
 
   const todayKey = toLocalDateKey(new Date());

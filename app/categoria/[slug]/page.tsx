@@ -959,7 +959,10 @@ export default function CategoryPage({ params }: { params: any }) {
             const postSlug = String(h?.slug || "")
               .trim()
               .toLowerCase();
-            if (repeatingAgendaWeeklySlugs.has(postSlug)) return true;
+            const isAprilRange = range.end <= "2026-04-30";
+            if (isAprilRange && repeatingAgendaWeeklySlugs.has(postSlug)) {
+              return true;
+            }
 
             // Excluir posts cuya publicación ya terminó
             if (hasPostPublicationEnded(h)) return false;

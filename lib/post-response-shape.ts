@@ -43,6 +43,12 @@ export function ensureLegacyPostShape(post: any) {
       category: post?.en?.category ?? null,
     },
     categories: Array.isArray(post?.categories) ? post.categories : [],
+    categoryFeaturedImages:
+      post?.categoryFeaturedImages &&
+      typeof post.categoryFeaturedImages === "object" &&
+      !Array.isArray(post.categoryFeaturedImages)
+        ? post.categoryFeaturedImages
+        : {},
     communes: Array.isArray(post?.communes) ? post.communes : [],
   };
 }
@@ -88,6 +94,10 @@ export function mergeLegacyPostMissingValues(primaryPost: any, fallbackPost: any
     images: pickArray(primary.images, fallback.images),
     locations: pickArray(primary.locations, fallback.locations),
     categories: pickArray(primary.categories, fallback.categories),
+    categoryFeaturedImages:
+      primary.categoryFeaturedImages && Object.keys(primary.categoryFeaturedImages).length > 0
+        ? primary.categoryFeaturedImages
+        : fallback.categoryFeaturedImages || {},
     communes: pickArray(primary.communes, fallback.communes),
     es: {
       ...primary.es,

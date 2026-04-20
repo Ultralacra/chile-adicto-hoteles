@@ -35,6 +35,11 @@ export const postSchema = z.object({
   featuredImage: z.string().optional(),
   images: z.array(z.string()).optional(),
   categories: z.array(z.string().min(1)).optional(),
+  // Imagen destacada por categoría (override opcional). Clave = slug de la categoría.
+  // Valor = URL pública. Cadena vacía / null => usar la imagen destacada global.
+  categoryFeaturedImages: z
+    .record(z.string(), z.union([z.string(), z.null()]))
+    .optional(),
   communes: z.array(z.string().min(1)).optional(),
   publicationStatus: z.enum(["published", "unpublished"]).optional(),
   publishStartAt: z

@@ -33,6 +33,22 @@ export function normalizePost(input: PostInput): PostInput {
   const esDesc = Array.isArray(esIn.description) ? esIn.description : [];
   const enDesc = Array.isArray(enIn.description) ? enIn.description : [];
   const catsIn = Array.isArray((input as any).categories) ? (input as any).categories : [];
+  const catFeaturedIn = (input as any).categoryFeaturedImages;
+  const normalizedCategoryFeaturedImages: Record<string, string | null> | undefined = (() => {
+    if (!catFeaturedIn || typeof catFeaturedIn !== "object" || Array.isArray(catFeaturedIn)) return undefined;
+    const out: Record<string, string | null> = {};
+    for (const [key, raw] of Object.entries(catFeaturedIn as Record<string, unknown>)) {
+      const slug = String(key || "").trim().toLowerCase();
+      if (!slug) continue;
+      if (raw === null || raw === undefined) {
+        out[slug] = null;
+        continue;
+      }
+      const value = String(raw).trim();
+      out[slug] = value ? value : null;
+    }
+    return out;
+  })();
   const communesIn = Array.isArray((input as any).communes) ? (input as any).communes : [];
   const locsIn = Array.isArray((input as any).locations) ? (input as any).locations : [];
   const rawPublicationStatus = String((input as any)?.publicationStatus || "").trim().toLowerCase();
@@ -110,6 +126,7 @@ export function normalizePost(input: PostInput): PostInput {
       description: enDesc.map((p: any) => String(p).trim()).filter(Boolean),
     },
     categories: catsIn.map((c: any) => String(c).trim()).filter(Boolean),
+    categoryFeaturedImages: normalizedCategoryFeaturedImages,
     communes: Array.from(
       new Set(communesIn.map((c: any) => String(c).trim()).filter(Boolean))
     ),

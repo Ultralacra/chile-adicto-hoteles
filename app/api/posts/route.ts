@@ -213,6 +213,14 @@ function mapRowToLegacy(row: any) {
   const categories = Array.isArray(row.category_links)
     ? row.category_links.map((r: any) => r.category?.label_es || r.category?.slug).filter(Boolean)
     : [];
+  const categoryFeaturedImages: Record<string, string> = {};
+  if (Array.isArray(row.category_links)) {
+    for (const link of row.category_links) {
+      const catSlug = String(link?.category?.slug || "").trim().toLowerCase();
+      const img = String(link?.featured_image || "").trim();
+      if (catSlug && img) categoryFeaturedImages[catSlug] = img;
+    }
+  }
   const communes = Array.isArray(row.communes_links)
     ? row.communes_links
         .map((r: any) => {
@@ -265,6 +273,7 @@ function mapRowToLegacy(row: any) {
       category: trEn.category || null,
     },
     categories,
+    categoryFeaturedImages,
     communes,
   };
 }
@@ -383,7 +392,7 @@ export async function GET(req: Request) {
         });
 
         const select =
-          "slug,publication_status,publish_start_at,publish_end_at,featured_image,website,website_public,instagram,website_display,instagram_display,email,phone,photos_credit,address,hours,reservation_link,reservation_policy,interesting_fact,site,images:post_images(url,position),locations:post_locations(*),translations:post_translations(*),useful:post_useful_info(*),category_links:post_category_map(category:categories(slug,label_es,label_en)),communes_links:post_communes(commune_slug,commune:communes(slug,label))";
+          "slug,publication_status,publish_start_at,publish_end_at,featured_image,website,website_public,instagram,website_display,instagram_display,email,phone,photos_credit,address,hours,reservation_link,reservation_policy,interesting_fact,site,images:post_images(url,position),locations:post_locations(*),translations:post_translations(*),useful:post_useful_info(*),category_links:post_category_map(featured_image,category:categories(slug,label_es,label_en)),communes_links:post_communes(commune_slug,commune:communes(slug,label))";
         let rows: any[] | null = await fetchPostsWithPublicationFallback(
           `/posts?select=${encodeURIComponent(select)}&site=eq.${siteId}`
         );
@@ -457,6 +466,31 @@ export async function GET(req: Request) {
         }
 
         const mapped = rows.map((row) => ensureLegacyPostShape(mapRowToLegacy(row)));
+
+        // Si la request está filtrando por categoría, aplicar override de featuredImage
+        // por categoría cuando el post lo tenga configurado.
+        if (categorySlug || category) {
+          const targetSlugs = new Set<string>();
+          if (normalizedCategorySlugFromQuery) {
+            for (const a of expandCategorySlugAliases(categorySlug))
+              targetSlugs.add(a);
+          }
+          if (category) {
+            // Resolver slug por label no es trivial aquí; usamos aliases del texto.
+            for (const a of expandCategorySlugAliases(category))
+              targetSlugs.add(a);
+          }
+          for (const post of mapped as any[]) {
+            const map = (post && post.categoryFeaturedImages) || {};
+            for (const key of Object.keys(map)) {
+              if (targetSlugs.has(key) && map[key]) {
+                post.featuredImage = map[key];
+                break;
+              }
+            }
+          }
+        }
+
         const visible = isAdminRequest
           ? mapped
           : shouldBypassPublicationWindow
@@ -634,11 +668,22 @@ export async function POST(req: Request) {
     try {
       const cats: any[] = await serviceRest(`/categories?select=id,slug,label_es,label_en`);
       const wanted = new Set((normalized.categories || []).map(c => String(c).toUpperCase()));
-      const catIds = cats
-        .filter(r => wanted.has(String(r.label_es || r.slug || "").toUpperCase()))
-        .map(r => r.id);
+      const picked = cats.filter(r => wanted.has(String(r.label_es || r.slug || "").toUpperCase()));
+      const catIds = picked.map(r => r.id);
       if (catIds.length > 0) {
-        await serviceRest(`/post_category_map`, { method: "POST", body: JSON.stringify(catIds.map((id: number) => ({ post_id: postId, category_id: id }))) });
+        const catFeatMap = ((normalized as any).categoryFeaturedImages || {}) as Record<string, string | null>;
+        await serviceRest(`/post_category_map`, {
+          method: "POST",
+          body: JSON.stringify(picked.map((r: any) => {
+            const slugKey = String(r.slug || "").trim().toLowerCase();
+            const override = catFeatMap[slugKey];
+            return {
+              post_id: postId,
+              category_id: r.id,
+              featured_image: override ? String(override) : null,
+            };
+          })),
+        });
       }
     } catch (e) {
       console.warn("[POST posts] Categorías: continuidad tras fallo en mapeo", e);

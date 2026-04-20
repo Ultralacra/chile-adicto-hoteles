@@ -59,6 +59,9 @@ export default function EditPostPage({
   const [deleting, setDeleting] = useState(false);
   const [hotel, setHotel] = useState<any | null>(null);
   const [categoriesApi, setCategoriesApi] = useState<string[]>([]);
+  const [categoryRows, setCategoryRows] = useState<
+    Array<{ slug: string; label_es: string | null; label_en: string | null }>
+  >([]);
 
   useEffect(() => {
     let cancelled = false;
@@ -69,7 +72,9 @@ export default function EditPostPage({
           fetchWithSite(`/api/posts/${encodeURIComponent(slug)}`, {
             cache: "no-store",
           }),
-          fetchWithSite("/api/categories", { cache: "no-store" }),
+          fetchWithSite("/api/categories?full=1&includeHidden=1", {
+            cache: "no-store",
+          }),
           fetchWithSite("/api/communes?full=1&includeHidden=1", {
             cache: "no-store",
           }),
@@ -83,7 +88,23 @@ export default function EditPostPage({
         console.log("[Admin Edit] GET communes", comm);
         if (!cancelled) {
           setHotel(p && p.slug ? p : null);
-          setCategoriesApi(Array.isArray(c) ? c : []);
+          const rowsFull = Array.isArray(c) ? c : [];
+          setCategoryRows(
+            rowsFull
+              .map((r: any) => ({
+                slug: String(r?.slug || "").trim(),
+                label_es: r?.label_es ?? null,
+                label_en: r?.label_en ?? null,
+              }))
+              .filter((r: any) => r.slug),
+          );
+          setCategoriesApi(
+            rowsFull
+              .map((r: any) =>
+                String(r?.label_es || r?.slug || "").toUpperCase(),
+              )
+              .filter(Boolean),
+          );
           const communesList = Array.isArray(comm)
             ? comm
                 .map((co: any) => String(co.label || co.slug || "").trim())
@@ -97,6 +118,7 @@ export default function EditPostPage({
         if (!cancelled) {
           setHotel(null);
           setCategoriesApi([]);
+          setCategoryRows([]);
           setPossibleCommunes([]);
           setLoadingCommunes(false);
         }
@@ -199,6 +221,47 @@ export default function EditPostPage({
     }
   };
   const [categories, setCategories] = useState<string[]>([]);
+  // Imagen destacada por categoría (override opcional). Clave = slug de la categoría.
+  const [categoryFeaturedImages, setCategoryFeaturedImages] = useState<
+    Record<string, string>
+  >({});
+
+  const normalizeLabel = (value: unknown) =>
+    String(value || "")
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .trim()
+      .toUpperCase();
+
+  const slugifyLabel = (value: unknown) =>
+    String(value || "")
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .toLowerCase()
+      .trim()
+      .replace(/[^a-z0-9]+/g, "-")
+      .replace(/(^-|-$)/g, "");
+
+  // Resuelve, para una categoría seleccionada (label en mayúsculas),
+  // su slug canónico desde categoryRows o uno sintetizado.
+  const resolveCategorySlug = (
+    label: string,
+  ): { slug: string; display: string } => {
+    const wanted = normalizeLabel(label);
+    const match = categoryRows.find(
+      (r) =>
+        normalizeLabel(r.label_es) === wanted ||
+        normalizeLabel(r.label_en) === wanted ||
+        normalizeLabel(r.slug) === wanted,
+    );
+    if (match) {
+      return {
+        slug: match.slug.toLowerCase(),
+        display: match.label_es || match.label_en || match.slug,
+      };
+    }
+    return { slug: slugifyLabel(label), display: label };
+  };
   // Comunas: seleccionables tipo categorías
   const [possibleCommunes, setPossibleCommunes] = useState<string[]>([]);
   const [loadingCommunes, setLoadingCommunes] = useState(true);
@@ -358,6 +421,10 @@ export default function EditPostPage({
 
   // Cargar datos del hotel en los estados locales cuando llegue
   useEffect(() => {
+    console.log("[Admin Edit] hydrate useEffect fired", {
+      hasHotel: !!hotel,
+      slug: hotel?.slug,
+    });
     if (!hotel) return;
     const fixUrl = (u?: string) => {
       if (!u) return "";
@@ -471,6 +538,33 @@ export default function EditPostPage({
       .filter(Boolean)
       .map((c) => c.toUpperCase());
     setCategories(mergedCats.length > 0 ? Array.from(new Set(mergedCats)) : []);
+    console.log("[Admin Edit] hydrated categories", {
+      mergedCats,
+      hotelCategories: hotel.categories,
+      hotelEsCat: hotel.es?.category,
+      hotelEnCat: hotel.en?.category,
+    });
+    // Cargar overrides de imagen destacada por categoría
+    const catFeatRaw =
+      (hotel as any)?.categoryFeaturedImages &&
+      typeof (hotel as any).categoryFeaturedImages === "object"
+        ? (hotel as any).categoryFeaturedImages
+        : {};
+    const catFeatNorm: Record<string, string> = {};
+    for (const [k, v] of Object.entries(catFeatRaw)) {
+      const slugKey = String(k || "")
+        .trim()
+        .toLowerCase();
+      const value = String(v || "").trim();
+      if (slugKey && value) catFeatNorm[slugKey] = value;
+    }
+    setCategoryFeaturedImages(catFeatNorm);
+    console.log(
+      "[Admin Edit] hydrated categoryFeaturedImages",
+      catFeatNorm,
+      "from hotel.categoryFeaturedImages=",
+      catFeatRaw,
+    );
     // locations existentes
     const locs = Array.isArray(hotel.locations) ? hotel.locations : [];
     setLocations(
@@ -650,6 +744,21 @@ export default function EditPostPage({
       categories: (normalized.categories || []).filter(
         (c: string) => String(c).toUpperCase() !== "TODOS",
       ),
+      categoryFeaturedImages: (() => {
+        // Construir mapa {slugCategoria: url | null} para todas las categorías
+        // seleccionadas (menos TODOS). Usa el slug canónico de BD o un slug sintetizado.
+        const labels = (normalized.categories || []).filter(
+          (c: string) => normalizeLabel(c) !== "TODOS",
+        );
+        const out: Record<string, string | null> = {};
+        for (const label of labels) {
+          const { slug: slugKey } = resolveCategorySlug(label);
+          if (!slugKey) continue;
+          const v = categoryFeaturedImages[slugKey];
+          out[slugKey] = v && String(v).trim() ? String(v).trim() : null;
+        }
+        return out;
+      })(),
       locations: normalized.locations,
       // Campo provisional solo para vista previa/compatibilidad futura
       communes: communes,
@@ -1083,6 +1192,138 @@ export default function EditPostPage({
                 ))}
               </div>
             </div>
+            {/* Imagen destacada por categoría */}
+            {(() => {
+              const selectableCategories = categories.filter(
+                (c) => normalizeLabel(c) !== "TODOS",
+              );
+              const entries = selectableCategories.map((label) => {
+                const { slug, display } = resolveCategorySlug(label);
+                return { label, slug, display };
+              });
+              console.log("[Admin Edit] render cat-featured section", {
+                categoriesLen: categories.length,
+                categories,
+                entriesLen: entries.length,
+                entries,
+                hasOverrides: Object.keys(categoryFeaturedImages).length,
+              });
+              if (entries.length === 0) return null;
+              return (
+                <div data-testid="cat-featured-section">
+                  <Label className="text-sm font-medium mb-2 block">
+                    Imagen destacada por categoría{" "}
+                    <span className="text-gray-400 font-normal">
+                      (opcional)
+                    </span>
+                  </Label>
+                  <p className="text-xs text-gray-500 mb-3">
+                    Elige una imagen distinta para cada categoría donde aparece
+                    este post. Si no seleccionas ninguna, se usará la imagen
+                    destacada principal.
+                  </p>
+                  {entries.length === 0 && (
+                    <p className="text-xs text-amber-600 mb-3">
+                      (Sin categorías seleccionadas. Marca una categoría arriba
+                      para poder asignar imagen destacada por categoría.)
+                    </p>
+                  )}
+                  <div className="space-y-3">
+                    {entries.map(({ label, slug: slugKey, display }) => {
+                      const current = categoryFeaturedImages[slugKey] || "";
+                      return (
+                        <div
+                          key={`${label}-${slugKey}`}
+                          className="flex items-start gap-3 p-3 border rounded-lg bg-gray-50"
+                        >
+                          <div className="flex-shrink-0 w-24 h-24 bg-white border rounded overflow-hidden flex items-center justify-center">
+                            {current ? (
+                              <img
+                                src={current}
+                                alt={display}
+                                className="object-cover w-full h-full"
+                              />
+                            ) : featuredImage ? (
+                              <img
+                                src={featuredImage}
+                                alt="Principal"
+                                className="object-cover w-full h-full opacity-60"
+                              />
+                            ) : (
+                              <span className="text-xs text-gray-400">
+                                Sin imagen
+                              </span>
+                            )}
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <div className="font-medium text-gray-900 mb-1">
+                              {display}
+                            </div>
+                            <div className="text-xs text-gray-500 mb-2">
+                              {current
+                                ? "Usando imagen específica"
+                                : "Usando imagen destacada principal"}
+                              <span className="ml-2 text-gray-400">
+                                (slug: {slugKey})
+                              </span>
+                            </div>
+                            <div className="flex gap-2 flex-wrap">
+                              <select
+                                value={current}
+                                onChange={(e) => {
+                                  const val = e.target.value;
+                                  setCategoryFeaturedImages((prev) => {
+                                    const next = { ...prev };
+                                    if (!val) delete next[slugKey];
+                                    else next[slugKey] = val;
+                                    return next;
+                                  });
+                                }}
+                                className="text-sm border rounded px-2 py-1 flex-1 min-w-[200px]"
+                              >
+                                <option value="">
+                                  — Usar imagen principal —
+                                </option>
+                                {images.map((url, i) => (
+                                  <option key={`${url}-${i}`} value={url}>
+                                    {i === featuredIndex
+                                      ? "Destacada principal"
+                                      : `Imagen ${i + 1}`}{" "}
+                                    — {url.split("/").pop()?.slice(0, 40)}
+                                  </option>
+                                ))}
+                                {current && !images.includes(current) && (
+                                  <option value={current}>
+                                    (Externa) —{" "}
+                                    {current.split("/").pop()?.slice(0, 40)}
+                                  </option>
+                                )}
+                              </select>
+                              {current && (
+                                <Button
+                                  type="button"
+                                  variant="outline"
+                                  size="sm"
+                                  onClick={() =>
+                                    setCategoryFeaturedImages((prev) => {
+                                      const next = { ...prev };
+                                      delete next[slugKey];
+                                      return next;
+                                    })
+                                  }
+                                >
+                                  <X size={14} /> Limpiar
+                                </Button>
+                              )}
+                            </div>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              );
+            })()}
             <div>
               <Label className="text-sm font-medium mb-2 block">Comunas</Label>
               <div className="flex flex-wrap gap-2">

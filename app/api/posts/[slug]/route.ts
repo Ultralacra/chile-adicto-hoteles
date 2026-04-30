@@ -20,7 +20,13 @@ function envOrNull(name: string) {
 
 function requireAdminKey(req: Request) {
   const required = envOrNull("ADMIN_API_KEY");
-  if (!required) return;
+  // En producción, si no está configurada la clave bloqueamos todo write
+  if (!required) {
+    if (process.env.NODE_ENV === "production") {
+      throw new Error("unauthorized");
+    }
+    return; // en desarrollo local se permite sin clave
+  }
   const provided = req.headers.get("x-admin-key");
   if (!provided || provided !== required) {
     throw new Error("unauthorized");

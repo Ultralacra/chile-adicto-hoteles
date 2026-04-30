@@ -61,7 +61,12 @@ async function anonRest(path: string) {
 
 function requireAdminKey(req: Request) {
   const required = envOrNull("ADMIN_API_KEY");
-  if (!required) return;
+  if (!required) {
+    if (process.env.NODE_ENV === "production") {
+      throw new Error("unauthorized");
+    }
+    return;
+  }
   const provided = req.headers.get("x-admin-key");
   if (!provided || provided !== required) {
     throw new Error("unauthorized");

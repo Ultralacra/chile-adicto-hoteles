@@ -60,7 +60,12 @@ function requireAdminKey(req: Request) {
   // Protección opcional: si seteas ADMIN_API_KEY en el entorno,
   // se exigirá header x-admin-key con el mismo valor.
   const required = envOrNull("ADMIN_API_KEY");
-  if (!required) return;
+  if (!required) {
+    if (process.env.NODE_ENV === "production") {
+      throw new Error("unauthorized");
+    }
+    return;
+  }
   const provided = req.headers.get("x-admin-key");
   if (!provided || provided !== required) {
     throw new Error("unauthorized");

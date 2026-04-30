@@ -1,0 +1,666 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>API Docs — Chile Adicto / Santiago Adicto</title>
+  <style>
+    :root {
+      --bg:      #0d0f18;
+      --s1:      #141622;
+      --s2:      #1b1e2e;
+      --s3:      #212437;
+      --border:  #262a3c;
+      --accent:  #4f8ef7;
+      --purple:  #7c3aed;
+      --green:   #22c55e;
+      --red:     #ef4444;
+      --yellow:  #f59e0b;
+      --text:    #dde3f0;
+      --muted:   #7a8499;
+      --dim:     #3e4561;
+      --mono:    'Fira Code','JetBrains Mono','Cascadia Code',ui-monospace,monospace;
+      --r:       8px;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      font-size: 14px;
+      line-height: 1.6;
+    }
+
+    /* ── TOPBAR ── */
+    .topbar {
+      background: var(--s1);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding: 0 40px;
+      height: 54px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 700;
+      font-size: 15px;
+      color: var(--text);
+    }
+    .logo-pill {
+      background: linear-gradient(135deg, var(--accent), var(--purple));
+      color: #fff;
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      padding: 3px 8px;
+      border-radius: 5px;
+    }
+    .topbar-nav {
+      display: flex;
+      gap: 2px;
+      margin-left: auto;
+    }
+    .topbar-nav a {
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 13px;
+      padding: 5px 12px;
+      border-radius: 6px;
+      transition: all .15s;
+    }
+    .topbar-nav a:hover { background: var(--s2); color: var(--text); }
+
+    /* ── LAYOUT ── */
+    .layout {
+      display: grid;
+      grid-template-columns: 220px 1fr;
+      min-height: calc(100vh - 54px);
+    }
+
+    /* ── SIDEBAR ── */
+    .sidebar {
+      background: var(--s1);
+      border-right: 1px solid var(--border);
+      padding: 28px 0;
+      position: sticky;
+      top: 54px;
+      height: calc(100vh - 54px);
+      overflow-y: auto;
+    }
+    .sb-group { margin-bottom: 24px; padding: 0 12px; }
+    .sb-label {
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .12em;
+      color: var(--dim);
+      padding: 0 8px;
+      margin-bottom: 6px;
+    }
+    .sb-link {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 10px;
+      border-radius: 6px;
+      text-decoration: none;
+      color: var(--muted);
+      font-size: 13px;
+      transition: all .14s;
+    }
+    .sb-link:hover { background: var(--s2); color: var(--text); }
+    .sb-link .get {
+      font-family: var(--mono);
+      font-size: 10px;
+      font-weight: 700;
+      padding: 1px 6px;
+      background: rgba(34,197,94,.12);
+      border: 1px solid rgba(34,197,94,.25);
+      color: var(--green);
+      border-radius: 4px;
+      min-width: 28px;
+      text-align: center;
+    }
+
+    /* ── MAIN ── */
+    .main {
+      padding: 40px 48px 80px;
+      max-width: 860px;
+    }
+
+    /* ── INTRO ── */
+    .intro {
+      background: var(--s1);
+      border: 1px solid var(--border);
+      border-radius: var(--r);
+      padding: 24px 28px;
+      margin-bottom: 40px;
+    }
+    .intro h1 { font-size: 20px; font-weight: 700; margin-bottom: 8px; }
+    .intro p { color: var(--muted); font-size: 13.5px; margin-bottom: 16px; }
+    .sites-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+    .site-card {
+      background: var(--s2);
+      border: 1px solid var(--border);
+      border-radius: 7px;
+      padding: 14px 16px;
+    }
+    .site-name  { font-weight: 700; font-size: 13px; color: var(--text); margin-bottom: 4px; }
+    .site-domain { font-family: var(--mono); font-size: 12px; color: var(--accent); margin-bottom: 6px; }
+    .site-id {
+      font-family: var(--mono);
+      font-size: 11px;
+      background: rgba(79,142,247,.1);
+      border: 1px solid rgba(79,142,247,.2);
+      color: var(--accent);
+      border-radius: 4px;
+      padding: 1px 7px;
+      display: inline-block;
+    }
+    .info-box {
+      background: rgba(79,142,247,.07);
+      border: 1px solid rgba(79,142,247,.18);
+      border-radius: 7px;
+      padding: 11px 15px;
+      font-size: 13px;
+      color: var(--muted);
+    }
+    .info-box code { font-family: var(--mono); color: var(--accent); font-size: 12px; }
+
+    /* ── BLOCK TITLE / TABLES ── */
+    .block-title {
+      background: var(--s2);
+      border-bottom: 1px solid var(--border);
+      padding: 10px 18px;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .1em;
+      color: var(--muted);
+    }
+    .param-card {
+      background: var(--s1);
+      border: 1px solid var(--border);
+      border-radius: var(--r);
+      overflow: hidden;
+      margin-bottom: 16px;
+    }
+    table { width: 100%; border-collapse: collapse; }
+    th {
+      padding: 9px 18px;
+      text-align: left;
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+      color: var(--dim);
+      background: rgba(255,255,255,.015);
+    }
+    td {
+      padding: 9px 18px;
+      font-size: 13px;
+      color: var(--muted);
+      border-top: 1px solid var(--border);
+      vertical-align: top;
+    }
+    td.pn { font-family: var(--mono); font-size: 12px; color: var(--yellow); font-weight: 600; white-space: nowrap; }
+    td.pt { font-family: var(--mono); font-size: 12px; color: var(--dim); }
+    td code { font-family: var(--mono); font-size: 12px; color: var(--accent); }
+    strong { color: var(--text); }
+
+    /* ── ENDPOINT SECTION ── */
+    .ep-section { margin-bottom: 52px; }
+    .ep-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 10px;
+    }
+    .method-badge {
+      background: rgba(34,197,94,.14);
+      border: 1px solid rgba(34,197,94,.3);
+      color: var(--green);
+      font-family: var(--mono);
+      font-size: 12px;
+      font-weight: 700;
+      padding: 4px 12px;
+      border-radius: 5px;
+      letter-spacing: .04em;
+    }
+    .ep-path { font-family: var(--mono); font-size: 20px; font-weight: 700; color: var(--text); }
+    .ep-path .pp { color: var(--yellow); }
+    .ep-summary { font-size: 13.5px; color: var(--muted); margin-bottom: 20px; padding-left: 2px; }
+
+    /* ── EXAMPLES ── */
+    .example-wrap { margin-bottom: 14px; }
+    .example-label {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--dim);
+      margin-bottom: 5px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .ex-tag {
+      font-size: 10px;
+      font-weight: 700;
+      padding: 2px 7px;
+      border-radius: 4px;
+    }
+    .ex-req { background: var(--s2); border: 1px solid var(--border); color: var(--muted); }
+    .ex-ok  { background: rgba(34,197,94,.1);  border: 1px solid rgba(34,197,94,.2);  color: var(--green); }
+    .ex-err { background: rgba(239,68,68,.1);  border: 1px solid rgba(239,68,68,.2);  color: var(--red); }
+
+    .code-block {
+      background: var(--s2);
+      border: 1px solid var(--border);
+      border-radius: 7px;
+      padding: 14px 16px;
+      font-family: var(--mono);
+      font-size: 12px;
+      line-height: 1.75;
+      overflow-x: auto;
+      white-space: pre;
+      color: var(--muted);
+    }
+    .code-block.http {
+      background: rgba(79,142,247,.06);
+      border-color: rgba(79,142,247,.18);
+      color: var(--accent);
+    }
+
+    /* JSON colors */
+    .jk { color: #7dd3fc; }
+    .js { color: #a3e635; }
+    .jn { color: #fb923c; }
+    .jb { color: #f97316; }
+    .jz { color: #94a3b8; }
+    .jp { color: #475569; }
+
+    .hr { height: 1px; background: var(--border); margin: 40px 0; }
+
+    ::-webkit-scrollbar { width: 5px; height: 5px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+
+    @media (max-width: 720px) {
+      .layout { grid-template-columns: 1fr; }
+      .sidebar { display: none; }
+      .main { padding: 24px 18px 60px; }
+      .sites-row { grid-template-columns: 1fr; }
+      .topbar { padding: 0 18px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- TOPBAR -->
+<header class="topbar">
+  <div class="logo">
+    <span class="logo-pill">API</span>
+    Chile Adicto &nbsp;<span style="color:var(--dim)">/</span>&nbsp; Santiago Adicto
+  </div>
+  <nav class="topbar-nav">
+    <a href="/chile-adicto-api.postman_collection.json" download style="background:rgba(34,197,94,.12);border:1px solid rgba(34,197,94,.3);color:var(--green);padding:5px 14px;border-radius:6px;font-size:12px;font-weight:600;">↓ Descargar colección Postman</a>
+    <a href="#intro">Intro</a>
+    <a href="#categories">Categorías</a>
+    <a href="#posts">Posts</a>
+    <a href="#posts-by-category">Por categoría</a>
+    <a href="#post-detail">Detalle</a>
+    <a href="#errors">Errores</a>
+  </nav>
+</header>
+
+<div class="layout">
+
+  <!-- SIDEBAR -->
+  <nav class="sidebar">
+    <div class="sb-group">
+      <div class="sb-label">Introducción</div>
+      <a class="sb-link" href="#intro">🌐&nbsp; Sitios &amp; base URLs</a>
+    </div>
+    <div class="sb-group">
+      <div class="sb-label">Endpoints</div>
+      <a class="sb-link" href="#categories"><span class="get">GET</span>/api/categories</a>
+      <a class="sb-link" href="#posts"><span class="get">GET</span>/api/posts</a>
+      <a class="sb-link" href="#posts-by-category"><span class="get">GET</span>/api/posts?categorySlug</a>
+      <a class="sb-link" href="#post-detail"><span class="get">GET</span>/api/posts/[slug]</a>
+    </div>
+    <div class="sb-group">
+      <div class="sb-label">Referencia</div>
+      <a class="sb-link" href="#errors">⚠️&nbsp; Errores</a>
+    </div>
+  </nav>
+
+  <!-- MAIN -->
+  <main class="main">
+
+    <!-- ── INTRO ── -->
+    <section id="intro">
+      <div class="intro">
+        <h1>API Pública</h1>
+        <p>Todos los endpoints son compartidos entre los dos sitios. El servidor determina el sitio activo por el dominio de la petición.</p>
+        <div class="sites-row">
+          <div class="site-card">
+            <div class="site-name">Chile Adicto Hoteles</div>
+            <div class="site-domain">chileadictohoteles.cl</div>
+            <span class="site-id">chileadicto</span>
+          </div>
+          <div class="site-card">
+            <div class="site-name">Santiago Adicto</div>
+            <div class="site-domain">santiagoadicto.cl</div>
+            <span class="site-id">santiagoadicto</span>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="param-card">
+        <div class="block-title">Base URLs</div>
+        <table>
+          <thead><tr><th>Sitio</th><th>URL base</th></tr></thead>
+          <tbody>
+            <tr><td>Chile Adicto</td><td><code>https://chileadictohoteles.cl</code></td></tr>
+            <tr><td>Santiago Adicto</td><td><code>https://santiagoadicto.cl</code></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <div class="hr"></div>
+
+    <!-- ══════════════════════════════════
+         1. GET /api/categories
+    ══════════════════════════════════ -->
+    <section id="categories" class="ep-section">
+      <div class="ep-header">
+        <span class="method-badge">GET</span>
+        <span class="ep-path">/api/categories</span>
+      </div>
+      <p class="ep-summary">Devuelve las categorías del sitio como un array de strings en mayúsculas.</p>
+
+      <div class="example-wrap">
+        <div class="example-label"><span class="ex-tag ex-req">Request</span> Chile Adicto</div>
+        <div class="code-block http">GET https://chileadictohoteles.cl/api/categories</div>
+      </div>
+      <div class="example-wrap">
+        <div class="example-label"><span class="ex-tag ex-ok">200 OK</span></div>
+        <div class="code-block"><span class="jp">[</span><span class="js">"CABANAS"</span><span class="jp">,</span> <span class="js">"COSTA"</span><span class="jp">,</span> <span class="js">"HOTELES"</span><span class="jp">,</span> <span class="js">"LODGES"</span><span class="jp">,</span> <span class="js">"NORTE"</span><span class="jp">,</span> <span class="js">"PATAGONIA"</span><span class="jp">,</span> <span class="js">"SUR"</span><span class="jp">]</span></div>
+      </div>
+
+      <div class="example-wrap">
+        <div class="example-label"><span class="ex-tag ex-req">Request</span> Santiago Adicto</div>
+        <div class="code-block http">GET https://santiagoadicto.cl/api/categories</div>
+      </div>
+
+    </section>
+
+    <div class="hr"></div>
+
+    <!-- ══════════════════════════════════
+         2. GET /api/posts
+    ══════════════════════════════════ -->
+    <section id="posts" class="ep-section">
+      <div class="ep-header">
+        <span class="method-badge">GET</span>
+        <span class="ep-path">/api/posts</span>
+      </div>
+      <p class="ep-summary">Devuelve el listado de posts publicados del sitio. Soporta paginación con <code style="font-family:var(--mono);color:var(--yellow);font-size:12px">limit</code> y <code style="font-family:var(--mono);color:var(--yellow);font-size:12px">offset</code>.</p>
+
+      <div class="param-card">
+        <div class="block-title">Query Parameters</div>
+        <table>
+          <thead><tr><th>Parámetro</th><th>Tipo</th><th>Descripción</th></tr></thead>
+          <tbody>
+            <tr><td class="pn">limit</td><td class="pt">1–100</td><td>Máximo de resultados a devolver.</td></tr>
+            <tr><td class="pn">offset</td><td class="pt">número</td><td>Desplazamiento para paginación. Defecto: <code>0</code>.</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="example-wrap">
+        <div class="example-label"><span class="ex-tag ex-req">Request</span> Chile Adicto</div>
+        <div class="code-block http">GET https://chileadictohoteles.cl/api/posts</div>
+      </div>
+
+      <div class="example-wrap">
+        <div class="example-label"><span class="ex-tag ex-req">Request</span> Chile Adicto — paginado (página 2, 10 por página)</div>
+        <div class="code-block http">GET https://chileadictohoteles.cl/api/posts?limit=10&offset=10</div>
+      </div>
+
+      <div class="example-wrap">
+        <div class="example-label"><span class="ex-tag ex-req">Request</span> Santiago Adicto</div>
+        <div class="code-block http">GET https://santiagoadicto.cl/api/posts</div>
+      </div>
+
+      <div class="example-wrap">
+        <div class="example-label"><span class="ex-tag ex-req">Request</span> Santiago Adicto — paginado (página 2, 10 por página)</div>
+        <div class="code-block http">GET https://santiagoadicto.cl/api/posts?limit=10&offset=10</div>
+      </div>
+
+      <div class="example-wrap">
+        <div class="example-label"><span class="ex-tag ex-ok">200 OK</span> Array de posts</div>
+        <div class="code-block"><span class="jp">[</span>
+  <span class="jp">{</span>
+    <span class="jk">"slug"</span><span class="jp">:</span>                  <span class="js">"hotel-explora-atacama"</span><span class="jp">,</span>
+    <span class="jk">"site"</span><span class="jp">:</span>                  <span class="js">"chileadicto"</span><span class="jp">,</span>
+    <span class="jk">"publicationStatus"</span><span class="jp">:</span>     <span class="js">"published"</span><span class="jp">,</span>
+    <span class="jk">"publishStartAt"</span><span class="jp">:</span>         <span class="jz">null</span><span class="jp">,</span>
+    <span class="jk">"publishEndAt"</span><span class="jp">:</span>           <span class="jz">null</span><span class="jp">,</span>
+    <span class="jk">"featuredImage"</span><span class="jp">:</span>          <span class="js">"https://...supabase.../hotel-explora.jpg"</span><span class="jp">,</span>
+    <span class="jk">"website"</span><span class="jp">:</span>                <span class="js">"https://explora.com"</span><span class="jp">,</span>
+    <span class="jk">"websitePublic"</span><span class="jp">:</span>          <span class="js">"https://explora.com"</span><span class="jp">,</span>
+    <span class="jk">"instagram"</span><span class="jp">:</span>              <span class="js">"@explorahotels"</span><span class="jp">,</span>
+    <span class="jk">"email"</span><span class="jp">:</span>                  <span class="jz">null</span><span class="jp">,</span>
+    <span class="jk">"phone"</span><span class="jp">:</span>                  <span class="jz">null</span><span class="jp">,</span>
+    <span class="jk">"address"</span><span class="jp">:</span>                <span class="js">"San Pedro de Atacama"</span><span class="jp">,</span>
+    <span class="jk">"hours"</span><span class="jp">:</span>                  <span class="jz">null</span><span class="jp">,</span>
+    <span class="jk">"images"</span><span class="jp">:</span>                 <span class="jp">[</span><span class="js">"https://...supabase.../img1.jpg"</span><span class="jp">],</span>
+    <span class="jk">"locations"</span><span class="jp">:</span> <span class="jp">[{</span>
+      <span class="jk">"label"</span><span class="jp">:</span>            <span class="js">"Hotel"</span><span class="jp">,</span>
+      <span class="jk">"address"</span><span class="jp">:</span>          <span class="js">"San Pedro de Atacama"</span><span class="jp">,</span>
+      <span class="jk">"website"</span><span class="jp">:</span>          <span class="js">"https://explora.com"</span><span class="jp">,</span>
+      <span class="jk">"instagram"</span><span class="jp">:</span>        <span class="jz">null</span><span class="jp">,</span>
+      <span class="jk">"reservationLink"</span><span class="jp">:</span>  <span class="jz">null</span><span class="jp">,</span>
+      <span class="jk">"phone"</span><span class="jp">:</span>            <span class="jz">null</span><span class="jp">,</span>
+      <span class="jk">"email"</span><span class="jp">:</span>            <span class="jz">null</span>
+    <span class="jp">}],</span>
+    <span class="jk">"es"</span><span class="jp">: {</span>
+      <span class="jk">"name"</span><span class="jp">:</span>         <span class="js">"Hotel Explora Atacama"</span><span class="jp">,</span>
+      <span class="jk">"subtitle"</span><span class="jp">:</span>     <span class="js">"Lujo en el desierto"</span><span class="jp">,</span>
+      <span class="jk">"description"</span><span class="jp">:</span>  <span class="jp">[</span><span class="js">"Descripción en español..."</span><span class="jp">],</span>
+      <span class="jk">"infoHtml"</span><span class="jp">:</span>      <span class="jz">null</span><span class="jp">,</span>
+      <span class="jk">"infoHtmlNew"</span><span class="jp">:</span>   <span class="jz">null</span><span class="jp">,</span>
+      <span class="jk">"category"</span><span class="jp">:</span>     <span class="js">"Hoteles"</span>
+    <span class="jp">},</span>
+    <span class="jk">"en"</span><span class="jp">: {</span>
+      <span class="jk">"name"</span><span class="jp">:</span>         <span class="js">"Hotel Explora Atacama"</span><span class="jp">,</span>
+      <span class="jk">"subtitle"</span><span class="jp">:</span>     <span class="js">"Luxury in the desert"</span><span class="jp">,</span>
+      <span class="jk">"description"</span><span class="jp">:</span>  <span class="jp">[</span><span class="js">"English description..."</span><span class="jp">],</span>
+      <span class="jk">"infoHtml"</span><span class="jp">:</span>      <span class="jz">null</span><span class="jp">,</span>
+      <span class="jk">"infoHtmlNew"</span><span class="jp">:</span>   <span class="jz">null</span><span class="jp">,</span>
+      <span class="jk">"category"</span><span class="jp">:</span>     <span class="js">"Hotels"</span>
+    <span class="jp">},</span>
+    <span class="jk">"categories"</span><span class="jp">:</span>          <span class="jp">[</span><span class="js">"Hoteles"</span><span class="jp">],</span>
+    <span class="jk">"categoryFeaturedImages"</span><span class="jp">: {</span> <span class="jk">"hoteles"</span><span class="jp">:</span> <span class="js">"https://...supabase.../featured.jpg"</span> <span class="jp">},</span>
+    <span class="jk">"communes"</span><span class="jp">:</span>             <span class="jp">[</span><span class="js">"San Pedro de Atacama"</span><span class="jp">]</span>
+  <span class="jp">}</span>
+<span class="jp">]</span></div>
+      </div>
+    </section>
+
+    <div class="hr"></div>
+
+    <!-- ══════════════════════════════════
+         3. GET /api/posts?categorySlug
+    ══════════════════════════════════ -->
+    <section id="posts-by-category" class="ep-section">
+      <div class="ep-header">
+        <span class="method-badge">GET</span>
+        <span class="ep-path">/api/posts<span class="pp">?categorySlug={slug}</span></span>
+      </div>
+      <p class="ep-summary">Filtra los posts publicados por categoría usando el slug de la categoría. También soporta paginación.</p>
+
+      <div class="param-card">
+        <div class="block-title">Query Parameters</div>
+        <table>
+          <thead><tr><th>Parámetro</th><th>Tipo</th><th>Descripción</th></tr></thead>
+          <tbody>
+            <tr><td class="pn">categorySlug</td><td class="pt">string</td><td>Slug de la categoría (ej: <code>hoteles</code>, <code>museos</code>). Obtenible desde <code>/api/categories</code>.</td></tr>
+            <tr><td class="pn">limit</td><td class="pt">1–100</td><td>Máximo de resultados a devolver.</td></tr>
+            <tr><td class="pn">offset</td><td class="pt">número</td><td>Desplazamiento para paginación. Defecto: <code>0</code>.</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="example-wrap">
+        <div class="example-label"><span class="ex-tag ex-req">Request</span> Chile Adicto — por categoría</div>
+        <div class="code-block http">GET https://chileadictohoteles.cl/api/posts?categorySlug=hoteles</div>
+      </div>
+
+      <div class="example-wrap">
+        <div class="example-label"><span class="ex-tag ex-req">Request</span> Chile Adicto — por categoría + paginado</div>
+        <div class="code-block http">GET https://chileadictohoteles.cl/api/posts?categorySlug=hoteles&limit=10&offset=0</div>
+      </div>
+
+      <div class="example-wrap">
+        <div class="example-label"><span class="ex-tag ex-req">Request</span> Santiago Adicto — por categoría</div>
+        <div class="code-block http">GET https://santiagoadicto.cl/api/posts?categorySlug=museos</div>
+      </div>
+
+      <div class="example-wrap">
+        <div class="example-label"><span class="ex-tag ex-req">Request</span> Santiago Adicto — por categoría + paginado</div>
+        <div class="code-block http">GET https://santiagoadicto.cl/api/posts?categorySlug=museos&limit=10&offset=0</div>
+      </div>
+
+      <div class="example-wrap">
+        <div class="example-label"><span class="ex-tag ex-ok">200 OK</span> Array de posts filtrados</div>
+        <div class="code-block"><span class="jp">[</span>
+  <span class="jp">{</span>
+    <span class="jk">"slug"</span><span class="jp">:</span>              <span class="js">"hotel-explora-atacama"</span><span class="jp">,</span>
+    <span class="jk">"site"</span><span class="jp">:</span>              <span class="js">"chileadicto"</span><span class="jp">,</span>
+    <span class="jk">"publicationStatus"</span><span class="jp">:</span> <span class="js">"published"</span><span class="jp">,</span>
+    <span class="jk">"es"</span><span class="jp">: {</span> <span class="jk">"name"</span><span class="jp">:</span> <span class="js">"Hotel Explora Atacama"</span><span class="jp">,</span> <span class="jk">"category"</span><span class="jp">:</span> <span class="js">"Hoteles"</span> <span class="jp">},</span>
+    <span class="jk">"en"</span><span class="jp">: {</span> <span class="jk">"name"</span><span class="jp">:</span> <span class="js">"Hotel Explora Atacama"</span><span class="jp">,</span> <span class="jk">"category"</span><span class="jp">:</span> <span class="js">"Hotels"</span> <span class="jp">},</span>
+    <span class="jk">"categories"</span><span class="jp">:</span>      <span class="jp">[</span><span class="js">"Hoteles"</span><span class="jp">],</span>
+    <span class="jk">"communes"</span><span class="jp">:</span>         <span class="jp">[</span><span class="js">"San Pedro de Atacama"</span><span class="jp">]</span>
+  <span class="jp">}</span>
+<span class="jp">]</span></div>
+      </div>
+    </section>
+
+    <div class="hr"></div>
+
+    <!-- ══════════════════════════════════
+         4. GET /api/posts/[slug]
+    ══════════════════════════════════ -->
+    <section id="post-detail" class="ep-section">
+      <div class="ep-header">
+        <span class="method-badge">GET</span>
+        <span class="ep-path">/api/posts/<span class="pp">{slug}</span></span>
+      </div>
+      <p class="ep-summary">Devuelve un post específico por su slug como objeto único (no array).</p>
+
+      <div class="param-card">
+        <div class="block-title">Path Parameters</div>
+        <table>
+          <thead><tr><th>Parámetro</th><th>Tipo</th><th>Descripción</th></tr></thead>
+          <tbody>
+            <tr><td class="pn">slug</td><td class="pt">string</td><td>Identificador único del post (ej: <code>hotel-explora-atacama</code>).</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="example-wrap">
+        <div class="example-label"><span class="ex-tag ex-req">Request</span> Chile Adicto</div>
+        <div class="code-block http">GET https://chileadictohoteles.cl/api/posts/hotel-explora-atacama</div>
+      </div>
+
+      <div class="example-wrap">
+        <div class="example-label"><span class="ex-tag ex-req">Request</span> Santiago Adicto</div>
+        <div class="code-block http">GET https://santiagoadicto.cl/api/posts/cerro-san-cristobal</div>
+      </div>
+
+      <div class="example-wrap">
+        <div class="example-label"><span class="ex-tag ex-ok">200 OK</span> Objeto único</div>
+        <div class="code-block"><span class="jp">{</span>
+  <span class="jk">"slug"</span><span class="jp">:</span>                  <span class="js">"cerro-san-cristobal"</span><span class="jp">,</span>
+  <span class="jk">"site"</span><span class="jp">:</span>                  <span class="js">"santiagoadicto"</span><span class="jp">,</span>
+  <span class="jk">"publicationStatus"</span><span class="jp">:</span>     <span class="js">"published"</span><span class="jp">,</span>
+  <span class="jk">"featuredImage"</span><span class="jp">:</span>          <span class="js">"https://...supabase.../cerro.jpg"</span><span class="jp">,</span>
+  <span class="jk">"images"</span><span class="jp">:</span>                 <span class="jp">[</span><span class="js">"https://...supabase.../img1.jpg"</span><span class="jp">],</span>
+  <span class="jk">"locations"</span><span class="jp">:</span>              <span class="jp">[</span><span class="js">...</span><span class="jp">],</span>
+  <span class="jk">"es"</span><span class="jp">: {</span>
+    <span class="jk">"name"</span><span class="jp">:</span>         <span class="js">"Cerro San Cristóbal"</span><span class="jp">,</span>
+    <span class="jk">"subtitle"</span><span class="jp">:</span>     <span class="js">"El pulmón verde de Santiago"</span><span class="jp">,</span>
+    <span class="jk">"description"</span><span class="jp">:</span>  <span class="jp">[</span><span class="js">"..."</span><span class="jp">],</span>
+    <span class="jk">"infoHtml"</span><span class="jp">:</span>      <span class="jz">null</span><span class="jp">,</span>
+    <span class="jk">"infoHtmlNew"</span><span class="jp">:</span>   <span class="js">"&lt;p&gt;Info adicional...&lt;/p&gt;"</span><span class="jp">,</span>
+    <span class="jk">"category"</span><span class="jp">:</span>     <span class="js">"Parques"</span>
+  <span class="jp">},</span>
+  <span class="jk">"en"</span><span class="jp">: {</span>
+    <span class="jk">"name"</span><span class="jp">:</span>         <span class="js">"San Cristobal Hill"</span><span class="jp">,</span>
+    <span class="jk">"subtitle"</span><span class="jp">:</span>     <span class="js">"Santiago's green lung"</span><span class="jp">,</span>
+    <span class="jk">"description"</span><span class="jp">:</span>  <span class="jp">[</span><span class="js">"..."</span><span class="jp">],</span>
+    <span class="jk">"infoHtml"</span><span class="jp">:</span>      <span class="jz">null</span><span class="jp">,</span>
+    <span class="jk">"infoHtmlNew"</span><span class="jp">:</span>   <span class="jz">null</span><span class="jp">,</span>
+    <span class="jk">"category"</span><span class="jp">:</span>     <span class="js">"Parks"</span>
+  <span class="jp">},</span>
+  <span class="jk">"categories"</span><span class="jp">:</span> <span class="jp">[</span><span class="js">"Parques"</span><span class="jp">],</span>
+  <span class="jk">"communes"</span><span class="jp">:</span>   <span class="jp">[</span><span class="js">"Providencia"</span><span class="jp">]</span>
+<span class="jp">}</span></div>
+      </div>
+
+      <div class="example-wrap">
+        <div class="example-label"><span class="ex-tag ex-err">404 Not Found</span></div>
+        <div class="code-block"><span class="jp">{</span> <span class="jk">"error"</span><span class="jp">:</span> <span class="js">"not_found"</span> <span class="jp">}</span></div>
+      </div>
+    </section>
+
+    <div class="hr"></div>
+
+    <!-- ── ERRORES ── -->
+    <section id="errors" class="ep-section">
+      <div class="ep-header">
+        <span style="font-size:18px">⚠️</span>
+        <span class="ep-path" style="font-size:18px;color:var(--muted)">Errores comunes</span>
+      </div>
+      <div class="param-card">
+        <table>
+          <thead><tr><th>Código</th><th>Cuerpo</th><th>Causa</th></tr></thead>
+          <tbody>
+            <tr>
+              <td class="pn" style="color:var(--red)">404</td>
+              <td><code>{ "error": "not_found" }</code></td>
+              <td>El slug no existe o el post está despublicado.</td>
+            </tr>
+            <tr>
+              <td class="pn" style="color:var(--red)">500</td>
+              <td><code>{ "error": "internal_error" }</code></td>
+              <td>Error interno del servidor.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+</body>
+</html>

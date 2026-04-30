@@ -1,0 +1,438 @@
+{
+  "info": {
+    "name": "Chile Adicto / Santiago Adicto — API Pública",
+    "_postman_id": "chile-adicto-api-v1",
+    "description": "Colección de endpoints públicos para chileadictohoteles.cl y santiagoadicto.cl",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "BASE_CHILE",
+      "value": "https://chileadictohoteles.cl",
+      "type": "string"
+    },
+    {
+      "key": "BASE_SANTIAGO",
+      "value": "https://santiagoadicto.cl",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "Categorías",
+      "item": [
+        {
+          "name": "[Chile Adicto] GET /api/categories",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{BASE_CHILE}}/api/categories",
+              "host": ["{{BASE_CHILE}}"],
+              "path": ["api", "categories"]
+            },
+            "description": "Devuelve las categorías del sitio Chile Adicto como array de strings."
+          },
+          "response": [
+            {
+              "name": "200 OK — Lista de categorías",
+              "status": "OK",
+              "code": 200,
+              "header": [
+                { "key": "Content-Type", "value": "application/json" }
+              ],
+              "body": "[\"CABANAS\",\"COSTA\",\"HOTELES\",\"LODGES\",\"NORTE\",\"PATAGONIA\",\"SUR\"]",
+              "originalRequest": {
+                "method": "GET",
+                "url": {
+                  "raw": "{{BASE_CHILE}}/api/categories",
+                  "host": ["{{BASE_CHILE}}"],
+                  "path": ["api", "categories"]
+                }
+              }
+            }
+          ]
+        },
+        {
+          "name": "[Santiago Adicto] GET /api/categories",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{BASE_SANTIAGO}}/api/categories",
+              "host": ["{{BASE_SANTIAGO}}"],
+              "path": ["api", "categories"]
+            },
+            "description": "Devuelve las categorías del sitio Santiago Adicto como array de strings."
+          },
+          "response": [
+            {
+              "name": "200 OK — Lista de categorías",
+              "status": "OK",
+              "code": 200,
+              "header": [
+                { "key": "Content-Type", "value": "application/json" }
+              ],
+              "body": "[\"BARRIOS\",\"CAFES\",\"MUSEOS\",\"PARQUES\",\"RESTAURANTES\",\"TIENDAS\"]",
+              "originalRequest": {
+                "method": "GET",
+                "url": {
+                  "raw": "{{BASE_SANTIAGO}}/api/categories",
+                  "host": ["{{BASE_SANTIAGO}}"],
+                  "path": ["api", "categories"]
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Posts",
+      "item": [
+        {
+          "name": "[Chile Adicto] GET /api/posts",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{BASE_CHILE}}/api/posts",
+              "host": ["{{BASE_CHILE}}"],
+              "path": ["api", "posts"]
+            },
+            "description": "Devuelve todos los posts publicados de Chile Adicto."
+          },
+          "response": [
+            {
+              "name": "200 OK — Array de posts",
+              "status": "OK",
+              "code": 200,
+              "header": [
+                { "key": "Content-Type", "value": "application/json" }
+              ],
+              "body": "[\n  {\n    \"slug\": \"hotel-explora-atacama\",\n    \"site\": \"chileadicto\",\n    \"publicationStatus\": \"published\",\n    \"publishStartAt\": null,\n    \"publishEndAt\": null,\n    \"featuredImage\": \"https://...supabase.../hotel-explora.jpg\",\n    \"website\": \"https://explora.com\",\n    \"websitePublic\": \"https://explora.com\",\n    \"instagram\": \"@explorahotels\",\n    \"email\": null,\n    \"phone\": null,\n    \"address\": \"San Pedro de Atacama\",\n    \"hours\": null,\n    \"images\": [\"https://...supabase.../img1.jpg\"],\n    \"locations\": [\n      {\n        \"label\": \"Hotel\",\n        \"address\": \"San Pedro de Atacama\",\n        \"website\": \"https://explora.com\",\n        \"instagram\": null,\n        \"reservationLink\": null,\n        \"phone\": null,\n        \"email\": null\n      }\n    ],\n    \"es\": {\n      \"name\": \"Hotel Explora Atacama\",\n      \"subtitle\": \"Lujo en el desierto\",\n      \"description\": [\"Descripción en español...\"],\n      \"infoHtml\": null,\n      \"infoHtmlNew\": null,\n      \"category\": \"Hoteles\"\n    },\n    \"en\": {\n      \"name\": \"Hotel Explora Atacama\",\n      \"subtitle\": \"Luxury in the desert\",\n      \"description\": [\"English description...\"],\n      \"infoHtml\": null,\n      \"infoHtmlNew\": null,\n      \"category\": \"Hotels\"\n    },\n    \"categories\": [\"Hoteles\"],\n    \"categoryFeaturedImages\": { \"hoteles\": \"https://...supabase.../featured.jpg\" },\n    \"communes\": [\"San Pedro de Atacama\"]\n  }\n]",
+              "originalRequest": {
+                "method": "GET",
+                "url": {
+                  "raw": "{{BASE_CHILE}}/api/posts",
+                  "host": ["{{BASE_CHILE}}"],
+                  "path": ["api", "posts"]
+                }
+              }
+            }
+          ]
+        },
+        {
+          "name": "[Chile Adicto] GET /api/posts — paginado",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{BASE_CHILE}}/api/posts?limit=10&offset=10",
+              "host": ["{{BASE_CHILE}}"],
+              "path": ["api", "posts"],
+              "query": [
+                {
+                  "key": "limit",
+                  "value": "10",
+                  "description": "Máximo de resultados"
+                },
+                {
+                  "key": "offset",
+                  "value": "10",
+                  "description": "Desde qué posición (página 2)"
+                }
+              ]
+            },
+            "description": "Paginación: 10 resultados a partir del registro 10 (página 2)."
+          },
+          "response": []
+        },
+        {
+          "name": "[Santiago Adicto] GET /api/posts",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{BASE_SANTIAGO}}/api/posts",
+              "host": ["{{BASE_SANTIAGO}}"],
+              "path": ["api", "posts"]
+            },
+            "description": "Devuelve todos los posts publicados de Santiago Adicto."
+          },
+          "response": [
+            {
+              "name": "200 OK — Array de posts",
+              "status": "OK",
+              "code": 200,
+              "header": [
+                { "key": "Content-Type", "value": "application/json" }
+              ],
+              "body": "[\n  {\n    \"slug\": \"cerro-san-cristobal\",\n    \"site\": \"santiagoadicto\",\n    \"publicationStatus\": \"published\",\n    \"publishStartAt\": null,\n    \"publishEndAt\": null,\n    \"featuredImage\": \"https://...supabase.../cerro.jpg\",\n    \"website\": null,\n    \"websitePublic\": null,\n    \"instagram\": null,\n    \"email\": null,\n    \"phone\": null,\n    \"address\": \"Providencia, Santiago\",\n    \"hours\": null,\n    \"images\": [\"https://...supabase.../img1.jpg\"],\n    \"locations\": [\n      {\n        \"label\": \"Acceso principal\",\n        \"address\": \"Pío Nono, Providencia\",\n        \"website\": null,\n        \"instagram\": null,\n        \"reservationLink\": null,\n        \"phone\": null,\n        \"email\": null\n      }\n    ],\n    \"es\": {\n      \"name\": \"Cerro San Cristóbal\",\n      \"subtitle\": \"El pulmón verde de Santiago\",\n      \"description\": [\"Descripción en español...\"],\n      \"infoHtml\": null,\n      \"infoHtmlNew\": \"<p>Info adicional...</p>\",\n      \"category\": \"Parques\"\n    },\n    \"en\": {\n      \"name\": \"San Cristobal Hill\",\n      \"subtitle\": \"Santiago's green lung\",\n      \"description\": [\"English description...\"],\n      \"infoHtml\": null,\n      \"infoHtmlNew\": null,\n      \"category\": \"Parks\"\n    },\n    \"categories\": [\"Parques\"],\n    \"categoryFeaturedImages\": { \"parques\": \"https://...supabase.../featured.jpg\" },\n    \"communes\": [\"Providencia\"]\n  }\n]",
+              "originalRequest": {
+                "method": "GET",
+                "url": {
+                  "raw": "{{BASE_SANTIAGO}}/api/posts",
+                  "host": ["{{BASE_SANTIAGO}}"],
+                  "path": ["api", "posts"]
+                }
+              }
+            }
+          ]
+        },
+        {
+          "name": "[Santiago Adicto] GET /api/posts — paginado",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{BASE_SANTIAGO}}/api/posts?limit=10&offset=10",
+              "host": ["{{BASE_SANTIAGO}}"],
+              "path": ["api", "posts"],
+              "query": [
+                {
+                  "key": "limit",
+                  "value": "10",
+                  "description": "Máximo de resultados"
+                },
+                {
+                  "key": "offset",
+                  "value": "10",
+                  "description": "Desde qué posición (página 2)"
+                }
+              ]
+            },
+            "description": "Paginación: 10 resultados a partir del registro 10 (página 2)."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Posts por Categoría",
+      "item": [
+        {
+          "name": "[Chile Adicto] GET /api/posts?categorySlug=hoteles",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{BASE_CHILE}}/api/posts?categorySlug=hoteles",
+              "host": ["{{BASE_CHILE}}"],
+              "path": ["api", "posts"],
+              "query": [
+                {
+                  "key": "categorySlug",
+                  "value": "hoteles",
+                  "description": "Slug de la categoría"
+                }
+              ]
+            },
+            "description": "Filtra posts de Chile Adicto por categoría (slug)."
+          },
+          "response": [
+            {
+              "name": "200 OK — Posts filtrados",
+              "status": "OK",
+              "code": 200,
+              "header": [
+                { "key": "Content-Type", "value": "application/json" }
+              ],
+              "body": "[\n  {\n    \"slug\": \"hotel-explora-atacama\",\n    \"site\": \"chileadicto\",\n    \"publicationStatus\": \"published\",\n    \"es\": { \"name\": \"Hotel Explora Atacama\", \"category\": \"Hoteles\" },\n    \"en\": { \"name\": \"Hotel Explora Atacama\", \"category\": \"Hotels\" },\n    \"categories\": [\"Hoteles\"],\n    \"communes\": [\"San Pedro de Atacama\"]\n  }\n]",
+              "originalRequest": {
+                "method": "GET",
+                "url": {
+                  "raw": "{{BASE_CHILE}}/api/posts?categorySlug=hoteles",
+                  "host": ["{{BASE_CHILE}}"],
+                  "path": ["api", "posts"],
+                  "query": [{ "key": "categorySlug", "value": "hoteles" }]
+                }
+              }
+            }
+          ]
+        },
+        {
+          "name": "[Chile Adicto] GET /api/posts?categorySlug=hoteles — paginado",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{BASE_CHILE}}/api/posts?categorySlug=hoteles&limit=10&offset=0",
+              "host": ["{{BASE_CHILE}}"],
+              "path": ["api", "posts"],
+              "query": [
+                { "key": "categorySlug", "value": "hoteles" },
+                { "key": "limit", "value": "10" },
+                { "key": "offset", "value": "0" }
+              ]
+            },
+            "description": "Posts de Chile Adicto filtrados por categoría con paginación."
+          },
+          "response": []
+        },
+        {
+          "name": "[Santiago Adicto] GET /api/posts?categorySlug=museos",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{BASE_SANTIAGO}}/api/posts?categorySlug=museos",
+              "host": ["{{BASE_SANTIAGO}}"],
+              "path": ["api", "posts"],
+              "query": [
+                {
+                  "key": "categorySlug",
+                  "value": "museos",
+                  "description": "Slug de la categoría"
+                }
+              ]
+            },
+            "description": "Filtra posts de Santiago Adicto por categoría (slug)."
+          },
+          "response": [
+            {
+              "name": "200 OK — Posts filtrados",
+              "status": "OK",
+              "code": 200,
+              "header": [
+                { "key": "Content-Type", "value": "application/json" }
+              ],
+              "body": "[\n  {\n    \"slug\": \"museo-nacional-bellas-artes\",\n    \"site\": \"santiagoadicto\",\n    \"publicationStatus\": \"published\",\n    \"es\": { \"name\": \"Museo Nacional de Bellas Artes\", \"category\": \"Museos\" },\n    \"en\": { \"name\": \"National Museum of Fine Arts\", \"category\": \"Museums\" },\n    \"categories\": [\"Museos\"],\n    \"communes\": [\"Santiago\"]\n  }\n]",
+              "originalRequest": {
+                "method": "GET",
+                "url": {
+                  "raw": "{{BASE_SANTIAGO}}/api/posts?categorySlug=museos",
+                  "host": ["{{BASE_SANTIAGO}}"],
+                  "path": ["api", "posts"],
+                  "query": [{ "key": "categorySlug", "value": "museos" }]
+                }
+              }
+            }
+          ]
+        },
+        {
+          "name": "[Santiago Adicto] GET /api/posts?categorySlug=museos — paginado",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{BASE_SANTIAGO}}/api/posts?categorySlug=museos&limit=10&offset=0",
+              "host": ["{{BASE_SANTIAGO}}"],
+              "path": ["api", "posts"],
+              "query": [
+                { "key": "categorySlug", "value": "museos" },
+                { "key": "limit", "value": "10" },
+                { "key": "offset", "value": "0" }
+              ]
+            },
+            "description": "Posts de Santiago Adicto filtrados por categoría con paginación."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Detalle de Post",
+      "item": [
+        {
+          "name": "[Chile Adicto] GET /api/posts/:slug",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{BASE_CHILE}}/api/posts/hotel-explora-atacama",
+              "host": ["{{BASE_CHILE}}"],
+              "path": ["api", "posts", "hotel-explora-atacama"]
+            },
+            "description": "Devuelve el detalle de un post específico de Chile Adicto por su slug."
+          },
+          "response": [
+            {
+              "name": "200 OK — Post encontrado",
+              "status": "OK",
+              "code": 200,
+              "header": [
+                { "key": "Content-Type", "value": "application/json" }
+              ],
+              "body": "{\n  \"slug\": \"hotel-explora-atacama\",\n  \"site\": \"chileadicto\",\n  \"publicationStatus\": \"published\",\n  \"publishStartAt\": null,\n  \"publishEndAt\": null,\n  \"featuredImage\": \"https://...supabase.../hotel-explora.jpg\",\n  \"website\": \"https://explora.com\",\n  \"websitePublic\": \"https://explora.com\",\n  \"instagram\": \"@explorahotels\",\n  \"email\": null,\n  \"phone\": null,\n  \"address\": \"San Pedro de Atacama\",\n  \"hours\": null,\n  \"images\": [\"https://...supabase.../img1.jpg\"],\n  \"locations\": [\n    {\n      \"label\": \"Hotel\",\n      \"address\": \"San Pedro de Atacama\",\n      \"website\": \"https://explora.com\",\n      \"instagram\": null,\n      \"reservationLink\": null,\n      \"phone\": null,\n      \"email\": null\n    }\n  ],\n  \"es\": {\n    \"name\": \"Hotel Explora Atacama\",\n    \"subtitle\": \"Lujo en el desierto\",\n    \"description\": [\"Descripción en español...\"],\n    \"infoHtml\": null,\n    \"infoHtmlNew\": null,\n    \"category\": \"Hoteles\"\n  },\n  \"en\": {\n    \"name\": \"Hotel Explora Atacama\",\n    \"subtitle\": \"Luxury in the desert\",\n    \"description\": [\"English description...\"],\n    \"infoHtml\": null,\n    \"infoHtmlNew\": null,\n    \"category\": \"Hotels\"\n  },\n  \"categories\": [\"Hoteles\"],\n  \"categoryFeaturedImages\": { \"hoteles\": \"https://...supabase.../featured.jpg\" },\n  \"communes\": [\"San Pedro de Atacama\"]\n}",
+              "originalRequest": {
+                "method": "GET",
+                "url": {
+                  "raw": "{{BASE_CHILE}}/api/posts/hotel-explora-atacama",
+                  "host": ["{{BASE_CHILE}}"],
+                  "path": ["api", "posts", "hotel-explora-atacama"]
+                }
+              }
+            },
+            {
+              "name": "404 Not Found",
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                { "key": "Content-Type", "value": "application/json" }
+              ],
+              "body": "{ \"error\": \"not_found\" }",
+              "originalRequest": {
+                "method": "GET",
+                "url": {
+                  "raw": "{{BASE_CHILE}}/api/posts/slug-que-no-existe",
+                  "host": ["{{BASE_CHILE}}"],
+                  "path": ["api", "posts", "slug-que-no-existe"]
+                }
+              }
+            }
+          ]
+        },
+        {
+          "name": "[Santiago Adicto] GET /api/posts/:slug",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{BASE_SANTIAGO}}/api/posts/cerro-san-cristobal",
+              "host": ["{{BASE_SANTIAGO}}"],
+              "path": ["api", "posts", "cerro-san-cristobal"]
+            },
+            "description": "Devuelve el detalle de un post específico de Santiago Adicto por su slug."
+          },
+          "response": [
+            {
+              "name": "200 OK — Post encontrado",
+              "status": "OK",
+              "code": 200,
+              "header": [
+                { "key": "Content-Type", "value": "application/json" }
+              ],
+              "body": "{\n  \"slug\": \"cerro-san-cristobal\",\n  \"site\": \"santiagoadicto\",\n  \"publicationStatus\": \"published\",\n  \"featuredImage\": \"https://...supabase.../cerro.jpg\",\n  \"images\": [\"https://...supabase.../img1.jpg\"],\n  \"locations\": [\n    {\n      \"label\": \"Acceso principal\",\n      \"address\": \"Pío Nono, Providencia\",\n      \"website\": null,\n      \"instagram\": null,\n      \"reservationLink\": null,\n      \"phone\": null,\n      \"email\": null\n    }\n  ],\n  \"es\": {\n    \"name\": \"Cerro San Cristóbal\",\n    \"subtitle\": \"El pulmón verde de Santiago\",\n    \"description\": [\"Descripción en español...\"],\n    \"infoHtml\": null,\n    \"infoHtmlNew\": \"<p>Info adicional...</p>\",\n    \"category\": \"Parques\"\n  },\n  \"en\": {\n    \"name\": \"San Cristobal Hill\",\n    \"subtitle\": \"Santiago's green lung\",\n    \"description\": [\"English description...\"],\n    \"infoHtml\": null,\n    \"infoHtmlNew\": null,\n    \"category\": \"Parks\"\n  },\n  \"categories\": [\"Parques\"],\n  \"communes\": [\"Providencia\"]\n}",
+              "originalRequest": {
+                "method": "GET",
+                "url": {
+                  "raw": "{{BASE_SANTIAGO}}/api/posts/cerro-san-cristobal",
+                  "host": ["{{BASE_SANTIAGO}}"],
+                  "path": ["api", "posts", "cerro-san-cristobal"]
+                }
+              }
+            },
+            {
+              "name": "404 Not Found",
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                { "key": "Content-Type", "value": "application/json" }
+              ],
+              "body": "{ \"error\": \"not_found\" }",
+              "originalRequest": {
+                "method": "GET",
+                "url": {
+                  "raw": "{{BASE_SANTIAGO}}/api/posts/slug-que-no-existe",
+                  "host": ["{{BASE_SANTIAGO}}"],
+                  "path": ["api", "posts", "slug-que-no-existe"]
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

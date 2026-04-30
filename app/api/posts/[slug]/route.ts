@@ -18,6 +18,15 @@ function envOrNull(name: string) {
   return v && v.length > 0 ? v : null;
 }
 
+function requireAdminKey(req: Request) {
+  const required = envOrNull("ADMIN_API_KEY");
+  if (!required) return;
+  const provided = req.headers.get("x-admin-key");
+  if (!provided || provided !== required) {
+    throw new Error("unauthorized");
+  }
+}
+
 async function fetchFromSupabase(path: string, init?: RequestInit) {
   const base = envOrNull("NEXT_PUBLIC_SUPABASE_URL");
   const anon = envOrNull("NEXT_PUBLIC_SUPABASE_ANON_KEY");
@@ -398,6 +407,7 @@ export async function PUT(
 ) {
   let step = "start";
   try {
+    requireAdminKey(req);
     const siteId = await getCurrentSiteId(req);
     const ctx = (await (params as any)) as { slug?: string };
     const slugParam = String(ctx?.slug || "").trim();
@@ -714,6 +724,9 @@ export async function PUT(
     return NextResponse.json({ ok: true, slug: normalized.slug || slugParam }, { status: 200 });
   } catch (err: any) {
     console.error("[PUT /api/posts/[slug]] error final", err);
+    if (String(err?.message) === "unauthorized") {
+      return NextResponse.json({ error: "unauthorized" }, { status: 401 });
+    }
     const msg = String(err?.message || "bad_request");
     // Incluir paso si está disponible para depurar
     const payload: any = { error: "internal_error", message: msg, step };
@@ -731,6 +744,7 @@ export async function DELETE(
   { params }: { params: { slug: string } }
 ) {
   try {
+    requireAdminKey(_req);
     const siteId = await getCurrentSiteId(_req);
     const ctx = (await (params as any)) as { slug?: string };
     const slug = String(ctx?.slug || "").trim();
@@ -861,6 +875,9 @@ export async function DELETE(
     return NextResponse.json({ ok: true }, { status: 200 });
   } catch (err: any) {
     console.error("[DELETE /api/posts/[slug]] error", err);
+    if (String(err?.message) === "unauthorized") {
+      return NextResponse.json({ error: "unauthorized" }, { status: 401 });
+    }
     return NextResponse.json({ error: "internal_error" }, { status: 500 });
   }
 }

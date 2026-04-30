@@ -71,6 +71,15 @@ function envOrNull(name: string) {
   return v && v.length > 0 ? v : null;
 }
 
+function requireAdminKey(req: Request) {
+  const required = envOrNull("ADMIN_API_KEY");
+  if (!required) return;
+  const provided = req.headers.get("x-admin-key");
+  if (!provided || provided !== required) {
+    throw new Error("unauthorized");
+  }
+}
+
 async function fetchFromSupabase(path: string, init?: RequestInit) {
   const base = envOrNull("NEXT_PUBLIC_SUPABASE_URL");
   const anon = envOrNull("NEXT_PUBLIC_SUPABASE_ANON_KEY");
@@ -524,6 +533,7 @@ export async function GET(req: Request) {
 
 export async function POST(req: Request) {
   try {
+    requireAdminKey(req);
     const siteId = await getCurrentSiteId(req);
     const body = await req.json();
     const normalized = normalizePost(body);
@@ -697,6 +707,9 @@ export async function POST(req: Request) {
     return NextResponse.json({ ok: true, slug: normalized.slug }, { status: 201 });
   } catch (err: any) {
     console.error("[POST /api/posts] error", err);
+    if (String(err?.message) === "unauthorized") {
+      return NextResponse.json({ error: "unauthorized" }, { status: 401 });
+    }
     return NextResponse.json({ error: "bad_request" }, { status: 400 });
   }
 }

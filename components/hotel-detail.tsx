@@ -83,7 +83,14 @@ export function HotelDetail({ hotel }: HotelDetailProps) {
         .includes("agenda-cultural")
     : false;
 
-  const showCategoryBanner = isMonumentosPost || isCafesPost || isAgendaPost;
+  const isToyotaPost = Array.isArray(hotel?.categories)
+    ? hotel.categories
+        .map((c) => toSlug(String(c || "")))
+        .includes("la-ruta-toyota")
+    : false;
+
+  const showCategoryBanner =
+    isMonumentosPost || isCafesPost || isAgendaPost || isToyotaPost;
   // La galería NO debe incluir la imagen de portada. Si hay imágenes de galería, usamos solo esas.
   // Si NO hay imágenes de galería, mostramos la portada como único slide.
   const allImages =
@@ -457,30 +464,38 @@ export function HotelDetail({ hotel }: HotelDetailProps) {
               href={
                 isCafesPost
                   ? "/cafes"
-                  : isMonumentosPost
-                    ? "/monumentos-nacionales"
-                    : "/categoria/agenda-cultural"
+                  : isToyotaPost
+                    ? "/categoria/la-ruta-toyota"
+                    : isMonumentosPost
+                      ? "/monumentos-nacionales"
+                      : "/categoria/agenda-cultural"
               }
               src={
                 isCafesPost
                   ? "/bannerHome/BANNER DESKTOP 50 CAFES.png"
-                  : isMonumentosPost
-                    ? "/bannerHome/BANNER MONUMENTOS.svg"
-                    : "/bannerHome/BANNER AGENDA.png"
+                  : isToyotaPost
+                    ? "/bannerstoyota/BANNER LA RUTA TOYOTA.webp"
+                    : isMonumentosPost
+                      ? "/bannerHome/BANNER MONUMENTOS.svg"
+                      : "/bannerHome/BANNER AGENDA.png"
               }
               mobileSrc={
                 isCafesPost
                   ? "/bannerHome/30 CAFES.png"
-                  : isMonumentosPost
-                    ? "/bannerHome/monumentos movil.png"
-                    : undefined
+                  : isToyotaPost
+                    ? "/bannerstoyota/BANNER LA RUTA TOYOTA.webp"
+                    : isMonumentosPost
+                      ? "/bannerHome/monumentos movil.png"
+                      : undefined
               }
               alt={
                 isCafesPost
                   ? "Cafés"
-                  : isMonumentosPost
-                    ? "Monumentos Nacionales"
-                    : "Agenda Cultural"
+                  : isToyotaPost
+                    ? "La Ruta Toyota"
+                    : isMonumentosPost
+                      ? "Monumentos Nacionales"
+                      : "Agenda Cultural"
               }
             />
           </div>

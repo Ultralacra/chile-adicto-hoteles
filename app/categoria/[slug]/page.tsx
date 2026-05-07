@@ -1078,22 +1078,40 @@ export default function CategoryPage({ params }: { params: any }) {
             </div>
           )}
 
-          {/* En Monumentos Nacionales y Cafés: banner largo bajo el menú, luego posts */}
-          {(slug === "monumentos-nacionales" || slug === "cafes") && (
+          {/* En Monumentos Nacionales, Cafés y La Ruta Toyota: banner largo bajo el menú, luego posts */}
+          {(slug === "monumentos-nacionales" ||
+            slug === "cafes" ||
+            slug === "la-ruta-toyota") && (
             <div className="w-full mt-2">
               <BottomHomeBanner
-                href={slug === "cafes" ? "/cafes" : "/monumentos-nacionales"}
+                href={
+                  slug === "cafes"
+                    ? "/cafes"
+                    : slug === "la-ruta-toyota"
+                      ? "/categoria/la-ruta-toyota"
+                      : "/monumentos-nacionales"
+                }
                 src={
                   slug === "cafes"
                     ? "/bannerHome/BANNER DESKTOP 50 CAFES.png"
-                    : "/bannerHome/BANNER MONUMENTOS.svg"
+                    : slug === "la-ruta-toyota"
+                      ? "/bannerstoyota/BANNER LA RUTA TOYOTA.webp"
+                      : "/bannerHome/BANNER MONUMENTOS.svg"
                 }
                 mobileSrc={
                   slug === "cafes"
                     ? "/bannerHome/30 CAFES.png"
-                    : "/bannerHome/monumentos movil.png"
+                    : slug === "la-ruta-toyota"
+                      ? "/bannerstoyota/BANNER LA RUTA TOYOTA.webp"
+                      : "/bannerHome/monumentos movil.png"
                 }
-                alt={slug === "cafes" ? "Cafés" : "Monumentos Nacionales"}
+                alt={
+                  slug === "cafes"
+                    ? "Cafés"
+                    : slug === "la-ruta-toyota"
+                      ? "La Ruta Toyota"
+                      : "Monumentos Nacionales"
+                }
               />
             </div>
           )}

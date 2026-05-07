@@ -156,12 +156,14 @@ export function MobileFooterContent({ onNavigate }: MobileFooterContentProps) {
           .filter((x) => x.slug !== "todos");
 
         const restaurants = mapped.filter((x) => x.slug === "restaurantes");
+        const toyota = mapped.filter((x) => x.slug === "la-ruta-toyota");
         const tienda = mapped.filter(
           (x) => x.slug === "tienda" || x.slug === "tiendas",
         );
         const others = mapped.filter(
           (x) =>
             x.slug !== "restaurantes" &&
+            x.slug !== "la-ruta-toyota" &&
             x.slug !== "tienda" &&
             x.slug !== "tiendas",
         );
@@ -170,6 +172,7 @@ export function MobileFooterContent({ onNavigate }: MobileFooterContentProps) {
           ...others,
           ...restaurants,
           ...tienda,
+          ...toyota,
         ];
 
         if (!cancelled && finalList.length) setItems(finalList);

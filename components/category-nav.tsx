@@ -98,16 +98,18 @@ export function CategoryNav({
         // Asegurar orden estable:
         // - "todos" primero
         // - "restaurantes" cerca del final
-        // - "tienda/tiendas" siempre al final
+        // - "la-ruta-toyota" y "tienda/tiendas" siempre al final
         const todos = mapped.find((x) => x.slug === "todos");
         const rest = mapped.filter((x) => x.slug !== "todos");
         const restaurants = rest.filter((x) => x.slug === "restaurantes");
+        const toyota = rest.filter((x) => x.slug === "la-ruta-toyota");
         const tienda = rest.filter(
           (x) => x.slug === "tienda" || x.slug === "tiendas",
         );
         const others = rest.filter(
           (x) =>
             x.slug !== "restaurantes" &&
+            x.slug !== "la-ruta-toyota" &&
             x.slug !== "tienda" &&
             x.slug !== "tiendas",
         );
@@ -116,6 +118,7 @@ export function CategoryNav({
           ...others,
           ...restaurants,
           ...tienda,
+          ...toyota,
         ];
 
         if (!cancelled && finalList.length) setItems(finalList);

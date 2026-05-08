@@ -67,27 +67,24 @@ export function HotelDetail({ hotel }: HotelDetailProps) {
       .replace(/[^a-z0-9]+/g, "-")
       .replace(/(^-|-$)/g, "");
 
-  const isMonumentosPost = Array.isArray(hotel?.categories)
-    ? hotel.categories
-        .map((c) => toSlug(String(c || "")))
-        .includes("monumentos-nacionales")
-    : false;
+  const normalizedCategories = Array.isArray(hotel?.categories)
+    ? hotel.categories.map((c) => toSlug(String(c || "")))
+    : [];
 
-  const isCafesPost = Array.isArray(hotel?.categories)
-    ? hotel.categories.map((c) => toSlug(String(c || ""))).includes("cafes")
-    : false;
+  const isMonumentosPost = normalizedCategories.includes(
+    "monumentos-nacionales",
+  );
 
-  const isAgendaPost = Array.isArray(hotel?.categories)
-    ? hotel.categories
-        .map((c) => toSlug(String(c || "")))
-        .includes("agenda-cultural")
-    : false;
+  const isCafesPost = normalizedCategories.includes("cafes");
 
-  const isToyotaPost = Array.isArray(hotel?.categories)
-    ? hotel.categories
-        .map((c) => toSlug(String(c || "")))
-        .includes("la-ruta-toyota")
-    : false;
+  const isAgendaPost = normalizedCategories.includes("agenda-cultural");
+
+  const isToyotaPost = normalizedCategories.some(
+    (category) =>
+      category === "la-ruta-toyota" ||
+      category === "ruta-toyota" ||
+      category.includes("toyota"),
+  );
 
   const showCategoryBanner =
     isMonumentosPost || isCafesPost || isAgendaPost || isToyotaPost;
@@ -1006,18 +1003,19 @@ export function HotelDetail({ hotel }: HotelDetailProps) {
               </>
             )}
           </div>
+          {isToyotaPost && (
+            <div className="mt-6 flex justify-start">
+              <div className="w-full md:w-1/2">
+                <BottomHomeBanner
+                  href="/categoria/la-ruta-toyota"
+                  src="/bannerstoyota/BANNER POST RUTA TOYOTA.webp"
+                  mobileSrc="/bannerstoyota/BANNER POST RUTA TOYOTA.webp"
+                  alt="Banner post La Ruta Toyota"
+                />
+              </div>
+            </div>
+          )}
         </div>
-
-        {isToyotaPost && (
-          <div className="w-full mt-6">
-            <BottomHomeBanner
-              href="/categoria/la-ruta-toyota"
-              src="/bannerstoyota/BANNER POST RUTA TOYOTA.webp"
-              mobileSrc="/bannerstoyota/BANNER POST RUTA TOYOTA.webp"
-              alt="Banner post La Ruta Toyota"
-            />
-          </div>
-        )}
       </main>
     </>
   );

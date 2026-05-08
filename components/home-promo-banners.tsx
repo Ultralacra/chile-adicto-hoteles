@@ -10,14 +10,13 @@ export function PromoStackBanners() {
         style={{ height: 210 }}
       >
         <Link
-          href="https://chileadictohoteles.cl/"
+          href="/categoria/la-ruta-toyota"
           className="block w-full h-full"
-          target="_blank"
-          rel="noopener noreferrer"
+          aria-label="Ir a La Ruta Toyota"
         >
           <img
-            src="/bannerHome/70%20HOTELES.png"
-            alt="Hoteles"
+            src="/bannerstoyota/BANNER RUTA TOYOTA.webp"
+            alt="La Ruta Toyota"
             className="w-full h-full object-contain md:object-cover"
             style={{
               objectPosition: "center",

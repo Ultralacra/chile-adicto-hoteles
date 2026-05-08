@@ -8,14 +8,13 @@ export function PromoStackBanners() {
     <div className="w-full flex flex-col gap-[18px] md:gap-4 overflow-hidden md:h-[520px] lg:h-[437px]">
       <div className="relative overflow-hidden max-w-[435px] mx-auto md:flex-1 md:min-h-0">
         <Link
-          href="https://chileadictohoteles.cl/"
+          href="/categoria/la-ruta-toyota"
           className="block w-full h-full"
-          target="_blank"
-          rel="noopener noreferrer"
+          aria-label="Ir a La Ruta Toyota"
         >
           <Image
-            src="/bannerHome/70%20HOTELES.png"
-            alt="Hoteles"
+            src="/bannerstoyota/BANNER RUTA TOYOTA.webp"
+            alt="La Ruta Toyota"
             width={5120}
             height={2240}
             sizes="(max-width: 767px) 100vw, (max-width: 1279px) 33vw, 435px"

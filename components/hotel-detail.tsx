@@ -1007,6 +1007,17 @@ export function HotelDetail({ hotel }: HotelDetailProps) {
             )}
           </div>
         </div>
+
+        {isToyotaPost && (
+          <div className="w-full mt-6">
+            <BottomHomeBanner
+              href="/categoria/la-ruta-toyota"
+              src="/bannerstoyota/BANNER POST RUTA TOYOTA.webp"
+              mobileSrc="/bannerstoyota/BANNER POST RUTA TOYOTA.webp"
+              alt="Banner post La Ruta Toyota"
+            />
+          </div>
+        )}
       </main>
     </>
   );

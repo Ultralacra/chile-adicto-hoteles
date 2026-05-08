@@ -1304,41 +1304,56 @@ export default function CategoryPage({ params }: { params: any }) {
               )}
             </div>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 mt-4">
-              {finalOrderedHotels.length > 0 ? (
-                finalOrderedHotels.map((hotel) => (
-                  <HotelCard
-                    key={hotel.slug}
-                    slug={hotel.slug}
-                    name={hotel[language].name}
-                    subtitle={hotel[language].subtitle}
-                    description={buildCardExcerpt(hotel[language].description)}
-                    image={hotel.featuredImage || hotel.images?.[0] || ""}
-                    imageVariant={
-                      slug === "monumentos-nacionales" || slug === "cafes"
-                        ? "tall"
-                        : "default"
-                    }
-                    publishStartAt={hotel.publishStartAt}
-                    publishEndAt={hotel.publishEndAt}
-                    publicationEndsAt={hotel.publicationEndsAt}
-                    showPublicationDates={false}
-                    onCardClick={
-                      isAgendaCultural ? handleAgendaCardClick : undefined
-                    }
+            <>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 mt-4">
+                {finalOrderedHotels.length > 0 ? (
+                  finalOrderedHotels.map((hotel) => (
+                    <HotelCard
+                      key={hotel.slug}
+                      slug={hotel.slug}
+                      name={hotel[language].name}
+                      subtitle={hotel[language].subtitle}
+                      description={buildCardExcerpt(
+                        hotel[language].description,
+                      )}
+                      image={hotel.featuredImage || hotel.images?.[0] || ""}
+                      imageVariant={
+                        slug === "monumentos-nacionales" || slug === "cafes"
+                          ? "tall"
+                          : "default"
+                      }
+                      publishStartAt={hotel.publishStartAt}
+                      publishEndAt={hotel.publishEndAt}
+                      publicationEndsAt={hotel.publicationEndsAt}
+                      showPublicationDates={false}
+                      onCardClick={
+                        isAgendaCultural ? handleAgendaCardClick : undefined
+                      }
+                    />
+                  ))
+                ) : (
+                  <div className="col-span-full text-center py-12 text-gray-500">
+                    <p>
+                      {t(
+                        "No hay hoteles disponibles en esta categoría.",
+                        "No hotels available in this category.",
+                      )}
+                    </p>
+                  </div>
+                )}
+              </div>
+
+              {slug === "la-ruta-toyota" && finalOrderedHotels.length > 0 && (
+                <div className="w-full mt-4">
+                  <BottomHomeBanner
+                    href="/categoria/la-ruta-toyota"
+                    src="/bannerstoyota/BANNER POST RUTA TOYOTA.webp"
+                    mobileSrc="/bannerstoyota/BANNER POST RUTA TOYOTA.webp"
+                    alt="Banner post La Ruta Toyota"
                   />
-                ))
-              ) : (
-                <div className="col-span-full text-center py-12 text-gray-500">
-                  <p>
-                    {t(
-                      "No hay hoteles disponibles en esta categoría.",
-                      "No hotels available in this category.",
-                    )}
-                  </p>
                 </div>
               )}
-            </div>
+            </>
           )}
         </main>
 

@@ -88,7 +88,6 @@ export function MobileFooterContent({ onNavigate }: MobileFooterContentProps) {
     { slug: "miradores", labelEs: "MIRADORES", labelEn: "VIEWPOINTS" },
     { slug: "museos", labelEs: "CULTURA", labelEn: "MUSEUMS" },
     { slug: "palacios", labelEs: "PALACIOS", labelEn: "PALACES" },
-    { slug: "parques", labelEs: "PARQUES", labelEn: "PARKS" },
     {
       slug: "paseos-fuera-de-santiago",
       labelEs: "FUERA DE STGO",
@@ -112,7 +111,6 @@ export function MobileFooterContent({ onNavigate }: MobileFooterContentProps) {
         "miradores",
         "museos",
         "palacios",
-        "parques",
         "paseos-fuera-de-santiago",
         "restaurantes",
       ]),

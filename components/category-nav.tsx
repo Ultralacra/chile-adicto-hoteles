@@ -72,7 +72,7 @@ export function CategoryNav({
         const json = await cachedFetchWithSite("/api/categories?full=1&nav=1");
         const rows: ApiCategoryRow[] = Array.isArray(json) ? json : [];
         const mapped = rows
-          .filter((r) => r && r.slug)
+          .filter((r) => r && r.slug && String(r.slug) !== "parques")
           .map((r) => {
             const slug = String(r.slug);
             const fallback = fallbackCategories.find((c) => c.slug === slug);

@@ -20,7 +20,6 @@ const fallbackCategories = [
   // Display label in ES should be "CULTURA" though slug remains "museos"
   { slug: "museos", labelEs: "CULTURA", labelEn: "Museums" },
   { slug: "palacios", labelEs: "PALACIOS", labelEn: "Palaces" },
-  { slug: "parques", labelEs: "PARQUES", labelEn: "Parks" },
   {
     slug: "paseos-fuera-de-santiago",
     // Display label in ES should be "FUERA DE STGO" though slug remains
@@ -54,7 +53,6 @@ const prettySlugs = new Set([
   "miradores",
   "museos",
   "palacios",
-  "parques",
   "paseos-fuera-de-santiago",
   "restaurantes",
 ]);

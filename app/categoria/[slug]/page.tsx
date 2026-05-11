@@ -1342,17 +1342,6 @@ export default function CategoryPage({ params }: { params: any }) {
                   </div>
                 )}
               </div>
-
-              {slug === "la-ruta-toyota" && finalOrderedHotels.length > 0 && (
-                <div className="w-full mt-4">
-                  <BottomHomeBanner
-                    href="/categoria/la-ruta-toyota"
-                    src="/bannerstoyota/BANNER POST RUTA TOYOTA.webp"
-                    mobileSrc="/bannerstoyota/BANNER POST RUTA TOYOTA.webp"
-                    alt="Banner post La Ruta Toyota"
-                  />
-                </div>
-              )}
             </>
           )}
         </main>

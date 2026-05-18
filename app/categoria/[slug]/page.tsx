@@ -970,6 +970,28 @@ export default function CategoryPage({ params }: { params: any }) {
     "ciclo-especial-mes-de-la-danza-en-matucana-100",
     "artes-visuales-enter-to-the-exit-de-fabiola-morcillo",
   ]);
+  const repeatingSlugDateRanges = [
+    {
+      slug: "artes-visuales-arte-radrigan-la-pintura-consumada",
+      from: "2026-05-08",
+      to: "2026-06-04",
+    },
+    {
+      slug: "artes-visuales-naturalia-de-gonzalo-pedraza",
+      from: "2026-05-08",
+      to: "2026-05-17",
+    },
+    {
+      slug: "teatro-musical-amores-de-cantina-de-juan-radrigan",
+      from: "2026-05-07",
+      to: "2026-05-17",
+    },
+    {
+      slug: "teatro-musical-pretty-woman-el-musical",
+      from: "2026-05-06",
+      to: "2026-06-14",
+    },
+  ];
 
   // Agrupar posts de agenda cultural por rango de banner
   const isAgendaCultural = slug === "agenda-cultural";
@@ -1003,6 +1025,13 @@ export default function CategoryPage({ params }: { params: any }) {
             if (isAprilRange && repeatingAgendaWeeklySlugs.has(postSlug)) {
               return true;
             }
+            const matchesRepeatingRange = repeatingSlugDateRanges.some(
+              (r) =>
+                r.slug === postSlug &&
+                range.end >= r.from &&
+                range.start <= r.to,
+            );
+            if (matchesRepeatingRange) return true;
 
             // Excluir posts cuya publicación ya terminó
             if (hasPostPublicationEnded(h)) return false;

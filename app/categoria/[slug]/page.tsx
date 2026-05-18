@@ -920,6 +920,46 @@ export default function CategoryPage({ params }: { params: any }) {
       mobileSrc: "/bannersagenda/MOVIL AGENDA 25 AL 31 DE MAYO.png",
       alt: "Agenda Cultural del 25 al 31 de mayo",
     },
+    {
+      start: "2026-06-01",
+      end: "2026-06-07",
+      href: "/agenda-cultural",
+      src: "/bannersagenda/DESKTOP AGENDA 1 AL 7 DE JUNIO.png",
+      mobileSrc: "/bannersagenda/MOVIL AGENDA 1 AL 7 DE JUNIO.png",
+      alt: "Agenda Cultural del 1 al 7 de junio",
+    },
+    {
+      start: "2026-06-08",
+      end: "2026-06-14",
+      href: "/agenda-cultural",
+      src: "/bannersagenda/DESKTOP AGENDA 8 AL 14 DE JUNIO.png",
+      mobileSrc: "/bannersagenda/MOVIL AGENDA 8 AL 14 DE JUNIO.png",
+      alt: "Agenda Cultural del 8 al 14 de junio",
+    },
+    {
+      start: "2026-06-15",
+      end: "2026-06-21",
+      href: "/agenda-cultural",
+      src: "/bannersagenda/DESKTOP AGENDA 15 AL 21 DE JUNIO.png",
+      mobileSrc: "/bannersagenda/MOVIL AGENDA 15 AL 21 DE JUNIO.png",
+      alt: "Agenda Cultural del 15 al 21 de junio",
+    },
+    {
+      start: "2026-06-22",
+      end: "2026-06-28",
+      href: "/agenda-cultural",
+      src: "/bannersagenda/DESKTOP AGENDA 22 AL 28 DE JUNIO.png",
+      mobileSrc: "/bannersagenda/MOVIL AGENDA  22 AL 28 DE JUNIO.png",
+      alt: "Agenda Cultural del 22 al 28 de junio",
+    },
+    {
+      start: "2026-06-29",
+      end: "2026-07-05",
+      href: "/agenda-cultural",
+      src: "/bannersagenda/DESKTOP AGENDA 29 AL 05 DE JULIO.png",
+      mobileSrc: "/bannersagenda/MOVIL AGENDA 29 AL 05 DE JULIO.png",
+      alt: "Agenda Cultural del 29 de junio al 5 de julio",
+    },
   ];
 
   const todayKey = toLocalDateKey(new Date());

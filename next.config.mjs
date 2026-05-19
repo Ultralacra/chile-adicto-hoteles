@@ -57,6 +57,15 @@ const nextConfig = {
       },
     ];
   },
+  async redirects() {
+    return [
+      {
+        source: '/categoria/tiendas',
+        destination: '/categoria/sorpresas-urbanas',
+        permanent: true,
+      },
+    ];
+  },
   async rewrites() {
     // Rutas "bonitas":
     // - Categorías sin prefijo: /iconos -> /categoria/iconos, etc.

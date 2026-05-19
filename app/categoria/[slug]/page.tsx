@@ -63,6 +63,7 @@ export default function CategoryPage({ params }: { params: any }) {
     // Mostrar FUERA DE STGO aunque el slug sea paseos-fuera-de-santiago
     "paseos-fuera-de-santiago": "FUERA DE STGO",
     tiendas: "TIENDAS",
+    "sorpresas-urbanas": "TIENDAS",
   };
 
   const categoryName = categoryMap[slug] || slug.toUpperCase();

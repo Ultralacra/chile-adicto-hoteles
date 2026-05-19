@@ -354,6 +354,9 @@ export async function GET(req: Request) {
       if (normalized === "restaurantes" || normalized === "restaurants") {
         return ["restaurantes", "restaurants", "bares", "bars"];
       }
+      if (normalized === "sorpresas-urbanas") {
+        return ["sorpresas-urbanas", "tiendas", "tienda"];
+      }
       return [normalized];
     };
 

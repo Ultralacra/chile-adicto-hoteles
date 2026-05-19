@@ -120,6 +120,8 @@ export function MobileFooterContent({ onNavigate }: MobileFooterContentProps) {
   const hrefFor = (slug: string) => {
     if (slug === "todos") return "/";
     if (slug === "restaurantes") return "/restaurantes";
+    if (slug === "tiendas" || slug === "tienda")
+      return "/categoria/sorpresas-urbanas";
     return prettySlugs.has(slug) ? `/${slug}` : `/categoria/${slug}`;
   };
 

@@ -93,7 +93,7 @@ export default function CategoryPage({ params }: { params: any }) {
     setLoading(true);
     // Preferimos filtrar por slug de categoría en el backend
     cachedFetchWithSite(
-      `/api/posts?categorySlug=${encodeURIComponent(slug)}&includeExpired=1&sort=alpha&lang=${language}`,
+      `/api/posts?categorySlug=${encodeURIComponent(slug === "bares" ? "restaurantes" : slug)}&includeExpired=1&sort=alpha&lang=${language}`,
     )
       .then((rows) => {
         if (cancelled) return;
@@ -108,6 +108,8 @@ export default function CategoryPage({ params }: { params: any }) {
   }, [slug, language, cachedFetchWithSite]);
 
   const isRestaurantsPage = slug === "restaurantes";
+  const isBarsPage = slug === "bares";
+  const isRestaurantOrBarsPage = isRestaurantsPage || isBarsPage;
 
   // Comunas dinámicas para restaurantes (derivadas de direcciones/locations y overrides)
   const possibleCommunes = [
@@ -135,6 +137,7 @@ export default function CategoryPage({ params }: { params: any }) {
 
   const searchParams = useSearchParams();
   const comunaParam = searchParams.get("comuna");
+  const tipoParam = searchParams.get("tipo");
   const [selectedComuna, setSelectedComuna] = useState<string | null>(null);
 
   const communeLabelFromRow = (r: ApiCommuneRow) => {
@@ -169,7 +172,7 @@ export default function CategoryPage({ params }: { params: any }) {
 
   // Cargar comunas desde BD para el submenú (fallback a heurística si no existe tabla)
   useEffect(() => {
-    if (!isRestaurantsPage) {
+    if (!isRestaurantOrBarsPage) {
       setDbCommunes([]);
       return;
     }
@@ -184,11 +187,11 @@ export default function CategoryPage({ params }: { params: any }) {
     return () => {
       cancelled = true;
     };
-  }, [isRestaurantsPage, cachedFetchWithSite]);
+  }, [isRestaurantOrBarsPage, cachedFetchWithSite]);
 
   // Reusar comunas ya embebidas en /api/posts para evitar una lectura extra a /api/communes/map.
   useEffect(() => {
-    if (!isRestaurantsPage) {
+    if (!isRestaurantOrBarsPage) {
       setDbPostCommuneMap({});
       return;
     }
@@ -228,7 +231,7 @@ export default function CategoryPage({ params }: { params: any }) {
     }
 
     setDbPostCommuneMap(nextMap);
-  }, [isRestaurantsPage, filteredHotels, dbCommunes]);
+  }, [isRestaurantOrBarsPage, filteredHotels, dbCommunes]);
 
   // Overrides de comuna por slug (prioridad sobre búsqueda por texto)
   // Permite uno o múltiples match de comuna por slug.
@@ -259,7 +262,7 @@ export default function CategoryPage({ params }: { params: any }) {
     normalizeComuna(label) === "INDEPENDENCIA";
   // Derivar lista de comunas encontradas entre los restaurantes cargados
   useEffect(() => {
-    if (!isRestaurantsPage) {
+    if (!isRestaurantOrBarsPage) {
       setCommunes([]);
       return;
     }
@@ -329,7 +332,7 @@ export default function CategoryPage({ params }: { params: any }) {
             "La Reina",
           ],
     );
-  }, [isRestaurantsPage, filteredHotels]);
+  }, [isRestaurantOrBarsPage, filteredHotels]);
 
   const selectedComunaSlug = selectedComuna
     ? (() => {
@@ -752,7 +755,7 @@ export default function CategoryPage({ params }: { params: any }) {
   const cleanedList = finalHotels.filter(
     (h: any) => String(h.slug) !== "w-santiago",
   );
-  const shouldSortAlphabetically = isRestaurantsPage || slug === "cafes";
+  const shouldSortAlphabetically = isRestaurantOrBarsPage || slug === "cafes";
 
   const finalOrderedHotels = shouldSortAlphabetically
     ? cleanedList
@@ -795,14 +798,14 @@ export default function CategoryPage({ params }: { params: any }) {
     return source;
   };
 
-  const restaurantOnlyHotels = isRestaurantsPage
+  const restaurantOnlyHotels = isRestaurantOrBarsPage
     ? finalOrderedHotels.filter((hotel) => {
         const categorySlugs = getPostCategorySlugs(hotel);
         return !categorySlugs.has("bares") && !categorySlugs.has("bars");
       })
     : [];
 
-  const restaurantBarsHotels = isRestaurantsPage
+  const restaurantBarsHotels = isRestaurantOrBarsPage
     ? finalOrderedHotels.filter((hotel) => {
         const categorySlugs = getPostCategorySlugs(hotel);
         return categorySlugs.has("bares") || categorySlugs.has("bars");
@@ -1090,14 +1093,14 @@ export default function CategoryPage({ params }: { params: any }) {
         <Header />
 
         <main className="site-inner py-4">
-          {isRestaurantsPage ? (
-            // Submenú de comunas para restaurantes con primer item "VOLVER"
+          {isRestaurantOrBarsPage ? (
+            // Submenú de comunas para restaurantes/bares con primer item "VOLVER"
             <nav className="py-4 hidden lg:block">
               <ul className="hidden lg:flex flex-nowrap items-center gap-2 text-sm font-medium whitespace-nowrap">
-                {/* VOLVER - limpia filtro y vuelve al listado de restaurantes */}
+                {/* VOLVER - limpia filtro y vuelve al listado */}
                 <li className="flex items-center gap-2">
                   <Link
-                    href="/restaurantes"
+                    href={isBarsPage ? "/categoria/bares" : "/restaurantes"}
                     className={`font-neutra hover:text-[var(--color-brand-red)] transition-colors tracking-wide text-[15px] leading-[20px] ${
                       !selectedComuna
                         ? "text-[var(--color-brand-red)]"
@@ -1124,7 +1127,7 @@ export default function CategoryPage({ params }: { params: any }) {
                   return (
                     <li key={c} className="flex items-center gap-2">
                       <Link
-                        href={`/restaurantes?comuna=${slugified}`}
+                        href={`${isBarsPage ? "/categoria/bares" : "/restaurantes"}?comuna=${slugified}`}
                         className={`font-neutra hover:text-[var(--color-brand-red)] transition-colors tracking-wide text-[15px] leading-[20px] ${
                           isActive
                             ? "text-[var(--color-brand-red)]"
@@ -1186,8 +1189,8 @@ export default function CategoryPage({ params }: { params: any }) {
             </div>
           )}
 
-          {/* Slider de restaurantes a ancho completo, sin banner */}
-          {isRestaurantsPage && (
+          {/* Slider de restaurantes: solo en página principal (sin filtro tipo) */}
+          {isRestaurantsPage && !tipoParam && (
             <div className="py-2">
               <div className="w-full overflow-hidden mb-0">
                 <HeroSlider
@@ -1245,17 +1248,6 @@ export default function CategoryPage({ params }: { params: any }) {
             </div>
           )}
 
-          {isRestaurantsPage && restaurantOnlyHotels.length > 0 && (
-            <div className="w-full mt-4">
-              <BottomHomeBanner
-                href="/restaurantes"
-                src="/bannerRestaurantes/BANER DESKTOP 50 RESTORANES.png"
-                mobileSrc="/bannerRestaurantes/BANER MOVIL 50 RESTORANES.png"
-                alt="50 restaurantes de Santiago"
-              />
-            </div>
-          )}
-
           {/* Contador oculto por solicitud: se elimina el conteo de posts */}
 
           {/* Hotel Grid */}
@@ -1305,62 +1297,78 @@ export default function CategoryPage({ params }: { params: any }) {
                 </section>
               ))}
             </div>
-          ) : isRestaurantsPage ? (
+          ) : isRestaurantOrBarsPage ? (
             <div className="mt-4 space-y-8">
-              {restaurantOnlyHotels.length > 0 && (
-                <section>
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-                    {restaurantOnlyHotels.map((hotel) => (
-                      <HotelCard
-                        key={hotel.slug}
-                        slug={hotel.slug}
-                        name={hotel[language].name}
-                        subtitle={hotel[language].subtitle}
-                        description={buildCardExcerpt(
-                          hotel[language].description,
-                        )}
-                        image={hotel.featuredImage || hotel.images?.[0] || ""}
-                        publishStartAt={hotel.publishStartAt}
-                        publishEndAt={hotel.publishEndAt}
-                        publicationEndsAt={hotel.publicationEndsAt}
-                        showPublicationDates={false}
-                      />
-                    ))}
-                  </div>
-                </section>
+              {/* Banners: solo en página principal de restaurantes (sin ?tipo) */}
+              {isRestaurantsPage && !tipoParam && (
+                <div className="space-y-4">
+                  <BottomHomeBanner
+                    href="/categoria/restaurantes?tipo=restaurantes"
+                    src="/bannerRestaurantes/BANER DESKTOP 50 RESTORANES.png"
+                    mobileSrc="/bannerRestaurantes/BANER MOVIL 50 RESTORANES.png"
+                    alt="50 restaurantes de Santiago"
+                  />
+                  <BottomHomeBanner
+                    href="/categoria/bares"
+                    src="/bannerRestaurantes/BANER DESKTOP 50 BARES.png"
+                    mobileSrc="/bannerRestaurantes/BANER MOVIL 50 BARES.png"
+                    alt="50 bares de Santiago"
+                  />
+                </div>
               )}
 
-              {restaurantBarsHotels.length > 0 && (
-                <section>
-                  <div className="w-full mb-4">
-                    <BottomHomeBanner
-                      href="/restaurantes"
-                      src="/bannerRestaurantes/BANER DESKTOP 50 BARES.png"
-                      mobileSrc="/bannerRestaurantes/BANER MOVIL 50 BARES.png"
-                      alt="50 bares de Santiago"
-                    />
-                  </div>
+              {/* Posts de restaurantes: en principal y ?tipo=restaurantes */}
+              {isRestaurantsPage &&
+                (!tipoParam || tipoParam === "restaurantes") &&
+                restaurantOnlyHotels.length > 0 && (
+                  <section>
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+                      {restaurantOnlyHotels.map((hotel) => (
+                        <HotelCard
+                          key={hotel.slug}
+                          slug={hotel.slug}
+                          name={hotel[language].name}
+                          subtitle={hotel[language].subtitle}
+                          description={buildCardExcerpt(
+                            hotel[language].description,
+                          )}
+                          image={hotel.featuredImage || hotel.images?.[0] || ""}
+                          publishStartAt={hotel.publishStartAt}
+                          publishEndAt={hotel.publishEndAt}
+                          publicationEndsAt={hotel.publicationEndsAt}
+                          showPublicationDates={false}
+                        />
+                      ))}
+                    </div>
+                  </section>
+                )}
 
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-                    {restaurantBarsHotels.map((hotel) => (
-                      <HotelCard
-                        key={hotel.slug}
-                        slug={hotel.slug}
-                        name={hotel[language].name}
-                        subtitle={hotel[language].subtitle}
-                        description={buildCardExcerpt(
-                          hotel[language].description,
-                        )}
-                        image={hotel.featuredImage || hotel.images?.[0] || ""}
-                        publishStartAt={hotel.publishStartAt}
-                        publishEndAt={hotel.publishEndAt}
-                        publicationEndsAt={hotel.publicationEndsAt}
-                        showPublicationDates={false}
-                      />
-                    ))}
-                  </div>
-                </section>
-              )}
+              {/* Posts de bares: en /bares, ?tipo=bares, o página principal */}
+              {(isBarsPage ||
+                tipoParam === "bares" ||
+                (isRestaurantsPage && !tipoParam)) &&
+                restaurantBarsHotels.length > 0 && (
+                  <section>
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+                      {restaurantBarsHotels.map((hotel) => (
+                        <HotelCard
+                          key={hotel.slug}
+                          slug={hotel.slug}
+                          name={hotel[language].name}
+                          subtitle={hotel[language].subtitle}
+                          description={buildCardExcerpt(
+                            hotel[language].description,
+                          )}
+                          image={hotel.featuredImage || hotel.images?.[0] || ""}
+                          publishStartAt={hotel.publishStartAt}
+                          publishEndAt={hotel.publishEndAt}
+                          publicationEndsAt={hotel.publicationEndsAt}
+                          showPublicationDates={false}
+                        />
+                      ))}
+                    </div>
+                  </section>
+                )}
 
               {finalOrderedHotels.length === 0 && (
                 <div className="col-span-full text-center py-12 text-gray-500">

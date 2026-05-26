@@ -1166,14 +1166,14 @@ export default function CategoryPage({ params }: { params: any }) {
                 }
                 src={
                   slug === "cafes"
-                    ? "/bannerHome/BANNER DESKTOP 50 CAFES.png"
+                    ? "/bannerHome/BANNER DESKTOP 50 CAFES.webp"
                     : slug === "la-ruta-toyota"
                       ? "/bannerstoyota/BANNER LA RUTA TOYOTA.webp"
                       : "/bannerHome/BANNER MONUMENTOS.svg"
                 }
                 mobileSrc={
                   slug === "cafes"
-                    ? "/bannerHome/30 CAFES.png"
+                    ? "/bannerHome/30 CAFES.webp"
                     : slug === "la-ruta-toyota"
                       ? "/bannerstoyota/BANNER LA RUTA TOYOTA.webp"
                       : "/bannerHome/monumentos movil.png"

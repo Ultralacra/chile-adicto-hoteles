@@ -469,7 +469,7 @@ export function HotelDetail({ hotel }: HotelDetailProps) {
               }
               src={
                 isCafesPost
-                  ? "/bannerHome/BANNER DESKTOP 50 CAFES.png"
+                  ? "/bannerHome/BANNER DESKTOP 50 CAFES.webp"
                   : isToyotaPost
                     ? "/bannerstoyota/BANNER LA RUTA TOYOTA.webp"
                     : isMonumentosPost
@@ -478,7 +478,7 @@ export function HotelDetail({ hotel }: HotelDetailProps) {
               }
               mobileSrc={
                 isCafesPost
-                  ? "/bannerHome/30 CAFES.png"
+                  ? "/bannerHome/30 CAFES.webp"
                   : isToyotaPost
                     ? "/bannerstoyota/BANNER LA RUTA TOYOTA.webp"
                     : isMonumentosPost

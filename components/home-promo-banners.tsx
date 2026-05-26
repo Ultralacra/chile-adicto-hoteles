@@ -38,7 +38,7 @@ export function PromoStackBanners() {
           aria-label="Ir a cafés"
         >
           <img
-            src="/bannerHome/30 CAFES.png"
+            src="/bannerHome/30 CAFES.webp"
             alt="Cafés"
             className="w-full h-full object-contain md:object-cover"
             style={{

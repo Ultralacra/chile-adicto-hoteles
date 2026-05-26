@@ -157,7 +157,7 @@ export default function Page() {
                     loading="lazy"
                   />
                   <img
-                    src="/bannerHome/65 RESTAURANTES.svg"
+                    src="/bannerHome/70 RESTAURANTES.webp"
                     alt="Restaurantes"
                     className="hidden md:block max-w-full max-h-full object-contain p-3 md:p-4 lg:p-5"
                     loading="lazy"

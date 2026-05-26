@@ -32,7 +32,7 @@ export function PromoStackBanners() {
           aria-label="Ir a cafés"
         >
           <Image
-            src="/bannerHome/30 CAFES.png"
+            src="/bannerHome/30 CAFES.webp"
             alt="Cafés"
             width={435}
             height={210}

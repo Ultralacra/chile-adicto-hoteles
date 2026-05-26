@@ -81,12 +81,12 @@ export default function Page() {
   > = {
     es: {
       href: "/restaurantes",
-      src: "/bannerHome/65 RESTAURANTES.svg",
+      src: "/bannerHome/70 RESTAURANTES.webp",
       alt: "Banner Restaurantes (ES)",
     },
     en: {
       href: "/restaurantes",
-      src: "/bannerHome/65 RESTAURANTES.svg",
+      src: "/bannerHome/70 RESTAURANTES.webp",
       alt: "Restaurants Banner (EN)",
     },
   };

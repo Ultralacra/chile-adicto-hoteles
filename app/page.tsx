@@ -243,7 +243,7 @@ function HomeContent() {
                     loading="lazy"
                   />
                   <Image
-                    src="/bannerHome/65 RESTAURANTES.svg"
+                    src="/bannerHome/70 RESTAURANTES.webp"
                     alt="Restaurantes"
                     width={435}
                     height={437}

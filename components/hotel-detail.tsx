@@ -6,6 +6,7 @@ import Image from "next/image";
 import useEmblaCarousel from "embla-carousel-react";
 import { useLanguage } from "@/contexts/language-context";
 import { CategoryNav } from "@/components/category-nav";
+import { HotelCard } from "@/components/hotel-card";
 import { useSiteApi } from "@/hooks/use-site-api";
 import { BottomHomeBanner } from "@/components/home-promo-banners";
 
@@ -85,6 +86,10 @@ export function HotelDetail({ hotel }: HotelDetailProps) {
       category === "ruta-toyota" ||
       category.includes("toyota"),
   );
+
+  const isIconosPost = normalizedCategories.includes("iconos");
+  const isParquesPost = normalizedCategories.includes("parques");
+  const showToyotaCards = isToyotaPost || isIconosPost || isParquesPost;
 
   const showCategoryBanner =
     isMonumentosPost || isCafesPost || isAgendaPost || isToyotaPost;
@@ -1003,14 +1008,24 @@ export function HotelDetail({ hotel }: HotelDetailProps) {
               </>
             )}
           </div>
-          {isToyotaPost && (
-            <div className="mt-6 flex justify-start">
-              <div className="w-full md:w-1/2">
-                <BottomHomeBanner
-                  href="/categoria/la-ruta-toyota"
-                  src="/bannerstoyota/BANNER POST RUTA TOYOTA.webp"
-                  mobileSrc="/bannerstoyota/BANNER POST RUTA TOYOTA.webp"
-                  alt="Banner post La Ruta Toyota"
+          {showToyotaCards && (
+            <div className="mt-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                <HotelCard
+                  slug="/categoria/la-ruta-toyota"
+                  name="Toyota RAV4"
+                  subtitle=""
+                  description="Toyota RAV4 es un SUV amplio, cómodo y versátil, que se ha convertido en uno de los referentes de su categoría. Ofrece una posición de manejo elevada, buen espacio para pasajeros y equipaje, y versiones híbridas que permiten un consumo más eficiente sin perder respuesta en ruta. Es un modelo que funciona bien en el día a día, pero que también responde cuando la idea es salir de la ciudad, combinando seguridad, tecnología y una conducción confiable."
+                  image="/fotosautos/RAV4 OFFROAD-44.webp"
+                  showPublicationDates={false}
+                />
+                <HotelCard
+                  slug="/categoria/la-ruta-toyota"
+                  name="Toyota bZ4X"
+                  subtitle=""
+                  description="Toyota bZ4X es el primer SUV 100% eléctrico de la marca en Chile. Es silencioso, estable y cómodo para moverse en la ciudad, con buen espacio interior y autonomía suficiente para la rutina. Mantiene el enfoque de Toyota en seguridad y confiabilidad, pero en formato completamente eléctrico."
+                  image="/fotosautos/BZ4X.webp"
+                  showPublicationDates={false}
                 />
               </div>
             </div>

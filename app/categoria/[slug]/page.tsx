@@ -1271,10 +1271,9 @@ export default function CategoryPage({ params }: { params: any }) {
             </div>
           )}
 
-          {/* En Monumentos Nacionales, Cafés y La Ruta Toyota: banner largo bajo el menú, luego posts */}
+          {/* En Monumentos Nacionales y Cafés: banner largo bajo el menú, luego posts */}
           {(slug === "monumentos-nacionales" ||
-            slug === "cafes" ||
-            slug === "la-ruta-toyota") && (
+            slug === "cafes") && (
             <div className="w-full mt-2">
               <BottomHomeBanner
                 href={
@@ -1505,30 +1504,52 @@ export default function CategoryPage({ params }: { params: any }) {
             <>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 mt-4">
                 {finalOrderedHotels.length > 0 ? (
-                  finalOrderedHotels.map((hotel) => (
-                    <HotelCard
-                      key={hotel.slug}
-                      slug={hotel.slug}
-                      name={hotel[language].name}
-                      subtitle={hotel[language].subtitle}
-                      description={buildCardExcerpt(
-                        hotel[language].description,
-                      )}
-                      image={hotel.featuredImage || hotel.images?.[0] || ""}
-                      imageVariant={
-                        slug === "monumentos-nacionales" || slug === "cafes"
-                          ? "tall"
-                          : "default"
-                      }
-                      publishStartAt={hotel.publishStartAt}
-                      publishEndAt={hotel.publishEndAt}
-                      publicationEndsAt={hotel.publicationEndsAt}
-                      showPublicationDates={false}
-                      onCardClick={
-                        isAgendaCultural ? handleAgendaCardClick : undefined
-                      }
-                    />
-                  ))
+                  <>
+                    {finalOrderedHotels.map((hotel) => (
+                      <HotelCard
+                        key={hotel.slug}
+                        slug={hotel.slug}
+                        name={hotel[language].name}
+                        subtitle={hotel[language].subtitle}
+                        description={buildCardExcerpt(
+                          hotel[language].description,
+                        )}
+                        image={hotel.featuredImage || hotel.images?.[0] || ""}
+                        imageVariant={
+                          slug === "monumentos-nacionales" || slug === "cafes"
+                            ? "tall"
+                            : "default"
+                        }
+                        publishStartAt={hotel.publishStartAt}
+                        publishEndAt={hotel.publishEndAt}
+                        publicationEndsAt={hotel.publicationEndsAt}
+                        showPublicationDates={false}
+                        onCardClick={
+                          isAgendaCultural ? handleAgendaCardClick : undefined
+                        }
+                      />
+                    ))}
+                    {slug === "la-ruta-toyota" && (
+                      <>
+                        <HotelCard
+                          slug="/categoria/la-ruta-toyota"
+                          name="Toyota RAV4"
+                          subtitle=""
+                          description="Toyota RAV4 es un SUV amplio, cómodo y versátil, que se ha convertido en uno de los referentes de su categoría. Ofrece una posición de manejo elevada, buen espacio para pasajeros y equipaje, y versiones híbridas que permiten un consumo más eficiente sin perder respuesta en ruta. Es un modelo que funciona bien en el día a día, pero que también responde cuando la idea es salir de la ciudad, combinando seguridad, tecnología y una conducción confiable."
+                          image="/fotosautos/RAV4 OFFROAD-44.webp"
+                          showPublicationDates={false}
+                        />
+                        <HotelCard
+                          slug="/categoria/la-ruta-toyota"
+                          name="Toyota bZ4X"
+                          subtitle=""
+                          description="Toyota bZ4X es el primer SUV 100% eléctrico de la marca en Chile. Es silencioso, estable y cómodo para moverse en la ciudad, con buen espacio interior y autonomía suficiente para la rutina. Mantiene el enfoque de Toyota en seguridad y confiabilidad, pero en formato completamente eléctrico."
+                          image="/fotosautos/BZ4X.webp"
+                          showPublicationDates={false}
+                        />
+                      </>
+                    )}
+                  </>
                 ) : (
                   <div className="col-span-full text-center py-12 text-gray-500">
                     <p>

@@ -88,6 +88,7 @@ export function MobileFooterContent({ onNavigate }: MobileFooterContentProps) {
     { slug: "miradores", labelEs: "MIRADORES", labelEn: "VIEWPOINTS" },
     { slug: "museos", labelEs: "CULTURA", labelEn: "MUSEUMS" },
     { slug: "palacios", labelEs: "PALACIOS", labelEn: "PALACES" },
+    { slug: "parques", labelEs: "PARQUES", labelEn: "PARKS" },
     {
       slug: "paseos-fuera-de-santiago",
       labelEs: "FUERA DE STGO",
@@ -111,6 +112,7 @@ export function MobileFooterContent({ onNavigate }: MobileFooterContentProps) {
         "miradores",
         "museos",
         "palacios",
+        "parques",
         "paseos-fuera-de-santiago",
         "restaurantes",
       ]),
@@ -134,7 +136,7 @@ export function MobileFooterContent({ onNavigate }: MobileFooterContentProps) {
 
         // Mapear categorías (si el slug no tiene rewrite, igual funciona con /categoria/<slug>)
         const mapped = rows
-          .filter((r) => r && r.slug)
+          .filter((r) => r && r.slug && String(r.slug) !== "la-ruta-toyota")
           .map((r) => {
             const slug = String(r.slug);
             const fallback = fallbackItems.find((x) => x.slug === slug);
@@ -156,23 +158,29 @@ export function MobileFooterContent({ onNavigate }: MobileFooterContentProps) {
           .filter((x) => x.slug !== "todos");
 
         const restaurants = mapped.filter((x) => x.slug === "restaurantes");
-        const toyota = mapped.filter((x) => x.slug === "la-ruta-toyota");
         const tienda = mapped.filter(
           (x) => x.slug === "tienda" || x.slug === "tiendas",
         );
         const others = mapped.filter(
           (x) =>
             x.slug !== "restaurantes" &&
-            x.slug !== "la-ruta-toyota" &&
             x.slug !== "tienda" &&
             x.slug !== "tiendas",
         );
+
+        // Forzar agregar PARQUES si no viene del API
+        const parquesItem = fallbackItems.find((c) => c.slug === "parques");
+        const hasParques = others.some((x) => x.slug === "parques");
+        let fullOthers = [...others];
+        if (!hasParques && parquesItem) {
+          fullOthers.push({ slug: parquesItem.slug, labelEs: parquesItem.labelEs, labelEn: parquesItem.labelEn });
+        }
+
         const finalList = [
           fallbackItems[0],
-          ...others,
+          ...fullOthers.filter((x) => x.slug !== "la-ruta-toyota"),
           ...restaurants,
           ...tienda,
-          ...toyota,
         ];
 
         if (!cancelled && finalList.length) setItems(finalList);

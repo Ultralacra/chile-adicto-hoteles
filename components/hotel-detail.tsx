@@ -26,6 +26,7 @@ interface LocationInfo {
 }
 
 interface HotelDetailProps {
+  slug?: string;
   hotel: {
     name: string;
     subtitle: string;
@@ -56,7 +57,7 @@ interface HotelDetailProps {
   };
 }
 
-export function HotelDetail({ hotel }: HotelDetailProps) {
+export function HotelDetail({ slug, hotel }: HotelDetailProps) {
   const { t } = useLanguage();
   const { cachedFetchWithSite } = useSiteApi();
   const toSlug = (input: string) =>
@@ -89,10 +90,32 @@ export function HotelDetail({ hotel }: HotelDetailProps) {
 
   const isIconosPost = normalizedCategories.includes("iconos");
   const isParquesPost = normalizedCategories.includes("parques");
-  const showToyotaCards = isToyotaPost || isIconosPost || isParquesPost;
+  // Fallback: slugs conocidos de posts de ICONOS (por si la API no devuelve categorías)
+  console.log("[HotelDetail] slug:", slug, "categories:", hotel?.categories, "normalized:", normalizedCategories, "isIconosPost:", isIconosPost);
+  const ICONOS_SLUGS = new Set([
+    "edificio-banco-de-chile-casi-100-anos-de-arquitectura-patrimonial",
+    "teatro-municipal-la-gran-obra-de-brunet-de-baines",
+    "fantasilandia-el-parque-de-atracciones-de-santiago",
+    "biblioteca-nacional-joya-santiaguina",
+    "torre-entel-una-nueva-era-de-las-telecomunicaciones",
+    "templo-votivo-de-maipu-emblema-de-la-independencia",
+    "estadio-nacional-deporte-entretencion-y-memoria",
+    "iglesia-de-los-sacramentinos-icono-neogotico",
+    "plaza-de-armas-nucleo-fundacional",
+    "parqueadero-metropolitano-un-versatil-pulmon-verde",
+    "metro-de-santiagocolumna-vertebral-del-transporte-urbano",
+    "palacio-de-la-moneda-y-plazas-de-la-ciudadania-y-de-la-constitucion-el-corazon-politico-y-administrativo",
+    "torre-costanera-center-la-mas-alta-de-sudamerica",
+    "templo-bahai-arquitectura-que-emociona",
+    "cementerio-general-multiples-capas-de-historia",
+  ]);
+  const isIconosBySlug = slug ? ICONOS_SLUGS.has(slug) : false;
+  const isIconosFinal = isIconosPost || isIconosBySlug;
+  console.log("[HotelDetail] isIconosBySlug:", isIconosBySlug, "isIconosFinal:", isIconosFinal, "showCategoryBanner:", isMonumentosPost || isCafesPost || isAgendaPost || isToyotaPost || isIconosFinal || isParquesPost);
+  const showToyotaCards = isToyotaPost || isIconosFinal || isParquesPost;
 
   const showCategoryBanner =
-    isMonumentosPost || isCafesPost || isAgendaPost || isToyotaPost;
+    isMonumentosPost || isCafesPost || isAgendaPost || isToyotaPost || isIconosFinal || isParquesPost;
   // La galería NO debe incluir la imagen de portada. Si hay imágenes de galería, usamos solo esas.
   // Si NO hay imágenes de galería, mostramos la portada como único slide.
   const allImages =
@@ -466,7 +489,7 @@ export function HotelDetail({ hotel }: HotelDetailProps) {
               href={
                 isCafesPost
                   ? "/cafes"
-                  : isToyotaPost
+                  : isToyotaPost || isIconosFinal || isParquesPost
                     ? "/categoria/la-ruta-toyota"
                     : isMonumentosPost
                       ? "/monumentos-nacionales"
@@ -475,7 +498,7 @@ export function HotelDetail({ hotel }: HotelDetailProps) {
               src={
                 isCafesPost
                   ? "/bannerHome/BANNER DESKTOP 50 CAFES.webp"
-                  : isToyotaPost
+                  : isToyotaPost || isIconosFinal || isParquesPost
                     ? "/bannerstoyota/BANNER LA RUTA TOYOTA.webp"
                     : isMonumentosPost
                       ? "/bannerHome/BANNER MONUMENTOS.svg"
@@ -484,7 +507,7 @@ export function HotelDetail({ hotel }: HotelDetailProps) {
               mobileSrc={
                 isCafesPost
                   ? "/bannerHome/30 CAFES.webp"
-                  : isToyotaPost
+                  : isToyotaPost || isIconosFinal || isParquesPost
                     ? "/bannerstoyota/BANNER LA RUTA TOYOTA.webp"
                     : isMonumentosPost
                       ? "/bannerHome/monumentos movil.png"
@@ -493,7 +516,7 @@ export function HotelDetail({ hotel }: HotelDetailProps) {
               alt={
                 isCafesPost
                   ? "Cafés"
-                  : isToyotaPost
+                  : isToyotaPost || isIconosFinal || isParquesPost
                     ? "La Ruta Toyota"
                     : isMonumentosPost
                       ? "Monumentos Nacionales"
@@ -1018,6 +1041,7 @@ export function HotelDetail({ hotel }: HotelDetailProps) {
                   description="Toyota RAV4 es un SUV amplio, cómodo y versátil, que se ha convertido en uno de los referentes de su categoría. Ofrece una posición de manejo elevada, buen espacio para pasajeros y equipaje, y versiones híbridas que permiten un consumo más eficiente sin perder respuesta en ruta. Es un modelo que funciona bien en el día a día, pero que también responde cuando la idea es salir de la ciudad, combinando seguridad, tecnología y una conducción confiable."
                   image="/fotosautos/RAV4 OFFROAD-44.webp"
                   showPublicationDates={false}
+                  clickable={false}
                 />
                 <HotelCard
                   slug="/categoria/la-ruta-toyota"
@@ -1026,6 +1050,7 @@ export function HotelDetail({ hotel }: HotelDetailProps) {
                   description="Toyota bZ4X es el primer SUV 100% eléctrico de la marca en Chile. Es silencioso, estable y cómodo para moverse en la ciudad, con buen espacio interior y autonomía suficiente para la rutina. Mantiene el enfoque de Toyota en seguridad y confiabilidad, pero en formato completamente eléctrico."
                   image="/fotosautos/BZ4X.webp"
                   showPublicationDates={false}
+                  clickable={false}
                 />
               </div>
             </div>

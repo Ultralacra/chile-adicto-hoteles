@@ -20,6 +20,7 @@ const fallbackCategories = [
   // Display label in ES should be "CULTURA" though slug remains "museos"
   { slug: "museos", labelEs: "CULTURA", labelEn: "Museums" },
   { slug: "palacios", labelEs: "PALACIOS", labelEn: "Palaces" },
+  { slug: "parques", labelEs: "PARQUES", labelEn: "Parks" },
   {
     slug: "paseos-fuera-de-santiago",
     // Display label in ES should be "FUERA DE STGO" though slug remains
@@ -53,6 +54,7 @@ const prettySlugs = new Set([
   "miradores",
   "museos",
   "palacios",
+  "parques",
   "paseos-fuera-de-santiago",
   "restaurantes",
 ]);
@@ -72,7 +74,7 @@ export function CategoryNav({
         const json = await cachedFetchWithSite("/api/categories?full=1&nav=1");
         const rows: ApiCategoryRow[] = Array.isArray(json) ? json : [];
         const mapped = rows
-          .filter((r) => r && r.slug && String(r.slug) !== "parques")
+          .filter((r) => r && r.slug && String(r.slug) !== "la-ruta-toyota")
           .map((r) => {
             const slug = String(r.slug);
             const fallback = fallbackCategories.find((c) => c.slug === slug);
@@ -96,27 +98,45 @@ export function CategoryNav({
         // Asegurar orden estable:
         // - "todos" primero
         // - "restaurantes" cerca del final
-        // - "la-ruta-toyota" y "tienda/tiendas" siempre al final
+        // - "tienda/tiendas" siempre al final
         const todos = mapped.find((x) => x.slug === "todos");
         const rest = mapped.filter((x) => x.slug !== "todos");
         const restaurants = rest.filter((x) => x.slug === "restaurantes");
-        const toyota = rest.filter((x) => x.slug === "la-ruta-toyota");
         const tienda = rest.filter(
           (x) => x.slug === "tienda" || x.slug === "tiendas",
         );
         const others = rest.filter(
           (x) =>
             x.slug !== "restaurantes" &&
-            x.slug !== "la-ruta-toyota" &&
             x.slug !== "tienda" &&
             x.slug !== "tiendas",
         );
+
+        // Forzar agregar PARQUES si no viene del API
+        const parquesItem = fallbackCategories.find((c) => c.slug === "parques");
+        const hasParques = rest.some((x) => x.slug === "parques");
+
+        let fullOthers = [...others];
+        if (!hasParques && parquesItem) {
+          fullOthers.push({ slug: parquesItem.slug, labelEs: parquesItem.labelEs, labelEn: parquesItem.labelEn });
+        }
+
+        // Ordenar: quitar la ruta toyota y ordenar alfabéticamente
         const finalList = [
           todos || fallbackCategories[0],
-          ...others,
+          ...fullOthers
+            .filter((x) => x.slug !== "la-ruta-toyota")
+            .sort((a, b) => {
+              const order = ["arquitectura", "barrios", "iconos", "mercados", "miradores", "museos", "palacios", "parques", "paseos-fuera-de-santiago", "ninos", "monumentos-nacionales", "cafes"];
+              const idxA = order.indexOf(a.slug);
+              const idxB = order.indexOf(b.slug);
+              if (idxA !== -1 && idxB !== -1) return idxA - idxB;
+              if (idxA !== -1) return -1;
+              if (idxB !== -1) return 1;
+              return a.slug.localeCompare(b.slug);
+            }),
           ...restaurants,
           ...tienda,
-          ...toyota,
         ];
 
         if (!cancelled && finalList.length) setItems(finalList);

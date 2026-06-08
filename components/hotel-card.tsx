@@ -16,6 +16,7 @@ interface HotelCardProps {
   publicationEndsAt?: string | null;
   showPublicationDates?: boolean;
   onCardClick?: (slug: string, cardElement?: HTMLElement) => void;
+  clickable?: boolean;
 }
 
 function HotelCardComponent({
@@ -31,6 +32,7 @@ function HotelCardComponent({
   publicationEndsAt,
   showPublicationDates = true,
   onCardClick,
+  clickable = true,
 }: HotelCardProps) {
   const imageContainerClass =
     imageVariant === "tall" ? "h-[400px]" : "aspect-[386/264]";
@@ -66,6 +68,92 @@ function HotelCardComponent({
     publishEndAt,
   });
 
+  const cardContent = (
+    <article className="group cursor-pointer flex flex-col h-full gap-3">
+      {/* Image Container */}
+      <div className={`relative ${imageContainerClass} overflow-hidden`}>
+        <Image
+          src={image || "/placeholder.svg"}
+          alt={name}
+          fill
+          sizes="(max-width: 767px) 100vw, (max-width: 1279px) 50vw, 33vw"
+          priority={imagePriority}
+          className={`object-cover transition-transform duration-300 group-hover:scale-105 ${
+            isExpired ? "grayscale" : ""
+          }`}
+        />
+        {isExpired && <div className="absolute inset-0 bg-black/15" />}
+      </div>
+
+      {/* Content */}
+      <div className="space-y-3 flex-1">
+        {/* Heart Icon and Title */}
+        <div className="flex items-start gap-[10px]">
+          <div className="flex-shrink-0">
+            <div
+              className="flex items-center justify-center"
+              style={{ width: 41, height: 50 }}
+            >
+              <img
+                src="/favicon.svg"
+                alt="icon"
+                style={{ width: 41, height: 50 }}
+              />
+            </div>
+          </div>
+
+          <div className="flex-1">
+            <h2 className="font-neutra text-[15px] font-normal text-black leading-[19px] mb-0 first-line:font-[600]">
+              {name}
+            </h2>
+            <p className="font-neutra text-[15px] font-normal text-black uppercase leading-[19px]">
+              {subtitle}
+            </p>
+            {shouldShowPublicationDates && (
+              <div className="mt-1 font-neutra text-[12px] leading-[16px] text-black/70">
+                {startLabel && (
+                  <div>
+                    <span className="font-semibold">Desde:</span> {startLabel}
+                  </div>
+                )}
+                {endLabel && (
+                  <div>
+                    <span className="font-semibold">Hasta:</span> {endLabel}
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* Description */}
+        {looksLikeHtml ? (
+          <div
+            className="font-neutra text-[15px] text-black leading-[22px] font-normal line-clamp-5 min-h-[110px]"
+            dangerouslySetInnerHTML={{ __html: description }}
+          />
+        ) : (
+          <p className="font-neutra text-[15px] text-black leading-[22px] font-normal line-clamp-5 min-h-[110px]">
+            {description}
+          </p>
+        )}
+      </div>
+
+      {/* Elegant divider pushed to bottom so all cards align */}
+      <div className="mt-auto pt-2 pb-5">
+        <div className="mx-auto h-[1px] w-3/4 bg-[#b4b4b8]" />
+      </div>
+    </article>
+  );
+
+  if (!clickable) {
+    return (
+      <div id={`post-card-${slug}`} data-post-slug={slug}>
+        {cardContent}
+      </div>
+    );
+  }
+
   return (
     <Link
       href={`/${slug}`}
@@ -75,81 +163,7 @@ function HotelCardComponent({
         onCardClick?.(slug, event.currentTarget as HTMLElement)
       }
     >
-      <article className="group cursor-pointer flex flex-col h-full gap-3">
-        {/* Image Container */}
-        <div className={`relative ${imageContainerClass} overflow-hidden`}>
-          <Image
-            src={image || "/placeholder.svg"}
-            alt={name}
-            fill
-            sizes="(max-width: 767px) 100vw, (max-width: 1279px) 50vw, 33vw"
-            priority={imagePriority}
-            className={`object-cover transition-transform duration-300 group-hover:scale-105 ${
-              isExpired ? "grayscale" : ""
-            }`}
-          />
-          {isExpired && <div className="absolute inset-0 bg-black/15" />}
-        </div>
-
-        {/* Content */}
-        <div className="space-y-3 flex-1">
-          {/* Heart Icon and Title */}
-          <div className="flex items-start gap-[10px]">
-            <div className="flex-shrink-0">
-              <div
-                className="flex items-center justify-center"
-                style={{ width: 41, height: 50 }}
-              >
-                <img
-                  src="/favicon.svg"
-                  alt="icon"
-                  style={{ width: 41, height: 50 }}
-                />
-              </div>
-            </div>
-
-            <div className="flex-1">
-              <h2 className="font-neutra text-[15px] font-normal text-black leading-[19px] mb-0 first-line:font-[600]">
-                {name}
-              </h2>
-              <p className="font-neutra text-[15px] font-normal text-black uppercase leading-[19px]">
-                {subtitle}
-              </p>
-              {shouldShowPublicationDates && (
-                <div className="mt-1 font-neutra text-[12px] leading-[16px] text-black/70">
-                  {startLabel && (
-                    <div>
-                      <span className="font-semibold">Desde:</span> {startLabel}
-                    </div>
-                  )}
-                  {endLabel && (
-                    <div>
-                      <span className="font-semibold">Hasta:</span> {endLabel}
-                    </div>
-                  )}
-                </div>
-              )}
-            </div>
-          </div>
-
-          {/* Description */}
-          {looksLikeHtml ? (
-            <div
-              className="font-neutra text-[15px] text-black leading-[22px] font-normal line-clamp-5 min-h-[110px]"
-              dangerouslySetInnerHTML={{ __html: description }}
-            />
-          ) : (
-            <p className="font-neutra text-[15px] text-black leading-[22px] font-normal line-clamp-5 min-h-[110px]">
-              {description}
-            </p>
-          )}
-        </div>
-
-        {/* Elegant divider pushed to bottom so all cards align */}
-        <div className="mt-auto pt-2 pb-5">
-          <div className="mx-auto h-[1px] w-3/4 bg-[#b4b4b8]" />
-        </div>
-      </article>
+      {cardContent}
     </Link>
   );
 }

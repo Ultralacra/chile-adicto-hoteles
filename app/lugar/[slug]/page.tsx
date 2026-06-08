@@ -197,9 +197,12 @@ export default function LugarPage(props: any) {
             galleryImages: galleryWithFallback,
           };
         })(),
-        categories: source[language]?.category
-          ? [source[language].category]
-          : source.categories || [],
+        categories: Array.from(new Set([
+          ...(typeof source[language]?.category === "string" && source[language].category.trim()
+            ? [source[language].category.trim()]
+            : []),
+          ...(Array.isArray(source.categories) ? source.categories.filter((c: any) => typeof c === "string") : []),
+        ])),
       }
     : null;
 
@@ -376,7 +379,7 @@ export default function LugarPage(props: any) {
           <CategoryNav activeCategory={activeCategorySlug} compact />
         </div>
       )}
-      <HotelDetail hotel={hotel as any} />
+      <HotelDetail slug={resolvedParams.slug} hotel={hotel as any} />
       <Footer activeCategory={activeCategorySlug} />
     </div>
   );

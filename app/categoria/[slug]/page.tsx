@@ -1271,38 +1271,33 @@ export default function CategoryPage({ params }: { params: any }) {
             </div>
           )}
 
-          {/* En Monumentos Nacionales y Cafés: banner largo bajo el menú, luego posts */}
+          {/* En Monumentos Nacionales, Cafés, ICONOS, Parques y La Ruta Toyota: banner largo bajo el menú, luego posts */}
           {(slug === "monumentos-nacionales" ||
-            slug === "cafes") && (
+            slug === "cafes" ||
+            slug === "iconos" ||
+            slug === "parques" ||
+            slug === "la-ruta-toyota") && (
             <div className="w-full mt-2">
               <BottomHomeBanner
                 href={
                   slug === "cafes"
                     ? "/cafes"
-                    : slug === "la-ruta-toyota"
-                      ? "/categoria/la-ruta-toyota"
-                      : "/monumentos-nacionales"
+                    : "/categoria/la-ruta-toyota"
                 }
                 src={
                   slug === "cafes"
                     ? "/bannerHome/BANNER DESKTOP 50 CAFES.webp"
-                    : slug === "la-ruta-toyota"
-                      ? "/bannerstoyota/BANNER LA RUTA TOYOTA.webp"
-                      : "/bannerHome/BANNER MONUMENTOS.svg"
+                    : "/bannerstoyota/BANNER LA RUTA TOYOTA.webp"
                 }
                 mobileSrc={
                   slug === "cafes"
                     ? "/bannerHome/30 CAFES.webp"
-                    : slug === "la-ruta-toyota"
-                      ? "/bannerstoyota/BANNER LA RUTA TOYOTA.webp"
-                      : "/bannerHome/monumentos movil.png"
+                    : "/bannerstoyota/BANNER LA RUTA TOYOTA.webp"
                 }
                 alt={
                   slug === "cafes"
                     ? "Cafés"
-                    : slug === "la-ruta-toyota"
-                      ? "La Ruta Toyota"
-                      : "Monumentos Nacionales"
+                    : "La Ruta Toyota"
                 }
               />
             </div>
@@ -1538,6 +1533,7 @@ export default function CategoryPage({ params }: { params: any }) {
                           description="Toyota RAV4 es un SUV amplio, cómodo y versátil, que se ha convertido en uno de los referentes de su categoría. Ofrece una posición de manejo elevada, buen espacio para pasajeros y equipaje, y versiones híbridas que permiten un consumo más eficiente sin perder respuesta en ruta. Es un modelo que funciona bien en el día a día, pero que también responde cuando la idea es salir de la ciudad, combinando seguridad, tecnología y una conducción confiable."
                           image="/fotosautos/RAV4 OFFROAD-44.webp"
                           showPublicationDates={false}
+                          clickable={false}
                         />
                         <HotelCard
                           slug="/categoria/la-ruta-toyota"
@@ -1546,6 +1542,7 @@ export default function CategoryPage({ params }: { params: any }) {
                           description="Toyota bZ4X es el primer SUV 100% eléctrico de la marca en Chile. Es silencioso, estable y cómodo para moverse en la ciudad, con buen espacio interior y autonomía suficiente para la rutina. Mantiene el enfoque de Toyota en seguridad y confiabilidad, pero en formato completamente eléctrico."
                           image="/fotosautos/BZ4X.webp"
                           showPublicationDates={false}
+                          clickable={false}
                         />
                       </>
                     )}

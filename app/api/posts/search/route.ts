@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { isPostCurrentlyPublished } from "@/lib/post-publication";
 import { ensureLegacyPostShape } from "@/lib/post-response-shape";
+import { getCurrentSiteId } from "@/lib/site-utils";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -35,13 +36,21 @@ async function anonRest(path: string) {
 export async function GET(req: Request) {
   const url = new URL(req.url);
   const q = String(url.searchParams.get("q") || "").trim().toLowerCase();
-  const limit = Math.min(Math.max(Number(url.searchParams.get("limit") || 30) || 30, 5), 100);
-  const isAdminRequest = !!url.searchParams.get("adminSite");
+  const limit = Math.min(Math.max(Number(url.searchParams.get("limit") || 50) || 50, 5), 100);
+  const adminSite = url.searchParams.get("adminSite");
 
-  const select = "slug,featured_image,publication_status,publish_start_at,publish_end_at,translations:post_translations(lang,name)";
+  let siteId = "santiagoadicto";
+  if (adminSite === "chileadicto" || adminSite === "santiagoadicto") {
+    siteId = adminSite;
+  } else {
+    try {
+      siteId = await getCurrentSiteId(req);
+    } catch {}
+  }
 
-  // Sin q: devolver algunos posts (orden por slug)
-  const basePath = `/posts?select=${encodeURIComponent(select)}&order=slug.asc&limit=${limit}`;
+  const select = "slug,featured_image,publication_status,publish_start_at,publish_end_at,site,translations:post_translations(lang,name)";
+
+  let basePath = `/posts?select=${encodeURIComponent(select)}&site=eq.${siteId}&order=slug.asc&limit=500`;
 
   const result = await anonRest(basePath);
   if (!result) return NextResponse.json({ items: [] }, { status: 200 });
@@ -51,6 +60,8 @@ export async function GET(req: Request) {
       { status: 200 }
     );
   }
+
+  const isAdminRequest = !!adminSite;
 
   const mapped = result.items
     .map((p: any) => {
@@ -92,14 +103,16 @@ export async function GET(req: Request) {
     .filter((p: any) => p.slug)
     .filter((p: any) => (isAdminRequest ? true : isPostCurrentlyPublished(p)));
 
-  if (!q) return NextResponse.json({ items: mapped.slice(0, limit) }, { status: 200 });
+  if (q && q.length >= 1) {
+    const qLower = q.toLowerCase();
+    const filtered = mapped.filter((p: any) => {
+      const nameEs = (p.name_es || "").toLowerCase();
+      const nameEn = (p.name_en || "").toLowerCase();
+      const slug = (p.slug || "").toLowerCase();
+      return nameEs.startsWith(qLower) || nameEn.startsWith(qLower) || slug.startsWith(qLower);
+    });
+    return NextResponse.json({ items: filtered.slice(0, 50) }, { status: 200 });
+  }
 
-  const filtered = mapped
-    .filter((p: any) => {
-      const hay = `${p.slug} ${p.name_es} ${p.name_en}`.toLowerCase();
-      return hay.includes(q);
-    })
-    .slice(0, limit);
-
-  return NextResponse.json({ items: filtered }, { status: 200 });
+  return NextResponse.json({ items: mapped.slice(0, 50) }, { status: 200 });
 }

@@ -5,6 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { MobileMenu } from "./mobile-menu";
 import { LanguageSwitcher } from "./language-switcher";
+import { RealTimeSearch } from "./real-time-search";
 import { useLanguage } from "@/contexts/language-context";
 
 export function Header() {
@@ -144,8 +145,13 @@ export function Header() {
             */}
 
             {/* Banner Agenda Cultural */}
-            <div className="hidden lg:flex items-center gap-6">
-              <LanguageSwitcher />
+            <div className="hidden lg:flex items-center gap-4">
+              <div className="flex flex-col gap-2">
+                <div className="flex items-center gap-4">
+                  <LanguageSwitcher />
+                </div>
+                <RealTimeSearch className="w-full min-w-[280px] max-w-[400px]" />
+              </div>
               <Link href="/agenda-cultural" aria-label="Ir a Agenda Cultural">
                 <Image
                   src="/bannerHome/AGENDA CULTURAL HEADER.png"

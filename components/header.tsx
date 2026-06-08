@@ -5,6 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { MobileMenu } from "./mobile-menu";
 import { LanguageSwitcher } from "./language-switcher";
+import { RealTimeSearch } from "./real-time-search";
 import { useLanguage } from "@/contexts/language-context";
 
 export function Header() {
@@ -38,6 +39,11 @@ export function Header() {
                   priority
                 />
               </Link>
+            </div>
+
+            {/* Mobile: Search below logo */}
+            <div className="lg:hidden absolute bottom-[-50px] left-0 right-0 px-4">
+              <RealTimeSearch className="w-full" />
             </div>
 
             <div className="flex items-center lg:hidden">
@@ -78,8 +84,13 @@ export function Header() {
             </div>
 
             {/* Desktop: Right side logos */}
-            <div className="hidden lg:flex items-end gap-6">
-              <LanguageSwitcher />
+            <div className="hidden lg:flex items-center gap-6">
+              <div className="flex flex-col gap-2">
+                <div className="flex items-center gap-4">
+                  <LanguageSwitcher />
+                </div>
+                <RealTimeSearch className="w-full min-w-[280px] max-w-[400px]" />
+              </div>
               <div className="flex items-center gap-4">
                 <a
                   href="https://www.instagram.com/guiasantiagoadicto/"

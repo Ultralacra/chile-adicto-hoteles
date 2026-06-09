@@ -1282,22 +1282,30 @@ export default function CategoryPage({ params }: { params: any }) {
                 href={
                   slug === "cafes"
                     ? "/cafes"
-                    : "/categoria/la-ruta-toyota"
+                    : slug === "monumentos-nacionales"
+                      ? "/monumentos-nacionales"
+                      : "/categoria/la-ruta-toyota"
                 }
                 src={
                   slug === "cafes"
                     ? "/bannerHome/BANNER DESKTOP 50 CAFES.webp"
-                    : "/bannerstoyota/BANNER LA RUTA TOYOTA.webp"
+                    : slug === "monumentos-nacionales"
+                      ? "/bannerHome/BANNER MONUMENTOS.svg"
+                      : "/bannerstoyota/BANNER LA RUTA TOYOTA.webp"
                 }
                 mobileSrc={
                   slug === "cafes"
                     ? "/bannerHome/30 CAFES.webp"
-                    : "/bannerstoyota/BANNER LA RUTA TOYOTA.webp"
+                    : slug === "monumentos-nacionales"
+                      ? undefined
+                      : "/bannerstoyota/BANNER LA RUTA TOYOTA.webp"
                 }
                 alt={
                   slug === "cafes"
                     ? "Cafés"
-                    : "La Ruta Toyota"
+                    : slug === "monumentos-nacionales"
+                      ? "Monumentos Nacionales"
+                      : "La Ruta Toyota"
                 }
               />
             </div>

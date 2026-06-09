@@ -10,12 +10,12 @@ export function PromoStackBanners() {
         style={{ height: 210 }}
       >
         <Link
-          href="/categoria/la-ruta-toyota"
+          href="/categoria/iconos"
           className="block w-full h-full"
           aria-label="Ir a La Ruta Toyota"
         >
           <img
-            src="/bannerstoyota/BANNER RUTA TOYOTA.webp"
+            src="/iconos/BANNER RUTA TOYOTA.webp"
             alt="La Ruta Toyota"
             className="w-full h-full object-contain md:object-cover"
             style={{

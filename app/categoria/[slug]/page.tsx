@@ -969,7 +969,8 @@ export default function CategoryPage({ params }: { params: any }) {
       end: "2026-07-12",
       href: "/agenda-cultural",
       src: "/bannersagenda/bannersJulio-agosto-septiembre/DESKTOP - 6 AL 12 DE JULIO.png",
-      mobileSrc: "/bannersagenda/bannersJulio-agosto-septiembre/MOVIL - 6 AL 12 DE JULIO.png",
+      mobileSrc:
+        "/bannersagenda/bannersJulio-agosto-septiembre/MOVIL - 6 AL 12 DE JULIO.png",
       alt: "Agenda Cultural del 6 al 12 de julio",
     },
     {
@@ -977,7 +978,8 @@ export default function CategoryPage({ params }: { params: any }) {
       end: "2026-07-19",
       href: "/agenda-cultural",
       src: "/bannersagenda/bannersJulio-agosto-septiembre/DESKTOP - 13 AL 19 DE JULIO.png",
-      mobileSrc: "/bannersagenda/bannersJulio-agosto-septiembre/MOVIL - 13 AL 19 DE JULIO.png",
+      mobileSrc:
+        "/bannersagenda/bannersJulio-agosto-septiembre/MOVIL - 13 AL 19 DE JULIO.png",
       alt: "Agenda Cultural del 13 al 19 de julio",
     },
     {
@@ -985,7 +987,8 @@ export default function CategoryPage({ params }: { params: any }) {
       end: "2026-07-26",
       href: "/agenda-cultural",
       src: "/bannersagenda/bannersJulio-agosto-septiembre/DESKTOP - 20 AL 26 DE JULIO.png",
-      mobileSrc: "/bannersagenda/bannersJulio-agosto-septiembre/MOVIL - 20 AL 26 DE JULIO.png",
+      mobileSrc:
+        "/bannersagenda/bannersJulio-agosto-septiembre/MOVIL - 20 AL 26 DE JULIO.png",
       alt: "Agenda Cultural del 20 al 26 de julio",
     },
     {
@@ -993,7 +996,8 @@ export default function CategoryPage({ params }: { params: any }) {
       end: "2026-08-02",
       href: "/agenda-cultural",
       src: "/bannersagenda/bannersJulio-agosto-septiembre/DESKTOP - 27 DE JULIO AL 2 DE AGOSTO.png",
-      mobileSrc: "/bannersagenda/bannersJulio-agosto-septiembre/MOVIL - 27 DE JULIO AL 2 DE AGOSTO.png",
+      mobileSrc:
+        "/bannersagenda/bannersJulio-agosto-septiembre/MOVIL - 27 DE JULIO AL 2 DE AGOSTO.png",
       alt: "Agenda Cultural del 27 de julio al 2 de agosto",
     },
     {
@@ -1001,7 +1005,8 @@ export default function CategoryPage({ params }: { params: any }) {
       end: "2026-08-09",
       href: "/agenda-cultural",
       src: "/bannersagenda/bannersJulio-agosto-septiembre/DESKTOP - 3 AL 9 DE AGOSTO.png",
-      mobileSrc: "/bannersagenda/bannersJulio-agosto-septiembre/MOVIL - 3 AL 9 DE AGOSTO.png",
+      mobileSrc:
+        "/bannersagenda/bannersJulio-agosto-septiembre/MOVIL - 3 AL 9 DE AGOSTO.png",
       alt: "Agenda Cultural del 3 al 9 de agosto",
     },
     {
@@ -1009,7 +1014,8 @@ export default function CategoryPage({ params }: { params: any }) {
       end: "2026-08-16",
       href: "/agenda-cultural",
       src: "/bannersagenda/bannersJulio-agosto-septiembre/DESKTOP -10 AL 16 DE AGOSTO.png",
-      mobileSrc: "/bannersagenda/bannersJulio-agosto-septiembre/MOVIL - 10 AL 16 DE AGOSTO.png",
+      mobileSrc:
+        "/bannersagenda/bannersJulio-agosto-septiembre/MOVIL - 10 AL 16 DE AGOSTO.png",
       alt: "Agenda Cultural del 10 al 16 de agosto",
     },
     {
@@ -1017,7 +1023,8 @@ export default function CategoryPage({ params }: { params: any }) {
       end: "2026-08-23",
       href: "/agenda-cultural",
       src: "/bannersagenda/bannersJulio-agosto-septiembre/DESKTOP - 17 AL 23 DE AGOSTO.png",
-      mobileSrc: "/bannersagenda/bannersJulio-agosto-septiembre/MOVIL - 17 AL 23 DE AGOSTO.png",
+      mobileSrc:
+        "/bannersagenda/bannersJulio-agosto-septiembre/MOVIL - 17 AL 23 DE AGOSTO.png",
       alt: "Agenda Cultural del 17 al 23 de agosto",
     },
     {
@@ -1025,7 +1032,8 @@ export default function CategoryPage({ params }: { params: any }) {
       end: "2026-08-30",
       href: "/agenda-cultural",
       src: "/bannersagenda/bannersJulio-agosto-septiembre/DESKTOP - 24 AL 30 DE AGOSTO.png",
-      mobileSrc: "/bannersagenda/bannersJulio-agosto-septiembre/MOVIL - 24 AL 30 DE AGOSTO.png",
+      mobileSrc:
+        "/bannersagenda/bannersJulio-agosto-septiembre/MOVIL - 24 AL 30 DE AGOSTO.png",
       alt: "Agenda Cultural del 24 al 30 de agosto",
     },
     {
@@ -1033,7 +1041,8 @@ export default function CategoryPage({ params }: { params: any }) {
       end: "2026-09-06",
       href: "/agenda-cultural",
       src: "/bannersagenda/bannersJulio-agosto-septiembre/DESKTOP - 31 DE AGOSTO AL 6 DE SEPTIEMBRE.png",
-      mobileSrc: "/bannersagenda/bannersJulio-agosto-septiembre/MOVIL - 31 DE AGOSTO AL 6 DE SEPTIEMBRE.png",
+      mobileSrc:
+        "/bannersagenda/bannersJulio-agosto-septiembre/MOVIL - 31 DE AGOSTO AL 6 DE SEPTIEMBRE.png",
       alt: "Agenda Cultural del 31 de agosto al 6 de septiembre",
     },
     {
@@ -1041,7 +1050,8 @@ export default function CategoryPage({ params }: { params: any }) {
       end: "2026-08-05",
       href: "/agenda-cultural",
       src: "/bannersagenda/bannersJulio-agosto-septiembre/DESKTOP - 29 DE JUNIO AL 5 DE AGOSTO.png",
-      mobileSrc: "/bannersagenda/bannersJulio-agosto-septiembre/MOVIL 29 DE JUNIO AL 5 DE AGOSTO.png",
+      mobileSrc:
+        "/bannersagenda/bannersJulio-agosto-septiembre/MOVIL 29 DE JUNIO AL 5 DE AGOSTO.png",
       alt: "Agenda Cultural del 29 de junio al 5 de agosto",
     },
   ];
@@ -1291,14 +1301,14 @@ export default function CategoryPage({ params }: { params: any }) {
                     ? "/bannerHome/BANNER DESKTOP 50 CAFES.webp"
                     : slug === "monumentos-nacionales"
                       ? "/bannerHome/BANNER MONUMENTOS.svg"
-                      : "/bannerstoyota/BANNER LA RUTA TOYOTA.webp"
+                      : "/bannerstoyota/BANNER LA RUTA TOYOTA.png"
                 }
                 mobileSrc={
                   slug === "cafes"
                     ? "/bannerHome/30 CAFES.webp"
                     : slug === "monumentos-nacionales"
                       ? undefined
-                      : "/bannerstoyota/BANNER LA RUTA TOYOTA.webp"
+                      : "/bannerstoyota/BANNER LA RUTA TOYOTA.png"
                 }
                 alt={
                   slug === "cafes"

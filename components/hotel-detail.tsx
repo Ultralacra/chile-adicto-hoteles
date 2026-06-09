@@ -498,29 +498,35 @@ export function HotelDetail({ slug, hotel }: HotelDetailProps) {
               src={
                 isCafesPost
                   ? "/bannerHome/BANNER DESKTOP 50 CAFES.webp"
-                  : isToyotaPost || isIconosFinal || isParquesPost
-                    ? "/bannerstoyota/BANNER LA RUTA TOYOTA.webp"
-                    : isMonumentosPost
-                      ? "/bannerHome/BANNER MONUMENTOS.svg"
-                      : "/bannerHome/BANNER AGENDA.png"
+                  : isIconosFinal
+                    ? "/bannerstoyota/BANNER LA RUTA TOYOTA ICONOS.png"
+                    : isToyotaPost || isParquesPost
+                      ? "/bannerstoyota/BANNER LA RUTA TOYOTA.webp"
+                      : isMonumentosPost
+                        ? "/bannerHome/BANNER MONUMENTOS.svg"
+                        : "/bannerHome/BANNER AGENDA.png"
               }
               mobileSrc={
                 isCafesPost
                   ? "/bannerHome/30 CAFES.webp"
-                  : isToyotaPost || isIconosFinal || isParquesPost
-                    ? "/bannerstoyota/BANNER LA RUTA TOYOTA.webp"
-                    : isMonumentosPost
-                      ? "/bannerHome/monumentos movil.png"
-                      : undefined
+                  : isIconosFinal
+                    ? "/bannerstoyota/BANNER LA RUTA TOYOTA ICONOS.png"
+                    : isToyotaPost || isParquesPost
+                      ? "/bannerstoyota/BANNER LA RUTA TOYOTA.webp"
+                      : isMonumentosPost
+                        ? "/bannerHome/monumentos movil.png"
+                        : undefined
               }
               alt={
                 isCafesPost
                   ? "Cafés"
-                  : isToyotaPost || isIconosFinal || isParquesPost
-                    ? "La Ruta Toyota"
-                    : isMonumentosPost
-                      ? "Monumentos Nacionales"
-                      : "Agenda Cultural"
+                  : isIconosFinal
+                    ? "Iconos"
+                    : isToyotaPost || isParquesPost
+                      ? "La Ruta Toyota"
+                      : isMonumentosPost
+                        ? "Monumentos Nacionales"
+                        : "Agenda Cultural"
               }
             />
           </div>

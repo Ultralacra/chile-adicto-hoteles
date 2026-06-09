@@ -1301,21 +1301,27 @@ export default function CategoryPage({ params }: { params: any }) {
                     ? "/bannerHome/BANNER DESKTOP 50 CAFES.webp"
                     : slug === "monumentos-nacionales"
                       ? "/bannerHome/BANNER MONUMENTOS.svg"
-                      : "/bannerstoyota/BANNER LA RUTA TOYOTA.png"
+                      : slug === "iconos"
+                        ? "/bannerstoyota/BANNER LA RUTA TOYOTA ICONOS.png"
+                        : "/bannerstoyota/BANNER LA RUTA TOYOTA.webp"
                 }
                 mobileSrc={
                   slug === "cafes"
                     ? "/bannerHome/30 CAFES.webp"
                     : slug === "monumentos-nacionales"
                       ? undefined
-                      : "/bannerstoyota/BANNER LA RUTA TOYOTA.png"
+                      : slug === "iconos"
+                        ? "/bannerstoyota/BANNER LA RUTA TOYOTA ICONOS.png"
+                        : "/bannerstoyota/BANNER LA RUTA TOYOTA.webp"
                 }
                 alt={
                   slug === "cafes"
                     ? "Cafés"
                     : slug === "monumentos-nacionales"
                       ? "Monumentos Nacionales"
-                      : "La Ruta Toyota"
+                      : slug === "iconos"
+                        ? "Iconos"
+                        : "La Ruta Toyota"
                 }
               />
             </div>

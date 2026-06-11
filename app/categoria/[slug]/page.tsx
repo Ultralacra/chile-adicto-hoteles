@@ -1045,15 +1045,15 @@ export default function CategoryPage({ params }: { params: any }) {
         "/bannersagenda/bannersJulio-agosto-septiembre/MOVIL - 31 DE AGOSTO AL 6 DE SEPTIEMBRE.png",
       alt: "Agenda Cultural del 31 de agosto al 6 de septiembre",
     },
-    {
-      start: "2026-06-29",
-      end: "2026-08-05",
-      href: "/agenda-cultural",
-      src: "/bannersagenda/bannersJulio-agosto-septiembre/DESKTOP - 29 DE JUNIO AL 5 DE AGOSTO.png",
-      mobileSrc:
-        "/bannersagenda/bannersJulio-agosto-septiembre/MOVIL 29 DE JUNIO AL 5 DE AGOSTO.png",
-      alt: "Agenda Cultural del 29 de junio al 5 de agosto",
-    },
+    // {
+    //   start: "2026-06-29",
+    //   end: "2026-08-05",
+    //   href: "/agenda-cultural",
+    //   src: "/bannersagenda/bannersJulio-agosto-septiembre/DESKTOP - 29 DE JUNIO AL 5 DE AGOSTO.png",
+    //   mobileSrc:
+    //     "/bannersagenda/bannersJulio-agosto-septiembre/MOVIL 29 DE JUNIO AL 5 DE AGOSTO.png",
+    //   alt: "Agenda Cultural del 29 de junio al 5 de agosto",
+    // },
   ];
 
   const todayKey = toLocalDateKey(new Date());

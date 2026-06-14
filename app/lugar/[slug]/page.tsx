@@ -27,9 +27,8 @@ export default function LugarPage(props: any) {
     notFound();
   }
 
-  useEffect(() => {
-    window.scrollTo(0, 0);
-  }, [resolvedParams?.slug]);
+  // El scroll to top se maneja automáticamente por el sistema de navegación
+  // useScrollRestoration en el layout gestiona el scroll inteligente
 
   const [arquitecturaEntry, setArquitecturaEntry] = useState<any | null>(null);
   const [loading, setLoading] = useState<boolean>(true);

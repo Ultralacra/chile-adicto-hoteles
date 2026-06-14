@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { Header } from "@/components/header";
 import { HotelCard } from "@/components/hotel-card";
 import { Footer } from "@/components/footer";
@@ -37,9 +38,8 @@ export default function CategoryPage({ params }: { params: any }) {
   const { language, t } = useLanguage();
   const { cachedFetchWithSite } = useSiteApi();
 
-  useEffect(() => {
-    window.scrollTo(0, 0);
-  }, [slug]);
+  // El scroll to top se maneja automáticamente por el sistema de navegación
+  // useScrollRestoration en el layout gestiona el scroll inteligente
 
   const categoryMap: { [key: string]: string } = {
     norte: "NORTE",
@@ -1224,21 +1224,22 @@ export default function CategoryPage({ params }: { params: any }) {
 
         <main className="site-inner py-4">
           {isRestaurantOrBarsPage ? (
-            // Submenú de comunas para restaurantes/bares con primer item "VOLVER"
+            // Submenú de comunas para restaurantes/bares
             <nav className="py-4 hidden lg:block">
               <ul className="hidden lg:flex flex-nowrap items-center gap-2 text-sm font-medium whitespace-nowrap">
-                {/* VOLVER - limpia filtro y vuelve al listado */}
                 <li className="flex items-center gap-2">
                   <Link
                     href={isBarsPage ? "/categoria/bares" : "/restaurantes"}
-                    className={`font-neutra hover:text-[var(--color-brand-red)] transition-colors tracking-wide text-[15px] leading-[20px] ${
-                      !selectedComuna
-                        ? "text-[var(--color-brand-red)]"
-                        : "text-black"
-                    }`}
+                    className="hover:opacity-80 transition-opacity"
                     onClick={() => setSelectedComuna(null)}
                   >
-                    {t("VOLVER", "BACK")}
+                    <Image
+                      src="/Group 8.png"
+                      alt={t("VOLVER", "BACK")}
+                      width={100}
+                      height={66}
+                      className="h-11 w-auto"
+                    />
                   </Link>
                   <span className="text-black">•</span>
                 </li>

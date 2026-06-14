@@ -232,3 +232,23 @@
     animation: none;
   }
 }
+
+/* Back button hover effect */
+.back-button-hover {
+  transition: transform 150ms ease, color 150ms ease;
+}
+.back-button-hover:hover {
+  transform: translateX(-2px);
+}
+
+/* Scroll restoration - prevent flash of scroll */
+html {
+  scroll-behavior: auto;
+}
+
+/* Smooth scroll only for explicit user interactions */
+@media (prefers-reduced-motion: no-preference) {
+  .scroll-smooth {
+    scroll-behavior: smooth;
+  }
+}

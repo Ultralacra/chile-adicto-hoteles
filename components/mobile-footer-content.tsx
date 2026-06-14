@@ -215,17 +215,6 @@ export function MobileFooterContent({ onNavigate }: MobileFooterContentProps) {
         {isRestaurantsCategory ? (
           // Submenú de comunas en formato vertical (una debajo de otra)
           <ul className="space-y-4 text-center">
-            <li>
-              <Link
-                href="/restaurantes"
-                className={`font-neutra-demi text-[14px] leading-[19px] font-[600] transition-colors ${
-                  !activeComunaSlug ? "text-[#E40E36]" : "text-white"
-                } hover:text-gray-300`}
-                onClick={() => onNavigate?.()}
-              >
-                VOLVER
-              </Link>
-            </li>
             {restaurantCommunes.map((c) => {
               const isActive =
                 !!activeComunaSlug && activeComunaSlug === c.slug.toLowerCase();

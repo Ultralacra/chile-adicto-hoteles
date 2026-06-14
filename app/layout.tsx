@@ -7,6 +7,7 @@ import Script from "next/script";
 import "./globals.css";
 import { LanguageProvider } from "@/contexts/language-context";
 import ScrollToTop from "@/components/ScrollToTop";
+import { ScrollRestorationProvider } from "@/components/scroll-restoration-provider";
 import GATracker from "../components/ga-tracker";
 
 const montserrat = Montserrat({
@@ -82,7 +83,9 @@ export default function RootLayout({
           <Suspense fallback={null}>
             <GATracker />
           </Suspense>
-          {children}
+          <ScrollRestorationProvider>
+            {children}
+          </ScrollRestorationProvider>
           <ScrollToTop />
         </LanguageProvider>
         <Analytics />

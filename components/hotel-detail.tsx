@@ -454,9 +454,15 @@ export function HotelDetail({ slug, hotel }: HotelDetailProps) {
                   <li className="flex items-center gap-2">
                     <a
                       href="/restaurantes"
-                      className="font-neutra hover:text-[var(--color-brand-red)] transition-colors tracking-wide text-[15px] leading-[20px] text-black"
+                      className="hover:opacity-80 transition-opacity"
                     >
-                      {t("VOLVER", "BACK")}
+                      <Image
+                        src="/Group 8.png"
+                        alt={t("VOLVER", "BACK")}
+                        width={100}
+                        height={66}
+                        className="h-11 w-auto"
+                      />
                     </a>
                     <span className="text-black">•</span>
                   </li>

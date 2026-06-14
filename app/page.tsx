@@ -154,7 +154,6 @@ function HomeContent() {
   return (
     <div className="min-h-screen bg-white">
       <Header />
-
       <main className="site-inner py-4">
         <div className="hidden lg:block">
           <CategoryNav activeCategory="todos" />

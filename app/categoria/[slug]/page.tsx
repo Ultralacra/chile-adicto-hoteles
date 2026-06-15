@@ -1438,7 +1438,7 @@ export default function CategoryPage({ params }: { params: any }) {
             </div>
           ) : isRestaurantOrBarsPage ? (
             <div className="mt-4 space-y-8">
-              {/* Banners: solo en página principal de restaurantes (sin ?tipo) */}
+              {/* Banners de restaurantes y bares */}
               {isRestaurantsPage && !tipoParam && (
                 <div className="space-y-4">
                   <BottomHomeBanner
@@ -1447,6 +1447,26 @@ export default function CategoryPage({ params }: { params: any }) {
                     mobileSrc="/bannerRestaurantes/BANER MOVIL 50 RESTORANES.png"
                     alt="50 restaurantes de Santiago"
                   />
+                  <BottomHomeBanner
+                    href="/categoria/bares"
+                    src="/bannerRestaurantes/BANER DESKTOP 50 BARES.png"
+                    mobileSrc="/bannerRestaurantes/BANER MOVIL 50 BARES.png"
+                    alt="50 bares de Santiago"
+                  />
+                </div>
+              )}
+              {isRestaurantsPage && tipoParam === "restaurantes" && (
+                <div className="space-y-4">
+                  <BottomHomeBanner
+                    href="/categoria/restaurantes?tipo=restaurantes"
+                    src="/bannerRestaurantes/BANER DESKTOP 50 RESTORANES.png"
+                    mobileSrc="/bannerRestaurantes/BANER MOVIL 50 RESTORANES.png"
+                    alt="50 restaurantes de Santiago"
+                  />
+                </div>
+              )}
+              {(isBarsPage || tipoParam === "bares") && (
+                <div className="space-y-4">
                   <BottomHomeBanner
                     href="/categoria/bares"
                     src="/bannerRestaurantes/BANER DESKTOP 50 BARES.png"

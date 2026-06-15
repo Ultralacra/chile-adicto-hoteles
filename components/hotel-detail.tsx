@@ -90,6 +90,8 @@ export function HotelDetail({ slug, hotel }: HotelDetailProps) {
 
   const isIconosPost = normalizedCategories.includes("iconos");
   const isParquesPost = normalizedCategories.includes("parques");
+  const isBaresPost = normalizedCategories.includes("bares");
+  const isRestaurantesPost = normalizedCategories.includes("restaurantes") || normalizedCategories.includes("restaurants");
   // Fallback: slugs conocidos de posts de ICONOS (por si la API no devuelve categorías)
   console.log("[HotelDetail] slug:", slug, "categories:", hotel?.categories, "normalized:", normalizedCategories, "isIconosPost:", isIconosPost);
   const ICONOS_SLUGS = new Set([
@@ -534,6 +536,28 @@ export function HotelDetail({ slug, hotel }: HotelDetailProps) {
                         ? "Monumentos Nacionales"
                         : "Agenda Cultural"
               }
+            />
+          </div>
+        )}
+
+        {isBaresPost && (
+          <div className="w-full mb-4">
+            <BottomHomeBanner
+              href="/categoria/bares"
+              src="/bannerRestaurantes/BANER DESKTOP 50 BARES.png"
+              mobileSrc="/bannerRestaurantes/BANER MOVIL 50 BARES.png"
+              alt="50 bares de Santiago"
+            />
+          </div>
+        )}
+
+        {isRestaurantesPost && !isBaresPost && (
+          <div className="w-full mb-4">
+            <BottomHomeBanner
+              href="/categoria/restaurantes?tipo=restaurantes"
+              src="/bannerRestaurantes/BANER DESKTOP 50 RESTORANES.png"
+              mobileSrc="/bannerRestaurantes/BANER MOVIL 50 RESTORANES.png"
+              alt="50 restaurantes de Santiago"
             />
           </div>
         )}

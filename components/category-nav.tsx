@@ -172,24 +172,25 @@ export function CategoryNav({
     // Hide desktop category nav on small screens; mobile menu provides navigation
     <nav className={compact ? "py-2" : "py-4"}>
       <ul className="hidden lg:flex flex-nowrap items-center gap-2 text-sm font-medium whitespace-nowrap">
-        {/* Icono Volver al inicio de la barra de categorías */}
-        <li className="flex items-center gap-2">
-          <button
-            onClick={handleBack}
-            className="hover:opacity-80 transition-opacity"
-            aria-label={language === "es" ? "Volver" : "Back"}
-            title={language === "es" ? "Volver" : "Back"}
-          >
-            <Image
-              src="/Group 8.png"
-              alt={language === "es" ? "Volver" : "Back"}
-              width={100}
-              height={66}
-              className="h-11 w-auto"
-            />
-          </button>
-          <span className="text-black">•</span>
-        </li>
+        {activeCategory !== "todos" && (
+          <li className="flex items-center gap-2">
+            <button
+              onClick={handleBack}
+              className="hover:opacity-80 transition-opacity"
+              aria-label={language === "es" ? "Volver" : "Back"}
+              title={language === "es" ? "Volver" : "Back"}
+            >
+              <Image
+                src="/Group 8.png"
+                alt={language === "es" ? "Volver" : "Back"}
+                width={100}
+                height={66}
+                className="h-11 w-auto"
+              />
+            </button>
+            <span className="text-black">•</span>
+          </li>
+        )}
         {items.map((category, index) => (
           <li key={category.slug} className="flex items-center gap-2">
             <Link

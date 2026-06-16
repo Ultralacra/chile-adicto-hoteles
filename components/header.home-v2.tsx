@@ -96,7 +96,7 @@ export function Header() {
               </div>
               <Link href="/agenda-cultural" aria-label="Ir a Agenda Cultural">
                 <Image
-                  src="/bannerHome/AGENDA CULTURAL HEADER.png"
+                  src="/bannersagenda/BANER AGENDA HEADER.png"
                   alt="Agenda Cultural"
                   width={460}
                   height={120}

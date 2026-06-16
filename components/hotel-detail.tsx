@@ -10,6 +10,7 @@ import { CategoryNav } from "@/components/category-nav";
 import { HotelCard } from "@/components/hotel-card";
 import { useSiteApi } from "@/hooks/use-site-api";
 import { BottomHomeBanner } from "@/components/home-promo-banners";
+import { findAgendaBannerForPost } from "@/lib/agenda-banner-ranges";
 
 interface LocationInfo {
   label?: string;
@@ -82,6 +83,9 @@ export function HotelDetail({ slug, hotel }: HotelDetailProps) {
   const isCafesPost = normalizedCategories.includes("cafes");
 
   const isAgendaPost = normalizedCategories.includes("agenda-cultural");
+  const agendaBanner = isAgendaPost
+    ? findAgendaBannerForPost(slug || "", hotel.publishStartAt, hotel.publishEndAt)
+    : undefined;
 
   const isToyotaPost = normalizedCategories.some(
     (category) =>
@@ -517,9 +521,11 @@ export function HotelDetail({ slug, hotel }: HotelDetailProps) {
                     ? "/bannerstoyota/BANNER LA RUTA TOYOTA ICONOS.png"
                     : isToyotaPost || isParquesPost
                       ? "/bannerstoyota/BANNER LA RUTA TOYOTA.webp"
-                      : isMonumentosPost
-                        ? "/bannerHome/BANNER MONUMENTOS.svg"
-                        : "/bannerHome/BANNER AGENDA.png"
+                        : isMonumentosPost
+                          ? "/bannerHome/BANNER MONUMENTOS.svg"
+                          : isAgendaPost && agendaBanner
+                            ? agendaBanner.src
+                            : "/bannersagenda/BANER AGENDA HEADER.png"
               }
               mobileSrc={
                 isCafesPost
@@ -528,9 +534,11 @@ export function HotelDetail({ slug, hotel }: HotelDetailProps) {
                     ? "/bannerstoyota/BANNER LA RUTA TOYOTA ICONOS.png"
                     : isToyotaPost || isParquesPost
                       ? "/bannerstoyota/BANNER LA RUTA TOYOTA.webp"
-                      : isMonumentosPost
-                        ? "/bannerHome/monumentos movil.png"
-                        : undefined
+                        : isMonumentosPost
+                          ? "/bannerHome/monumentos movil.png"
+                          : isAgendaPost && agendaBanner
+                            ? agendaBanner.mobileSrc
+                            : undefined
               }
               alt={
                 isCafesPost

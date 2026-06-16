@@ -12,6 +12,26 @@ export function useScrollRestoration() {
   const pathname = usePathname();
   const prevPathname = useRef(pathname);
   const isRestoring = useRef(false);
+  const savedYRef = useRef(0);
+
+  // Guardar posición en cada cambio de scroll (throttled)
+  useEffect(() => {
+    if (!pathname) return;
+
+    let ticking = false;
+    const handleScroll = () => {
+      if (!ticking) {
+        requestAnimationFrame(() => {
+          saveScrollPosition(pathname);
+          ticking = false;
+        });
+        ticking = true;
+      }
+    };
+
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, [pathname]);
 
   // Guardar la posición del scroll antes de que la página cambie
   useEffect(() => {
@@ -22,12 +42,12 @@ export function useScrollRestoration() {
     };
   }, [pathname]);
 
-  // Guardar periódicamente mientras el usuario está en la página
+  // Guardar periódicamente como fallback
   useEffect(() => {
     if (!pathname) return;
     const interval = setInterval(() => {
       saveScrollPosition(pathname);
-    }, 2000);
+    }, 500);
     return () => clearInterval(interval);
   }, [pathname]);
 
@@ -36,15 +56,11 @@ export function useScrollRestoration() {
     if (!pathname) return;
     prevPathname.current = pathname;
 
-    // Evitar múltiples restauraciones simultáneas
     if (isRestoring.current) return;
 
-    // Verificar si la navegación fue hacia atrás (botón Volver)
     const direction = sessionStorage.getItem("nav:direction");
     sessionStorage.removeItem("nav:direction");
 
-    // Si la dirección es "forward" (navegación normal hacia adelante),
-    // limpiar cualquier posición guardada para esta página
     if (direction === "forward") {
       clearScrollPosition(pathname);
       return;
@@ -53,58 +69,70 @@ export function useScrollRestoration() {
     const saved = restoreScrollPosition(pathname);
     if (!saved || saved.y <= 0) return;
 
-    // Esperar a que la página esté completamente renderizada
-    const timer = setTimeout(() => {
+    savedYRef.current = saved.y;
+
+    // Forzar scroll inmediato a la posición guardada antes de renderizar
+    window.scrollTo(0, saved.y);
+
+    // Esperar a que las imágenes y contenido dinámico carguen
+    const restore = () => {
       isRestoring.current = true;
-      smoothScrollTo(saved.y, 400, () => {
-        isRestoring.current = false;
+      // Doble rAF para esperar al siguiente frame de render
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          // Scroll exacto sin animación para precisión absoluta
+          window.scrollTo({ top: saved.y, behavior: "instant" });
+
+          // Verificar después de 300ms por si hay imágenes lazy
+          setTimeout(() => {
+            window.scrollTo({ top: saved.y, behavior: "instant" });
+            isRestoring.current = false;
+          }, 300);
+        });
       });
-    }, 80);
+    };
 
-    return () => clearTimeout(timer);
-  }, [pathname]);
+    // Esperar a que las imágenes carguen para que el layout sea estable
+    const images = document.querySelectorAll("img");
+    let pendingImages = 0;
+    let resolved = false;
 
-  /**
-   * Animación de scroll suave manual con requestAnimationFrame.
-   * Más confiable que window.scrollTo({ behavior: "smooth" }) durante la carga de página.
-   */
-  function smoothScrollTo(
-    targetY: number,
-    duration: number = 400,
-    onComplete?: () => void,
-  ) {
-    const startY = window.scrollY;
-    const deltaY = targetY - startY;
-    const startTime = performance.now();
-
-    // Si ya estamos cerca, no animar
-    if (Math.abs(deltaY) < 5) {
-      onComplete?.();
-      return;
-    }
-
-    function easeInOutCubic(t: number): number {
-      return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
-    }
-
-    function tick(currentTime: number) {
-      const elapsed = currentTime - startTime;
-      const progress = Math.min(elapsed / duration, 1);
-      const eased = easeInOutCubic(progress);
-
-      window.scrollTo(0, startY + deltaY * eased);
-
-      if (progress < 1) {
-        requestAnimationFrame(tick);
-      } else {
-        // Asegurar posición final exacta
-        window.scrollTo(0, targetY);
-        onComplete?.();
+    const checkDone = () => {
+      if (resolved) return;
+      if (pendingImages <= 0) {
+        resolved = true;
+        restore();
       }
-    }
+    };
 
-    requestAnimationFrame(tick);
-  }
+    images.forEach((img) => {
+      if (!img.complete) {
+        pendingImages++;
+        img.addEventListener("load", () => {
+          pendingImages--;
+          checkDone();
+        }, { once: true });
+        img.addEventListener("error", () => {
+          pendingImages--;
+          checkDone();
+        }, { once: true });
+      }
+    });
+
+    // Si no hay imágenes pendientes o ya cargaron, restaurar rápido
+    if (pendingImages === 0) {
+      resolved = true;
+      setTimeout(restore, 50);
+    } else {
+      // Timeout máximo de 1.5s por si las imágenes nunca cargan
+      setTimeout(() => {
+        if (!resolved) {
+          resolved = true;
+          restore();
+        }
+      }, 1500);
+    }
+  }, [pathname]);
 }
 
 export function useScrollRestorationForElement(

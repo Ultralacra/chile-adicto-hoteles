@@ -15,21 +15,21 @@ export function Header() {
   return (
     <>
       <header className="">
-        <div className="site-inner py-6 font-neutra text-[16px] leading-[20px] text-black">
-          <div className="flex items-center justify-between lg:justify-between">
-            <div className="flex items-center lg:hidden">
-              <Image
-                src="/wecare.svg"
-                alt="We Care"
-                width={72}
-                height={72}
-                className="h-14 w-auto"
-              />
-            </div>
+        {/* Mobile header */}
+        <div className="lg:hidden">
+          <div className="site-inner py-4 font-neutra text-[16px] leading-[20px] text-black">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center">
+                <Image
+                  src="/wecare.svg"
+                  alt="We Care"
+                  width={72}
+                  height={72}
+                  className="h-14 w-auto"
+                />
+              </div>
 
-            {/* Mobile: Centered main logo */}
-            <div className="lg:hidden absolute left-1/2 -translate-x-1/2">
-              <Link href="/" aria-label={t("Ir al inicio", "Go to home")}>
+              <Link href="/" aria-label={t("Ir al inicio", "Go to home")} className="absolute left-1/2 -translate-x-1/2">
                 <Image
                   src="/Santiago-adicto-Guia%202.svg"
                   alt={t("Chile Adicto 50 Best", "Santiago Adicto 50 Best")}
@@ -39,38 +39,42 @@ export function Header() {
                   priority
                 />
               </Link>
-            </div>
 
-            {/* Mobile: Search below logo */}
-            <div className="lg:hidden absolute bottom-[-50px] left-0 right-0 px-4">
-              <RealTimeSearch className="w-full" />
-            </div>
-
-            <div className="flex items-center lg:hidden">
-              <button
-                onClick={() => setIsMobileMenuOpen(true)}
-                className="text-black p-2"
-                aria-label="Open menu"
-              >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  strokeWidth={2}
-                  stroke="currentColor"
-                  className="w-6 h-6"
+              <div className="flex items-center">
+                <button
+                  onClick={() => setIsMobileMenuOpen(true)}
+                  className="text-black p-2"
+                  aria-label="Open menu"
                 >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5"
-                  />
-                </svg>
-              </button>
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    strokeWidth={2}
+                    stroke="currentColor"
+                    className="w-6 h-6"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5"
+                    />
+                  </svg>
+                </button>
+              </div>
             </div>
+          </div>
+          {/* Mobile: Search below logo */}
+          <div className="px-4 pb-4">
+            <RealTimeSearch className="w-full" />
+          </div>
+        </div>
 
+        {/* Desktop header */}
+        <div className="hidden lg:block site-inner py-6 font-neutra text-[16px] leading-[20px] text-black">
+          <div className="flex items-center justify-between">
             {/* Desktop: Logo on left */}
-            <div className="hidden lg:flex items-center">
+            <div className="flex items-center">
               <Link href="/" aria-label={t("Ir al inicio", "Go to home")}>
                 <Image
                   src="/Santiago-adicto-Guia%202.svg"
@@ -83,8 +87,8 @@ export function Header() {
               </Link>
             </div>
 
-            {/* Desktop: Right side logos */}
-            <div className="hidden lg:flex items-center gap-6">
+            {/* Desktop: Right side */}
+            <div className="flex items-center gap-6">
               <div className="flex flex-col gap-2">
                 <div className="flex items-center gap-4">
                   <LanguageSwitcher />

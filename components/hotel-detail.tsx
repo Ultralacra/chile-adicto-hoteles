@@ -3,6 +3,7 @@
 import { useState, useEffect, useMemo, useRef } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import useEmblaCarousel from "embla-carousel-react";
 import { useLanguage } from "@/contexts/language-context";
 import { CategoryNav } from "@/components/category-nav";
@@ -60,6 +61,7 @@ interface HotelDetailProps {
 export function HotelDetail({ slug, hotel }: HotelDetailProps) {
   const { t } = useLanguage();
   const { cachedFetchWithSite } = useSiteApi();
+  const router = useRouter();
   const toSlug = (input: string) =>
     String(input || "")
       .normalize("NFD")
@@ -454,8 +456,13 @@ export function HotelDetail({ slug, hotel }: HotelDetailProps) {
               <nav className="py-4">
                 <ul className="hidden lg:flex flex-nowrap items-center gap-2 text-sm font-medium whitespace-nowrap">
                   <li className="flex items-center gap-2">
-                    <a
-                      href="/restaurantes"
+                    <button
+                      onClick={() => {
+                        if (typeof window !== "undefined") {
+                          sessionStorage.setItem("nav:direction", "back");
+                        }
+                        router.back();
+                      }}
                       className="hover:opacity-80 transition-opacity"
                     >
                       <Image
@@ -465,7 +472,7 @@ export function HotelDetail({ slug, hotel }: HotelDetailProps) {
                         height={66}
                         className="h-11 w-auto"
                       />
-                    </a>
+                    </button>
                     <span className="text-black">•</span>
                   </li>
                   {restaurantCommunes.map((c, index) => {

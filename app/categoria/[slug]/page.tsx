@@ -10,7 +10,7 @@ import { notFound } from "next/navigation";
 // Dejamos de consumir data.json; consultamos al API
 import { useLanguage } from "@/contexts/language-context";
 import { useEffect, use, useState, Suspense } from "react";
-import { useSearchParams } from "next/navigation";
+import { useSearchParams, useRouter } from "next/navigation";
 import { buildCardExcerpt } from "@/lib/utils";
 import Link from "next/link";
 import { Spinner } from "@/components/ui/spinner";
@@ -37,6 +37,7 @@ export default function CategoryPage({ params }: { params: any }) {
   const { slug } = resolvedParams;
   const { language, t } = useLanguage();
   const { cachedFetchWithSite } = useSiteApi();
+  const router = useRouter();
 
   // El scroll to top se maneja automáticamente por el sistema de navegación
   // useScrollRestoration en el layout gestiona el scroll inteligente
@@ -1228,10 +1229,15 @@ export default function CategoryPage({ params }: { params: any }) {
             <nav className="py-4 hidden lg:block">
               <ul className="hidden lg:flex flex-nowrap items-center gap-2 text-sm font-medium whitespace-nowrap">
                 <li className="flex items-center gap-2">
-                  <Link
-                    href={isBarsPage ? "/categoria/bares" : "/restaurantes"}
+                  <button
+                    onClick={() => {
+                      setSelectedComuna(null);
+                      if (typeof window !== "undefined") {
+                        sessionStorage.setItem("nav:direction", "back");
+                      }
+                      router.back();
+                    }}
                     className="hover:opacity-80 transition-opacity"
-                    onClick={() => setSelectedComuna(null)}
                   >
                     <Image
                       src="/Group 8.png"
@@ -1240,7 +1246,7 @@ export default function CategoryPage({ params }: { params: any }) {
                       height={66}
                       className="h-11 w-auto"
                     />
-                  </Link>
+                  </button>
                   <span className="text-black">•</span>
                 </li>
                 {communes.map((c, index) => {

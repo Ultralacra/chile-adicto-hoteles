@@ -844,6 +844,7 @@ export default function CategoryPage({ params }: { params: any }) {
     { slug: "teatro-musical-shrek-el-musical-en-centro-cultural-ceina", from: "2026-06-01", to: "2026-07-05" },
     { slug: "teatro-el-dylan-en-centro-cultural-gam", from: "2026-06-01", to: "2026-07-05" },
     { slug: "danza-de-una-luz-a-otra-del-banch-en-las-condes", from: "2026-06-01", to: "2026-07-12" },
+    { slug: "bernardo-oyarzun-reactiva-el-archivo-de-teleseries-en-instituto-tele-arte", from: "2026-07-01", to: "2026-07-31" },
   ];
 
   // Helper: transformar un post del listado al shape que espera HotelDetail

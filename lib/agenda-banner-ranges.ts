@@ -283,6 +283,11 @@ export const repeatingSlugDateRanges = [
     from: "2026-06-01",
     to: "2026-07-12",
   },
+  {
+    slug: "bernardo-oyarzun-reactiva-el-archivo-de-teleseries-en-instituto-tele-arte",
+    from: "2026-07-01",
+    to: "2026-07-31",
+  },
 ];
 
 /**

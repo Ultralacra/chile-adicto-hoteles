@@ -212,15 +212,6 @@ export const agendaBannerRanges: AgendaBannerRange[] = [
     alt: "Agenda Cultural del 17 al 23 de agosto",
   },
   {
-    start: "2026-08-24",
-    end: "2026-08-30",
-    href: "/agenda-cultural",
-    src: "/bannersagenda/bannersJulio-agosto-septiembre/DESKTOP - 24 AL 30 DE AGOSTO.png",
-    mobileSrc:
-      "/bannersagenda/bannersJulio-agosto-septiembre/MOVIL - 24 AL 30 DE AGOSTO.png",
-    alt: "Agenda Cultural del 24 al 30 de agosto",
-  },
-  {
     start: "2026-08-31",
     end: "2026-09-06",
     href: "/agenda-cultural",

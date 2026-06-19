@@ -57,9 +57,10 @@ interface HotelDetailProps {
     galleryImages?: string[];
     categories?: string[];
   };
+  hideBanners?: boolean;
 }
 
-export function HotelDetail({ slug, hotel }: HotelDetailProps) {
+export function HotelDetail({ slug, hotel, hideBanners = false }: HotelDetailProps) {
   const { t } = useLanguage();
   const { cachedFetchWithSite } = useSiteApi();
   const router = useRouter();
@@ -122,8 +123,8 @@ export function HotelDetail({ slug, hotel }: HotelDetailProps) {
   console.log("[HotelDetail] isIconosBySlug:", isIconosBySlug, "isIconosFinal:", isIconosFinal, "showCategoryBanner:", isMonumentosPost || isCafesPost || isAgendaPost || isToyotaPost || isIconosFinal || isParquesPost);
   const showToyotaCards = isToyotaPost || isIconosFinal || isParquesPost;
 
-  const showCategoryBanner =
-    isMonumentosPost || isCafesPost || isAgendaPost || isToyotaPost || isIconosFinal || isParquesPost;
+  const showCategoryBanner = !hideBanners &&
+    (isMonumentosPost || isCafesPost || isAgendaPost || isToyotaPost || isIconosFinal || isParquesPost);
   // La galería NO debe incluir la imagen de portada. Si hay imágenes de galería, usamos solo esas.
   // Si NO hay imágenes de galería, mostramos la portada como único slide.
   const allImages =
@@ -555,7 +556,7 @@ export function HotelDetail({ slug, hotel }: HotelDetailProps) {
           </div>
         )}
 
-        {isBaresPost && (
+        {!hideBanners && isBaresPost && (
           <div className="w-full mb-4">
             <BottomHomeBanner
               href="/categoria/bares"
@@ -566,7 +567,7 @@ export function HotelDetail({ slug, hotel }: HotelDetailProps) {
           </div>
         )}
 
-        {isRestaurantesPost && !isBaresPost && (
+        {!hideBanners && isRestaurantesPost && !isBaresPost && (
           <div className="w-full mb-4">
             <BottomHomeBanner
               href="/categoria/restaurantes?tipo=restaurantes"

@@ -19,6 +19,8 @@ import { cachedFetch } from "@/lib/api-cache";
 import { isHiddenFrontPost } from "@/lib/post-visibility";
 import { hasPostPublicationEnded } from "@/lib/post-publication";
 import { BottomHomeBanner } from "@/components/home-promo-banners";
+import { HotelDetail } from "@/components/hotel-detail";
+import { normalizeImageUrl } from "@/lib/utils";
 import { agendaBannerRanges } from "@/lib/agenda-banner-ranges";
 
 // Antes se validaba contra una lista fija, pero ahora el menú y las categorías
@@ -844,8 +846,77 @@ export default function CategoryPage({ params }: { params: any }) {
     { slug: "danza-de-una-luz-a-otra-del-banch-en-las-condes", from: "2026-06-01", to: "2026-07-12" },
   ];
 
+  // Helper: transformar un post del listado al shape que espera HotelDetail
+  function buildHotelDetailShape(source: any) {
+    if (!source) return null;
+    const imgs: string[] = Array.isArray(source.images)
+      ? source.images.filter((s: string) => !!s)
+      : [];
+    const isPortada = (s: string) =>
+      /portada/i.test(normalizeImageUrl(s).replace(/\.[^.]+$/, ""));
+    let derivedFeatured = String(source.featuredImage || "").trim();
+    if (!derivedFeatured) {
+      const portada = imgs.find((s) => isPortada(s));
+      if (portada) derivedFeatured = portada;
+    }
+    const featuredKey = normalizeImageUrl(derivedFeatured);
+    const seen = new Set<string>();
+    const gallery = imgs.filter((img: string) => {
+      const key = normalizeImageUrl(img);
+      if (!key) return false;
+      if (key === featuredKey) return false;
+      if (/portada/i.test(key)) return false;
+      if (seen.has(key)) return false;
+      seen.add(key);
+      return true;
+    });
+    const tr = source[language] || source.es || {};
+    const desc = Array.isArray(tr.description) ? tr.description : [];
+    return {
+      name: tr.name || source.en?.name || source.es?.name || "",
+      subtitle: tr.subtitle || source.en?.subtitle || source.es?.subtitle || "",
+      excerpt: desc[0] || "",
+      fullContent: desc
+        .filter(Boolean)
+        .map((p: string) => `<p>${p}</p>`)
+        .join(""),
+      infoHtml: tr.infoHtml || null,
+      infoHtmlNew: tr.infoHtmlNew || null,
+      website: source.website || "",
+      websitePublic: source.websitePublic || source.website_public || "",
+      website_display: source.website_display || "",
+      instagram: source.instagram || "",
+      instagram_display: source.instagram_display || "",
+      email: source.email || "",
+      phone: source.phone || "",
+      address: source.address || "",
+      locations: source.locations || [],
+      photosCredit: source.photosCredit || "",
+      hours: source.hours || "",
+      reservationLink: source.reservationLink || "",
+      reservationPolicy: source.reservationPolicy || "",
+      interestingFact: source.interestingFact || "",
+      publishStartAt: source.publishStartAt || null,
+      publishEndAt: source.publishEndAt || null,
+      publicationEndsAt: source.publicationEndsAt || null,
+      featuredImage: derivedFeatured,
+      galleryImages: gallery,
+      categories: Array.from(
+        new Set([
+          ...(typeof tr.category === "string" && tr.category.trim()
+            ? [tr.category.trim()]
+            : []),
+          ...(Array.isArray(source.categories)
+            ? source.categories.filter((c: any) => typeof c === "string")
+            : []),
+        ]),
+      ),
+    };
+  }
+
   // Agrupar posts de agenda cultural por rango de banner
   const isAgendaCultural = slug === "agenda-cultural";
+  const featuredPostSlug = "edo-caroe-confirma-cinco-shows-de-comedia-en-santiago-en-julio-de-2026";
   const agendaReturnStorageKey = "agenda-cultural:last-clicked-post";
 
   const handleAgendaCardClick = (
@@ -872,6 +943,8 @@ export default function CategoryPage({ params }: { params: any }) {
             const postSlug = String(h?.slug || "")
               .trim()
               .toLowerCase();
+            // No repetir el post destacado en los grupos semanales
+            if (postSlug === featuredPostSlug) return false;
             const isAprilRange = range.end <= "2026-04-30";
             if (isAprilRange && repeatingAgendaWeeklySlugs.has(postSlug)) {
               return true;
@@ -1119,8 +1192,32 @@ export default function CategoryPage({ params }: { params: any }) {
               </div>
             </div>
           ) : isAgendaCultural && agendaGrouped.length > 0 ? (
-            /* Agenda Cultural: banner de cada semana + sus posts debajo */
+            /* Agenda Cultural: post destacado fijo arriba + banner de cada semana y sus posts */
             <div className="mt-4 space-y-8">
+              {(() => {
+                const featuredPost = finalOrderedHotels.find(
+                  (h: any) => String(h?.slug || "") === featuredPostSlug
+                );
+                return (
+                  <section key="featured-post">
+                    <div className="w-full mb-4">
+                      <BottomHomeBanner
+                        href={`/${featuredPostSlug}`}
+                        src="/bannersagenda/postdestacado/DESKTOP - EVENTO DESTACADOO.png"
+                        mobileSrc="/bannersagenda/postdestacado/MOVIL - EVENTO DESTACADOO.png"
+                        alt="Evento Destacado"
+                      />
+                    </div>
+                    {featuredPost && (
+                      <HotelDetail
+                        slug={featuredPostSlug}
+                        hotel={buildHotelDetailShape(featuredPost) as any}
+                        hideBanners
+                      />
+                    )}
+                  </section>
+                );
+              })()}
               {agendaGrouped.map((group, groupIdx) => (
                 <section key={group.start}>
                   <div className="w-full mb-4">

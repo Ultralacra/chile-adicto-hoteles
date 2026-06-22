@@ -214,7 +214,7 @@ function HomeContent() {
                   className="block w-full"
                 >
                   <img
-                    src="/bannersagenda/BANER AGENDA HEADER.png"
+                    src="/bannerHome/MOVIL - AGENDA CULTURAL.webp"
                     alt="Agenda Cultural"
                     className="block w-full h-auto object-contain"
                     loading="eager"

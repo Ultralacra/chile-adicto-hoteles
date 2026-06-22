@@ -1204,8 +1204,8 @@ export default function CategoryPage({ params }: { params: any }) {
                     <div className="w-full mb-4">
                       <BottomHomeBanner
                         href={`/${featuredPostSlug}`}
-                        src="/bannersagenda/postdestacado/DESKTOP - EVENTO DESTACADOO.png"
-                        mobileSrc="/bannersagenda/postdestacado/MOVIL - EVENTO DESTACADOO.png"
+                        src="/bannersagenda/postdestacado/DESKTOP - EVENTO DESTACADOO.webp"
+                        mobileSrc="/bannersagenda/postdestacado/MOVIL - EVENTO DESTACADOO.webp"
                         alt="Evento Destacado"
                       />
                     </div>
@@ -1214,6 +1214,7 @@ export default function CategoryPage({ params }: { params: any }) {
                         slug={featuredPostSlug}
                         hotel={buildHotelDetailShape(featuredPost) as any}
                         hideBanners
+                        noContainer
                       />
                     )}
                   </section>

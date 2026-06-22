@@ -58,9 +58,10 @@ interface HotelDetailProps {
     categories?: string[];
   };
   hideBanners?: boolean;
+  noContainer?: boolean;
 }
 
-export function HotelDetail({ slug, hotel, hideBanners = false }: HotelDetailProps) {
+export function HotelDetail({ slug, hotel, hideBanners = false, noContainer = false }: HotelDetailProps) {
   const { t } = useLanguage();
   const { cachedFetchWithSite } = useSiteApi();
   const router = useRouter();
@@ -502,7 +503,7 @@ export function HotelDetail({ slug, hotel, hideBanners = false }: HotelDetailPro
         </div>
       </div>
 
-      <main className="site-inner pt-0 pb-4">
+      <main className={noContainer ? "pt-0 pb-4" : "site-inner pt-0 pb-4"}>
         {showCategoryBanner && (
           <div className="w-full mb-4">
             <BottomHomeBanner

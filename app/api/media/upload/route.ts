@@ -77,6 +77,7 @@ async function uploadToSupabaseStorage(file: Blob, fileName: string): Promise<st
       Authorization: `Bearer ${service}`,
       "Content-Type": (file as any).type || "application/octet-stream",
       "x-upsert": "true",
+      "Cache-Control": "public, max-age=604800, stale-while-revalidate=86400",
     },
     body: Buffer.from(arrayBuf),
   });
@@ -92,6 +93,7 @@ async function uploadToSupabaseStorage(file: Blob, fileName: string): Promise<st
           Authorization: `Bearer ${service}`,
           "Content-Type": (file as any).type || "application/octet-stream",
           "x-upsert": "true",
+          "Cache-Control": "public, max-age=604800, stale-while-revalidate=86400",
         },
         body: Buffer.from(arrayBuf),
       });

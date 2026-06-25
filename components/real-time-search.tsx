@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { SearchIcon, XIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { getClientSiteId } from "@/lib/client-site-utils";
+import { getStorageImageUrl } from "@/lib/supabase-storage";
 
 interface SearchResult {
   slug: string;
@@ -167,7 +168,7 @@ export function RealTimeSearch({ className }: { className?: string }) {
                     {r.featuredImage && (
                       // eslint-disable-next-line @next/next/no-img-element
                       <img
-                        src={r.featuredImage}
+                          src={getStorageImageUrl(r.featuredImage, 80)}
                         alt=""
                         className="w-10 h-10 object-cover rounded"
                       />

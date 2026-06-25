@@ -184,15 +184,15 @@ export const agendaBannerRanges: AgendaBannerRange[] = [
     mobileSrc: "/bannersagenda/JULIO/MOVIL - 27 DE JULIO AL 2 DE AGOSTO.png",
     alt: "Agenda Cultural del 27 de julio al 2 de agosto",
   },
-  {
-    start: "2026-08-03",
-    end: "2026-08-09",
-    href: "/agenda-cultural",
-    src: "/bannersagenda/bannersJulio-agosto-septiembre/DESKTOP - 3 AL 9 DE AGOSTO.png",
-    mobileSrc:
-      "/bannersagenda/bannersJulio-agosto-septiembre/MOVIL - 3 AL 9 DE AGOSTO.png",
-    alt: "Agenda Cultural del 3 al 9 de agosto",
-  },
+  // {
+  //   start: "2026-08-03",
+  //   end: "2026-08-09",
+  //   href: "/agenda-cultural",
+  //   src: "/bannersagenda/bannersJulio-agosto-septiembre/DESKTOP - 3 AL 9 DE AGOSTO.png",
+  //   mobileSrc:
+  //     "/bannersagenda/bannersJulio-agosto-septiembre/MOVIL - 3 AL 9 DE AGOSTO.png",
+  //   alt: "Agenda Cultural del 3 al 9 de agosto",
+  // },
   {
     start: "2026-08-10",
     end: "2026-08-16",

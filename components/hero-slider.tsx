@@ -1,11 +1,12 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useMemo } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import useEmblaCarousel from "embla-carousel-react";
 import { useSiteApi } from "@/hooks/use-site-api";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import { getStorageImageUrl } from "@/lib/supabase-storage";
 
 // Reordenado: ICONOS debe ser el primer slide según solicitud.
 // iconos, arquitectura, barrios, mercados, miradores, museos (CULTURA),
@@ -99,6 +100,15 @@ export function HeroSlider({
       ? mobileImages
       : ((mobileFromApi && mobileFromApi.length ? mobileFromApi : undefined) ??
         mobileImagesDefault);
+
+  const desktopTr = useMemo(
+    () => desktop.map((url) => getStorageImageUrl(url, 1920)),
+    [desktop],
+  );
+  const mobileTr = useMemo(
+    () => mobile.map((url) => getStorageImageUrl(url, 900)),
+    [mobile],
+  );
 
   // Embla for desktop and mobile instances
   const [emblaDesktopRef, emblaDesktopApi] = useEmblaCarousel({ loop: true });
@@ -296,8 +306,8 @@ export function HeroSlider({
   };
 
   if (isMobile === null && !autoHeight) {
-    const firstDesktop = desktop[0] || "/placeholder.svg";
-    const firstMobile = mobile[0] || "/placeholder.svg";
+    const firstDesktop = desktopTr[0];
+    const firstMobile = mobileTr[0];
     const desktopHref = hrefForIndex(0, "desktop");
     const mobileHref = hrefForIndex(0, "mobile");
 
@@ -374,7 +384,7 @@ export function HeroSlider({
                 >
                   {autoHeight ? (
                     <Image
-                      src={mobile[0] || "/placeholder.svg"}
+                      src={mobileTr[0]}
                       alt="Slide 1"
                       width={900}
                       height={1400}
@@ -386,7 +396,7 @@ export function HeroSlider({
                     />
                   ) : (
                     <Image
-                      src={mobile[0] || "/placeholder.svg"}
+                      src={mobileTr[0]}
                       alt="Slide 1"
                       fill
                       sizes="100vw"
@@ -425,7 +435,7 @@ export function HeroSlider({
           ) : (
             <div className="embla bg-black" ref={emblaMobileRef as any}>
               <div className="embla__container flex">
-                {mobile.map((image, index) => (
+                {mobileTr.map((image, index) => (
                   <div
                     key={`m-${index}`}
                     className="embla__slide min-w-full relative bg-black"
@@ -442,7 +452,7 @@ export function HeroSlider({
                       >
                         {autoHeight ? (
                           <Image
-                            src={image || "/placeholder.svg"}
+                            src={image}
                             alt={`Slide ${index + 1}`}
                             width={900}
                             height={1400}
@@ -454,7 +464,7 @@ export function HeroSlider({
                           />
                         ) : (
                           <Image
-                            src={image || "/placeholder.svg"}
+                            src={image}
                             alt={`Slide ${index + 1}`}
                             fill
                             sizes="100vw"
@@ -469,7 +479,7 @@ export function HeroSlider({
                       <>
                         {autoHeight ? (
                           <Image
-                            src={image || "/placeholder.svg"}
+                            src={image}
                             alt={`Slide ${index + 1}`}
                             width={900}
                             height={1400}
@@ -481,7 +491,7 @@ export function HeroSlider({
                           />
                         ) : (
                           <Image
-                            src={image || "/placeholder.svg"}
+                            src={image}
                             alt={`Slide ${index + 1}`}
                             fill
                             sizes="100vw"
@@ -503,7 +513,7 @@ export function HeroSlider({
         <div className="bg-black">
           <div className="embla bg-black" ref={emblaDesktopRef as any}>
             <div className="embla__container flex">
-              {desktop.map((image, index) => (
+              {desktopTr.map((image, index) => (
                 <div
                   key={`d-${index}`}
                   className="embla__slide min-w-full relative bg-black"
@@ -520,13 +530,13 @@ export function HeroSlider({
                     >
                       {autoHeight ? (
                         <img
-                          src={image || "/placeholder.svg"}
+                          src={image}
                           alt={`Slide ${index + 1}`}
                           className={imageClassName(desktopImageClassName)}
                         />
                       ) : (
                         <img
-                          src={image || "/placeholder.svg"}
+                          src={image}
                           alt={`Slide ${index + 1}`}
                           className={imageClassName(desktopImageClassName)}
                         />
@@ -536,13 +546,13 @@ export function HeroSlider({
                     <>
                       {autoHeight ? (
                         <img
-                          src={image || "/placeholder.svg"}
+                          src={image}
                           alt={`Slide ${index + 1}`}
                           className={imageClassName(desktopImageClassName)}
                         />
                       ) : (
                         <img
-                          src={image || "/placeholder.svg"}
+                          src={image}
                           alt={`Slide ${index + 1}`}
                           className={imageClassName(desktopImageClassName)}
                         />

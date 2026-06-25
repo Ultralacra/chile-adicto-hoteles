@@ -11,6 +11,7 @@ import { HotelCard } from "@/components/hotel-card";
 import { useSiteApi } from "@/hooks/use-site-api";
 import { BottomHomeBanner } from "@/components/home-promo-banners";
 import { findAgendaBannerForPost } from "@/lib/agenda-banner-ranges";
+import { getStorageImageUrl } from "@/lib/supabase-storage";
 
 interface LocationInfo {
   label?: string;
@@ -615,7 +616,7 @@ export function HotelDetail({ slug, hotel, hideBanners = false, noContainer = fa
                       className="relative min-w-full h-full flex-shrink-0 bg-black"
                     >
                       <Image
-                        src={src || "/placeholder.svg"}
+                        src={getStorageImageUrl(src, 1200)}
                         alt={`${hotel.name} ${idx + 1}`}
                         fill
                         priority={idx === 0}
@@ -676,7 +677,7 @@ export function HotelDetail({ slug, hotel, hideBanners = false, noContainer = fa
                       className="relative min-w-full h-full flex-shrink-0"
                     >
                       <Image
-                        src={src || "/placeholder.svg"}
+                        src={getStorageImageUrl(src, 1920)}
                         alt={`Imagen ${idx + 1}`}
                         fill
                         draggable={false}

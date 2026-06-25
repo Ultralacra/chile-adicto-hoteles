@@ -2,6 +2,7 @@ import { memo } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { hasPostPublicationEnded } from "@/lib/post-publication";
+import { getStorageImageUrl } from "@/lib/supabase-storage";
 
 interface HotelCardProps {
   slug: string;
@@ -73,7 +74,7 @@ function HotelCardComponent({
       {/* Image Container */}
       <div className={`relative ${imageContainerClass} overflow-hidden`}>
         <Image
-          src={image || "/placeholder.svg"}
+          src={getStorageImageUrl(image, 400)}
           alt={name}
           fill
           sizes="(max-width: 767px) 100vw, (max-width: 1279px) 50vw, 33vw"

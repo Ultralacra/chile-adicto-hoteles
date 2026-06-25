@@ -411,9 +411,17 @@ export async function GET(req: Request) {
 
         const select =
           "slug,publication_status,publish_start_at,publish_end_at,featured_image,website,website_public,instagram,website_display,instagram_display,email,phone,photos_credit,address,hours,reservation_link,reservation_policy,interesting_fact,site,images:post_images(url,position),locations:post_locations(*),translations:post_translations(*),useful:post_useful_info(*),category_links:post_category_map(featured_image,category:categories(slug,label_es,label_en)),communes_links:post_communes(commune_slug,commune:communes(slug,label))";
-        let rows: any[] | null = await fetchPostsWithPublicationFallback(
-          `/posts?select=${encodeURIComponent(select)}&site=eq.${siteId}`
-        );
+
+        const hasFilters = !!(q || category || categorySlug);
+        let dbQuery = `/posts?select=${encodeURIComponent(select)}&site=eq.${siteId}`;
+
+        if (hasFilters) {
+          dbQuery += `&limit=5000&order=slug.asc`;
+        } else {
+          dbQuery += `&order=slug.asc`;
+        }
+
+        let rows: any[] | null = await fetchPostsWithPublicationFallback(dbQuery);
 
         if (!rows) {
           return [];

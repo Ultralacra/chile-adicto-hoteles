@@ -184,40 +184,44 @@ export const agendaBannerRanges: AgendaBannerRange[] = [
     mobileSrc: "/bannersagenda/JULIO/MOVIL - 27 DE JULIO AL 2 DE AGOSTO.png",
     alt: "Agenda Cultural del 27 de julio al 2 de agosto",
   },
-  // {
-  //   start: "2026-08-03",
-  //   end: "2026-08-09",
-  //   href: "/agenda-cultural",
-  //   src: "/bannersagenda/bannersJulio-agosto-septiembre/DESKTOP - 3 AL 9 DE AGOSTO.png",
-  //   mobileSrc:
-  //     "/bannersagenda/bannersJulio-agosto-septiembre/MOVIL - 3 AL 9 DE AGOSTO.png",
-  //   alt: "Agenda Cultural del 3 al 9 de agosto",
-  // },
+  {
+    start: "2026-08-03",
+    end: "2026-08-09",
+    href: "/agenda-cultural",
+    src: "/bannersagenda/AGOSTO/DESKTOP - 3 AL 9 DE AGOSTO.webp",
+    mobileSrc: "/bannersagenda/AGOSTO/MOVIL - 3 AL 9 DE AGOSTO.webp",
+    alt: "Agenda Cultural del 3 al 9 de agosto",
+  },
   {
     start: "2026-08-10",
     end: "2026-08-16",
     href: "/agenda-cultural",
-    src: "/bannersagenda/bannersJulio-agosto-septiembre/DESKTOP -10 AL 16 DE AGOSTO.png",
-    mobileSrc:
-      "/bannersagenda/bannersJulio-agosto-septiembre/MOVIL - 10 AL 16 DE AGOSTO.png",
+    src: "/bannersagenda/AGOSTO/DESKTOP - 10 AL 16 DE AGOSTO.webp",
+    mobileSrc: "/bannersagenda/AGOSTO/MOVIL - 10 AL 16 DE AGOSTO.webp",
     alt: "Agenda Cultural del 10 al 16 de agosto",
   },
   {
     start: "2026-08-17",
     end: "2026-08-23",
     href: "/agenda-cultural",
-    src: "/bannersagenda/bannersJulio-agosto-septiembre/DESKTOP - 17 AL 23 DE AGOSTO.png",
-    mobileSrc:
-      "/bannersagenda/bannersJulio-agosto-septiembre/MOVIL - 17 AL 23 DE AGOSTO.png",
+    src: "/bannersagenda/AGOSTO/DESKTOP - 17 AL 23 DE AGOSTO.webp",
+    mobileSrc: "/bannersagenda/AGOSTO/MOVIL - 17 AL 23 DE AGOSTO.webp",
     alt: "Agenda Cultural del 17 al 23 de agosto",
+  },
+  {
+    start: "2026-08-24",
+    end: "2026-08-30",
+    href: "/agenda-cultural",
+    src: "/bannersagenda/AGOSTO/DESKTOP - 24 AL 30 DE AGOSTO.webp",
+    mobileSrc: "/bannersagenda/AGOSTO/MOVIL - 24 AL 30 DE AGOSTO.webp",
+    alt: "Agenda Cultural del 24 al 30 de agosto",
   },
   {
     start: "2026-08-31",
     end: "2026-09-06",
     href: "/agenda-cultural",
-    src: "/bannersagenda/bannersJulio-agosto-septiembre/DESKTOP - 31 DE AGOSTO AL 6 DE SEPTIEMBRE.png",
-    mobileSrc:
-      "/bannersagenda/bannersJulio-agosto-septiembre/MOVIL - 31 DE AGOSTO AL 6 DE SEPTIEMBRE.png",
+    src: "/bannersagenda/AGOSTO/DESKTOP - 31 DE AGOSTO AL 6  DE SEPTIEMBRE.webp",
+    mobileSrc: "/bannersagenda/AGOSTO/MOVIL - 31 DE AGOSTO AL 6 DE SEPTIEMBRE.webp",
     alt: "Agenda Cultural del 31 de agosto al 6 de septiembre",
   },
 ];

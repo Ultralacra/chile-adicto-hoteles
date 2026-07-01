@@ -10,6 +10,8 @@ type Vote = {
   voter_email: string;
   created_at: string;
   site: string;
+  category: string;
+  hearts: number;
 };
 
 type VoteCounts = Record<string, number>;
@@ -218,6 +220,12 @@ export default function VerVotosPage() {
                           Hotel
                         </th>
                         <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          Cat.
+                        </th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          ❤️
+                        </th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                           Votante
                         </th>
                         <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -238,6 +246,12 @@ export default function VerVotosPage() {
                             <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
                               {formatHotelName(vote.hotel_slug)}
                             </span>
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap text-xs text-gray-500">
+                            {vote.category || "—"}
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap text-xs text-gray-500">
+                            {vote.hearts ?? "—"}
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                             {vote.voter_name}

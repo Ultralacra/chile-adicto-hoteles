@@ -18,12 +18,26 @@ function getHeaders() {
 export async function POST(req: Request) {
   try {
     const body = await req.json();
-    const { hotel_slug, voter_name, voter_email, site = "chileadicto" } = body;
+    const {
+      hotel_slug,
+      voter_name,
+      voter_email,
+      site = "chileadicto",
+      category,
+      hearts,
+    } = body;
 
     // Validaciones
     if (!hotel_slug || !voter_name || !voter_email) {
       return NextResponse.json(
         { error: "hotel_slug, voter_name y voter_email son requeridos" },
+        { status: 400 }
+      );
+    }
+
+    if (!category || (hearts !== 4 && hearts !== 5)) {
+      return NextResponse.json(
+        { error: "category y hearts (4 o 5) son requeridos" },
         { status: 400 }
       );
     }
@@ -37,9 +51,9 @@ export async function POST(req: Request) {
       );
     }
 
-    // Verificar si ya votó en este sitio
+    // Verificar si ya votó en esta categoría + corazones
     const checkRes = await fetch(
-      `${SUPABASE_URL}/rest/v1/votes?voter_email=eq.${encodeURIComponent(voter_email)}&site=eq.${site}&select=id`,
+      `${SUPABASE_URL}/rest/v1/votes?voter_email=eq.${encodeURIComponent(voter_email)}&site=eq.${site}&category=eq.${encodeURIComponent(category)}&hearts=eq.${hearts}&select=id`,
       { headers: getHeaders() }
     );
 
@@ -50,7 +64,7 @@ export async function POST(req: Request) {
     const existing = await checkRes.json();
     if (existing.length > 0) {
       return NextResponse.json(
-        { error: "Ya has votado anteriormente", already_voted: true },
+        { error: "Ya has votado en esta categoría", already_voted: true },
         { status: 409 }
       );
     }
@@ -64,6 +78,8 @@ export async function POST(req: Request) {
         voter_name: voter_name.trim(),
         voter_email: voter_email.toLowerCase().trim(),
         site,
+        category,
+        hearts,
       }),
     });
 

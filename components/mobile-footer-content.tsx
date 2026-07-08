@@ -83,6 +83,7 @@ export function MobileFooterContent({ onNavigate }: MobileFooterContentProps) {
     { slug: "todos", labelEs: "TODOS", labelEn: "ALL" },
     { slug: "arquitectura", labelEs: "ARQ", labelEn: "ARQ" },
     { slug: "barrios", labelEs: "BARRIOS", labelEn: "NEIGHBORHOODS" },
+    { slug: "cafes", labelEs: "CAFÉS", labelEn: "COFEE" },
     { slug: "iconos", labelEs: "ICONOS", labelEn: "ICONS" },
     { slug: "mercados", labelEs: "MERCADOS", labelEn: "MARKETS" },
     { slug: "miradores", labelEs: "MIRADORES", labelEn: "VIEWPOINTS" },

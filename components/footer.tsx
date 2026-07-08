@@ -68,6 +68,14 @@ export function Footer({ activeCategory = "todos" }: FooterProps) {
               BARRIOS
             </a>
             <a
+              href="/cafes"
+              className={`font-neutra-demi text-[15px] leading-[20px] font-[600] transition-colors duration-200 ease-in-out hover:text-[#FF0000] uppercase ${
+                activeCategory === "cafes" ? "text-[#FF0000]" : "text-white"
+              }`}
+            >
+              CAFÉS
+            </a>
+            <a
               href="/iconos"
               className={`font-neutra-demi text-[15px] leading-[20px] font-[600] transition-colors duration-200 ease-in-out hover:text-[#FF0000] uppercase ${
                 activeCategory === "iconos" ? "text-[#FF0000]" : "text-white"

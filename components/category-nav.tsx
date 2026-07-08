@@ -195,7 +195,7 @@ export function CategoryNav({
           <li key={category.slug} className="flex items-center gap-2">
             <Link
               href={hrefFor(category.slug)}
-              className={`font-neutra hover:text-[var(--color-brand-red)] transition-colors tracking-wide text-[12px] leading-[17px] ${
+              className={`font-neutra hover:text-[var(--color-brand-red)] transition-colors tracking-wide text-[10px] leading-[14px] ${
                 activeCategory === category.slug
                   ? "text-[var(--color-brand-red)] font-normal"
                   : "text-black font-normal"

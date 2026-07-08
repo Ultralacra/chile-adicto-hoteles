@@ -292,6 +292,46 @@ export const repeatingSlugDateRanges = [
     from: "2026-07-01",
     to: "2026-07-31",
   },
+  {
+    slug: "teatro-y-territorio-la-obra-maulina-cuervos-de-pantano-llega-con-su-viaje-escenico-a-santiago",
+    from: "2026-07-06",
+    to: "2026-07-20",
+  },
+  {
+    slug: "teatro-y-memoria-la-compania-la-pieza-oscura-estrena-la-version-teatral-de-la-dimension-desconocida",
+    from: "2026-07-06",
+    to: "2026-07-27",
+  },
+  {
+    slug: "artes-visuales-y-nuevos-medios-el-cclm-celebra-20-anos-con-la-muestra-interactiva-vivir-el-archivo",
+    from: "2026-07-13",
+    to: "2026-11-02",
+  },
+  {
+    slug: "teatro-y-objetos-marionetas-de-tamano-real-dan-vida-a-reloj-viejo-de-pared",
+    from: "2026-07-21",
+    to: "2026-08-03",
+  },
+  {
+    slug: "grandes-espectaculos-e-ilusionismo-jean-paul-olhaberry-lidera-el-debut-presencial-del-festival-pata-de-cabra",
+    from: "2026-07-06",
+    to: "2026-07-19",
+  },
+  {
+    slug: "artes-visuales-y-entorno-urbano-pedro-lomboy-tombo-expande-el-lenguaje-del-graffiti-en-galeria-cima",
+    from: "2026-07-06",
+    to: "2026-08-02",
+  },
+  {
+    slug: "tendencias-y-urbanismo-las-condes-y-street-machine-presentan-invierno-magico-la-gran-cumbre-de-entretenimiento-familiar",
+    from: "2026-07-06",
+    to: "2026-08-09",
+  },
+  {
+    slug: "danza-contemporanea-gam-estrena-majamama-una-radiografia-al-brillo-y-la-resistencia-colonial-latina",
+    from: "2026-07-21",
+    to: "2026-07-27",
+  },
 ];
 
 /**

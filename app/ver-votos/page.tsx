@@ -23,6 +23,7 @@ export default function VerVotosPage() {
   const [loading, setLoading] = useState(true);
   const [lastUpdate, setLastUpdate] = useState<Date>(new Date());
   const [filterSite, setFilterSite] = useState<string>("chileadicto");
+  const [exporting, setExporting] = useState(false);
 
   // Cargar votos iniciales
   const fetchVotes = async () => {
@@ -94,6 +95,61 @@ export default function VerVotosPage() {
       .join(" ");
   };
 
+  const toCsvCell = (value: any) => {
+    const s = String(value ?? "");
+    if (/[\r\n;\"]/g.test(s)) {
+      return `"${s.replace(/\"/g, '""')}"`;
+    }
+    return s;
+  };
+
+  const exportToExcelCsv = async () => {
+    setExporting(true);
+    try {
+      const rows = votes;
+      const lines: string[] = [];
+      lines.push(
+        ["hotel_slug", "hotel_nombre", "categoria", "hearts", "votante", "email", "fecha", "site"].join(";")
+      );
+      for (const v of rows) {
+        lines.push(
+          [
+            toCsvCell(v.hotel_slug),
+            toCsvCell(formatHotelName(v.hotel_slug)),
+            toCsvCell(v.category || ""),
+            toCsvCell(v.hearts ?? ""),
+            toCsvCell(v.voter_name),
+            toCsvCell(v.voter_email),
+            toCsvCell(formatDate(v.created_at)),
+            toCsvCell(v.site),
+          ].join(";")
+        );
+      }
+      const now = new Date();
+      const pad = (n: number) => String(n).padStart(2, "0");
+      const stamp =
+        now.getFullYear() +
+        pad(now.getMonth() + 1) +
+        pad(now.getDate()) +
+        "-" +
+        pad(now.getHours()) +
+        pad(now.getMinutes()) +
+        pad(now.getSeconds());
+      const csv = "\uFEFF" + lines.join("\r\n");
+      const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `votos-${filterSite}-${stamp}.csv`;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+    } finally {
+      setExporting(false);
+    }
+  };
+
   // Ordenar hoteles por cantidad de votos (mayor a menor)
   const sortedHotels = Object.entries(counts)
     .sort(([, a], [, b]) => b - a)
@@ -125,6 +181,16 @@ export default function VerVotosPage() {
                 <option value="santiagoadicto">Santiago Adicto</option>
                 <option value="todos">Todos</option>
               </select>
+
+              <button
+                type="button"
+                onClick={exportToExcelCsv}
+                disabled={exporting || loading}
+                className="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 text-sm font-medium"
+                title="Descargar CSV"
+              >
+                {exporting ? "Exportando…" : "Exportar CSV"}
+              </button>
 
               {/* Indicador de tiempo real */}
               <div className="flex items-center gap-2 bg-green-100 text-green-700 px-3 py-2 rounded-lg">

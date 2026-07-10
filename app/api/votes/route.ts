@@ -115,16 +115,36 @@ export async function GET(req: Request) {
     const hotel = url.searchParams.get("hotel");
     const groupBy = url.searchParams.get("group"); // "hotel" para contar por hotel
 
+    const pageSize = 1000;
+
+    async function fetchAllPages(baseQuery: string, select?: string) {
+      let allRows: any[] = [];
+      let offset = 0;
+      let hasMore = true;
+
+      while (hasMore) {
+        const fullQuery = `${baseQuery}&limit=${pageSize}&offset=${offset}${select ? `&select=${select}` : ""}`;
+        const res = await fetch(`${SUPABASE_URL}/rest/v1/votes${fullQuery}`, {
+          headers: getHeaders(),
+        });
+
+        if (!res.ok) throw new Error("Error al obtener datos");
+
+        const page = await res.json();
+        allRows = allRows.concat(page);
+
+        if (page.length < pageSize) {
+          hasMore = false;
+        }
+        offset += pageSize;
+      }
+
+      return allRows;
+    }
+
     // Contar votos por hotel (para mostrar en tiempo real)
     if (groupBy === "hotel") {
-      const res = await fetch(
-        `${SUPABASE_URL}/rest/v1/votes?site=eq.${site}&select=hotel_slug`,
-        { headers: getHeaders() }
-      );
-
-      if (!res.ok) throw new Error("Error al contar votos");
-
-      const votes = await res.json();
+      const votes = await fetchAllPages(`?site=eq.${site}`, "hotel_slug");
 
       // Agrupar por hotel y contar
       const counts: Record<string, number> = {};
@@ -136,18 +156,12 @@ export async function GET(req: Request) {
     }
 
     // Listar todos los votos (admin)
-    let query = `?site=eq.${site}&order=created_at.desc&limit=50000`;
+    let baseQuery = `?site=eq.${site}&order=created_at.desc`;
     if (hotel) {
-      query += `&hotel_slug=eq.${encodeURIComponent(hotel)}`;
+      baseQuery += `&hotel_slug=eq.${encodeURIComponent(hotel)}`;
     }
 
-    const res = await fetch(`${SUPABASE_URL}/rest/v1/votes${query}`, {
-      headers: getHeaders(),
-    });
-
-    if (!res.ok) throw new Error("Error al listar votos");
-
-    const votes = await res.json();
+    const votes = await fetchAllPages(baseQuery);
 
     return NextResponse.json({ ok: true, votes, total: votes.length });
   } catch (err: any) {

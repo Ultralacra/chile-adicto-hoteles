@@ -136,7 +136,7 @@ export async function GET(req: Request) {
     }
 
     // Listar todos los votos (admin)
-    let query = `?site=eq.${site}&order=created_at.desc&limit=1000`;
+    let query = `?site=eq.${site}&order=created_at.desc&limit=50000`;
     if (hotel) {
       query += `&hotel_slug=eq.${encodeURIComponent(hotel)}`;
     }

@@ -152,8 +152,7 @@ export default function VerVotosPage() {
 
   // Ordenar hoteles por cantidad de votos (mayor a menor)
   const sortedHotels = Object.entries(counts)
-    .sort(([, a], [, b]) => b - a)
-    .slice(0, 10);
+    .sort(([, a], [, b]) => b - a);
 
   return (
     <div className="min-h-screen bg-gray-50 p-4 md:p-8">
@@ -230,7 +229,7 @@ export default function VerVotosPage() {
             {/* Top 10 hoteles */}
             <div className="bg-white rounded-lg shadow-md p-6">
               <h2 className="text-lg font-semibold text-gray-800 mb-4">
-                Top 10 Hoteles
+                Hoteles votados
               </h2>
               <div className="space-y-3">
                 {sortedHotels.map(([hotel, count], index) => (

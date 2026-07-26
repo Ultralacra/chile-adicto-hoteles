@@ -1208,24 +1208,25 @@ export default function CategoryPage({ params }: { params: any }) {
                   (h: any) => String(h?.slug || "") === featuredPostSlug
                 );
                 return (
-                  <section key="featured-post">
-                    <div className="w-full mb-4">
-                      <BottomHomeBanner
-                        href={`/${featuredPostSlug}`}
-                        src="/bannersagenda/postdestacado/DESKTOP - EVENTO DESTACADOO.webp"
-                        mobileSrc="/bannersagenda/postdestacado/MOVIL - EVENTO DESTACADOO.webp"
-                        alt="Evento Destacado"
-                      />
-                    </div>
-                    {featuredPost && (
-                      <HotelDetail
-                        slug={featuredPostSlug}
-                        hotel={buildHotelDetailShape(featuredPost) as any}
-                        hideBanners
-                        noContainer
-                      />
-                    )}
-                  </section>
+                  // <section key="featured-post">
+                  //   <div className="w-full mb-4">
+                  //     <BottomHomeBanner
+                  //       href={`/${featuredPostSlug}`}
+                  //       src="/bannersagenda/postdestacado/DESKTOP - EVENTO DESTACADOO.webp"
+                  //       mobileSrc="/bannersagenda/postdestacado/MOVIL - EVENTO DESTACADOO.webp"
+                  //       alt="Evento Destacado"
+                  //     />
+                  //   </div>
+                  //   {featuredPost && (
+                  //     <HotelDetail
+                  //       slug={featuredPostSlug}
+                  //       hotel={buildHotelDetailShape(featuredPost) as any}
+                  //       hideBanners
+                  //       noContainer
+                  //     />
+                  //   )}
+                  // </section>
+                  <></>
                 );
               })()}
               {agendaGrouped.map((group, groupIdx) => (

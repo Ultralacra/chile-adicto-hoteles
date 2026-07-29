@@ -332,6 +332,21 @@ export const repeatingSlugDateRanges = [
     from: "2026-07-21",
     to: "2026-07-27",
   },
+  {
+    slug: "artes-visuales-y-patrimonio-natalia-montoya-transforma-la-galeria-gabriela-mistral-en-un-territorio-andino-con-radiacion-ocre",
+    from: "2026-07-20",
+    to: "2026-08-03",
+  },
+  {
+    slug: "artes-escenicas-sofia-rodriguez-estrena-automata-comedia-negra-de-ciencia-ficcion-sobre-la-obsolescencia-humana",
+    from: "2026-07-23",
+    to: "2026-08-02",
+  },
+  {
+    slug: "raul-riquelme-estrena-la-comedia-acida-cerdo",
+    from: "2026-07-27",
+    to: "2026-08-09",
+  },
 ];
 
 /**

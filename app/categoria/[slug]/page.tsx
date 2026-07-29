@@ -853,6 +853,9 @@ export default function CategoryPage({ params }: { params: any }) {
     { slug: "artes-visuales-y-entorno-urbano-pedro-lomboy-tombo-expande-el-lenguaje-del-graffiti-en-galeria-cima", from: "2026-07-06", to: "2026-08-02" },
     { slug: "tendencias-y-urbanismo-las-condes-y-street-machine-presentan-invierno-magico-la-gran-cumbre-de-entretenimiento-familiar", from: "2026-07-06", to: "2026-08-09" },
     { slug: "danza-contemporanea-gam-estrena-majamama-una-radiografia-al-brillo-y-la-resistencia-colonial-latina", from: "2026-07-21", to: "2026-07-27" },
+    { slug: "artes-visuales-y-patrimonio-natalia-montoya-transforma-la-galeria-gabriela-mistral-en-un-territorio-andino-con-radiacion-ocre", from: "2026-07-20", to: "2026-08-03" },
+    { slug: "artes-escenicas-sofia-rodriguez-estrena-automata-comedia-negra-de-ciencia-ficcion-sobre-la-obsolescencia-humana", from: "2026-07-23", to: "2026-08-02" },
+    { slug: "raul-riquelme-estrena-la-comedia-acida-cerdo", from: "2026-07-27", to: "2026-08-09" },
   ];
 
   // Helper: transformar un post del listado al shape que espera HotelDetail

@@ -16,6 +16,12 @@ type Vote = {
 
 type VoteCounts = Record<string, number>;
 
+const slugAliases: Record<string, string> = {
+  "leonera": "leonera-hotel",
+};
+
+const normalizeSlug = (slug: string) => slugAliases[slug] || slug;
+
 export default function VerVotosPage() {
   const [votes, setVotes] = useState<Vote[]>([]);
   const [counts, setCounts] = useState<VoteCounts>({});
@@ -37,7 +43,8 @@ export default function VerVotosPage() {
         // Calcular conteos por hotel
         const newCounts: VoteCounts = {};
         data.votes.forEach((v: Vote) => {
-          newCounts[v.hotel_slug] = (newCounts[v.hotel_slug] || 0) + 1;
+          const slug = normalizeSlug(v.hotel_slug);
+          newCounts[slug] = (newCounts[slug] || 0) + 1;
         });
         setCounts(newCounts);
         setLastUpdate(new Date());
@@ -89,7 +96,7 @@ export default function VerVotosPage() {
 
   // Formatear nombre del hotel
   const formatHotelName = (slug: string) => {
-    return slug
+    return normalizeSlug(slug)
       .split("-")
       .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
       .join(" ");
@@ -114,7 +121,7 @@ export default function VerVotosPage() {
       for (const v of rows) {
         lines.push(
           [
-            toCsvCell(v.hotel_slug),
+            toCsvCell(normalizeSlug(v.hotel_slug)),
             toCsvCell(formatHotelName(v.hotel_slug)),
             toCsvCell(v.category || ""),
             toCsvCell(v.hearts ?? ""),

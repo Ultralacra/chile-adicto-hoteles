@@ -224,6 +224,38 @@ export const agendaBannerRanges: AgendaBannerRange[] = [
     mobileSrc: "/bannersagenda/AGOSTO/MOVIL - 31 DE AGOSTO AL 6 DE SEPTIEMBRE.webp",
     alt: "Agenda Cultural del 31 de agosto al 6 de septiembre",
   },
+  {
+    start: "2026-09-07",
+    end: "2026-09-13",
+    href: "/agenda-cultural",
+    src: "/bannersagenda/SEPTIEMBRE/DESKTOP - 7 AL 13 DE SEPTIEMBRE.webp",
+    mobileSrc: "/bannersagenda/SEPTIEMBRE/MOVIL - 7 AL 13 DE SEPTIEMBRE.webp",
+    alt: "Agenda Cultural del 7 al 13 de septiembre",
+  },
+  {
+    start: "2026-09-14",
+    end: "2026-09-20",
+    href: "/agenda-cultural",
+    src: "/bannersagenda/SEPTIEMBRE/DESKTOP - 14 AL 20 DE SEPTIEMBRE.webp",
+    mobileSrc: "/bannersagenda/SEPTIEMBRE/MOVIL - 14 AL 20 DE SEPTIEMBRE.webp",
+    alt: "Agenda Cultural del 14 al 20 de septiembre",
+  },
+  {
+    start: "2026-09-21",
+    end: "2026-09-27",
+    href: "/agenda-cultural",
+    src: "/bannersagenda/SEPTIEMBRE/DESKTOP - 21 AL 27 DE SEPTIEMBRE.webp",
+    mobileSrc: "/bannersagenda/SEPTIEMBRE/MOVIL - 21 AL 27 DE SEPTIEMBRE.webp",
+    alt: "Agenda Cultural del 21 al 27 de septiembre",
+  },
+  {
+    start: "2026-09-28",
+    end: "2026-10-04",
+    href: "/agenda-cultural",
+    src: "/bannersagenda/SEPTIEMBRE/DESKTOP - 28 DE SEPTIEMBRE AL 4 DE OCTUBRE.webp",
+    mobileSrc: "/bannersagenda/SEPTIEMBRE/MOVIL - 28 DE SEPTIEMBRE AL 4 DE OCTUBRE.webp",
+    alt: "Agenda Cultural del 28 de septiembre al 4 de octubre",
+  },
 ];
 
 export const repeatingSlugDateRanges = [

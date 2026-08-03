@@ -832,30 +832,186 @@ export default function CategoryPage({ params }: { params: any }) {
     "artes-visuales-enter-to-the-exit-de-fabiola-morcillo",
   ]);
   const repeatingSlugDateRanges = [
-    { slug: "artes-visuales-arte-radrigan-la-pintura-consumada", from: "2026-05-08", to: "2026-06-04" },
-    { slug: "artes-visuales-naturalia-de-gonzalo-pedraza", from: "2026-05-08", to: "2026-05-17" },
-    { slug: "teatro-musical-amores-de-cantina-de-juan-radrigan", from: "2026-05-07", to: "2026-05-17" },
-    { slug: "teatro-musical-pretty-woman-el-musical", from: "2026-05-06", to: "2026-06-14" },
-    { slug: "cine-estreno-de-masters-of-the-universe", from: "2026-06-01", to: "2026-06-30" },
-    { slug: "cine-estreno-de-backrooms-sin-salida", from: "2026-06-01", to: "2026-06-30" },
-    { slug: "teatro-ciclo-repertorio-de-lafamiliateatro-en-matucana-100", from: "2026-06-01", to: "2026-06-28" },
-    { slug: "tendencias-y-entretenimiento-almas-perdidas-vr-inmersivo", from: "2026-06-01", to: "2026-07-18" },
-    { slug: "teatro-velocirraptors-en-centro-cultural-gam", from: "2026-06-01", to: "2026-07-12" },
-    { slug: "teatro-musical-shrek-el-musical-en-centro-cultural-ceina", from: "2026-06-01", to: "2026-07-05" },
-    { slug: "teatro-el-dylan-en-centro-cultural-gam", from: "2026-06-01", to: "2026-07-05" },
-    { slug: "danza-de-una-luz-a-otra-del-banch-en-las-condes", from: "2026-06-01", to: "2026-07-12" },
-    { slug: "bernardo-oyarzun-reactiva-el-archivo-de-teleseries-en-instituto-tele-arte", from: "2026-07-01", to: "2026-07-31" },
-    { slug: "teatro-y-territorio-la-obra-maulina-cuervos-de-pantano-llega-con-su-viaje-escenico-a-santiago", from: "2026-07-06", to: "2026-07-20" },
-    { slug: "teatro-y-memoria-la-compania-la-pieza-oscura-estrena-la-version-teatral-de-la-dimension-desconocida", from: "2026-07-06", to: "2026-07-27" },
-    { slug: "artes-visuales-y-nuevos-medios-el-cclm-celebra-20-anos-con-la-muestra-interactiva-vivir-el-archivo", from: "2026-07-13", to: "2026-11-02" },
-    { slug: "teatro-y-objetos-marionetas-de-tamano-real-dan-vida-a-reloj-viejo-de-pared", from: "2026-07-21", to: "2026-08-03" },
-    { slug: "grandes-espectaculos-e-ilusionismo-jean-paul-olhaberry-lidera-el-debut-presencial-del-festival-pata-de-cabra", from: "2026-07-06", to: "2026-07-19" },
-    { slug: "artes-visuales-y-entorno-urbano-pedro-lomboy-tombo-expande-el-lenguaje-del-graffiti-en-galeria-cima", from: "2026-07-06", to: "2026-08-02" },
-    { slug: "tendencias-y-urbanismo-las-condes-y-street-machine-presentan-invierno-magico-la-gran-cumbre-de-entretenimiento-familiar", from: "2026-07-06", to: "2026-08-09" },
-    { slug: "danza-contemporanea-gam-estrena-majamama-una-radiografia-al-brillo-y-la-resistencia-colonial-latina", from: "2026-07-21", to: "2026-07-27" },
-    { slug: "artes-visuales-y-patrimonio-natalia-montoya-transforma-la-galeria-gabriela-mistral-en-un-territorio-andino-con-radiacion-ocre", from: "2026-07-20", to: "2026-08-03" },
-    { slug: "artes-escenicas-sofia-rodriguez-estrena-automata-comedia-negra-de-ciencia-ficcion-sobre-la-obsolescencia-humana", from: "2026-07-23", to: "2026-08-02" },
-    { slug: "raul-riquelme-estrena-la-comedia-acida-cerdo", from: "2026-07-27", to: "2026-08-09" },
+    {
+      slug: "artes-visuales-arte-radrigan-la-pintura-consumada",
+      from: "2026-05-08",
+      to: "2026-06-04",
+    },
+    {
+      slug: "artes-visuales-naturalia-de-gonzalo-pedraza",
+      from: "2026-05-08",
+      to: "2026-05-17",
+    },
+    {
+      slug: "teatro-musical-amores-de-cantina-de-juan-radrigan",
+      from: "2026-05-07",
+      to: "2026-05-17",
+    },
+    {
+      slug: "teatro-musical-pretty-woman-el-musical",
+      from: "2026-05-06",
+      to: "2026-06-14",
+    },
+    {
+      slug: "cine-estreno-de-masters-of-the-universe",
+      from: "2026-06-01",
+      to: "2026-06-30",
+    },
+    {
+      slug: "cine-estreno-de-backrooms-sin-salida",
+      from: "2026-06-01",
+      to: "2026-06-30",
+    },
+    {
+      slug: "teatro-ciclo-repertorio-de-lafamiliateatro-en-matucana-100",
+      from: "2026-06-01",
+      to: "2026-06-28",
+    },
+    {
+      slug: "tendencias-y-entretenimiento-almas-perdidas-vr-inmersivo",
+      from: "2026-06-01",
+      to: "2026-07-18",
+    },
+    {
+      slug: "teatro-velocirraptors-en-centro-cultural-gam",
+      from: "2026-06-01",
+      to: "2026-07-12",
+    },
+    {
+      slug: "teatro-musical-shrek-el-musical-en-centro-cultural-ceina",
+      from: "2026-06-01",
+      to: "2026-07-05",
+    },
+    {
+      slug: "teatro-el-dylan-en-centro-cultural-gam",
+      from: "2026-06-01",
+      to: "2026-07-05",
+    },
+    {
+      slug: "danza-de-una-luz-a-otra-del-banch-en-las-condes",
+      from: "2026-06-01",
+      to: "2026-07-12",
+    },
+    {
+      slug: "bernardo-oyarzun-reactiva-el-archivo-de-teleseries-en-instituto-tele-arte",
+      from: "2026-07-01",
+      to: "2026-07-31",
+    },
+    {
+      slug: "teatro-y-territorio-la-obra-maulina-cuervos-de-pantano-llega-con-su-viaje-escenico-a-santiago",
+      from: "2026-07-06",
+      to: "2026-07-20",
+    },
+    {
+      slug: "teatro-y-memoria-la-compania-la-pieza-oscura-estrena-la-version-teatral-de-la-dimension-desconocida",
+      from: "2026-07-06",
+      to: "2026-07-27",
+    },
+    {
+      slug: "artes-visuales-y-nuevos-medios-el-cclm-celebra-20-anos-con-la-muestra-interactiva-vivir-el-archivo",
+      from: "2026-07-13",
+      to: "2026-11-02",
+    },
+    {
+      slug: "teatro-y-objetos-marionetas-de-tamano-real-dan-vida-a-reloj-viejo-de-pared",
+      from: "2026-07-21",
+      to: "2026-08-03",
+    },
+    {
+      slug: "grandes-espectaculos-e-ilusionismo-jean-paul-olhaberry-lidera-el-debut-presencial-del-festival-pata-de-cabra",
+      from: "2026-07-06",
+      to: "2026-07-19",
+    },
+    {
+      slug: "artes-visuales-y-entorno-urbano-pedro-lomboy-tombo-expande-el-lenguaje-del-graffiti-en-galeria-cima",
+      from: "2026-07-06",
+      to: "2026-08-02",
+    },
+    {
+      slug: "tendencias-y-urbanismo-las-condes-y-street-machine-presentan-invierno-magico-la-gran-cumbre-de-entretenimiento-familiar",
+      from: "2026-07-06",
+      to: "2026-08-09",
+    },
+    {
+      slug: "danza-contemporanea-gam-estrena-majamama-una-radiografia-al-brillo-y-la-resistencia-colonial-latina",
+      from: "2026-07-21",
+      to: "2026-07-27",
+    },
+    {
+      slug: "artes-visuales-y-patrimonio-natalia-montoya-transforma-la-galeria-gabriela-mistral-en-un-territorio-andino-con-radiacion-ocre",
+      from: "2026-07-20",
+      to: "2026-08-03",
+    },
+    {
+      slug: "artes-escenicas-sofia-rodriguez-estrena-automata-comedia-negra-de-ciencia-ficcion-sobre-la-obsolescencia-humana",
+      from: "2026-07-23",
+      to: "2026-08-02",
+    },
+    {
+      slug: "raul-riquelme-estrena-la-comedia-acida-cerdo",
+      from: "2026-07-27",
+      to: "2026-08-09",
+    },
+    {
+      slug: "cine-y-ciencia-ficcion-ridley-scott-estrena-el-thriller-postapocaliptico-la-guerra-de-los-ultimos-en-salas-del-pais",
+      from: "2026-09-03",
+      to: "2026-09-06",
+    },
+    {
+      slug: "periodismo-de-investigacion-memoria-y-sonoridad-podium-podcast-y-gam-estrenan-la-serie-documental-prenderse-fuego-las-voces-de-pedro-lemebel",
+      from: "2026-09-03",
+      to: "2026-09-06",
+    },
+    {
+      slug: "artes-escenicas-y-vanguardia-teatro-viajeinmovil-reinterpreta-a-shakespeare-y-euripides-con-marionetas-y-teatro-de-objetos",
+      from: "2026-09-03",
+      to: "2026-09-06",
+    },
+    {
+      slug: "la-oreja-de-van-gogh-el-reencuentro-mas-esperado-llega-a-chile-con-amaia-montero",
+      from: "2026-09-03",
+      to: "2027-03-28",
+    },
+    {
+      slug: "musica-conciertos-e-hits-historicos-illya-kuryaki-the-valderramas-confirma-sideshow-de-regreso-en-gran-arena-monticello",
+      from: "2026-09-03",
+      to: "2026-11-13",
+    },
+    {
+      slug: "musica-grandes-estadios-y-rock-clasico-def-leppard-agendan-show-en-el-movistar-arena-con-su-gira-live-2026",
+      from: "2026-09-03",
+      to: "2026-11-08",
+    },
+    {
+      slug: "bienestar-deporte-y-comunidad-corporacion-yo-mujer-abre-inscripciones-para-la-17-corrida-por-la-vida-en-el-parque-bicentenario",
+      from: "2026-09-03",
+      to: "2026-10-25",
+    },
+    {
+      slug: "festivales-y-cultura-bavara-oktoberfest-munich-malloco-desvela-su-lineup-con-los-vasquez-candelabro-y-zillertal-orchester",
+      from: "2026-09-03",
+      to: "2026-10-11",
+    },
+    {
+      slug: "artes-visuales-y-patrimonio-natalia-montoya-transforma-la-galeria-gabriela-mistral-en-un-territorio-andino-con-radiacion-ocre",
+      from: "2026-08-03",
+      to: "2026-08-30",
+    },
+    {
+      slug: "musica-y-teatro-fisico-carlos-casella-y-alejandra-radano-estrenan-el-concierto-teatral-tester-en-el-ceina",
+      from: "2026-09-28",
+      to: "2026-10-04",
+    },
+    {
+      slug: "lotus-y-juanes-presentan-la-edicion-inaugural-del-festival-bamba-en-el-parque-o-higgins",
+      from: "2026-09-27",
+      to: "2026-10-31",
+    },
+    {
+      slug: "iron-maiden-celebra-50-anos-con-dos-fechas-consecutivas-en-el-estadio-nacional",
+      from: "2026-09-27",
+      to: "2026-10-31",
+    },
   ];
 
   // Helper: transformar un post del listado al shape que espera HotelDetail
@@ -928,7 +1084,8 @@ export default function CategoryPage({ params }: { params: any }) {
 
   // Agrupar posts de agenda cultural por rango de banner
   const isAgendaCultural = slug === "agenda-cultural";
-  const featuredPostSlug = "edo-caroe-confirma-cinco-shows-de-comedia-en-santiago-en-julio-de-2026";
+  const featuredPostSlug =
+    "edo-caroe-confirma-cinco-shows-de-comedia-en-santiago-en-julio-de-2026";
   const agendaReturnStorageKey = "agenda-cultural:last-clicked-post";
 
   const handleAgendaCardClick = (
@@ -1208,7 +1365,7 @@ export default function CategoryPage({ params }: { params: any }) {
             <div className="mt-4 space-y-8">
               {(() => {
                 const featuredPost = finalOrderedHotels.find(
-                  (h: any) => String(h?.slug || "") === featuredPostSlug
+                  (h: any) => String(h?.slug || "") === featuredPostSlug,
                 );
                 return (
                   // <section key="featured-post">

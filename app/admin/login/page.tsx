@@ -30,7 +30,7 @@ export default function AdminLoginPage() {
   };
 
   return (
-    <div className="min-h-screen bg-white flex items-center justify-center px-4">
+    <div className="min-h-screen bg-[#f3f3f1] flex items-center justify-center px-4">
       <div className="max-w-md w-full space-y-8">
         {/* Logo */}
         <div className="text-center">
@@ -41,7 +41,7 @@ export default function AdminLoginPage() {
               className="h-16 w-auto"
             />
           </div>
-          <h2 className="text-3xl font-bold uppercase text-[var(--color-brand-black)]">
+          <h2 className="font-neutra-demi text-3xl uppercase tracking-wide text-[#20211f]">
             {language === "es" ? "Acceso Administrativo" : "Admin Access"}
           </h2>
         </div>
@@ -61,7 +61,7 @@ export default function AdminLoginPage() {
                 type="text"
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[var(--color-brand-red)] focus:border-transparent"
+                className="w-full border border-black/10 bg-white px-4 py-3 focus:ring-2 focus:ring-[var(--color-brand-red)] focus:border-transparent"
                 placeholder={
                   language === "es"
                     ? "Ingrese su usuario"
@@ -83,7 +83,7 @@ export default function AdminLoginPage() {
                 type="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[var(--color-brand-red)] focus:border-transparent"
+                className="w-full border border-black/10 bg-white px-4 py-3 focus:ring-2 focus:ring-[var(--color-brand-red)] focus:border-transparent"
                 placeholder={
                   language === "es"
                     ? "Ingrese su contraseña"
@@ -95,14 +95,14 @@ export default function AdminLoginPage() {
           </div>
 
           {error && (
-            <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg">
+            <div className="border border-[#ba1028]/20 bg-[#fff1f2] px-4 py-3 text-[#ba1028]">
               {error}
             </div>
           )}
 
           <button
             type="submit"
-            className="w-full bg-[var(--color-brand-red)] text-white py-3 px-4 rounded-lg font-bold uppercase hover:opacity-90 transition-opacity"
+            className="w-full bg-[var(--color-brand-red)] px-4 py-3 font-bold uppercase text-white transition-opacity hover:opacity-90"
           >
             {language === "es" ? "Iniciar Sesión" : "Sign In"}
           </button>

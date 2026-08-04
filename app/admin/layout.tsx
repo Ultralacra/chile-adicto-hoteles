@@ -130,7 +130,7 @@ export default function AdminLayout({
           <button
             type="button"
             onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-            className="p-2 hover:bg-black/5 rounded-md"
+            className="rounded-none p-2 hover:bg-black/5"
             aria-label={isSidebarOpen ? "Cerrar menú" : "Abrir menú"}
             aria-expanded={isSidebarOpen}
             aria-controls="admin-mobile-sidebar"

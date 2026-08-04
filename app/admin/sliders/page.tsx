@@ -21,6 +21,16 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "@/components/ui/carousel";
+import {
+  ArrowDown,
+  ArrowLeft,
+  ArrowUp,
+  Pencil,
+  Plus,
+  RefreshCw,
+  Save,
+  Trash2,
+} from "lucide-react";
 
 type CategorySuggestion = {
   slug: string;
@@ -75,6 +85,7 @@ export default function AdminSlidersList() {
   const [newKeyInput, setNewKeyInput] = useState<string>("");
   const [dbView, setDbView] = useState<"list" | "edit">("list");
   const [dbItems, setDbItems] = useState<DbSliderItem[]>([]);
+  const [selectedDbIndex, setSelectedDbIndex] = useState(0);
   const [dbLoading, setDbLoading] = useState(false);
   const [dbSaving, setDbSaving] = useState(false);
   const [mediaUrls, setMediaUrls] = useState<string[]>([]);
@@ -498,8 +509,10 @@ export default function AdminSlidersList() {
         .filter((it) => it.image_url)
         .sort((a, b) => (a.position ?? 0) - (b.position ?? 0));
       setDbItems(normalized);
+      setSelectedDbIndex(0);
     } catch {
       setDbItems([]);
+      setSelectedDbIndex(0);
     } finally {
       setDbLoading(false);
     }
@@ -603,10 +616,19 @@ export default function AdminSlidersList() {
       copy[j] = tmp;
       return copy;
     });
+    setSelectedDbIndex((current) =>
+      current === idx ? j : current === j ? idx : current,
+    );
   };
 
-  const removeDbItem = (idx: number) =>
+  const removeDbItem = (idx: number) => {
     setDbItems((prev) => prev.filter((_, i) => i !== idx));
+    setSelectedDbIndex((current) => {
+      if (current > idx) return current - 1;
+      if (current === idx) return Math.max(0, idx - 1);
+      return current;
+    });
+  };
 
   const addDbItem = () => {
     const fallbackImage = mediaUrls[0] || "";
@@ -614,6 +636,7 @@ export default function AdminSlidersList() {
       ...prev,
       { image_url: fallbackImage, href: "", active: true },
     ]);
+    setSelectedDbIndex(dbItems.length);
   };
 
   const saveDbSet = async () => {
@@ -1018,25 +1041,35 @@ export default function AdminSlidersList() {
   };
 
   return (
-    <div className="space-y-6">
-      <h1 className="text-2xl font-semibold">Sliders</h1>
+    <div className="space-y-7">
+      <div className="border-b border-black/10 pb-6">
+        <p className="mb-2 text-xs font-semibold uppercase tracking-[0.14em] text-[var(--color-brand-red)]">
+          Recursos editoriales
+        </p>
+        <h1 className="font-neutra-demi text-3xl uppercase tracking-wide text-[#20211f]">
+          Sliders
+        </h1>
+        <p className="mt-2 text-[#61625d]">
+          Administra campañas visuales y sus destinos por sitio.
+        </p>
+      </div>
 
-      <Card className="p-4 space-y-4">
+      <Card className="space-y-4 rounded-none border-black/10 bg-white p-5 shadow-none">
         {dbView === "list" ? (
           <>
             <div className="flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
               <div className="space-y-2">
-                <div className="text-sm font-medium">
+                <div className="font-neutra-demi text-sm uppercase tracking-wide text-[#20211f]">
                   Sliders (Base de Datos)
                 </div>
-                <div className="text-xs text-muted-foreground">
+                <div className="text-xs text-[#85867f]">
                   Haz click en un slider para ir a su vista de edición.
                 </div>
                 <div className="space-y-1">
                   <Label htmlFor="sliderSite">Sitio</Label>
                   <select
                     id="sliderSite"
-                    className="h-9 w-full md:w-[200px] rounded border bg-white px-2 text-sm"
+                    className="h-9 w-full rounded-none border border-black/10 bg-[#fafaf8] px-2 text-sm md:w-[200px]"
                     value={dbSite}
                     onChange={(e) => setDbSite(e.target.value)}
                   >
@@ -1054,6 +1087,8 @@ export default function AdminSlidersList() {
                   />
                   <Button
                     type="button"
+                    variant="outline"
+                    className="rounded-none border-black/10"
                     onClick={() => {
                       const v = String(newKeyInput || "").trim();
                       if (!v) return alert("Ingresa un key válido");
@@ -1063,6 +1098,7 @@ export default function AdminSlidersList() {
                       loadDbSet(v);
                     }}
                   >
+                    <Plus size={15} />
                     Crear / Editar
                   </Button>
                 </div>
@@ -1071,9 +1107,14 @@ export default function AdminSlidersList() {
               <div className="flex gap-2">
                 <Button
                   variant="outline"
+                  className="rounded-none border-black/10"
                   onClick={loadDbSetsList}
                   disabled={dbSetsLoading}
                 >
+                  <RefreshCw
+                    className={dbSetsLoading ? "animate-spin" : ""}
+                    size={15}
+                  />
                   {dbSetsLoading ? "Cargando…" : "Refrescar lista"}
                 </Button>
               </div>
@@ -1091,16 +1132,16 @@ export default function AdminSlidersList() {
                   <button
                     key={s.key}
                     type="button"
-                    className="border rounded p-2 bg-white hover:bg-muted text-left"
+                    className="group border border-black/10 bg-white p-3 text-left transition-colors hover:bg-[#f7f7f4]"
                     onClick={() => {
                       setDbKey(s.key);
                       setDbView("edit");
                       loadDbSet(s.key);
                     }}
-                    title={`Editar ${s.key}`}
+                    aria-label={`Editar slider ${s.key}`}
                   >
                     <div className="flex items-center gap-2">
-                      <div className="w-16 h-12 bg-gray-100 overflow-hidden rounded">
+                      <div className="h-14 w-20 shrink-0 overflow-hidden bg-[#f3f3f1]">
                         {s.sample ? (
                           // eslint-disable-next-line @next/next/no-img-element
                           <img
@@ -1114,28 +1155,15 @@ export default function AdminSlidersList() {
                           </div>
                         )}
                       </div>
-                      <div className="flex-1">
-                        <div className="font-medium truncate">{s.key}</div>
+                      <div className="min-w-0 flex-1">
+                        <div className="truncate font-neutra-demi text-sm uppercase tracking-wide text-[#20211f]">
+                          {s.key}
+                        </div>
                         <div className="text-xs text-muted-foreground">
-                          {s.count} slides
+                          {s.count} {s.count === 1 ? "slide" : "slides"}
                         </div>
                       </div>
-                      <div>
-                        <Button
-                          size="sm"
-                          variant="outline"
-                          type="button"
-                          onClick={(e) => {
-                            e.preventDefault();
-                            e.stopPropagation();
-                            setDbKey(s.key);
-                            setDbView("edit");
-                            loadDbSet(s.key);
-                          }}
-                        >
-                          Editar
-                        </Button>
-                      </div>
+                      <Pencil className="size-4 shrink-0 text-[#85867f] transition-colors group-hover:text-[var(--color-brand-red)]" />
                     </div>
                   </button>
                 ))}
@@ -1146,7 +1174,9 @@ export default function AdminSlidersList() {
           <>
             <div className="flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
               <div className="space-y-1">
-                <div className="text-sm font-medium">Editar slider</div>
+                <div className="font-neutra-demi text-sm uppercase tracking-wide text-[#20211f]">
+                  Editar slider
+                </div>
                 <div className="text-xs text-muted-foreground">
                   Sitio: <span className="font-mono">{dbSite}</span> · Key:{" "}
                   <span className="font-mono">{dbKey}</span>
@@ -1155,29 +1185,40 @@ export default function AdminSlidersList() {
               <div className="flex gap-2">
                 <Button
                   variant="outline"
+                  className="rounded-none border-black/10"
                   onClick={() => {
                     setDbView("list");
                     loadDbSetsList();
                   }}
                   disabled={dbSaving}
                 >
+                  <ArrowLeft size={15} />
                   Volver
                 </Button>
                 <Button
                   variant="outline"
+                  className="rounded-none border-black/10"
                   onClick={() => loadDbSet(dbKey)}
                   disabled={dbLoading || dbSaving}
                 >
+                  <RefreshCw size={15} />
                   Recargar
                 </Button>
                 <Button
                   variant="outline"
+                  className="rounded-none border-black/10"
                   onClick={addDbItem}
                   disabled={dbLoading || dbSaving}
                 >
+                  <Plus size={15} />
                   Agregar slide
                 </Button>
-                <Button onClick={saveDbSet} disabled={dbSaving || dbLoading}>
+                <Button
+                  className="rounded-none bg-[var(--color-brand-red)] hover:bg-[#b72d24]"
+                  onClick={saveDbSet}
+                  disabled={dbSaving || dbLoading}
+                >
+                  <Save size={15} />
                   {dbSaving ? "Guardando…" : "Guardar"}
                 </Button>
               </div>
@@ -1191,243 +1232,70 @@ export default function AdminSlidersList() {
             )}
 
             {dbItems.length === 0 ? (
-              <div className="text-sm text-muted-foreground">
+              <div className="text-sm text-[#85867f]">
                 No hay slides en la BD para este key.
               </div>
             ) : (
-              <div className="space-y-3">
-                {dbItems.map((it, idx) => (
-                  <div
-                    key={`${dbKey}-${idx}`}
-                    className="grid grid-cols-1 md:grid-cols-[160px_1fr] gap-3 border rounded p-3 bg-white"
-                  >
-                    <div className="w-full aspect-[16/9] bg-gray-100 overflow-hidden rounded">
-                      {/* eslint-disable-next-line @next/next/no-img-element */}
-                      <img
-                        src={it.image_url}
-                        alt={`slide-${idx}`}
-                        className="w-full h-full object-cover"
-                      />
-                    </div>
-                    <div className="space-y-2">
-                      <div className="flex flex-wrap gap-2 items-center justify-between">
-                        <div className="text-sm font-medium">
-                          Slide #{idx + 1}
-                        </div>
-                        <div className="flex gap-2">
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            onClick={() => moveDbItem(idx, -1)}
-                            disabled={idx === 0 || dbSaving}
-                          >
-                            ↑
-                          </Button>
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            onClick={() => moveDbItem(idx, +1)}
-                            disabled={idx === dbItems.length - 1 || dbSaving}
-                          >
-                            ↓
-                          </Button>
-                          <Button
-                            variant="destructive"
-                            size="sm"
-                            onClick={() => removeDbItem(idx)}
-                            disabled={dbSaving}
-                          >
-                            Quitar
-                          </Button>
-                        </div>
-                      </div>
-
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
-                        <div className="space-y-1">
-                          <Label>Imagen (URL)</Label>
-                          <Input
-                            value={it.image_url}
-                            onChange={(e) =>
-                              updateDbItem(idx, { image_url: e.target.value })
-                            }
-                            placeholder="https://..."
-                          />
-                          <div className="text-[11px] text-muted-foreground">
-                            Puedes pegar una URL externa o seleccionar desde
-                            Imágenes.
-                          </div>
-                        </div>
-
-                        <div className="space-y-1">
-                          <Label>Elegir desde imágenes</Label>
-                          <div className="flex flex-wrap gap-2">
-                            <Button
-                              type="button"
-                              variant="outline"
-                              size="sm"
-                              onClick={() => openPickerFor(idx)}
-                              disabled={dbSaving || mediaLoading}
-                            >
-                              Seleccionar imagen
-                            </Button>
-                            <Button
-                              type="button"
-                              variant="outline"
-                              size="sm"
-                              onClick={() => reloadMedia({ refresh: true })}
-                              disabled={dbSaving || mediaLoading}
-                            >
-                              {mediaLoading ? "Cargando…" : "Refrescar"}
-                            </Button>
-                          </div>
-                          <div className="text-[11px] text-muted-foreground truncate">
-                            {it.image_url || "Sin imagen"}
-                          </div>
-                        </div>
-                      </div>
-
-                      <div className="grid grid-cols-1 md:grid-cols-3 gap-2">
-                        <div className="space-y-1">
-                          <Label>Destino (href)</Label>
-                          <div className="relative">
-                            <Input
-                              value={it.href || ""}
-                              onFocus={() => {
-                                if (hrefSuggestBlurTimerRef.current != null) {
-                                  window.clearTimeout(
-                                    hrefSuggestBlurTimerRef.current,
-                                  );
-                                  hrefSuggestBlurTimerRef.current = null;
-                                }
-                                setHrefSuggest((s) => ({
-                                  ...s,
-                                  index: idx,
-                                  query: String(it.href || "").replace(
-                                    /^\//,
-                                    "",
-                                  ),
-                                }));
-                              }}
-                              onBlur={() => {
-                                if (hrefSuggestBlurTimerRef.current != null) {
-                                  window.clearTimeout(
-                                    hrefSuggestBlurTimerRef.current,
-                                  );
-                                }
-                                hrefSuggestBlurTimerRef.current =
-                                  window.setTimeout(() => {
-                                    setHrefSuggest((s) =>
-                                      s.index === idx
-                                        ? {
-                                            ...s,
-                                            index: null,
-                                            items: [],
-                                            loading: false,
-                                          }
-                                        : s,
-                                    );
-                                  }, 150);
-                              }}
-                              onChange={(e) => {
-                                const v = e.target.value;
-                                updateDbItem(idx, { href: v });
-                                setHrefSuggest((s) => ({
-                                  ...s,
-                                  index: idx,
-                                  query: String(v || "").replace(/^\//, ""),
-                                }));
-                              }}
-                              placeholder="/iconos o /mi-post"
-                            />
-
-                            {hrefSuggest.index === idx &&
-                            (hrefSuggest.loading ||
-                              hrefSuggest.items.length > 0) ? (
-                              <div className="absolute z-50 mt-1 w-full rounded border bg-background shadow-sm">
-                                <div className="max-h-56 overflow-auto">
-                                  {hrefSuggest.loading ? (
-                                    <div className="px-3 py-2 text-xs text-muted-foreground">
-                                      Buscando…
-                                    </div>
-                                  ) : null}
-                                  {hrefSuggest.items.map((p) => {
-                                    const kindLabel =
-                                      p.kind === "category"
-                                        ? "Categoría"
-                                        : "Post";
-                                    return (
-                                      <button
-                                        key={`${p.kind}:${p.slug}`}
-                                        type="button"
-                                        className="w-full text-left px-3 py-2 text-sm hover:bg-muted"
-                                        onMouseDown={(ev) =>
-                                          ev.preventDefault()
-                                        }
-                                        onClick={() => {
-                                          updateDbItem(idx, { href: p.href });
-                                          setHrefSuggest((s) => ({
-                                            ...s,
-                                            index: null,
-                                            items: [],
-                                            loading: false,
-                                          }));
-                                        }}
-                                        title={p.href}
-                                      >
-                                        <div className="flex items-center justify-between gap-2">
-                                          <div className="font-medium truncate">
-                                            {p.label}
-                                          </div>
-                                          <div className="text-[11px] text-muted-foreground shrink-0">
-                                            {kindLabel}
-                                          </div>
-                                        </div>
-                                        <div className="text-[11px] text-muted-foreground truncate">
-                                          {p.href}
-                                        </div>
-                                      </button>
-                                    );
-                                  })}
-                                </div>
-                              </div>
-                            ) : null}
-                          </div>
-                        </div>
-                        <div className="space-y-1">
-                          <Label>Idioma (lang)</Label>
-                          <select
-                            className="h-9 w-full rounded border bg-white px-2 text-sm"
-                            value={it.lang ?? ""}
-                            onChange={(e) =>
-                              updateDbItem(idx, {
-                                lang: e.target.value ? e.target.value : null,
-                              })
-                            }
-                          >
-                            <option value="">(sin idioma)</option>
-                            <option value="es">es</option>
-                            <option value="en">en</option>
-                          </select>
-                          <div className="text-[11px] text-muted-foreground">
-                            Opcional. Si el key termina en -es/-en se infiere.
-                          </div>
-                        </div>
-                        <div className="flex items-end gap-2">
-                          <label className="flex items-center gap-2 text-sm">
-                            <input
-                              type="checkbox"
-                              checked={it.active !== false}
-                              onChange={(e) =>
-                                updateDbItem(idx, { active: e.target.checked })
-                              }
-                            />
-                            Activo
-                          </label>
-                        </div>
-                      </div>
-                    </div>
+              <div className="grid gap-5 border-t border-black/10 pt-5 lg:grid-cols-[minmax(240px,0.72fr)_minmax(0,1.45fr)]">
+                <section className="min-w-0 border border-black/10 bg-[#fafaf8]">
+                  <div className="border-b border-black/10 px-3 py-2.5">
+                    <h2 className="font-neutra-demi text-sm uppercase tracking-wide text-[#20211f]">Secuencia</h2>
+                    <p className="mt-0.5 text-xs text-[#61625d]">{dbItems.length} slides en este slider</p>
                   </div>
-                ))}
+                  <div className="max-h-[62vh] overflow-y-auto">
+                    {dbItems.map((item, idx) => {
+                      const selected = selectedDbIndex === idx;
+                      return (
+                        <button key={`${dbKey}-${idx}`} type="button" onClick={() => setSelectedDbIndex(idx)} className={`flex w-full gap-3 border-b border-black/10 p-3 text-left transition-colors last:border-b-0 ${selected ? "bg-[#22231f] text-white" : "bg-white text-[#20211f] hover:bg-[#f3f3f1]"}`}>
+                          <div className="aspect-[16/9] w-20 shrink-0 overflow-hidden bg-[#e8e8e4]">
+                            {item.image_url ? <img src={item.image_url} alt="" className="size-full object-cover" /> : null}
+                          </div>
+                          <span className="min-w-0 flex-1">
+                            <span className="flex items-center justify-between gap-2"><span className="font-neutra-demi text-sm uppercase tracking-wide">Slide {idx + 1}</span><span className={`size-2 shrink-0 ${item.active !== false ? "bg-[#268477]" : "bg-[#9a9b94]"}`} /></span>
+                            <span className={`mt-1 block truncate text-xs ${selected ? "text-white/65" : "text-[#61625d]"}`}>{item.href || "Sin destino"}</span>
+                          </span>
+                        </button>
+                      );
+                    })}
+                  </div>
+                </section>
+
+                {dbItems[selectedDbIndex] && (() => {
+                  const item = dbItems[selectedDbIndex];
+                  const idx = selectedDbIndex;
+                  return (
+                    <section className="min-w-0 border border-black/10 bg-white p-5">
+                      <div className="flex flex-wrap items-start justify-between gap-3 border-b border-black/10 pb-4">
+                        <div><p className="text-xs font-semibold uppercase tracking-[0.14em] text-[var(--color-brand-red)]">Configuración del slide</p><h2 className="mt-1 font-neutra-demi text-xl uppercase tracking-wide text-[#20211f]">Slide {idx + 1}</h2></div>
+                        <div className="flex items-center gap-1">
+                          <Button variant="outline" size="sm" className="rounded-none border-black/10" title="Subir slide" aria-label="Subir slide" onClick={() => moveDbItem(idx, -1)} disabled={idx === 0 || dbSaving}><ArrowUp size={15} /></Button>
+                          <Button variant="outline" size="sm" className="rounded-none border-black/10" title="Bajar slide" aria-label="Bajar slide" onClick={() => moveDbItem(idx, 1)} disabled={idx === dbItems.length - 1 || dbSaving}><ArrowDown size={15} /></Button>
+                          <Button variant="outline" size="sm" className="rounded-none border-red-200 text-red-600 hover:bg-red-50 hover:text-red-700" title="Quitar slide" aria-label="Quitar slide" onClick={() => removeDbItem(idx)} disabled={dbSaving}><Trash2 size={15} /></Button>
+                        </div>
+                      </div>
+                      <div className="mt-5 grid gap-5 xl:grid-cols-[200px_minmax(0,1fr)]">
+                        <div className="space-y-3">
+                          <div className="aspect-[16/9] overflow-hidden bg-[#f3f3f1]">
+                            {item.image_url ? <img src={item.image_url} alt={`Vista previa del slide ${idx + 1}`} className="size-full object-cover" /> : <div className="grid size-full place-items-center text-xs text-[#85867f]">Sin imagen</div>}
+                          </div>
+                          <div className="flex gap-2"><Button type="button" variant="outline" size="sm" className="rounded-none border-black/10" onClick={() => openPickerFor(idx)} disabled={dbSaving || mediaLoading}>Elegir imagen</Button><Button type="button" variant="outline" size="sm" className="rounded-none border-black/10" onClick={() => reloadMedia({ refresh: true })} disabled={dbSaving || mediaLoading}><RefreshCw className={mediaLoading ? "animate-spin" : ""} size={14} /></Button></div>
+                        </div>
+                        <div className="grid content-start gap-4 md:grid-cols-2">
+                          <div className="space-y-2 md:col-span-2"><Label>Imagen (URL)</Label><Input value={item.image_url} onChange={(e) => updateDbItem(idx, { image_url: e.target.value })} placeholder="https://..." /><p className="text-xs text-[#61625d]">Pega una URL o selecciona un archivo desde la biblioteca visual.</p></div>
+                          <div className="space-y-2 md:col-span-2">
+                            <Label>Destino</Label>
+                            <div className="relative">
+                              <Input value={item.href || ""} onFocus={() => { if (hrefSuggestBlurTimerRef.current != null) window.clearTimeout(hrefSuggestBlurTimerRef.current); setHrefSuggest((state) => ({ ...state, index: idx, query: String(item.href || "").replace(/^\//, "") })); }} onBlur={() => { hrefSuggestBlurTimerRef.current = window.setTimeout(() => setHrefSuggest((state) => state.index === idx ? { ...state, index: null, items: [], loading: false } : state), 150); }} onChange={(e) => { const value = e.target.value; updateDbItem(idx, { href: value }); setHrefSuggest((state) => ({ ...state, index: idx, query: String(value || "").replace(/^\//, "") })); }} placeholder="/categoria o /mi-post" />
+                              {hrefSuggest.index === idx && (hrefSuggest.loading || hrefSuggest.items.length > 0) ? <div className="absolute z-50 mt-1 w-full border border-black/10 bg-white"><div className="max-h-56 overflow-auto">{hrefSuggest.loading ? <div className="px-3 py-2 text-xs text-muted-foreground">Buscando…</div> : null}{hrefSuggest.items.map((suggestion) => <button key={`${suggestion.kind}:${suggestion.slug}`} type="button" className="w-full border-b border-black/10 px-3 py-2 text-left text-sm last:border-b-0 hover:bg-[#f7f7f4]" onMouseDown={(event) => event.preventDefault()} onClick={() => { updateDbItem(idx, { href: suggestion.href }); setHrefSuggest((state) => ({ ...state, index: null, items: [], loading: false })); }} title={suggestion.href}><span className="flex items-center justify-between gap-2"><span className="truncate font-medium">{suggestion.label}</span><span className="shrink-0 text-[11px] text-muted-foreground">{suggestion.kind === "category" ? "Categoría" : "Post"}</span></span><span className="block truncate text-[11px] text-muted-foreground">{suggestion.href}</span></button>)}</div></div> : null}
+                            </div>
+                          </div>
+                          <div className="space-y-2"><Label>Idioma</Label><select className="h-9 w-full rounded-none border border-black/10 bg-[#fafaf8] px-2 text-sm" value={item.lang ?? ""} onChange={(e) => updateDbItem(idx, { lang: e.target.value || null })}><option value="">Sin idioma específico</option><option value="es">Español</option><option value="en">Inglés</option></select></div>
+                          <div className="border border-black/10 bg-[#fafaf8] px-3 py-2.5"><label className="flex cursor-pointer items-center justify-between gap-3 text-sm font-medium">Publicar slide<input type="checkbox" className="size-4 accent-[var(--color-brand-red)]" checked={item.active !== false} onChange={(e) => updateDbItem(idx, { active: e.target.checked })} /></label><p className="mt-1 text-xs text-[#61625d]">Los slides inactivos permanecen guardados, pero no se muestran.</p></div>
+                        </div>
+                      </div>
+                    </section>
+                  );
+                })()}
               </div>
             )}
 
@@ -1531,13 +1399,13 @@ export default function AdminSlidersList() {
                             setPickerForIndex(null);
                           }}
                           title={u}
-                          className={`border rounded overflow-hidden text-left hover:bg-muted ${
+                          className={`overflow-hidden border border-black/10 text-left hover:bg-[#f7f7f4] ${
                             u === pickerSelectedUrl
-                              ? "ring-2 ring-green-500"
+                              ? "ring-2 ring-[var(--color-brand-red)]"
                               : ""
                           }`}
                         >
-                          <div className="w-full aspect-[4/3] bg-gray-100 overflow-hidden">
+                          <div className="w-full aspect-[4/3] overflow-hidden bg-[#f3f3f1]">
                             {/* eslint-disable-next-line @next/next/no-img-element */}
                             <img
                               src={u}
@@ -1613,8 +1481,8 @@ function ImagesGrid({
               key={i}
               className="basis-1/2 sm:basis-1/3 lg:basis-1/4"
             >
-              <div className="border rounded overflow-hidden bg-white group">
-                <div className="relative w-full h-24 bg-gray-100 overflow-hidden">
+              <div className="group overflow-hidden border border-black/10 bg-white">
+                <div className="relative h-24 w-full overflow-hidden bg-[#f3f3f1]">
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
                     src={u}
@@ -1625,20 +1493,20 @@ function ImagesGrid({
                   {onMove ? (
                     <div className="absolute top-1 right-1 flex gap-1 opacity-0 group-hover:opacity-100 transition">
                       <button
-                        className="px-1.5 py-0.5 text-[11px] rounded bg-white/90 hover:bg-white shadow"
+                        className="border border-black/10 bg-white/90 p-1 hover:bg-white"
                         onClick={() => onMove(i, -1)}
                         title="Subir"
                         type="button"
                       >
-                        ↑
+                        <ArrowUp size={13} />
                       </button>
                       <button
-                        className="px-1.5 py-0.5 text-[11px] rounded bg-white/90 hover:bg-white shadow"
+                        className="border border-black/10 bg-white/90 p-1 hover:bg-white"
                         onClick={() => onMove(i, +1)}
                         title="Bajar"
                         type="button"
                       >
-                        ↓
+                        <ArrowDown size={13} />
                       </button>
                     </div>
                   ) : null}
@@ -1661,7 +1529,7 @@ function ImagesGrid({
                           Imagen:
                         </span>
                         <input
-                          className="flex-1 border rounded px-2 py-1"
+                          className="flex-1 border border-black/10 px-2 py-1"
                           value={u}
                           onChange={(e) => onChangeUrl(i, e.target.value)}
                         />

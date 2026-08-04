@@ -4,9 +4,9 @@
   "private": true,
   "scripts": {
     "build": "next build",
-    "dev": "next dev",
-    "dev:santiago": "next dev --port 3000",
-    "dev:chile": "cross-env NEXT_PUBLIC_LOCAL_SITE=chileadicto next dev --port 3001",
+    "dev": "cross-env NEXT_DIST_DIR=.next-dev next dev",
+    "dev:santiago": "cross-env NEXT_DIST_DIR=.next-dev next dev --port 3000",
+    "dev:chile": "cross-env NEXT_DIST_DIR=.next-dev NEXT_PUBLIC_LOCAL_SITE=chileadicto next dev --port 3001",
     "lint": "eslint .",
     "start": "next start",
     "db:schema:apply": "node scripts/apply-schema.mjs",

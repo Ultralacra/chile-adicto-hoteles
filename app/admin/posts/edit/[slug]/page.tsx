@@ -935,11 +935,11 @@ export default function EditPostPage({
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="space-y-7">
       <div className="w-full py-2 space-y-6">
         {(saving || uploading) && (
           <div className="fixed inset-0 z-50 bg-black/30 backdrop-blur-sm grid place-items-center">
-            <div className="bg-white rounded-lg shadow-lg p-6 flex items-center gap-3">
+            <div className="flex items-center gap-3 border border-black/10 bg-white p-6 shadow-lg">
               <Spinner className="size-5" />
               <div className="text-gray-700 font-medium">
                 {saving ? "Guardando cambios…" : "Subiendo imágenes…"}
@@ -948,11 +948,11 @@ export default function EditPostPage({
           </div>
         )}
         {loading ? (
-          <div className="w-full p-6 bg-white rounded-lg shadow flex items-center gap-2 text-gray-600">
+          <div className="w-full border border-black/10 bg-white p-6 text-gray-600">
             <Spinner className="size-4" /> Cargando post…
           </div>
         ) : !hotel ? (
-          <div className="w-full p-6 bg-white rounded-lg shadow text-gray-700">
+          <div className="w-full border border-black/10 bg-white p-6 text-gray-700">
             No se encontró el post "{slug}".{" "}
             <button
               className="text-red-600 underline"
@@ -970,8 +970,13 @@ export default function EditPostPage({
             </Button>
           </Link>
           <div className="flex-1">
-            <h1 className="text-3xl font-bold text-gray-900">Editar post</h1>
-            <p className="text-gray-600 mt-1">
+            <p className="mb-2 text-xs font-semibold uppercase tracking-[0.14em] text-[var(--color-brand-red)]">
+              Contenido editorial
+            </p>
+            <h1 className="font-neutra-demi text-3xl uppercase tracking-wide text-[#20211f]">
+              Editar post
+            </h1>
+            <p className="mt-2 text-[#61625d]">
               {hotel?.es?.name || hotel?.en?.name || slug}
             </p>
           </div>

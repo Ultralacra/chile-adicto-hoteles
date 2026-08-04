@@ -280,366 +280,367 @@ export default function PostsListPage() {
   const goTo = (p: number) => setPage(Math.min(totalPages, Math.max(1, p)));
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <div className="w-full py-2 space-y-6">
-        {/* Header */}
-        <div className="flex items-center justify-between">
-          <div>
-            <h1 className="text-3xl font-bold text-gray-900">Posts</h1>
-            <p className="text-gray-600 mt-1">
-              {filtered.length} de {hotelsData.length} posts
-            </p>
+    <div className="space-y-7">
+      {/* Header */}
+      <div className="flex flex-col justify-between gap-4 border-b border-black/10 pb-6 sm:flex-row sm:items-end">
+        <div>
+          <p className="mb-2 text-xs font-semibold uppercase tracking-[0.14em] text-[var(--color-brand-red)]">
+            Administración editorial
+          </p>
+          <h1 className="font-neutra-demi text-3xl uppercase tracking-wide text-gray-900">
+            Posts
+          </h1>
+          <p className="mt-2 text-[#61625d]">
+            {filtered.length} de {hotelsData.length} posts
+          </p>
+        </div>
+        <Link href="/admin/posts/new">
+          <Button className="rounded-none bg-red-600 hover:bg-red-700 gap-2">
+            <Plus size={20} />
+            Crear nuevo post
+          </Button>
+        </Link>
+      </div>
+
+      {/* Filtros: búsqueda + grid de categorías tipo iconos */}
+      <div className="space-y-4 border border-black/10 bg-white p-5">
+        <div className="relative">
+          <Search
+            className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
+            size={20}
+          />
+          <Input
+            value={query}
+            onChange={(e) => {
+              setPage(1);
+              setQuery(e.target.value);
+            }}
+            placeholder="Buscar por nombre, slug, dirección o redes..."
+            className="pl-10"
+          />
+        </div>
+        <div>
+          <p className="text-xs font-medium text-gray-500 mb-2 uppercase tracking-wide">
+            Filtrar por categoría
+          </p>
+          <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 gap-2">
+            {allCategories.map((c) => {
+              const active = category === c;
+              const icon = categoryIcons[c] || "📁";
+              return (
+                <button
+                  key={c}
+                  onClick={() => {
+                    setCategory(c);
+                    if (c !== "RESTAURANTES") setSelectedComuna(null);
+                    setPage(1);
+                  }}
+                  className={`group flex flex-col items-center justify-center gap-1 border rounded-none px-2 py-3 transition-all text-xs font-medium tracking-tight hover:shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 ${
+                    active
+                      ? "bg-red-600 text-white border-red-600 shadow"
+                      : "bg-white text-gray-700 border-gray-200 hover:border-gray-300"
+                  }`}
+                  aria-pressed={active}
+                >
+                  <span className="text-lg leading-none">{icon}</span>
+                  <span className="text-[10px] leading-tight text-center line-clamp-2">
+                    {c.replace(/-/g, " ")}
+                  </span>
+                </button>
+              );
+            })}
           </div>
-          <Link href="/admin/posts/new">
-            <Button className="bg-red-600 hover:bg-red-700 gap-2">
-              <Plus size={20} />
-              Crear nuevo post
-            </Button>
-          </Link>
         </div>
 
-        {/* Filtros: búsqueda + grid de categorías tipo iconos */}
-        <div className="bg-white rounded-lg shadow-sm p-4 space-y-4">
-          <div className="relative">
-            <Search
-              className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
-              size={20}
-            />
-            <Input
-              value={query}
-              onChange={(e) => {
+        <div className="pt-2">
+          <p className="text-xs font-medium text-gray-500 mb-2 uppercase tracking-wide">
+            Filtrar por fecha de publicación
+          </p>
+          <div className="flex flex-wrap gap-2">
+            <button
+              onClick={() => {
+                setPublicationDateFilter("ALL");
                 setPage(1);
-                setQuery(e.target.value);
               }}
-              placeholder="Buscar por nombre, slug, dirección o redes..."
-              className="pl-10"
-            />
+              className={`border rounded-none px-3 py-2 text-xs font-medium transition-all focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 ${
+                publicationDateFilter === "ALL"
+                  ? "bg-red-600 text-white border-red-600 shadow"
+                  : "bg-white text-gray-700 border-gray-200 hover:border-gray-300"
+              }`}
+              aria-pressed={publicationDateFilter === "ALL"}
+            >
+              TODAS
+            </button>
+            <button
+              onClick={() => {
+                setPublicationDateFilter("NOT_ENDED");
+                setPage(1);
+              }}
+              className={`border rounded-none px-3 py-2 text-xs font-medium transition-all focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 ${
+                publicationDateFilter === "NOT_ENDED"
+                  ? "bg-red-600 text-white border-red-600 shadow"
+                  : "bg-white text-gray-700 border-gray-200 hover:border-gray-300"
+              }`}
+              aria-pressed={publicationDateFilter === "NOT_ENDED"}
+            >
+              NO VENCIDAS
+            </button>
+            <button
+              onClick={() => {
+                setPublicationDateFilter("ENDED");
+                setPage(1);
+              }}
+              className={`border rounded-none px-3 py-2 text-xs font-medium transition-all focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 ${
+                publicationDateFilter === "ENDED"
+                  ? "bg-red-600 text-white border-red-600 shadow"
+                  : "bg-white text-gray-700 border-gray-200 hover:border-gray-300"
+              }`}
+              aria-pressed={publicationDateFilter === "ENDED"}
+            >
+              VENCIDAS
+            </button>
           </div>
-          <div>
+        </div>
+
+        {category === "RESTAURANTES" && (
+          <div className="pt-2">
             <p className="text-xs font-medium text-gray-500 mb-2 uppercase tracking-wide">
-              Filtrar por categoría
+              Filtrar por comuna (Restaurantes)
             </p>
-            <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 gap-2">
-              {allCategories.map((c) => {
-                const active = category === c;
-                const icon = categoryIcons[c] || "📁";
+            <div className="flex flex-wrap gap-2">
+              <button
+                onClick={() => {
+                  setSelectedComuna(null);
+                  setPage(1);
+                }}
+                className={`border rounded-none px-3 py-2 text-xs font-medium transition-all focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 ${
+                  !selectedComuna
+                    ? "bg-red-600 text-white border-red-600 shadow"
+                    : "bg-white text-gray-700 border-gray-200 hover:border-gray-300"
+                }`}
+                aria-pressed={!selectedComuna}
+              >
+                TODAS
+              </button>
+              {availableRestaurantCommunes.map((com) => {
+                const active = selectedComuna === com;
                 return (
                   <button
-                    key={c}
+                    key={com}
                     onClick={() => {
-                      setCategory(c);
-                      if (c !== "RESTAURANTES") setSelectedComuna(null);
+                      setSelectedComuna(com);
                       setPage(1);
                     }}
-                    className={`group flex flex-col items-center justify-center gap-1 border rounded-md px-2 py-3 transition-all text-xs font-medium tracking-tight hover:shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 ${
+                    className={`border rounded-none px-3 py-2 text-xs font-medium transition-all focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 ${
                       active
                         ? "bg-red-600 text-white border-red-600 shadow"
                         : "bg-white text-gray-700 border-gray-200 hover:border-gray-300"
                     }`}
                     aria-pressed={active}
                   >
-                    <span className="text-lg leading-none">{icon}</span>
-                    <span className="text-[10px] leading-tight text-center line-clamp-2">
-                      {c.replace(/-/g, " ")}
-                    </span>
+                    {com}
                   </button>
                 );
               })}
             </div>
-          </div>
 
-          <div className="pt-2">
-            <p className="text-xs font-medium text-gray-500 mb-2 uppercase tracking-wide">
-              Filtrar por fecha de publicación
-            </p>
-            <div className="flex flex-wrap gap-2">
-              <button
-                onClick={() => {
-                  setPublicationDateFilter("ALL");
-                  setPage(1);
-                }}
-                className={`border rounded-md px-3 py-2 text-xs font-medium transition-all focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 ${
-                  publicationDateFilter === "ALL"
-                    ? "bg-red-600 text-white border-red-600 shadow"
-                    : "bg-white text-gray-700 border-gray-200 hover:border-gray-300"
-                }`}
-                aria-pressed={publicationDateFilter === "ALL"}
-              >
-                TODAS
-              </button>
-              <button
-                onClick={() => {
-                  setPublicationDateFilter("NOT_ENDED");
-                  setPage(1);
-                }}
-                className={`border rounded-md px-3 py-2 text-xs font-medium transition-all focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 ${
-                  publicationDateFilter === "NOT_ENDED"
-                    ? "bg-red-600 text-white border-red-600 shadow"
-                    : "bg-white text-gray-700 border-gray-200 hover:border-gray-300"
-                }`}
-                aria-pressed={publicationDateFilter === "NOT_ENDED"}
-              >
-                NO VENCIDAS
-              </button>
-              <button
-                onClick={() => {
-                  setPublicationDateFilter("ENDED");
-                  setPage(1);
-                }}
-                className={`border rounded-md px-3 py-2 text-xs font-medium transition-all focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 ${
-                  publicationDateFilter === "ENDED"
-                    ? "bg-red-600 text-white border-red-600 shadow"
-                    : "bg-white text-gray-700 border-gray-200 hover:border-gray-300"
-                }`}
-                aria-pressed={publicationDateFilter === "ENDED"}
-              >
-                VENCIDAS
-              </button>
-            </div>
-          </div>
-
-          {category === "RESTAURANTES" && (
-            <div className="pt-2">
-              <p className="text-xs font-medium text-gray-500 mb-2 uppercase tracking-wide">
-                Filtrar por comuna (Restaurantes)
-              </p>
-              <div className="flex flex-wrap gap-2">
+            {selectedComuna && (
+              <div className="flex flex-wrap items-center gap-2 pt-2">
+                <span className="text-xs text-gray-500">Comuna:</span>
+                <span className="text-xs font-semibold px-2 py-1 bg-red-50 text-red-700">
+                  {selectedComuna}
+                </span>
                 <button
-                  onClick={() => {
-                    setSelectedComuna(null);
-                    setPage(1);
-                  }}
-                  className={`border rounded-md px-3 py-2 text-xs font-medium transition-all focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 ${
-                    !selectedComuna
-                      ? "bg-red-600 text-white border-red-600 shadow"
-                      : "bg-white text-gray-700 border-gray-200 hover:border-gray-300"
-                  }`}
-                  aria-pressed={!selectedComuna}
+                  onClick={() => setSelectedComuna(null)}
+                  className="text-xs text-blue-600 hover:underline"
                 >
-                  TODAS
+                  Quitar comuna
                 </button>
-                {availableRestaurantCommunes.map((com) => {
-                  const active = selectedComuna === com;
-                  return (
-                    <button
-                      key={com}
-                      onClick={() => {
-                        setSelectedComuna(com);
-                        setPage(1);
-                      }}
-                      className={`border rounded-md px-3 py-2 text-xs font-medium transition-all focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 ${
-                        active
-                          ? "bg-red-600 text-white border-red-600 shadow"
-                          : "bg-white text-gray-700 border-gray-200 hover:border-gray-300"
-                      }`}
-                      aria-pressed={active}
-                    >
-                      {com}
-                    </button>
-                  );
-                })}
+              </div>
+            )}
+          </div>
+        )}
+
+        {(category !== "ALL" || publicationDateFilter !== "ALL") && (
+          <div className="flex flex-wrap items-center gap-2 pt-1">
+            <span className="text-xs text-gray-500">Mostrando:</span>
+            {category !== "ALL" && (
+              <span className="text-xs font-semibold px-2 py-1 bg-red-50 text-red-700">
+                {category}
+              </span>
+            )}
+            {publicationDateFilter !== "ALL" && (
+              <span className="text-xs font-semibold px-2 py-1 bg-red-50 text-red-700">
+                {publicationDateFilter === "ENDED" ? "VENCIDAS" : "NO VENCIDAS"}
+              </span>
+            )}
+            <button
+              onClick={() => {
+                setCategory("ALL");
+                setPublicationDateFilter("ALL");
+                setPage(1);
+              }}
+              className="text-xs text-blue-600 hover:underline"
+            >
+              Quitar filtro
+            </button>
+          </div>
+        )}
+      </div>
+
+      {/* Posts Grid */}
+      {loading ? (
+        <div className="w-full py-16 grid place-items-center text-gray-500">
+          <div className="flex items-center gap-2">
+            <Spinner className="size-5" /> Cargando…
+          </div>
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {pageItems.map((hotel) => (
+            <div
+              key={hotel.slug}
+              className="overflow-hidden border border-black/10 bg-white transition-colors hover:border-black/25"
+            >
+              {/* Image */}
+              <div className="relative h-48 bg-gray-100">
+                <Image
+                  src={
+                    hotel.images?.[0] ||
+                    hotel.featuredImage ||
+                    "/placeholder.svg?height=200&width=400"
+                  }
+                  alt={hotel.es.name}
+                  fill
+                  className="object-cover"
+                />
+                <div className="absolute top-2 right-2 flex gap-1">
+                  {((hotel.categories as any[]) || [])
+                    .slice(0, 2)
+                    .map((cat: any, categoryIndex: number) => (
+                      <span
+                        key={`${cat}-${categoryIndex}`}
+                        className="bg-white/90 backdrop-blur-sm px-2 py-1 text-xs font-medium text-gray-700"
+                      >
+                        {cat}
+                      </span>
+                    ))}
+                </div>
               </div>
 
-              {selectedComuna && (
-                <div className="flex flex-wrap items-center gap-2 pt-2">
-                  <span className="text-xs text-gray-500">Comuna:</span>
-                  <span className="text-xs font-semibold px-2 py-1 bg-red-50 text-red-700 rounded">
-                    {selectedComuna}
-                  </span>
-                  <button
-                    onClick={() => setSelectedComuna(null)}
-                    className="text-xs text-blue-600 hover:underline"
+              {/* Content */}
+              <div className="p-4">
+                <div className="mb-2">
+                  <span
+                    className={`inline-flex items-center px-2 py-1 text-[11px] font-semibold ${
+                      getPostPublicationBadge(hotel) === "Publicado"
+                        ? "bg-green-100 text-green-700"
+                        : "bg-gray-200 text-gray-700"
+                    }`}
                   >
-                    Quitar comuna
-                  </button>
+                    {getPostPublicationBadge(hotel)}
+                  </span>
                 </div>
-              )}
-            </div>
-          )}
+                <h3 className="font-semibold text-lg text-gray-900 mb-1 line-clamp-1">
+                  {hotel.es?.name || hotel.en?.name || hotel.slug}
+                </h3>
+                <p className="text-sm text-gray-600 mb-2 line-clamp-2">
+                  {hotel.es?.subtitle || hotel.en?.subtitle || ""}
+                </p>
+                <p className="text-xs text-gray-500 font-mono mb-4">
+                  /{hotel.slug}
+                </p>
 
-          {(category !== "ALL" || publicationDateFilter !== "ALL") && (
-            <div className="flex flex-wrap items-center gap-2 pt-1">
-              <span className="text-xs text-gray-500">Mostrando:</span>
-              {category !== "ALL" && (
-                <span className="text-xs font-semibold px-2 py-1 bg-red-50 text-red-700 rounded">
-                  {category}
-                </span>
-              )}
-              {publicationDateFilter !== "ALL" && (
-                <span className="text-xs font-semibold px-2 py-1 bg-red-50 text-red-700 rounded">
-                  {publicationDateFilter === "ENDED"
-                    ? "VENCIDAS"
-                    : "NO VENCIDAS"}
-                </span>
-              )}
-              <button
-                onClick={() => {
-                  setCategory("ALL");
-                  setPublicationDateFilter("ALL");
-                  setPage(1);
-                }}
-                className="text-xs text-blue-600 hover:underline"
-              >
-                Quitar filtro
-              </button>
-            </div>
-          )}
-        </div>
-
-        {/* Posts Grid */}
-        {loading ? (
-          <div className="w-full py-16 grid place-items-center text-gray-500">
-            <div className="flex items-center gap-2">
-              <Spinner className="size-5" /> Cargando…
-            </div>
-          </div>
-        ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {pageItems.map((hotel) => (
-              <div
-                key={hotel.slug}
-                className="bg-white rounded-lg shadow-sm overflow-hidden hover:shadow-md transition-shadow"
-              >
-                {/* Image */}
-                <div className="relative h-48 bg-gray-100">
-                  <Image
-                    src={
-                      hotel.images?.[0] ||
-                      hotel.featuredImage ||
-                      "/placeholder.svg?height=200&width=400"
-                    }
-                    alt={hotel.es.name}
-                    fill
-                    className="object-cover"
-                  />
-                  <div className="absolute top-2 right-2 flex gap-1">
-                    {((hotel.categories as any[]) || [])
-                      .slice(0, 2)
-                      .map((cat: any) => (
-                        <span
-                          key={cat}
-                          className="bg-white/90 backdrop-blur-sm px-2 py-1 rounded text-xs font-medium text-gray-700"
-                        >
-                          {cat}
-                        </span>
-                      ))}
-                  </div>
-                </div>
-
-                {/* Content */}
-                <div className="p-4">
-                  <div className="mb-2">
-                    <span
-                      className={`inline-flex items-center rounded px-2 py-1 text-[11px] font-semibold ${
-                        getPostPublicationBadge(hotel) === "Publicado"
-                          ? "bg-green-100 text-green-700"
-                          : "bg-gray-200 text-gray-700"
-                      }`}
-                    >
-                      {getPostPublicationBadge(hotel)}
-                    </span>
-                  </div>
-                  <h3 className="font-semibold text-lg text-gray-900 mb-1 line-clamp-1">
-                    {hotel.es?.name || hotel.en?.name || hotel.slug}
-                  </h3>
-                  <p className="text-sm text-gray-600 mb-2 line-clamp-2">
-                    {hotel.es?.subtitle || hotel.en?.subtitle || ""}
-                  </p>
-                  <p className="text-xs text-gray-500 font-mono mb-4">
-                    /{hotel.slug}
-                  </p>
-
-                  {/* Actions */}
-                  <div className="flex gap-2">
-                    <Link
-                      href={`/${hotel.slug}`}
-                      target="_blank"
-                      className="flex-1"
-                    >
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        className="w-full gap-2 bg-transparent"
-                      >
-                        <Eye size={16} />
-                        Ver
-                      </Button>
-                    </Link>
-                    <Link
-                      href={`/admin/posts/edit/${hotel.slug}`}
-                      className="flex-1"
-                    >
-                      <Button
-                        size="sm"
-                        className="w-full gap-2 bg-green-600 hover:bg-green-700"
-                      >
-                        <Edit size={16} />
-                        Editar
-                      </Button>
-                    </Link>
+                {/* Actions */}
+                <div className="flex gap-2">
+                  <Link
+                    href={`/${hotel.slug}`}
+                    target="_blank"
+                    className="flex-1"
+                  >
                     <Button
                       variant="outline"
                       size="sm"
-                      className="text-red-600 hover:text-red-700 hover:bg-red-50 bg-transparent"
-                      onClick={() =>
-                        alert("Funcionalidad de eliminar próximamente")
-                      }
+                      className="w-full gap-2 bg-transparent"
                     >
-                      <Trash2 size={16} />
+                      <Eye size={16} />
+                      Ver
                     </Button>
-                  </div>
+                  </Link>
+                  <Link
+                    href={`/admin/posts/edit/${hotel.slug}`}
+                    className="flex-1"
+                  >
+                    <Button
+                      size="sm"
+                      className="w-full gap-2 bg-green-600 hover:bg-green-700"
+                    >
+                      <Edit size={16} />
+                      Editar
+                    </Button>
+                  </Link>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="text-red-600 hover:text-red-700 hover:bg-red-50 bg-transparent"
+                    onClick={() =>
+                      alert("Funcionalidad de eliminar próximamente")
+                    }
+                  >
+                    <Trash2 size={16} />
+                  </Button>
                 </div>
               </div>
+            </div>
+          ))}
+        </div>
+      )}
+
+      {filtered.length === 0 && (
+        <div className="border border-black/10 bg-white p-12 text-center">
+          <p className="text-gray-500">No se encontraron posts</p>
+        </div>
+      )}
+
+      {/* Paginación */}
+      {!loading && filtered.length > pageSize && (
+        <Pagination className="mt-4">
+          <PaginationContent>
+            <PaginationItem>
+              <PaginationPrevious
+                href="#"
+                onClick={(e) => {
+                  e.preventDefault();
+                  goTo(page - 1);
+                }}
+              />
+            </PaginationItem>
+            {Array.from({ length: totalPages }).map((_, i) => (
+              <PaginationItem key={i}>
+                <PaginationLink
+                  href="#"
+                  isActive={page === i + 1}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    goTo(i + 1);
+                  }}
+                >
+                  {i + 1}
+                </PaginationLink>
+              </PaginationItem>
             ))}
-          </div>
-        )}
-
-        {filtered.length === 0 && (
-          <div className="bg-white rounded-lg shadow-sm p-12 text-center">
-            <p className="text-gray-500">No se encontraron posts</p>
-          </div>
-        )}
-
-        {/* Paginación */}
-        {!loading && filtered.length > pageSize && (
-          <Pagination className="mt-4">
-            <PaginationContent>
-              <PaginationItem>
-                <PaginationPrevious
-                  href="#"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    goTo(page - 1);
-                  }}
-                />
-              </PaginationItem>
-              {Array.from({ length: totalPages }).map((_, i) => (
-                <PaginationItem key={i}>
-                  <PaginationLink
-                    href="#"
-                    isActive={page === i + 1}
-                    onClick={(e) => {
-                      e.preventDefault();
-                      goTo(i + 1);
-                    }}
-                  >
-                    {i + 1}
-                  </PaginationLink>
-                </PaginationItem>
-              ))}
-              <PaginationItem>
-                <PaginationNext
-                  href="#"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    goTo(page + 1);
-                  }}
-                />
-              </PaginationItem>
-            </PaginationContent>
-          </Pagination>
-        )}
-      </div>
+            <PaginationItem>
+              <PaginationNext
+                href="#"
+                onClick={(e) => {
+                  e.preventDefault();
+                  goTo(page + 1);
+                }}
+              />
+            </PaginationItem>
+          </PaginationContent>
+        </Pagination>
+      )}
     </div>
   );
 }

@@ -110,6 +110,7 @@ export default function AdminImagesPage() {
   const { fetchWithSite } = useAdminApi();
   const { currentSite } = useSiteContext();
   const [loading, setLoading] = useState(true);
+  const [loadingSelectedPost, setLoadingSelectedPost] = useState(false);
   const [posts, setPosts] = useState<PostLite[]>([]);
   const [query, setQuery] = useState("");
   const [selectedSlug, setSelectedSlug] = useState<string | null>(null);
@@ -139,13 +140,16 @@ export default function AdminImagesPage() {
 
   useEffect(() => {
     if (!selectedSlug) {
+      setLoadingSelectedPost(false);
       setSelectedPost(null);
       setImages([]);
       setFeaturedIndex(0);
       return;
     }
     let cancelled = false;
+    setLoadingSelectedPost(true);
     setSelectedPost(null);
+    setImages([]);
     fetchWithSite(`/api/posts/${encodeURIComponent(selectedSlug)}`, {
       cache: "no-store",
     })
@@ -163,7 +167,10 @@ export default function AdminImagesPage() {
         setImages(combined);
         setFeaturedIndex(0);
       })
-      .catch(() => !cancelled && setSelectedPost(null));
+      .catch(() => !cancelled && setSelectedPost(null))
+      .finally(() => {
+        if (!cancelled) setLoadingSelectedPost(false);
+      });
     return () => {
       cancelled = true;
     };
@@ -376,464 +383,530 @@ export default function AdminImagesPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <div className="w-full py-2 space-y-6">
+    <div className="space-y-7">
+      <div className="flex flex-col justify-between gap-4 border-b border-black/10 pb-6 sm:flex-row sm:items-end">
+        <div>
+          <p className="mb-2 text-xs font-semibold uppercase tracking-[0.14em] text-[var(--color-brand-red)]">
+            Recursos editoriales
+          </p>
+          <h1 className="flex items-center gap-2 font-neutra-demi text-3xl uppercase tracking-wide text-[#20211f]">
+            <ImagesIcon className="size-6 text-[var(--color-brand-red)]" />
+            Biblioteca visual
+          </h1>
+          <p className="mt-2 text-[#61625d]">
+            Organiza las imágenes asociadas al contenido del sitio.
+          </p>
+        </div>
         <div className="flex items-center gap-3">
           <Link href="/admin/posts">
-            <Button variant="outline" size="icon">
+            <Button variant="outline" size="icon" className="rounded-none">
               <ArrowLeft size={18} />
             </Button>
           </Link>
-          <h1 className="text-2xl font-bold text-gray-900 flex items-center gap-2">
-            <ImagesIcon size={20} className="text-green-600" />
-            Administrar imágenes
-          </h1>
         </div>
+      </div>
 
-        <Card className="p-4">
-          <div className="flex flex-col md:flex-row md:items-center gap-3">
-            <div className="flex-1 flex items-center gap-2">
-              <Search size={16} className="text-gray-500" />
-              <Input
-                placeholder="Buscar por nombre o slug…"
-                value={query}
-                onChange={(e) => setQuery(e.target.value)}
-              />
+      <Card className="rounded-none border-black/10 bg-white p-4 shadow-none">
+        <div className="flex flex-col gap-3 md:flex-row md:items-center">
+          <div className="flex min-w-0 flex-1 items-center gap-3">
+            <Search
+              size={17}
+              className="shrink-0 text-[var(--color-brand-red)]"
+            />
+            <Input
+              className="h-10 rounded-none border-black/10 bg-[#fafaf8] shadow-none"
+              placeholder="Buscar por nombre o slug…"
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+            />
+          </div>
+          <div className="flex items-center gap-2 text-xs uppercase tracking-[0.12em] text-[#61625d]">
+            <span className="font-neutra-demi text-lg text-[#20211f]">
+              {filteredPosts.length}
+            </span>
+            posts
+          </div>
+        </div>
+      </Card>
+
+      <div className="grid grid-cols-1 gap-5 lg:grid-cols-[260px_minmax(0,1fr)]">
+        <Card className="overflow-hidden rounded-none border-black/10 bg-white p-0 shadow-none">
+          <div className="flex items-center justify-between border-b border-black/10 bg-[#fafaf8] px-4 py-3">
+            <div>
+              <div className="font-neutra-demi text-sm uppercase tracking-wide text-[#20211f]">
+                Posts
+              </div>
+              <div className="mt-1 text-[11px] text-[#85867f]">
+                Selecciona un contenido
+              </div>
             </div>
-            <div className="text-sm text-gray-600">
-              {filteredPosts.length} posts
-            </div>
+            <span className="text-xs text-[#85867f]">
+              {filteredPosts.length}
+            </span>
+          </div>
+          <div className="max-h-[52vh] overflow-auto">
+            {loading ? (
+              <div className="flex items-center gap-2 p-4 text-[#61625d]">
+                <Spinner className="size-4" /> Cargando…
+              </div>
+            ) : filteredPosts.length === 0 ? (
+              <div className="p-4 text-[#61625d]">Sin resultados</div>
+            ) : (
+              <ul className="divide-y divide-black/10">
+                {filteredPosts.map((p) => {
+                  const active = selectedSlug === p.slug;
+                  return (
+                    <li key={p.slug}>
+                      <button
+                        className={`relative w-full px-4 py-3 text-left transition-colors hover:bg-[#f7f7f4] ${
+                          active ? "bg-[#fff1ef]" : "bg-white"
+                        }`}
+                        onClick={() => {
+                          setSelectedSlug(p.slug);
+                          setActiveTab("editor");
+                        }}
+                      >
+                        {active ? (
+                          <span className="absolute inset-y-0 left-0 w-1 bg-[var(--color-brand-red)]" />
+                        ) : null}
+                        <div
+                          className={`truncate text-sm ${active ? "font-semibold text-[#20211f]" : "font-medium text-[#30312e]"}`}
+                        >
+                          {p.es?.name || p.en?.name || p.slug}
+                        </div>
+                        <div className="mt-1 truncate text-[11px] text-[#85867f]">
+                          {p.slug}
+                        </div>
+                      </button>
+                    </li>
+                  );
+                })}
+              </ul>
+            )}
           </div>
         </Card>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          <Card className="p-0 overflow-hidden">
-            <div className="border-b p-3 text-sm font-medium">Posts</div>
-            <div className="max-h-[60vh] overflow-auto">
-              {loading ? (
-                <div className="p-4 text-gray-600 flex items-center gap-2">
-                  <Spinner className="size-4" /> Cargando…
+        <div className="min-w-0">
+          <div className="space-y-4">
+            <div className="grid grid-cols-2 gap-3 xl:grid-cols-4">
+              <Card className="rounded-none border-black/10 bg-white p-4 shadow-none">
+                <div className="text-xs uppercase tracking-wide text-[#85867f]">
+                  Imágenes registradas
                 </div>
-              ) : filteredPosts.length === 0 ? (
-                <div className="p-4 text-gray-600">Sin resultados</div>
-              ) : (
-                <ul>
-                  {filteredPosts.map((p) => {
-                    const active = selectedSlug === p.slug;
-                    return (
-                      <li key={p.slug}>
-                        <button
-                          className={`w-full text-left px-3 py-2 text-sm hover:bg-gray-50 border-b ${
-                            active ? "bg-green-50" : "bg-white"
-                          }`}
-                          onClick={() => {
-                            setSelectedSlug(p.slug);
-                            setActiveTab("editor");
-                          }}
-                        >
-                          <div className="font-medium">
-                            {p.es?.name || p.en?.name || p.slug}
-                          </div>
-                          <div className="text-[11px] text-gray-500">
-                            {p.slug}
-                          </div>
-                        </button>
-                      </li>
-                    );
-                  })}
-                </ul>
-              )}
+                <div className="mt-1 font-neutra-demi text-3xl text-[#20211f]">
+                  {overallStats.totalImages}
+                </div>
+              </Card>
+              <Card className="rounded-none border-black/10 bg-white p-4 shadow-none">
+                <div className="text-xs uppercase tracking-wide text-[#85867f]">
+                  URLs únicas
+                </div>
+                <div className="mt-1 font-neutra-demi text-3xl text-[#20211f]">
+                  {overallStats.uniqueImages}
+                </div>
+              </Card>
+              <Card className="rounded-none border-black/10 bg-white p-4 shadow-none">
+                <div className="text-xs uppercase tracking-wide text-[#85867f]">
+                  Posts con imágenes
+                </div>
+                <div className="mt-1 font-neutra-demi text-3xl text-[#20211f]">
+                  {overallStats.postsWithImages}
+                </div>
+              </Card>
+              <Card className="rounded-none border-black/10 bg-white p-4 shadow-none">
+                <div className="text-xs uppercase tracking-wide text-[#85867f]">
+                  Carpetas detectadas
+                </div>
+                <div className="mt-1 font-neutra-demi text-3xl text-[#20211f]">
+                  {overallStats.folders}
+                </div>
+              </Card>
             </div>
-          </Card>
 
-          <div className="lg:col-span-2">
-            <div className="space-y-4">
-              <div className="grid grid-cols-2 xl:grid-cols-4 gap-3">
-                <Card className="p-4">
-                  <div className="text-xs uppercase tracking-wide text-gray-500">
-                    Imágenes registradas
-                  </div>
-                  <div className="mt-1 text-3xl font-bold text-gray-900">
-                    {overallStats.totalImages}
-                  </div>
-                </Card>
-                <Card className="p-4">
-                  <div className="text-xs uppercase tracking-wide text-gray-500">
-                    URLs únicas
-                  </div>
-                  <div className="mt-1 text-3xl font-bold text-gray-900">
-                    {overallStats.uniqueImages}
-                  </div>
-                </Card>
-                <Card className="p-4">
-                  <div className="text-xs uppercase tracking-wide text-gray-500">
-                    Posts con imágenes
-                  </div>
-                  <div className="mt-1 text-3xl font-bold text-gray-900">
-                    {overallStats.postsWithImages}
-                  </div>
-                </Card>
-                <Card className="p-4">
-                  <div className="text-xs uppercase tracking-wide text-gray-500">
-                    Carpetas detectadas
-                  </div>
-                  <div className="mt-1 text-3xl font-bold text-gray-900">
-                    {overallStats.folders}
-                  </div>
-                </Card>
-              </div>
+            {query.trim() ? (
+              <Card className="rounded-none border-black/10 bg-white p-4 text-sm text-gray-600 shadow-none">
+                El filtro actual muestra {filteredStats.posts} posts,{" "}
+                {filteredStats.totalImages} imágenes registradas y{" "}
+                {filteredStats.uniqueImages} URLs únicas.
+              </Card>
+            ) : null}
 
-              {query.trim() ? (
-                <Card className="p-4 text-sm text-gray-600">
-                  El filtro actual muestra {filteredStats.posts} posts,{" "}
-                  {filteredStats.totalImages} imágenes registradas y{" "}
-                  {filteredStats.uniqueImages} URLs únicas.
-                </Card>
-              ) : null}
-
-              {(saving || uploading) && (
-                <div className="fixed inset-0 z-50 bg-black/30 backdrop-blur-sm grid place-items-center">
-                  <div className="bg-white rounded-lg shadow-lg p-6 flex items-center gap-3">
-                    <Spinner className="size-5" />
-                    <div className="text-gray-700 font-medium">
-                      {saving ? "Guardando…" : "Subiendo imágenes…"}
-                    </div>
+            {(saving || uploading) && (
+              <div className="fixed inset-0 z-50 bg-black/30 backdrop-blur-sm grid place-items-center">
+                <div className="flex items-center gap-3 border border-black/10 bg-white p-6 shadow-lg">
+                  <Spinner className="size-5" />
+                  <div className="text-gray-700 font-medium">
+                    {saving ? "Guardando…" : "Subiendo imágenes…"}
                   </div>
                 </div>
-              )}
+              </div>
+            )}
 
-              <Tabs value={activeTab} onValueChange={setActiveTab}>
-                <TabsList className="w-full justify-start overflow-x-auto">
-                  <TabsTrigger value="editor">Editar post</TabsTrigger>
-                  <TabsTrigger value="posts">Por post</TabsTrigger>
-                  <TabsTrigger value="folders">Por carpeta</TabsTrigger>
-                </TabsList>
+            <Tabs value={activeTab} onValueChange={setActiveTab}>
+              <TabsList className="h-auto w-full justify-start overflow-x-auto rounded-none border-b border-black/10 bg-transparent p-0">
+                <TabsTrigger
+                  className="h-11 rounded-none border-0 border-b-2 border-transparent px-4 text-xs uppercase tracking-[0.1em] text-[#85867f] shadow-none data-[state=active]:border-[var(--color-brand-red)] data-[state=active]:bg-transparent data-[state=active]:text-[#20211f] data-[state=active]:shadow-none"
+                  value="editor"
+                >
+                  Editar post
+                </TabsTrigger>
+                <TabsTrigger
+                  className="h-11 rounded-none border-0 border-b-2 border-transparent px-4 text-xs uppercase tracking-[0.1em] text-[#85867f] shadow-none data-[state=active]:border-[var(--color-brand-red)] data-[state=active]:bg-transparent data-[state=active]:text-[#20211f] data-[state=active]:shadow-none"
+                  value="posts"
+                >
+                  Por post
+                </TabsTrigger>
+                <TabsTrigger
+                  className="h-11 rounded-none border-0 border-b-2 border-transparent px-4 text-xs uppercase tracking-[0.1em] text-[#85867f] shadow-none data-[state=active]:border-[var(--color-brand-red)] data-[state=active]:bg-transparent data-[state=active]:text-[#20211f] data-[state=active]:shadow-none"
+                  value="folders"
+                >
+                  Por carpeta
+                </TabsTrigger>
+              </TabsList>
 
-                <TabsContent value="editor">
-                  <Card className="p-4">
-                    {!selectedPost ? (
-                      <div className="text-gray-600">
-                        Selecciona un post para administrar sus imágenes.
-                      </div>
-                    ) : (
-                      <div
-                        className="space-y-4"
-                        onDragOver={(e) => {
-                          e.preventDefault();
-                          if (!isDragging) setIsDragging(true);
-                        }}
-                        onDragEnter={(e) => {
-                          e.preventDefault();
-                          setIsDragging(true);
-                        }}
-                        onDragLeave={(e) => {
-                          e.preventDefault();
-                          setIsDragging(false);
-                        }}
-                        onDrop={async (e) => {
-                          e.preventDefault();
-                          const files = e.dataTransfer?.files;
-                          if (files && files.length > 0) {
-                            handleDropFiles(files);
-                          }
-                          setIsDragging(false);
-                        }}
-                      >
-                        <div>
-                          <div className="text-sm text-gray-500">Post</div>
-                          <div className="font-semibold">
-                            {selectedPost.es?.name ||
-                              selectedPost.en?.name ||
-                              selectedPost.slug}
-                          </div>
-                          <div className="relative">
-                            {isDragging && (
-                              <div className="absolute inset-0 z-10 border-2 border-dashed border-green-500 bg-green-50/60 rounded flex items-center justify-center text-green-700 font-medium">
-                                Suelta tus imágenes aquí para subirlas…
-                              </div>
-                            )}
-                            <div className="text-[11px] text-gray-500">
-                              {selectedPost.slug}
-                            </div>
-                          </div>
+              <TabsContent value="editor">
+                <Card className="rounded-none border-black/10 bg-white p-4 shadow-none">
+                  {loadingSelectedPost ? (
+                    <div className="flex min-h-40 items-center justify-center gap-3 text-sm text-[#61625d]">
+                      <Spinner className="size-5 text-[var(--color-brand-red)]" />
+                      Cargando imágenes…
+                    </div>
+                  ) : !selectedPost ? (
+                    <div className="text-gray-600">
+                      Selecciona un post para administrar sus imágenes.
+                    </div>
+                  ) : (
+                    <div
+                      className="space-y-4"
+                      onDragOver={(e) => {
+                        e.preventDefault();
+                        if (!isDragging) setIsDragging(true);
+                      }}
+                      onDragEnter={(e) => {
+                        e.preventDefault();
+                        setIsDragging(true);
+                      }}
+                      onDragLeave={(e) => {
+                        e.preventDefault();
+                        setIsDragging(false);
+                      }}
+                      onDrop={async (e) => {
+                        e.preventDefault();
+                        const files = e.dataTransfer?.files;
+                        if (files && files.length > 0) {
+                          handleDropFiles(files);
+                        }
+                        setIsDragging(false);
+                      }}
+                    >
+                      <div>
+                        <div className="text-sm text-gray-500">Post</div>
+                        <div className="font-semibold">
+                          {selectedPost.es?.name ||
+                            selectedPost.en?.name ||
+                            selectedPost.slug}
                         </div>
-
-                        <div>
-                          <Label className="text-xs text-gray-600">
-                            Destacada
-                          </Label>
-                          {images[featuredIndex] ? (
-                            <img
-                              src={images[featuredIndex]}
-                              alt="Destacada"
-                              className="w-full max-w-xl aspect-[16/9] object-cover border rounded"
-                            />
-                          ) : (
-                            <div className="w-full max-w-xl aspect-[16/9] bg-gray-100 border rounded grid place-items-center text-gray-500">
-                              Sin imagen
+                        <div className="relative">
+                          {isDragging && (
+                            <div className="absolute inset-0 z-10 flex items-center justify-center border-2 border-dashed border-[var(--color-brand-red)] bg-[#fff1ef]/80 font-medium text-[var(--color-brand-red)]">
+                              Suelta tus imágenes aquí para subirlas…
                             </div>
                           )}
+                          <div className="text-[11px] text-gray-500">
+                            {selectedPost.slug}
+                          </div>
                         </div>
+                      </div>
 
-                        <div>
-                          <Label className="text-xs text-gray-600">
-                            Galería
-                          </Label>
-                          {images.length === 0 ? (
-                            <div className="text-gray-500 text-sm">
-                              No hay imágenes.
-                            </div>
-                          ) : (
-                            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
-                              {images.map((src, idx) => (
-                                <div
-                                  key={idx}
-                                  className={`relative group border rounded ${
-                                    idx === featuredIndex
-                                      ? "ring-2 ring-green-500"
-                                      : ""
-                                  }`}
-                                >
-                                  <img
-                                    src={src}
-                                    alt={`img-${idx}`}
-                                    className="w-full aspect-[4/3] object-cover rounded"
-                                  />
-                                  <div className="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition-colors" />
-                                  <div className="absolute bottom-1 left-1 right-1 flex gap-1 justify-between opacity-0 group-hover:opacity-100 transition-opacity">
+                      <div>
+                        <Label className="text-xs text-gray-600">
+                          Destacada
+                        </Label>
+                        {images[featuredIndex] ? (
+                          <img
+                            src={images[featuredIndex]}
+                            alt="Destacada"
+                            className="w-full max-w-xl aspect-[16/9] border border-black/10 object-cover"
+                          />
+                        ) : (
+                          <div className="grid w-full max-w-xl aspect-[16/9] place-items-center border border-black/10 bg-[#f3f3f1] text-[#85867f]">
+                            Sin imagen
+                          </div>
+                        )}
+                      </div>
+
+                      <div>
+                        <Label className="text-xs text-gray-600">Galería</Label>
+                        {images.length === 0 ? (
+                          <div className="text-gray-500 text-sm">
+                            No hay imágenes.
+                          </div>
+                        ) : (
+                          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
+                            {images.map((src, idx) => (
+                              <div
+                                key={idx}
+                                className={`group relative border border-black/10 ${
+                                  idx === featuredIndex
+                                    ? "ring-2 ring-[var(--color-brand-red)]"
+                                    : ""
+                                }`}
+                              >
+                                <img
+                                  src={src}
+                                  alt={`img-${idx}`}
+                                  className="w-full aspect-[4/3] object-cover"
+                                />
+                                <div className="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition-colors" />
+                                <div className="absolute bottom-1 left-1 right-1 flex gap-1 justify-between opacity-0 group-hover:opacity-100 transition-opacity">
+                                  <Button
+                                    size="sm"
+                                    variant="outline"
+                                    className="rounded-none border-black/10 bg-white text-xs"
+                                    onClick={() => setFeaturedIndex(idx)}
+                                  >
+                                    Destacar
+                                  </Button>
+                                  <div className="flex gap-1">
                                     <Button
-                                      size="sm"
-                                      variant="secondary"
-                                      onClick={() => setFeaturedIndex(idx)}
+                                      size="icon"
+                                      variant="outline"
+                                      className="rounded-none border-black/10 bg-white"
+                                      onClick={() => move(idx, idx - 1)}
                                     >
-                                      Destacar
+                                      ↑
                                     </Button>
-                                    <div className="flex gap-1">
-                                      <Button
-                                        size="icon"
-                                        variant="secondary"
-                                        onClick={() => move(idx, idx - 1)}
-                                      >
-                                        ↑
-                                      </Button>
-                                      <Button
-                                        size="icon"
-                                        variant="secondary"
-                                        onClick={() => move(idx, idx + 1)}
-                                      >
-                                        ↓
-                                      </Button>
-                                      <Button
-                                        size="icon"
-                                        variant="destructive"
-                                        onClick={() => remove(idx)}
-                                      >
-                                        <X size={14} />
-                                      </Button>
-                                    </div>
+                                    <Button
+                                      size="icon"
+                                      variant="outline"
+                                      className="rounded-none border-black/10 bg-white"
+                                      onClick={() => move(idx, idx + 1)}
+                                    >
+                                      ↓
+                                    </Button>
+                                    <Button
+                                      size="icon"
+                                      variant="outline"
+                                      className="rounded-none border-red-200 bg-white text-red-600 hover:bg-red-50 hover:text-red-700"
+                                      onClick={() => remove(idx)}
+                                    >
+                                      <X size={14} />
+                                    </Button>
                                   </div>
                                 </div>
-                              ))}
-                            </div>
-                          )}
-                        </div>
-
-                        <div className="flex flex-wrap gap-2 items-center">
-                          <input
-                            ref={fileInputRef}
-                            type="file"
-                            multiple
-                            className="sr-only"
-                            onChange={(e) => {
-                              const files = e.target.files;
-                              if (files && files.length > 0)
-                                handleDropFiles(files);
-                            }}
-                          />
-                          <Button
-                            type="button"
-                            variant="outline"
-                            onClick={() => fileInputRef.current?.click()}
-                          >
-                            Subir archivos
-                          </Button>
-                        </div>
-
-                        <div className="flex gap-3">
-                          <Button
-                            onClick={handleSave}
-                            className="bg-green-600 hover:bg-green-700 gap-2"
-                          >
-                            <Save size={18} /> Guardar cambios
-                          </Button>
-                          <Button
-                            variant="outline"
-                            onClick={() => setSelectedSlug(null)}
-                          >
-                            Cerrar
-                          </Button>
-                        </div>
+                              </div>
+                            ))}
+                          </div>
+                        )}
                       </div>
-                    )}
-                  </Card>
-                </TabsContent>
 
-                <TabsContent value="posts">
-                  <Card className="p-0 overflow-hidden">
-                    <div className="border-b px-4 py-3 flex items-center justify-between gap-3">
-                      <div>
-                        <div className="font-medium text-gray-900">
-                          Resumen por post
-                        </div>
-                        <div className="text-sm text-gray-500">
-                          Conteo de imágenes destacadas y de galería por post.
-                        </div>
+                      <div className="flex flex-wrap gap-2 items-center">
+                        <input
+                          ref={fileInputRef}
+                          type="file"
+                          multiple
+                          className="sr-only"
+                          onChange={(e) => {
+                            const files = e.target.files;
+                            if (files && files.length > 0)
+                              handleDropFiles(files);
+                          }}
+                        />
+                        <Button
+                          type="button"
+                          variant="outline"
+                          className="rounded-none border-black/10"
+                          onClick={() => fileInputRef.current?.click()}
+                        >
+                          Subir archivos
+                        </Button>
                       </div>
-                      <div className="text-sm text-gray-500">
-                        {postsSummary.length} posts
+
+                      <div className="flex gap-3">
+                        <Button
+                          onClick={handleSave}
+                          className="gap-2 rounded-none bg-[var(--color-brand-red)] hover:bg-[#b72d24]"
+                        >
+                          <Save size={18} /> Guardar cambios
+                        </Button>
+                        <Button
+                          variant="outline"
+                          className="rounded-none border-black/10"
+                          onClick={() => setSelectedSlug(null)}
+                        >
+                          Cerrar
+                        </Button>
                       </div>
                     </div>
+                  )}
+                </Card>
+              </TabsContent>
 
-                    {postsSummary.length === 0 ? (
-                      <div className="p-4 text-sm text-gray-500">
-                        No hay posts para mostrar.
+              <TabsContent value="posts">
+                <Card className="overflow-hidden rounded-none border-black/10 bg-white p-0 shadow-none">
+                  <div className="flex items-center justify-between gap-3 border-b border-black/10 bg-[#fafaf8] px-4 py-3">
+                    <div>
+                      <div className="font-neutra-demi text-sm uppercase tracking-wide text-[#20211f]">
+                        Resumen por post
                       </div>
-                    ) : (
-                      <div className="overflow-auto">
-                        <table className="w-full text-sm">
-                          <thead className="bg-gray-50 text-gray-600">
-                            <tr>
-                              <th className="text-left px-4 py-3 font-medium">
-                                Post
-                              </th>
-                              <th className="text-left px-4 py-3 font-medium">
-                                Slug
-                              </th>
-                              <th className="text-right px-4 py-3 font-medium">
-                                Total
-                              </th>
-                              <th className="text-right px-4 py-3 font-medium">
-                                Destacada
-                              </th>
-                              <th className="text-right px-4 py-3 font-medium">
-                                Galería
-                              </th>
-                              <th className="text-right px-4 py-3 font-medium">
-                                Carpetas
-                              </th>
-                              <th className="text-right px-4 py-3 font-medium">
-                                Acción
-                              </th>
-                            </tr>
-                          </thead>
-                          <tbody>
-                            {postsSummary.map((post) => (
-                              <tr key={post.slug} className="border-t">
-                                <td className="px-4 py-3 font-medium text-gray-900">
-                                  {post.name}
-                                </td>
-                                <td className="px-4 py-3 text-gray-500">
-                                  {post.slug}
-                                </td>
-                                <td className="px-4 py-3 text-right text-gray-900">
-                                  {post.total}
-                                </td>
-                                <td className="px-4 py-3 text-right text-gray-900">
-                                  {post.featured}
-                                </td>
-                                <td className="px-4 py-3 text-right text-gray-900">
-                                  {post.gallery}
-                                </td>
-                                <td className="px-4 py-3 text-right text-gray-900">
-                                  {post.folders}
-                                </td>
-                                <td className="px-4 py-3 text-right">
-                                  <Button
-                                    variant="outline"
-                                    size="sm"
-                                    onClick={() => {
-                                      setSelectedSlug(post.slug);
-                                      setActiveTab("editor");
-                                    }}
-                                  >
-                                    Editar
-                                  </Button>
-                                </td>
-                              </tr>
-                            ))}
-                          </tbody>
-                        </table>
-                      </div>
-                    )}
-                  </Card>
-                </TabsContent>
-
-                <TabsContent value="folders">
-                  <Card className="p-0 overflow-hidden">
-                    <div className="border-b px-4 py-3 flex items-center justify-between gap-3">
-                      <div>
-                        <div className="font-medium text-gray-900 flex items-center gap-2">
-                          <FolderOpen size={16} className="text-green-600" />
-                          Resumen por carpeta
-                        </div>
-                        <div className="text-sm text-gray-500">
-                          Agrupación según la carpeta detectada en la URL de
-                          cada imagen.
-                        </div>
-                      </div>
-                      <div className="text-sm text-gray-500">
-                        {folderSummary.length} carpetas
+                      <div className="text-xs text-[#85867f]">
+                        Conteo de imágenes destacadas y de galería por post.
                       </div>
                     </div>
+                    <div className="text-sm text-gray-500">
+                      {postsSummary.length} posts
+                    </div>
+                  </div>
 
-                    {folderSummary.length === 0 ? (
-                      <div className="p-4 text-sm text-gray-500">
-                        No hay carpetas para mostrar.
-                      </div>
-                    ) : (
-                      <div className="overflow-auto">
-                        <table className="w-full text-sm">
-                          <thead className="bg-gray-50 text-gray-600">
-                            <tr>
-                              <th className="text-left px-4 py-3 font-medium">
-                                Carpeta
-                              </th>
-                              <th className="text-right px-4 py-3 font-medium">
-                                Total
-                              </th>
-                              <th className="text-right px-4 py-3 font-medium">
-                                URLs únicas
-                              </th>
-                              <th className="text-right px-4 py-3 font-medium">
-                                Posts
-                              </th>
+                  {postsSummary.length === 0 ? (
+                    <div className="p-4 text-sm text-gray-500">
+                      No hay posts para mostrar.
+                    </div>
+                  ) : (
+                    <div className="overflow-auto">
+                      <table className="w-full text-sm">
+                        <thead className="bg-[#fafaf8] text-xs uppercase tracking-wide text-[#85867f]">
+                          <tr>
+                            <th className="text-left px-4 py-3 font-medium">
+                              Post
+                            </th>
+                            <th className="text-left px-4 py-3 font-medium">
+                              Slug
+                            </th>
+                            <th className="text-right px-4 py-3 font-medium">
+                              Total
+                            </th>
+                            <th className="text-right px-4 py-3 font-medium">
+                              Destacada
+                            </th>
+                            <th className="text-right px-4 py-3 font-medium">
+                              Galería
+                            </th>
+                            <th className="text-right px-4 py-3 font-medium">
+                              Carpetas
+                            </th>
+                            <th className="text-right px-4 py-3 font-medium">
+                              Acción
+                            </th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {postsSummary.map((post) => (
+                            <tr
+                              key={post.slug}
+                              className="border-t border-black/10"
+                            >
+                              <td className="px-4 py-3 font-medium text-[#20211f]">
+                                {post.name}
+                              </td>
+                              <td className="px-4 py-3 text-[#85867f]">
+                                {post.slug}
+                              </td>
+                              <td className="px-4 py-3 text-right text-[#20211f]">
+                                {post.total}
+                              </td>
+                              <td className="px-4 py-3 text-right text-[#20211f]">
+                                {post.featured}
+                              </td>
+                              <td className="px-4 py-3 text-right text-[#20211f]">
+                                {post.gallery}
+                              </td>
+                              <td className="px-4 py-3 text-right text-[#20211f]">
+                                {post.folders}
+                              </td>
+                              <td className="px-4 py-3 text-right">
+                                <Button
+                                  variant="outline"
+                                  size="sm"
+                                  className="rounded-none border-black/10"
+                                  onClick={() => {
+                                    setSelectedSlug(post.slug);
+                                    setActiveTab("editor");
+                                  }}
+                                >
+                                  Editar
+                                </Button>
+                              </td>
                             </tr>
-                          </thead>
-                          <tbody>
-                            {folderSummary.map((folder) => (
-                              <tr key={folder.folder} className="border-t">
-                                <td className="px-4 py-3 font-medium text-gray-900 break-all">
-                                  {folder.folder}
-                                </td>
-                                <td className="px-4 py-3 text-right text-gray-900">
-                                  {folder.total}
-                                </td>
-                                <td className="px-4 py-3 text-right text-gray-900">
-                                  {folder.uniqueImages}
-                                </td>
-                                <td className="px-4 py-3 text-right text-gray-900">
-                                  {folder.posts}
-                                </td>
-                              </tr>
-                            ))}
-                          </tbody>
-                        </table>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  )}
+                </Card>
+              </TabsContent>
+
+              <TabsContent value="folders">
+                <Card className="overflow-hidden rounded-none border-black/10 bg-white p-0 shadow-none">
+                  <div className="flex items-center justify-between gap-3 border-b border-black/10 bg-[#fafaf8] px-4 py-3">
+                    <div>
+                      <div className="flex items-center gap-2 font-neutra-demi text-sm uppercase tracking-wide text-[#20211f]">
+                        <FolderOpen
+                          size={16}
+                          className="text-[var(--color-brand-red)]"
+                        />
+                        Resumen por carpeta
                       </div>
-                    )}
-                  </Card>
-                </TabsContent>
-              </Tabs>
-            </div>
+                      <div className="text-xs text-[#85867f]">
+                        Agrupación según la carpeta detectada en la URL de cada
+                        imagen.
+                      </div>
+                    </div>
+                    <div className="text-sm text-gray-500">
+                      {folderSummary.length} carpetas
+                    </div>
+                  </div>
+
+                  {folderSummary.length === 0 ? (
+                    <div className="p-4 text-sm text-gray-500">
+                      No hay carpetas para mostrar.
+                    </div>
+                  ) : (
+                    <div className="overflow-auto">
+                      <table className="w-full text-sm">
+                        <thead className="bg-[#fafaf8] text-xs uppercase tracking-wide text-[#85867f]">
+                          <tr>
+                            <th className="text-left px-4 py-3 font-medium">
+                              Carpeta
+                            </th>
+                            <th className="text-right px-4 py-3 font-medium">
+                              Total
+                            </th>
+                            <th className="text-right px-4 py-3 font-medium">
+                              URLs únicas
+                            </th>
+                            <th className="text-right px-4 py-3 font-medium">
+                              Posts
+                            </th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {folderSummary.map((folder) => (
+                            <tr
+                              key={folder.folder}
+                              className="border-t border-black/10"
+                            >
+                              <td className="break-all px-4 py-3 font-medium text-[#20211f]">
+                                {folder.folder}
+                              </td>
+                              <td className="px-4 py-3 text-right text-[#20211f]">
+                                {folder.total}
+                              </td>
+                              <td className="px-4 py-3 text-right text-[#20211f]">
+                                {folder.uniqueImages}
+                              </td>
+                              <td className="px-4 py-3 text-right text-[#20211f]">
+                                {folder.posts}
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  )}
+                </Card>
+              </TabsContent>
+            </Tabs>
           </div>
         </div>
       </div>

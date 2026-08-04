@@ -716,11 +716,11 @@ export default function NewPostPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="space-y-7">
       <div className="w-full py-2 space-y-6">
         {(creating || uploading) && (
           <div className="fixed inset-0 z-50 bg-black/30 backdrop-blur-sm grid place-items-center">
-            <div className="bg-white rounded-lg shadow-lg p-6 flex items-center gap-3">
+            <div className="flex items-center gap-3 border border-black/10 bg-white p-6 shadow-lg">
               <Spinner className="size-5" />
               <div className="text-gray-700 font-medium">
                 {creating ? "Creando post…" : "Subiendo imágenes…"}
@@ -737,8 +737,13 @@ export default function NewPostPage() {
             </Button>
           </Link>
           <div className="flex-1">
-            <h1 className="text-3xl font-bold text-gray-900">Crear post</h1>
-            <p className="text-gray-600 mt-1">
+            <p className="mb-2 text-xs font-semibold uppercase tracking-[0.14em] text-[var(--color-brand-red)]">
+              Contenido editorial
+            </p>
+            <h1 className="font-neutra-demi text-3xl uppercase tracking-wide text-[#20211f]">
+              Crear post
+            </h1>
+            <p className="mt-2 text-[#61625d]">
               Completa la información del lugar
             </p>
           </div>

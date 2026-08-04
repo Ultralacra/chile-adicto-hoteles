@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import { Pencil, Plus, RefreshCw, Save, Tag, Trash2 } from "lucide-react";
 import { useAdminApi } from "@/hooks/use-admin-api";
 import { useSiteContext } from "@/contexts/site-context";
 
@@ -44,9 +45,12 @@ export default function AdminCategoriesPage() {
     setLoadingCats(true);
     setCatsError(null);
     try {
-      const res = await fetchWithSite("/api/categories?full=1&includeHidden=1", {
-        cache: "no-store",
-      });
+      const res = await fetchWithSite(
+        "/api/categories?full=1&includeHidden=1",
+        {
+          cache: "no-store",
+        },
+      );
       const json = res.ok ? await res.json() : [];
       setCategories(Array.isArray(json) ? json : []);
     } catch (e: any) {
@@ -115,7 +119,7 @@ export default function AdminCategoriesPage() {
 
   const deleteCategory = async (row: CategoryRow) => {
     const ok = window.confirm(
-      `¿Eliminar la categoría "${row.slug}"? Esto no se puede deshacer.`
+      `¿Eliminar la categoría "${row.slug}"? Esto no se puede deshacer.`,
     );
     if (!ok) return;
     setDeletingSlug(row.slug);
@@ -123,7 +127,7 @@ export default function AdminCategoriesPage() {
     try {
       const res = await fetchWithSite(
         `/api/categories?slug=${encodeURIComponent(row.slug)}`,
-        { method: "DELETE" }
+        { method: "DELETE" },
       );
       const data = await res.json().catch(() => null);
       if (!res.ok || !data?.ok) {
@@ -139,19 +143,35 @@ export default function AdminCategoriesPage() {
   };
 
   return (
-    <div className="space-y-6">
-      <div>
-        <h1 className="text-3xl font-bold text-gray-900">Categorías</h1>
-        <p className="text-gray-600 mt-1">
-          Crea, edita y elimina categorías guardadas en la base de datos.
-        </p>
+    <div className="space-y-7">
+      <div className="flex flex-col justify-between gap-4 border-b border-black/10 pb-6 sm:flex-row sm:items-end">
+        <div>
+          <p className="mb-2 text-xs font-semibold uppercase tracking-[0.14em] text-[var(--color-brand-red)]">
+            Catálogo editorial
+          </p>
+          <h1 className="flex items-center gap-2 font-neutra-demi text-3xl uppercase tracking-wide text-[#20211f]">
+            <Tag className="size-6 text-[var(--color-brand-red)]" />
+            Categorías
+          </h1>
+          <p className="mt-2 text-[#61625d]">
+            Crea, edita y elimina categorías guardadas en la base de datos.
+          </p>
+        </div>
+        <div className="border border-black/10 bg-white px-3 py-2 text-xs text-[#61625d]">
+          <span className="font-semibold text-[#20211f]">
+            {categories.length}
+          </span>{" "}
+          categorías registradas
+        </div>
       </div>
 
-      <div className="bg-white rounded-lg shadow p-6">
+      <div className="border border-black/10 bg-white p-5">
         <div className="flex items-start justify-between gap-4">
           <div>
-            <h2 className="text-xl font-bold text-gray-900">CRUD</h2>
-            <p className="text-gray-600 mt-1">
+            <h2 className="font-neutra-demi text-xl uppercase tracking-wide text-[#20211f]">
+              Gestionar categorías
+            </h2>
+            <p className="mt-1 text-[#61625d]">
               El slug se normaliza automáticamente.
             </p>
           </div>
@@ -159,66 +179,71 @@ export default function AdminCategoriesPage() {
             <button
               type="button"
               onClick={resetForm}
-              className="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50"
+              className="inline-flex items-center gap-2 border border-black/10 bg-white px-3 py-2 text-xs font-semibold uppercase tracking-wide hover:bg-[#f7f7f4]"
             >
+              <Plus size={15} />
               Nuevo
             </button>
             <button
               type="button"
               onClick={loadCategories}
-              className="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50"
+              className="inline-flex items-center gap-2 border border-black/10 bg-white px-3 py-2 text-xs font-semibold uppercase tracking-wide hover:bg-[#f7f7f4]"
               disabled={loadingCats}
             >
+              <RefreshCw
+                className={loadingCats ? "animate-spin" : ""}
+                size={15}
+              />
               {loadingCats ? "Cargando…" : "Recargar"}
             </button>
           </div>
         </div>
 
         {catsError && (
-          <div className="mt-4 bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg">
+          <div className="mt-4 border border-[#ba1028]/20 bg-[#fff1f2] px-4 py-3 text-[#ba1028]">
             {catsError}
           </div>
         )}
 
-        <div className="mt-6 grid grid-cols-1 md:grid-cols-4 gap-4">
+        <div className="mt-6 grid grid-cols-1 gap-4 md:grid-cols-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="mb-2 block text-xs font-semibold uppercase tracking-wide text-[#61625d]">
               Slug
             </label>
             <input
               type="text"
               value={slug}
               onChange={(e) => setSlug(e.target.value)}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg"
+              className="h-10 w-full border border-black/10 bg-[#fafaf8] px-3 text-sm outline-none focus:border-[var(--color-brand-red)]"
               placeholder="ninos"
             />
-            <p className="text-xs text-gray-500 mt-1">
+            <p className="mt-1 text-[11px] text-[#85867f]">
               Se normaliza automáticamente: {effectiveSlug || "—"}
             </p>
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="mb-2 block text-xs font-semibold uppercase tracking-wide text-[#61625d]">
               Label ES
             </label>
             <input
               type="text"
               value={labelEs}
               onChange={(e) => setLabelEs(e.target.value)}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg"
+              className="h-10 w-full border border-black/10 bg-[#fafaf8] px-3 text-sm outline-none focus:border-[var(--color-brand-red)]"
               placeholder="NIÑOS"
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="mb-2 block text-xs font-semibold uppercase tracking-wide text-[#61625d]">
               Label EN
             </label>
             <input
               type="text"
               value={labelEn}
               onChange={(e) => setLabelEn(e.target.value)}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg"
+              className="h-10 w-full border border-black/10 bg-[#fafaf8] px-3 text-sm outline-none focus:border-[var(--color-brand-red)]"
               placeholder="KIDS"
             />
           </div>
@@ -231,7 +256,7 @@ export default function AdminCategoriesPage() {
               onChange={(e) => setShowInMenu(e.target.checked)}
               className="h-4 w-4"
             />
-            <label htmlFor="show_in_menu" className="text-sm text-gray-700">
+            <label htmlFor="show_in_menu" className="text-sm text-[#61625d]">
               Mostrar en menú
             </label>
           </div>
@@ -242,44 +267,50 @@ export default function AdminCategoriesPage() {
             type="button"
             onClick={saveCategory}
             disabled={saving}
-            className="px-4 py-2 bg-[var(--color-brand-red)] text-white rounded-lg font-bold uppercase hover:opacity-90 disabled:opacity-60"
+            className="inline-flex items-center gap-2 bg-[var(--color-brand-red)] px-4 py-2 text-xs font-bold uppercase tracking-wide text-white hover:opacity-90 disabled:opacity-60"
           >
+            {saving ? null : <Save size={15} />}
             {saving
               ? "Guardando…"
               : selectedSlug
-              ? "Actualizar categoría"
-              : "Crear categoría"}
+                ? "Actualizar categoría"
+                : "Crear categoría"}
           </button>
           {selectedSlug && (
-            <span className="text-sm text-gray-600">
+            <span className="text-xs uppercase tracking-wide text-[#61625d]">
               Editando: <span className="font-mono">{selectedSlug}</span>
             </span>
           )}
         </div>
       </div>
 
-      <div className="bg-white rounded-lg shadow">
-        <div className="p-6 border-b border-gray-200">
-          <h2 className="text-xl font-bold text-gray-900">Existentes</h2>
+      <div className="border border-black/10 bg-white">
+        <div className="flex items-center justify-between border-b border-black/10 bg-[#fafaf8] p-5">
+          <h2 className="font-neutra-demi text-xl uppercase tracking-wide text-[#20211f]">
+            Existentes
+          </h2>
+          <span className="text-xs uppercase tracking-wide text-[#85867f]">
+            {categories.length} registros
+          </span>
         </div>
-        <div className="p-6">
-          <div className="overflow-x-auto border border-gray-200 rounded-lg">
+        <div className="p-5">
+          <div className="overflow-x-auto border border-black/10">
             <table className="min-w-full text-sm">
-              <thead className="bg-gray-50">
+              <thead className="bg-[#f3f3f1] text-[#61625d]">
                 <tr>
-                  <th className="text-left px-4 py-2 font-semibold text-gray-700">
+                  <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide">
                     slug
                   </th>
-                  <th className="text-left px-4 py-2 font-semibold text-gray-700">
+                  <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide">
                     label_es
                   </th>
-                  <th className="text-left px-4 py-2 font-semibold text-gray-700">
+                  <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide">
                     label_en
                   </th>
-                  <th className="text-left px-4 py-2 font-semibold text-gray-700">
+                  <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide">
                     menú
                   </th>
-                  <th className="text-right px-4 py-2 font-semibold text-gray-700">
+                  <th className="px-4 py-3 text-right text-xs font-semibold uppercase tracking-wide">
                     acciones
                   </th>
                 </tr>
@@ -295,28 +326,39 @@ export default function AdminCategoriesPage() {
                   </tr>
                 ) : (
                   categories.map((c) => (
-                    <tr key={c.slug} className="border-t border-gray-200">
-                      <td className="px-4 py-2 font-mono">{c.slug}</td>
-                      <td className="px-4 py-2">{c.label_es || "—"}</td>
-                      <td className="px-4 py-2">{c.label_en || "—"}</td>
-                      <td className="px-4 py-2">
+                    <tr
+                      key={c.slug}
+                      className="border-t border-black/10 text-[#30312e] hover:bg-[#f7f7f4]"
+                    >
+                      <td className="px-4 py-3 font-mono text-xs">{c.slug}</td>
+                      <td className="px-4 py-3">{c.label_es || "—"}</td>
+                      <td className="px-4 py-3">{c.label_en || "—"}</td>
+                      <td className="px-4 py-3 text-xs uppercase tracking-wide text-[#61625d]">
                         {c.show_in_menu === false ? "Oculta" : "Visible"}
                       </td>
-                      <td className="px-4 py-2 text-right whitespace-nowrap">
+                      <td className="whitespace-nowrap px-4 py-3 text-right">
                         <button
                           type="button"
                           onClick={() => startEdit(c)}
-                          className="px-3 py-1 border border-gray-300 rounded-md hover:bg-gray-50 mr-2"
+                          className="mr-1 inline-flex h-8 w-8 items-center justify-center border border-black/10 hover:bg-[#f7f7f4]"
+                          title={`Editar ${c.slug}`}
+                          aria-label={`Editar ${c.slug}`}
                         >
-                          Editar
+                          <Pencil size={15} />
                         </button>
                         <button
                           type="button"
                           onClick={() => deleteCategory(c)}
                           disabled={deletingSlug === c.slug}
-                          className="px-3 py-1 border border-red-200 text-red-700 rounded-md hover:bg-red-50 disabled:opacity-60"
+                          className="inline-flex h-8 w-8 items-center justify-center border border-[#ba1028]/30 text-[#ba1028] hover:bg-[#fff1f2] disabled:opacity-60"
+                          title={`Eliminar ${c.slug}`}
+                          aria-label={`Eliminar ${c.slug}`}
                         >
-                          {deletingSlug === c.slug ? "Eliminando…" : "Eliminar"}
+                          {deletingSlug === c.slug ? (
+                            <RefreshCw className="animate-spin" size={15} />
+                          ) : (
+                            <Trash2 size={15} />
+                          )}
                         </button>
                       </td>
                     </tr>

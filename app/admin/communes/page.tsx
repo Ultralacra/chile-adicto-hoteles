@@ -1,6 +1,19 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import {
+  Download,
+  List,
+  MapPin,
+  Pencil,
+  Plus,
+  RefreshCw,
+  Save,
+  Search as SearchIcon,
+  Trash2,
+  UserPlus,
+  X,
+} from "lucide-react";
 import { useAdminApi } from "@/hooks/use-admin-api";
 import { useSiteContext } from "@/contexts/site-context";
 
@@ -116,7 +129,7 @@ export default function AdminCommunesPage() {
           "post_slug",
           "post_name_es",
           "post_name_en",
-        ].join(",")
+        ].join(","),
       );
 
       for (const c of rows) {
@@ -124,9 +137,12 @@ export default function AdminCommunesPage() {
         if (!slug) continue;
         const label = String(c?.label || "").trim();
 
-        const dRes = await fetchWithSite(`/api/communes/${encodeURIComponent(slug)}`, {
-          cache: "no-store",
-        });
+        const dRes = await fetchWithSite(
+          `/api/communes/${encodeURIComponent(slug)}`,
+          {
+            cache: "no-store",
+          },
+        );
         const detail = (
           dRes.ok ? await dRes.json() : null
         ) as CommuneDetail | null;
@@ -141,7 +157,7 @@ export default function AdminCommunesPage() {
               toCsvCell("SIN POSTS"),
               "",
               "",
-            ].join(",")
+            ].join(","),
           );
           continue;
         }
@@ -155,7 +171,7 @@ export default function AdminCommunesPage() {
               toCsvCell(p.slug),
               toCsvCell(p.name_es),
               toCsvCell(p.name_en),
-            ].join(",")
+            ].join(","),
           );
         }
       }
@@ -196,7 +212,7 @@ export default function AdminCommunesPage() {
         `/api/communes/${encodeURIComponent(slugToLoad)}`,
         {
           cache: "no-store",
-        }
+        },
       );
       const json = (res.ok ? await res.json() : null) as CommuneDetail | null;
       setDetail(json && typeof json === "object" ? json : null);
@@ -234,7 +250,7 @@ export default function AdminCommunesPage() {
     setLabel(row.label || "");
     setShowInMenu(row.show_in_menu !== false);
     setMenuOrder(
-      Number.isFinite(Number(row.menu_order)) ? Number(row.menu_order) : 0
+      Number.isFinite(Number(row.menu_order)) ? Number(row.menu_order) : 0,
     );
     setError(null);
     setDetailSlug(row.slug);
@@ -275,7 +291,7 @@ export default function AdminCommunesPage() {
 
   const deleteCommune = async (row: CommuneRow) => {
     const ok = window.confirm(
-      `¿Eliminar la comuna "${row.slug}"? Se eliminarán también sus asociaciones.`
+      `¿Eliminar la comuna "${row.slug}"? Se eliminarán también sus asociaciones.`,
     );
     if (!ok) return;
 
@@ -286,7 +302,7 @@ export default function AdminCommunesPage() {
         `/api/communes?slug=${encodeURIComponent(row.slug)}`,
         {
           method: "DELETE",
-        }
+        },
       );
       const data = await res.json().catch(() => null);
       if (!res.ok || !data?.ok)
@@ -309,7 +325,7 @@ export default function AdminCommunesPage() {
         `/api/posts/search?q=${encodeURIComponent(q)}&limit=30`,
         {
           cache: "no-store",
-        }
+        },
       );
       const json = res.ok ? await res.json() : null;
       const items = Array.isArray(json?.items)
@@ -345,7 +361,7 @@ export default function AdminCommunesPage() {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ postSlug }),
-        }
+        },
       );
       const data = await res.json().catch(() => null);
       if (!res.ok || !data?.ok)
@@ -367,9 +383,9 @@ export default function AdminCommunesPage() {
     try {
       const res = await fetchWithSite(
         `/api/communes/${encodeURIComponent(
-          detailSlug
+          detailSlug,
         )}?postSlug=${encodeURIComponent(postSlug)}`,
-        { method: "DELETE" }
+        { method: "DELETE" },
       );
       const data = await res.json().catch(() => null);
       if (!res.ok || !data?.ok)
@@ -383,20 +399,36 @@ export default function AdminCommunesPage() {
   };
 
   return (
-    <div className="space-y-6">
-      <div>
-        <h1 className="text-3xl font-bold text-gray-900">Comunas</h1>
-        <p className="text-gray-600 mt-1">
-          Mantén comunas y asigna posts a cada comuna (DB). Esto reemplaza
-          configuración estática.
-        </p>
+    <div className="space-y-7">
+      <div className="flex flex-col justify-between gap-4 border-b border-black/10 pb-6 sm:flex-row sm:items-end">
+        <div>
+          <p className="mb-2 text-xs font-semibold uppercase tracking-[0.14em] text-[var(--color-brand-red)]">
+            Catálogo editorial
+          </p>
+          <h1 className="flex items-center gap-2 font-neutra-demi text-3xl uppercase tracking-wide text-[#20211f]">
+            <MapPin className="size-6 text-[var(--color-brand-red)]" />
+            Comunas
+          </h1>
+          <p className="mt-2 text-[#61625d]">
+            Mantén comunas y asigna posts a cada comuna (DB). Esto reemplaza
+            configuración estática.
+          </p>
+        </div>
+        <div className="border border-black/10 bg-white px-3 py-2 text-xs text-[#61625d]">
+          <span className="font-semibold text-[#20211f]">
+            {communes.length}
+          </span>{" "}
+          comunas registradas
+        </div>
       </div>
 
-      <div className="bg-white rounded-lg shadow p-6">
+      <div className="border border-black/10 bg-white p-5">
         <div className="flex items-start justify-between gap-4">
           <div>
-            <h2 className="text-xl font-bold text-gray-900">CRUD</h2>
-            <p className="text-gray-600 mt-1">
+            <h2 className="font-neutra-demi text-xl uppercase tracking-wide text-[#20211f]">
+              Gestionar comunas
+            </h2>
+            <p className="mt-1 text-[#61625d]">
               El slug se normaliza automáticamente.
             </p>
           </div>
@@ -404,75 +436,78 @@ export default function AdminCommunesPage() {
             <button
               type="button"
               onClick={resetForm}
-              className="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50"
+              className="inline-flex items-center gap-2 border border-black/10 bg-white px-3 py-2 text-xs font-semibold uppercase tracking-wide hover:bg-[#f7f7f4]"
             >
+              <Plus size={15} />
               Nuevo
             </button>
             <button
               type="button"
               onClick={exportAllToExcelCsv}
-              className="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50"
+              className="inline-flex items-center gap-2 border border-black/10 bg-white px-3 py-2 text-xs font-semibold uppercase tracking-wide hover:bg-[#f7f7f4]"
               disabled={exporting || loading}
               title="Descarga un CSV compatible con Excel"
             >
+              <Download size={15} />
               {exporting ? "Exportando…" : "Exportar Excel"}
             </button>
             <button
               type="button"
               onClick={loadCommunes}
-              className="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50"
+              className="inline-flex items-center gap-2 border border-black/10 bg-white px-3 py-2 text-xs font-semibold uppercase tracking-wide hover:bg-[#f7f7f4]"
               disabled={loading}
             >
+              <RefreshCw className={loading ? "animate-spin" : ""} size={15} />
               {loading ? "Cargando…" : "Recargar"}
             </button>
           </div>
         </div>
 
         {error && (
-          <div className="mt-4 bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg">
+          <div className="mt-4 border border-[#ba1028]/20 bg-[#fff1f2] px-4 py-3 text-[#ba1028]">
             {error}
           </div>
         )}
 
-        <div className="mt-6 grid grid-cols-1 md:grid-cols-4 gap-4">
+        <div className="mt-6 grid grid-cols-1 gap-4 md:grid-cols-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="mb-2 block text-xs font-semibold uppercase tracking-wide text-[#61625d]">
               Slug
             </label>
             <input
               type="text"
               value={slug}
               onChange={(e) => setSlug(e.target.value)}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg"
+              className="h-10 w-full border border-black/10 bg-[#fafaf8] px-3 text-sm outline-none focus:border-[var(--color-brand-red)]"
               placeholder="vitacura"
             />
-            <p className="text-xs text-gray-500 mt-1">
+            <p className="mt-1 text-[11px] text-[#85867f]">
               Se normaliza automáticamente: {effectiveSlug || "—"}
             </p>
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="mb-2 block text-xs font-semibold uppercase tracking-wide text-[#61625d]">
               Nombre
             </label>
             <input
               type="text"
               value={label}
               onChange={(e) => setLabel(e.target.value)}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg"
+              className="h-10 w-full border border-black/10 bg-[#fafaf8] px-3 text-sm outline-none focus:border-[var(--color-brand-red)]"
               placeholder="Vitacura"
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="mb-2 block text-xs font-semibold uppercase tracking-wide text-[#61625d]">
               Orden
             </label>
             <input
               type="number"
               value={menuOrder}
               onChange={(e) => setMenuOrder(Number(e.target.value) || 0)}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg"
+              className="h-10 w-full border border-black/10 bg-[#fafaf8] px-3 text-sm outline-none focus:border-[var(--color-brand-red)]"
               placeholder="0"
             />
           </div>
@@ -485,7 +520,7 @@ export default function AdminCommunesPage() {
               onChange={(e) => setShowInMenu(e.target.checked)}
               className="h-4 w-4"
             />
-            <label htmlFor="show_in_menu" className="text-sm text-gray-700">
+            <label htmlFor="show_in_menu" className="text-sm text-[#61625d]">
               Mostrar en menú
             </label>
           </div>
@@ -496,25 +531,31 @@ export default function AdminCommunesPage() {
             type="button"
             onClick={saveCommune}
             disabled={saving}
-            className="px-4 py-2 bg-[var(--color-brand-red)] text-white rounded-lg font-bold uppercase hover:opacity-90 disabled:opacity-60"
+            className="inline-flex items-center gap-2 bg-[var(--color-brand-red)] px-4 py-2 text-xs font-bold uppercase tracking-wide text-white hover:opacity-90 disabled:opacity-60"
           >
+            {saving ? null : <Save size={15} />}
             {saving
               ? "Guardando…"
               : selectedSlug
-              ? "Actualizar comuna"
-              : "Crear comuna"}
+                ? "Actualizar comuna"
+                : "Crear comuna"}
           </button>
           {selectedSlug && (
-            <span className="text-sm text-gray-600">
+            <span className="text-xs uppercase tracking-wide text-[#61625d]">
               Editando: <span className="font-mono">{selectedSlug}</span>
             </span>
           )}
         </div>
       </div>
 
-      <div className="bg-white rounded-lg shadow">
-        <div className="p-6 border-b border-gray-200">
-          <h2 className="text-xl font-bold text-gray-900">Existentes</h2>
+      <div className="border border-black/10 bg-white">
+        <div className="flex items-center justify-between border-b border-black/10 bg-[#fafaf8] p-5">
+          <h2 className="font-neutra-demi text-xl uppercase tracking-wide text-[#20211f]">
+            Existentes
+          </h2>
+          <span className="text-xs uppercase tracking-wide text-[#85867f]">
+            {communes.length} registros
+          </span>
         </div>
 
         <div className="p-6">
@@ -525,49 +566,64 @@ export default function AdminCommunesPage() {
           ) : (
             <div className="overflow-x-auto">
               <table className="min-w-full">
-                <thead>
-                  <tr className="text-left text-sm font-medium text-gray-600">
-                    <th className="py-2 pr-4">Slug</th>
-                    <th className="py-2 pr-4">Nombre</th>
-                    <th className="py-2 pr-4">Orden</th>
-                    <th className="py-2 pr-4">Menú</th>
-                    <th className="py-2 pr-4">Acciones</th>
+                <thead className="bg-[#f3f3f1]">
+                  <tr className="text-left text-xs font-semibold uppercase tracking-wide text-[#61625d]">
+                    <th className="px-4 py-3 pr-4">Slug</th>
+                    <th className="px-4 py-3 pr-4">Nombre</th>
+                    <th className="px-4 py-3 pr-4">Orden</th>
+                    <th className="px-4 py-3 pr-4">Menú</th>
+                    <th className="px-4 py-3 pr-4">Acciones</th>
                   </tr>
                 </thead>
                 <tbody>
                   {communes.map((c) => (
-                    <tr key={c.slug} className="border-t border-gray-100">
-                      <td className="py-3 pr-4 font-mono text-sm">{c.slug}</td>
-                      <td className="py-3 pr-4">{c.label || c.slug}</td>
-                      <td className="py-3 pr-4">{Number(c.menu_order ?? 0)}</td>
-                      <td className="py-3 pr-4">
+                    <tr
+                      key={c.slug}
+                      className="border-t border-black/10 text-[#30312e] hover:bg-[#f7f7f4]"
+                    >
+                      <td className="px-4 py-3 pr-4 font-mono text-xs">
+                        {c.slug}
+                      </td>
+                      <td className="px-4 py-3 pr-4">{c.label || c.slug}</td>
+                      <td className="px-4 py-3 pr-4">
+                        {Number(c.menu_order ?? 0)}
+                      </td>
+                      <td className="px-4 py-3 pr-4 text-xs uppercase tracking-wide text-[#61625d]">
                         {c.show_in_menu === false ? "No" : "Sí"}
                       </td>
-                      <td className="py-3 pr-4">
-                        <div className="flex gap-2">
+                      <td className="whitespace-nowrap px-4 py-3 pr-4">
+                        <div className="flex gap-1">
                           <button
                             type="button"
                             onClick={() => startEdit(c)}
-                            className="px-3 py-1.5 border border-gray-300 rounded-lg hover:bg-gray-50"
+                            className="inline-flex h-8 w-8 items-center justify-center border border-black/10 hover:bg-[#f7f7f4]"
+                            title={`Editar ${c.slug}`}
+                            aria-label={`Editar ${c.slug}`}
                           >
-                            Editar
+                            <Pencil size={15} />
                           </button>
                           <button
                             type="button"
                             onClick={() => setDetailSlug(c.slug)}
-                            className="px-3 py-1.5 border border-gray-300 rounded-lg hover:bg-gray-50"
+                            className="inline-flex h-8 w-8 items-center justify-center border border-black/10 hover:bg-[#f7f7f4]"
+                            title={`Ver posts de ${c.slug}`}
+                            aria-label={`Ver posts de ${c.slug}`}
                           >
-                            Posts
+                            <List size={15} />
                           </button>
                           <button
                             type="button"
                             onClick={() => deleteCommune(c)}
                             disabled={deletingSlug === c.slug}
-                            className="px-3 py-1.5 border border-red-300 text-red-700 rounded-lg hover:bg-red-50 disabled:opacity-60"
+                            className="inline-flex h-8 w-8 items-center justify-center border border-[#ba1028]/30 text-[#ba1028] hover:bg-[#fff1f2] disabled:opacity-60"
+                            title={`Eliminar ${c.slug}`}
+                            aria-label={`Eliminar ${c.slug}`}
                           >
-                            {deletingSlug === c.slug
-                              ? "Eliminando…"
-                              : "Eliminar"}
+                            {deletingSlug === c.slug ? (
+                              <RefreshCw className="animate-spin" size={15} />
+                            ) : (
+                              <Trash2 size={15} />
+                            )}
                           </button>
                         </div>
                       </td>
@@ -580,13 +636,13 @@ export default function AdminCommunesPage() {
         </div>
       </div>
 
-      <div className="bg-white rounded-lg shadow">
-        <div className="p-6 border-b border-gray-200 flex items-center justify-between">
+      <div className="border border-black/10 bg-white">
+        <div className="flex items-center justify-between border-b border-black/10 p-5">
           <div>
-            <h2 className="text-xl font-bold text-gray-900">
+            <h2 className="font-neutra-demi text-xl uppercase tracking-wide text-[#20211f]">
               Posts por comuna
             </h2>
-            <p className="text-gray-600 mt-1">
+            <p className="mt-1 text-[#61625d]">
               Selecciona una comuna y asigna/quita posts.
             </p>
           </div>
@@ -614,31 +670,42 @@ export default function AdminCommunesPage() {
                 <label className="block text-sm font-medium text-gray-700 mb-2">
                   Buscar post por slug o nombre
                 </label>
-                <input
-                  type="text"
-                  value={postQuery}
-                  onChange={(e) => setPostQuery(e.target.value)}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg"
-                  placeholder="the-singular"
-                />
+                <div className="relative">
+                  <SearchIcon
+                    className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--color-brand-red)]"
+                    size={16}
+                  />
+                  <input
+                    type="text"
+                    value={postQuery}
+                    onChange={(e) => setPostQuery(e.target.value)}
+                    className="h-10 w-full border border-black/10 bg-[#fafaf8] py-2 pl-9 pr-3 text-sm outline-none focus:border-[var(--color-brand-red)]"
+                    placeholder="the-singular"
+                  />
+                </div>
                 {searchingPosts && (
                   <div className="text-sm text-gray-500 mt-2">Buscando…</div>
                 )}
                 {postResults.length > 0 && (
-                  <div className="mt-2 border border-gray-200 rounded-lg overflow-hidden">
+                  <div className="mt-2 overflow-hidden border border-black/10">
                     {postResults.map((p) => (
                       <button
                         key={p.slug}
                         type="button"
                         onClick={() => addPostToCommune(p.slug)}
                         disabled={addingPostSlug === p.slug}
-                        className="w-full text-left px-4 py-2 hover:bg-gray-50 flex items-center justify-between"
+                        className="flex w-full items-center justify-between px-4 py-2 text-left hover:bg-[#f7f7f4]"
                       >
                         <span className="text-sm">
                           <span className="font-mono">{p.slug}</span>
                           {p.name_es ? ` — ${p.name_es}` : ""}
                         </span>
-                        <span className="text-sm text-gray-600">
+                        <span className="inline-flex items-center gap-1 text-xs font-semibold uppercase tracking-wide text-[var(--color-brand-red)]">
+                          {addingPostSlug === p.slug ? (
+                            <RefreshCw className="animate-spin" size={14} />
+                          ) : (
+                            <UserPlus size={14} />
+                          )}
                           {addingPostSlug === p.slug ? "Agregando…" : "Agregar"}
                         </span>
                       </button>
@@ -647,14 +714,17 @@ export default function AdminCommunesPage() {
                 )}
               </div>
 
-              <div className="border-t border-gray-100 pt-4">
+              <div className="border-t border-black/10 pt-4">
                 <div className="flex items-center justify-between">
-                  <h3 className="text-lg font-bold text-gray-900">Asociados</h3>
+                  <h3 className="font-neutra-demi text-lg uppercase tracking-wide text-[#20211f]">
+                    Asociados
+                  </h3>
                   <button
                     type="button"
                     onClick={() => loadDetail(detailSlug)}
-                    className="px-3 py-1.5 border border-gray-300 rounded-lg hover:bg-gray-50"
+                    className="inline-flex items-center gap-2 border border-black/10 px-3 py-1.5 text-xs font-semibold uppercase tracking-wide hover:bg-[#f7f7f4]"
                   >
+                    <RefreshCw size={14} />
                     Recargar
                   </button>
                 </div>
@@ -668,7 +738,7 @@ export default function AdminCommunesPage() {
                     {detail?.posts.map((p) => (
                       <div
                         key={p.slug}
-                        className="flex items-center justify-between border border-gray-200 rounded-lg px-4 py-2"
+                        className="flex items-center justify-between border border-black/10 px-4 py-2"
                       >
                         <div className="text-sm">
                           <div className="font-mono">{p.slug}</div>
@@ -680,9 +750,15 @@ export default function AdminCommunesPage() {
                           type="button"
                           onClick={() => removePostFromCommune(p.slug)}
                           disabled={removingPostSlug === p.slug}
-                          className="px-3 py-1.5 border border-red-300 text-red-700 rounded-lg hover:bg-red-50 disabled:opacity-60"
+                          className="inline-flex h-8 w-8 items-center justify-center border border-[#ba1028]/30 text-[#ba1028] hover:bg-[#fff1f2] disabled:opacity-60"
+                          title={`Quitar ${p.slug}`}
+                          aria-label={`Quitar ${p.slug}`}
                         >
-                          {removingPostSlug === p.slug ? "Quitando…" : "Quitar"}
+                          {removingPostSlug === p.slug ? (
+                            <RefreshCw className="animate-spin" size={15} />
+                          ) : (
+                            <X size={15} />
+                          )}
                         </button>
                       </div>
                     ))}

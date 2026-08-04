@@ -88,16 +88,21 @@ export default function SettingsPage() {
   };
 
   return (
-    <div className="space-y-6">
-      <div>
-        <h1 className="text-3xl font-bold text-gray-900">Configuración</h1>
-        <p className="text-gray-600 mt-1">
+    <div className="space-y-7">
+      <div className="border-b border-black/10 pb-6">
+        <p className="mb-2 text-xs font-semibold uppercase tracking-[0.14em] text-[var(--color-brand-red)]">
+          Sistema
+        </p>
+        <h1 className="font-neutra-demi text-3xl uppercase tracking-wide text-[#20211f]">
+          Configuración
+        </h1>
+        <p className="mt-2 text-[#61625d]">
           Ajustes del panel de administración
         </p>
       </div>
 
-      <div className="bg-white rounded-lg shadow p-6">
-        <h2 className="text-xl font-bold text-gray-900 mb-4">
+      <div className="border border-black/10 bg-white p-5">
+        <h2 className="mb-4 font-neutra-demi text-xl uppercase tracking-wide text-[#20211f]">
           Credenciales de administrador
         </h2>
         <div className="space-y-4">
@@ -109,7 +114,7 @@ export default function SettingsPage() {
               type="text"
               value="admin"
               disabled
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg bg-gray-50"
+              className="w-full border border-black/10 bg-[#f3f3f1] px-4 py-2"
             />
           </div>
           <div>
@@ -120,7 +125,7 @@ export default function SettingsPage() {
               type="password"
               value="chileadicto2024"
               disabled
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg bg-gray-50"
+              className="w-full border border-black/10 bg-[#f3f3f1] px-4 py-2"
             />
           </div>
           <p className="text-sm text-gray-500">
@@ -129,18 +134,20 @@ export default function SettingsPage() {
         </div>
       </div>
 
-      <div className="bg-white rounded-lg shadow p-6">
+      <div className="border border-black/10 bg-white p-5">
         <div className="flex items-start justify-between gap-4">
           <div>
-            <h2 className="text-xl font-bold text-gray-900">Categorías</h2>
-            <p className="text-gray-600 mt-1">
+            <h2 className="font-neutra-demi text-xl uppercase tracking-wide text-[#20211f]">
+              Categorías
+            </h2>
+            <p className="mt-1 text-[#61625d]">
               Crea o actualiza categorías y se guardan en la base de datos.
             </p>
           </div>
           <button
             type="button"
             onClick={loadCategories}
-            className="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50"
+            className="border border-black/10 bg-white px-4 py-2 hover:bg-[#f7f7f4]"
             disabled={loadingCats}
           >
             {loadingCats ? "Cargando…" : "Recargar"}
@@ -148,7 +155,7 @@ export default function SettingsPage() {
         </div>
 
         {catsError && (
-          <div className="mt-4 bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg">
+          <div className="mt-4 border border-[#ba1028]/20 bg-[#fff1f2] px-4 py-3 text-[#ba1028]">
             {catsError}
           </div>
         )}
@@ -162,7 +169,7 @@ export default function SettingsPage() {
               type="text"
               value={slug}
               onChange={(e) => setSlug(e.target.value)}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg"
+              className="w-full border border-black/10 bg-white px-4 py-2"
               placeholder="ninos"
             />
             <p className="text-xs text-gray-500 mt-1">
@@ -178,7 +185,7 @@ export default function SettingsPage() {
               type="text"
               value={labelEs}
               onChange={(e) => setLabelEs(e.target.value)}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg"
+              className="w-full border border-black/10 bg-white px-4 py-2"
               placeholder="NIÑOS"
             />
           </div>
@@ -191,7 +198,7 @@ export default function SettingsPage() {
               type="text"
               value={labelEn}
               onChange={(e) => setLabelEn(e.target.value)}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg"
+              className="w-full border border-black/10 bg-white px-4 py-2"
               placeholder="KIDS"
             />
           </div>
@@ -202,7 +209,7 @@ export default function SettingsPage() {
             type="button"
             onClick={saveCategory}
             disabled={savingCat}
-            className="px-4 py-2 bg-[var(--color-brand-red)] text-white rounded-lg font-bold uppercase hover:opacity-90 disabled:opacity-60"
+            className="px-4 py-2 bg-[var(--color-brand-red)] text-white font-bold uppercase hover:opacity-90 disabled:opacity-60"
           >
             {savingCat ? "Guardando…" : "Guardar categoría"}
           </button>
@@ -210,9 +217,9 @@ export default function SettingsPage() {
 
         <div className="mt-8">
           <h3 className="text-lg font-bold text-gray-900 mb-3">Existentes</h3>
-          <div className="overflow-x-auto border border-gray-200 rounded-lg">
+          <div className="overflow-x-auto border border-black/10">
             <table className="min-w-full text-sm">
-              <thead className="bg-gray-50">
+              <thead className="bg-[#f3f3f1]">
                 <tr>
                   <th className="text-left px-4 py-2 font-semibold text-gray-700">
                     slug

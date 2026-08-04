@@ -104,6 +104,7 @@ export default function AdminAgendaCulturalPage() {
   const [periodForm, setPeriodForm] = useState<any>(emptyPeriod);
   const [assignmentForm, setAssignmentForm] = useState<any>(emptyAssignment);
   const [featuredForm, setFeaturedForm] = useState<any>(emptyFeatured);
+  const [selectedPeriodId, setSelectedPeriodId] = useState<number | null>(null);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState("");
@@ -171,7 +172,9 @@ export default function AdminAgendaCulturalPage() {
   const remove = async (entity: Tab, id: number) => {
     if (
       !window.confirm(
-        "¿Eliminar este elemento? Esta acción no se puede deshacer.",
+        entity === "assignments"
+          ? "¿Desvincular este post de Agenda Cultural? Se eliminará su programación y dejará de aparecer en los períodos relacionados."
+          : "¿Eliminar este elemento? Esta acción no se puede deshacer.",
       )
     )
       return;
@@ -191,6 +194,19 @@ export default function AdminAgendaCulturalPage() {
     }
     await load();
   };
+
+  const selectedPeriod = periods.find(
+    (period) => period.id === selectedPeriodId,
+  );
+  const periodAssignments = selectedPeriod
+    ? assignments.filter((assignment) => {
+        const periodStart = selectedPeriod.period_start || "0001-01-01";
+        const periodEnd = selectedPeriod.period_end || "9999-12-31";
+        const assignmentStart = assignment.start_date || "0001-01-01";
+        const assignmentEnd = assignment.end_date || "9999-12-31";
+        return assignmentStart <= periodEnd && periodStart <= assignmentEnd;
+      })
+    : [];
 
   const upload = async (file: File, setUrl: (url: string) => void) => {
     setSaving(true);
@@ -537,45 +553,138 @@ export default function AdminAgendaCulturalPage() {
             ) : (
               periods.map((period) => (
                 <div
-                  className="flex flex-wrap items-center justify-between gap-3 border-b border-black/10 p-4 last:border-b-0"
                   key={period.id}
+                  className="border-b border-black/10 last:border-b-0"
                 >
-                  <div className="flex items-center gap-3">
-                    <div className="grid size-9 place-items-center bg-[#f3f3f1] text-[var(--color-brand-red)]">
-                      <CalendarRange className="size-4" />
+                  <div className="flex flex-wrap items-center justify-between gap-3 p-4">
+                    <button
+                      type="button"
+                      className="flex min-w-0 items-center gap-3 text-left"
+                      onClick={() => {
+                        setPeriodForm(period);
+                        setSelectedPeriodId((current) =>
+                          current === period.id ? null : period.id,
+                        );
+                      }}
+                      aria-expanded={selectedPeriodId === period.id}
+                    >
+                      <div className="grid size-9 shrink-0 place-items-center bg-[#f3f3f1] text-[var(--color-brand-red)]">
+                        <CalendarRange className="size-4" />
+                      </div>
+                      <span className="min-w-0">
+                        <strong className="block truncate text-sm">
+                          {period.label || period.title_es || "Sin nombre"}
+                        </strong>
+                        <span className="mt-0.5 block text-sm text-[#61625d]">
+                          {period.period_start} a {period.period_end} ·{" "}
+                          {
+                            assignments.filter((assignment) => {
+                              const assignmentStart =
+                                assignment.start_date || "0001-01-01";
+                              const assignmentEnd =
+                                assignment.end_date || "9999-12-31";
+                              return (
+                                assignmentStart <=
+                                  (period.period_end || "9999-12-31") &&
+                                (period.period_start || "0001-01-01") <=
+                                  assignmentEnd
+                              );
+                            }).length
+                          }{" "}
+                          posts relacionados
+                        </span>
+                      </span>
+                    </button>
+                    <div className="flex items-center gap-2">
+                      <span
+                        className={`px-2 py-1 text-[11px] font-semibold uppercase tracking-wide ${period.status === "published" ? "bg-[#e8f5ef] text-[#276c61]" : "bg-[#f4eee1] text-[#8d651e]"}`}
+                      >
+                        {period.status === "published"
+                          ? "Publicado"
+                          : "Borrador"}
+                      </span>
+                      <Button
+                        variant="outline"
+                        size="icon"
+                        onClick={() => {
+                          setPeriodForm(period);
+                          setSelectedPeriodId(period.id);
+                        }}
+                        title="Editar período"
+                      >
+                        <Pencil className="size-4" />
+                      </Button>
+                      <Button
+                        variant="outline"
+                        size="icon"
+                        onClick={() => void remove("periods", period.id)}
+                        title="Eliminar período"
+                      >
+                        <Trash2 className="size-4" />
+                      </Button>
                     </div>
-                    <div>
-                      <strong className="text-sm">
-                        {period.label || period.title_es || "Sin nombre"}
-                      </strong>
-                      <p className="mt-0.5 text-sm text-[#61625d]">
-                        {period.period_start} a {period.period_end}
+                  </div>
+                  {selectedPeriodId === period.id && (
+                    <div className="border-t border-black/10 bg-[#fafaf8] px-4 py-3">
+                      <p className="mb-3 text-xs font-semibold uppercase tracking-wide text-[#61625d]">
+                        Posts relacionados con este período
                       </p>
+                      {periodAssignments.length > 0 ? (
+                        <div className="space-y-2">
+                          {periodAssignments.map((assignment) => {
+                            const post = posts.find(
+                              (item) => item.slug === assignment.post_slug,
+                            );
+                            return (
+                              <div
+                                className="flex flex-wrap items-center justify-between gap-3 border border-black/10 bg-white p-3"
+                                key={assignment.id}
+                              >
+                                <div className="flex min-w-0 items-center gap-3">
+                                  {postImageUrl(post) ? (
+                                    <img
+                                      src={postImageUrl(post) || undefined}
+                                      alt=""
+                                      className="size-14 shrink-0 bg-[#ecece8] object-cover"
+                                    />
+                                  ) : (
+                                    <div className="grid size-14 shrink-0 place-items-center bg-[#ecece8] text-[10px] font-semibold uppercase text-[#61625d]">
+                                      Sin foto
+                                    </div>
+                                  )}
+                                  <div className="min-w-0">
+                                    <strong className="block truncate text-sm">
+                                      {postTitle(post) || assignment.post_slug}
+                                    </strong>
+                                    <span className="block truncate text-xs text-[#61625d]">
+                                      {assignment.post_slug} ·{" "}
+                                      {assignment.start_date || "Sin inicio"} a{" "}
+                                      {assignment.end_date || "Sin término"}
+                                    </span>
+                                  </div>
+                                </div>
+                                <Button
+                                  type="button"
+                                  variant="outline"
+                                  size="sm"
+                                  onClick={() =>
+                                    void remove("assignments", assignment.id)
+                                  }
+                                >
+                                  <Trash2 className="mr-2 size-4" />
+                                  Desvincular
+                                </Button>
+                              </div>
+                            );
+                          })}
+                        </div>
+                      ) : (
+                        <p className="text-sm text-[#61625d]">
+                          Este período no tiene posts relacionados.
+                        </p>
+                      )}
                     </div>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <span
-                      className={`px-2 py-1 text-[11px] font-semibold uppercase tracking-wide ${period.status === "published" ? "bg-[#e8f5ef] text-[#276c61]" : "bg-[#f4eee1] text-[#8d651e]"}`}
-                    >
-                      {period.status === "published" ? "Publicado" : "Borrador"}
-                    </span>
-                    <Button
-                      variant="outline"
-                      size="icon"
-                      onClick={() => setPeriodForm(period)}
-                      title="Editar período"
-                    >
-                      <Pencil className="size-4" />
-                    </Button>
-                    <Button
-                      variant="outline"
-                      size="icon"
-                      onClick={() => void remove("periods", period.id)}
-                      title="Eliminar período"
-                    >
-                      <Trash2 className="size-4" />
-                    </Button>
-                  </div>
+                  )}
                 </div>
               ))
             )}

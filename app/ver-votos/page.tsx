@@ -17,7 +17,9 @@ type Vote = {
 type VoteCounts = Record<string, number>;
 
 const slugAliases: Record<string, string> = {
-  "leonera": "leonera-hotel",
+  leonera: "leonera-hotel",
+  "hotel-puerta-del-sur":
+    "hotel-puerta-del-sur-el-primer-hotel-santuario-en-la-primera-ciudad-humedal-de-america-latina",
 };
 
 const normalizeSlug = (slug: string) => slugAliases[slug] || slug;
@@ -73,7 +75,7 @@ export default function VerVotosPage() {
           console.log("Nuevo voto recibido:", payload);
           // Recargar todos los votos cuando haya un cambio
           fetchVotes();
-        }
+        },
       )
       .subscribe();
 
@@ -116,7 +118,16 @@ export default function VerVotosPage() {
       const rows = votes;
       const lines: string[] = [];
       lines.push(
-        ["hotel_slug", "hotel_nombre", "categoria", "hearts", "votante", "email", "fecha", "site"].join(";")
+        [
+          "hotel_slug",
+          "hotel_nombre",
+          "categoria",
+          "hearts",
+          "votante",
+          "email",
+          "fecha",
+          "site",
+        ].join(";"),
       );
       for (const v of rows) {
         lines.push(
@@ -129,7 +140,7 @@ export default function VerVotosPage() {
             toCsvCell(v.voter_email),
             toCsvCell(formatDate(v.created_at)),
             toCsvCell(v.site),
-          ].join(";")
+          ].join(";"),
         );
       }
       const now = new Date();
@@ -158,8 +169,7 @@ export default function VerVotosPage() {
   };
 
   // Ordenar hoteles por cantidad de votos (mayor a menor)
-  const sortedHotels = Object.entries(counts)
-    .sort(([, a], [, b]) => b - a);
+  const sortedHotels = Object.entries(counts).sort(([, a], [, b]) => b - a);
 
   return (
     <div className="min-h-screen bg-gray-50 p-4 md:p-8">

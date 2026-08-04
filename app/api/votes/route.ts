@@ -5,6 +5,16 @@ export const runtime = "nodejs";
 const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL;
 const SUPABASE_SERVICE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY;
 
+const HOTEL_SLUG_ALIASES: Record<string, string> = {
+  "hotel-puerta-del-sur":
+    "hotel-puerta-del-sur-el-primer-hotel-santuario-en-la-primera-ciudad-humedal-de-america-latina",
+};
+
+function canonicalHotelSlug(value: unknown): string {
+  const slug = String(value || "").trim().toLowerCase();
+  return HOTEL_SLUG_ALIASES[slug] || slug;
+}
+
 function getHeaders() {
   return {
     apikey: SUPABASE_SERVICE_KEY!,
@@ -26,9 +36,10 @@ export async function POST(req: Request) {
       category,
       hearts,
     } = body;
+    const canonicalSlug = canonicalHotelSlug(hotel_slug);
 
     // Validaciones
-    if (!hotel_slug || !voter_name || !voter_email) {
+    if (!canonicalSlug || !voter_name || !voter_email) {
       return NextResponse.json(
         { error: "hotel_slug, voter_name y voter_email son requeridos" },
         { status: 400 }
@@ -74,7 +85,7 @@ export async function POST(req: Request) {
       method: "POST",
       headers: getHeaders(),
       body: JSON.stringify({
-        hotel_slug,
+        hotel_slug: canonicalSlug,
         voter_name: voter_name.trim(),
         voter_email: voter_email.toLowerCase().trim(),
         site,

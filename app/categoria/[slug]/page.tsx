@@ -1116,13 +1116,30 @@ export default function CategoryPage({ params }: { params: any }) {
 
   // La API decide períodos y apariciones; la página solo resuelve los posts ya cargados.
   const agendaReturnStorageKey = "agenda-cultural:last-clicked-post";
+  const agendaSelectedPeriodStorageKey = "agenda-cultural:selected-period";
 
   const handleAgendaCardClick = (
     postSlug: string,
+    period?: AgendaPeriod,
     cardElement?: HTMLElement,
   ) => {
     if (!isAgendaCultural || !postSlug) return;
     sessionStorage.setItem(agendaReturnStorageKey, postSlug);
+    if (period?.desktopImageUrl) {
+      sessionStorage.setItem(
+        agendaSelectedPeriodStorageKey,
+        JSON.stringify({
+          postSlug,
+          periodId: period.id,
+          href: period.href,
+          desktopImageUrl: period.desktopImageUrl,
+          mobileImageUrl: period.mobileImageUrl,
+          alt: period.alt,
+        }),
+      );
+    } else {
+      sessionStorage.removeItem(agendaSelectedPeriodStorageKey);
+    }
 
     const article = cardElement?.querySelector("article");
     if (article) {
@@ -1435,7 +1452,9 @@ export default function CategoryPage({ params }: { params: any }) {
                         publishEndAt={hotel.publishEndAt}
                         publicationEndsAt={hotel.publicationEndsAt}
                         showPublicationDates={false}
-                        onCardClick={handleAgendaCardClick}
+                        onCardClick={(postSlug, cardElement) =>
+                          handleAgendaCardClick(postSlug, group, cardElement)
+                        }
                       />
                     ))}
                   </div>

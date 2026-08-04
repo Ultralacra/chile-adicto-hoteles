@@ -176,6 +176,7 @@ export async function GET(req: Request) {
     const siteId = await getCurrentSiteId(req);
     const language: AgendaLanguage = url.searchParams.get("lang") === "en" ? "en" : "es";
     const isAdmin = url.searchParams.has("adminSite") && url.searchParams.get("all") === "1";
+    const postSlug = String(url.searchParams.get("postSlug") || "").trim();
     if (isAdmin) requireAdminKey(req);
 
     const date = url.searchParams.get("date") || agendaDateInChile();
@@ -191,10 +192,8 @@ export async function GET(req: Request) {
     const activeAssignments = rows.assignments.filter(
       (assignment: any) => assignment.active !== false,
     );
-    const periods = rows.periods
-      .filter((period: any) =>
-        period.active !== false && period.status === "published" && period.period_end >= date,
-      )
+    const mappedPublishedPeriods = rows.periods
+      .filter((period: any) => period.active !== false && period.status === "published")
       .map((period: any) => {
         const postSlugs = activeAssignments
           .filter((assignment: any) => rangesOverlap(period.period_start, period.period_end, assignment.start_date, assignment.end_date))
@@ -203,6 +202,20 @@ export async function GET(req: Request) {
           .filter(Boolean);
         return mapAgendaPeriod(period, language, Array.from(new Set(postSlugs)));
       });
+    const matchedPeriod = postSlug
+      ? mappedPublishedPeriods.find(
+          (period) =>
+            period.postSlugs.includes(postSlug) &&
+            period.startDate <= date &&
+            period.endDate >= date,
+        ) ||
+        mappedPublishedPeriods.find((period) => period.postSlugs.includes(postSlug)) ||
+        null
+      : null;
+    const periods = mappedPublishedPeriods
+      .filter((period: any) =>
+        period.endDate >= date,
+      );
     const featured = rows.featured
       .filter((slot: any) => slot.status === "published" && isActiveOnDate(slot.start_date, slot.end_date, date))
       .sort((left: any, right: any) => Number(left.sort_order || 0) - Number(right.sort_order || 0))[0];
@@ -210,6 +223,7 @@ export async function GET(req: Request) {
     return NextResponse.json({
       date,
       periods,
+      matchedPeriod,
       featured: featured ? mapAgendaFeaturedSlot(featured, language) : null,
     });
   } catch (error) {

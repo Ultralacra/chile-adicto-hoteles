@@ -10,7 +10,6 @@ import { CategoryNav } from "@/components/category-nav";
 import { HotelCard } from "@/components/hotel-card";
 import { useSiteApi } from "@/hooks/use-site-api";
 import { BottomHomeBanner } from "@/components/home-promo-banners";
-import { findAgendaBannerForPost } from "@/lib/agenda-banner-ranges";
 import { getStorageImageUrl } from "@/lib/supabase-storage";
 
 interface LocationInfo {
@@ -62,8 +61,15 @@ interface HotelDetailProps {
   noContainer?: boolean;
 }
 
-export function HotelDetail({ slug, hotel, hideBanners = false, noContainer = false }: HotelDetailProps) {
-  const { t } = useLanguage();
+const agendaSelectedPeriodStorageKey = "agenda-cultural:selected-period";
+
+export function HotelDetail({
+  slug,
+  hotel,
+  hideBanners = false,
+  noContainer = false,
+}: HotelDetailProps) {
+  const { t, language } = useLanguage();
   const { cachedFetchWithSite } = useSiteApi();
   const router = useRouter();
   const toSlug = (input: string) =>
@@ -86,9 +92,13 @@ export function HotelDetail({ slug, hotel, hideBanners = false, noContainer = fa
   const isCafesPost = normalizedCategories.includes("cafes");
 
   const isAgendaPost = normalizedCategories.includes("agenda-cultural");
-  const agendaBanner = isAgendaPost
-    ? findAgendaBannerForPost(slug || "", hotel.publishStartAt, hotel.publishEndAt)
-    : undefined;
+  const [agendaBanner, setAgendaBanner] = useState<{
+    href: string;
+    src: string;
+    mobileSrc?: string;
+    alt: string;
+  } | null>(null);
+  const agendaSelectedPeriodAppliedRef = useRef<string | null>(null);
 
   const isToyotaPost = normalizedCategories.some(
     (category) =>
@@ -100,9 +110,20 @@ export function HotelDetail({ slug, hotel, hideBanners = false, noContainer = fa
   const isIconosPost = normalizedCategories.includes("iconos");
   const isParquesPost = normalizedCategories.includes("parques");
   const isBaresPost = normalizedCategories.includes("bares");
-  const isRestaurantesPost = normalizedCategories.includes("restaurantes") || normalizedCategories.includes("restaurants");
+  const isRestaurantesPost =
+    normalizedCategories.includes("restaurantes") ||
+    normalizedCategories.includes("restaurants");
   // Fallback: slugs conocidos de posts de ICONOS (por si la API no devuelve categorías)
-  console.log("[HotelDetail] slug:", slug, "categories:", hotel?.categories, "normalized:", normalizedCategories, "isIconosPost:", isIconosPost);
+  console.log(
+    "[HotelDetail] slug:",
+    slug,
+    "categories:",
+    hotel?.categories,
+    "normalized:",
+    normalizedCategories,
+    "isIconosPost:",
+    isIconosPost,
+  );
   const ICONOS_SLUGS = new Set([
     "edificio-banco-de-chile-casi-100-anos-de-arquitectura-patrimonial",
     "teatro-municipal-la-gran-obra-de-brunet-de-baines",
@@ -122,11 +143,29 @@ export function HotelDetail({ slug, hotel, hideBanners = false, noContainer = fa
   ]);
   const isIconosBySlug = slug ? ICONOS_SLUGS.has(slug) : false;
   const isIconosFinal = isIconosPost || isIconosBySlug;
-  console.log("[HotelDetail] isIconosBySlug:", isIconosBySlug, "isIconosFinal:", isIconosFinal, "showCategoryBanner:", isMonumentosPost || isCafesPost || isAgendaPost || isToyotaPost || isIconosFinal || isParquesPost);
+  console.log(
+    "[HotelDetail] isIconosBySlug:",
+    isIconosBySlug,
+    "isIconosFinal:",
+    isIconosFinal,
+    "showCategoryBanner:",
+    isMonumentosPost ||
+      isCafesPost ||
+      isAgendaPost ||
+      isToyotaPost ||
+      isIconosFinal ||
+      isParquesPost,
+  );
   const showToyotaCards = isToyotaPost || isIconosFinal || isParquesPost;
 
-  const showCategoryBanner = !hideBanners &&
-    (isMonumentosPost || isCafesPost || isAgendaPost || isToyotaPost || isIconosFinal || isParquesPost);
+  const showCategoryBanner =
+    !hideBanners &&
+    (isMonumentosPost ||
+      isCafesPost ||
+      isAgendaPost ||
+      isToyotaPost ||
+      isIconosFinal ||
+      isParquesPost);
   // La galería NO debe incluir la imagen de portada. Si hay imágenes de galería, usamos solo esas.
   // Si NO hay imágenes de galería, mostramos la portada como único slide.
   const allImages =
@@ -171,6 +210,85 @@ export function HotelDetail({ slug, hotel, hideBanners = false, noContainer = fa
   const [restaurantCommunes, setRestaurantCommunes] = useState(
     fallbackRestaurantCommunes,
   );
+
+  useEffect(() => {
+    if (!isAgendaPost || !slug) {
+      setAgendaBanner(null);
+      return;
+    }
+
+    let cancelled = false;
+    if (agendaSelectedPeriodAppliedRef.current === slug) return;
+
+    try {
+      const rawSelectedPeriod = sessionStorage.getItem(
+        agendaSelectedPeriodStorageKey,
+      );
+      if (rawSelectedPeriod) {
+        const selectedPeriod = JSON.parse(rawSelectedPeriod) as {
+          postSlug?: string;
+          href?: string;
+          desktopImageUrl?: string;
+          mobileImageUrl?: string | null;
+          alt?: string;
+        };
+        if (selectedPeriod?.postSlug === slug) {
+          sessionStorage.removeItem(agendaSelectedPeriodStorageKey);
+          const desktopImageUrl = String(
+            selectedPeriod.desktopImageUrl || "",
+          ).trim();
+          if (desktopImageUrl) {
+            agendaSelectedPeriodAppliedRef.current = slug;
+            setAgendaBanner({
+              href: String(selectedPeriod.href || "/categoria/agenda-cultural"),
+              src: desktopImageUrl,
+              mobileSrc:
+                String(selectedPeriod.mobileImageUrl || "").trim() || undefined,
+              alt: String(selectedPeriod.alt || "Agenda Cultural"),
+            });
+            return;
+          }
+        } else {
+          sessionStorage.removeItem(agendaSelectedPeriodStorageKey);
+        }
+      }
+    } catch {
+      sessionStorage.removeItem(agendaSelectedPeriodStorageKey);
+    }
+
+    const query = new URLSearchParams({
+      lang: language,
+      postSlug: slug,
+    });
+
+    cachedFetchWithSite(`/api/agenda-cultural?${query.toString()}`)
+      .then((data: any) => {
+        if (cancelled) return;
+        const matchedPeriod = data?.matchedPeriod;
+        const desktopImageUrl = String(
+          matchedPeriod?.desktopImageUrl || "",
+        ).trim();
+        if (!desktopImageUrl) {
+          setAgendaBanner(null);
+          return;
+        }
+
+        setAgendaBanner({
+          href: String(matchedPeriod?.href || "/categoria/agenda-cultural"),
+          src: desktopImageUrl,
+          mobileSrc:
+            String(matchedPeriod?.mobileImageUrl || "").trim() || undefined,
+          alt: String(matchedPeriod?.alt || "Agenda Cultural"),
+        });
+      })
+      .catch(() => {
+        if (!cancelled) setAgendaBanner(null);
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [cachedFetchWithSite, isAgendaPost, language, slug]);
 
   useEffect(() => {
     const cats = hotel?.categories || [];
@@ -515,7 +633,7 @@ export function HotelDetail({ slug, hotel, hideBanners = false, noContainer = fa
                     ? "/categoria/la-ruta-toyota"
                     : isMonumentosPost
                       ? "/monumentos-nacionales"
-                      : "/categoria/agenda-cultural"
+                      : agendaBanner?.href || "/categoria/agenda-cultural"
               }
               src={
                 isCafesPost
@@ -524,11 +642,11 @@ export function HotelDetail({ slug, hotel, hideBanners = false, noContainer = fa
                     ? "/bannerstoyota/BANNER LA RUTA TOYOTA ICONOS.png"
                     : isToyotaPost || isParquesPost
                       ? "/bannerstoyota/BANNER LA RUTA TOYOTA.webp"
-                        : isMonumentosPost
-                          ? "/bannerHome/BANNER MONUMENTOS.svg"
-                          : isAgendaPost && agendaBanner
-                            ? agendaBanner.src
-                            : "/bannersagenda/BANER AGENDA HEADER.png"
+                      : isMonumentosPost
+                        ? "/bannerHome/BANNER MONUMENTOS.svg"
+                        : isAgendaPost && agendaBanner
+                          ? agendaBanner.src
+                          : "/bannersagenda/BANER AGENDA HEADER.png"
               }
               mobileSrc={
                 isCafesPost
@@ -537,11 +655,11 @@ export function HotelDetail({ slug, hotel, hideBanners = false, noContainer = fa
                     ? "/bannerstoyota/BANNER LA RUTA TOYOTA ICONOS.png"
                     : isToyotaPost || isParquesPost
                       ? "/bannerstoyota/BANNER LA RUTA TOYOTA.webp"
-                        : isMonumentosPost
-                          ? "/bannerHome/monumentos movil.png"
-                          : isAgendaPost && agendaBanner
-                            ? agendaBanner.mobileSrc
-                            : undefined
+                      : isMonumentosPost
+                        ? "/bannerHome/monumentos movil.png"
+                        : isAgendaPost && agendaBanner
+                          ? agendaBanner.mobileSrc
+                          : undefined
               }
               alt={
                 isCafesPost
@@ -552,7 +670,7 @@ export function HotelDetail({ slug, hotel, hideBanners = false, noContainer = fa
                       ? "La Ruta Toyota"
                       : isMonumentosPost
                         ? "Monumentos Nacionales"
-                        : "Agenda Cultural"
+                        : agendaBanner?.alt || "Agenda Cultural"
               }
             />
           </div>

@@ -114,7 +114,7 @@ export default function AdminAgendaCulturalPage() {
       const [agendaResponse, postsResponse] = await Promise.all([
         fetchWithSite("/api/agenda-cultural?all=1"),
         fetchWithSite(
-          "/api/posts?categorySlug=agenda-cultural&includeExpired=1",
+          "/api/posts?categorySlug=agenda-cultural&includeExpired=1&adminSite=1",
         ),
       ]);
       const agenda = agendaResponse.ok ? await agendaResponse.json() : {};

@@ -1239,20 +1239,46 @@ export default function AdminSlidersList() {
               <div className="grid gap-5 border-t border-black/10 pt-5 lg:grid-cols-[minmax(240px,0.72fr)_minmax(0,1.45fr)]">
                 <section className="min-w-0 border border-black/10 bg-[#fafaf8]">
                   <div className="border-b border-black/10 px-3 py-2.5">
-                    <h2 className="font-neutra-demi text-sm uppercase tracking-wide text-[#20211f]">Secuencia</h2>
-                    <p className="mt-0.5 text-xs text-[#61625d]">{dbItems.length} slides en este slider</p>
+                    <h2 className="font-neutra-demi text-sm uppercase tracking-wide text-[#20211f]">
+                      Secuencia
+                    </h2>
+                    <p className="mt-0.5 text-xs text-[#61625d]">
+                      {dbItems.length} slides en este slider
+                    </p>
                   </div>
                   <div className="max-h-[62vh] overflow-y-auto">
                     {dbItems.map((item, idx) => {
                       const selected = selectedDbIndex === idx;
                       return (
-                        <button key={`${dbKey}-${idx}`} type="button" onClick={() => setSelectedDbIndex(idx)} className={`flex w-full gap-3 border-b border-black/10 p-3 text-left transition-colors last:border-b-0 ${selected ? "bg-[#22231f] text-white" : "bg-white text-[#20211f] hover:bg-[#f3f3f1]"}`}>
+                        <button
+                          key={`${dbKey}-${idx}`}
+                          type="button"
+                          onClick={() => setSelectedDbIndex(idx)}
+                          className={`flex w-full gap-3 border-b border-black/10 p-3 text-left transition-colors last:border-b-0 ${selected ? "bg-[#22231f] text-white" : "bg-white text-[#20211f] hover:bg-[#f3f3f1]"}`}
+                        >
                           <div className="aspect-[16/9] w-20 shrink-0 overflow-hidden bg-[#e8e8e4]">
-                            {item.image_url ? <img src={item.image_url} alt="" className="size-full object-cover" /> : null}
+                            {item.image_url ? (
+                              <img
+                                src={item.image_url}
+                                alt=""
+                                className="size-full object-cover"
+                              />
+                            ) : null}
                           </div>
                           <span className="min-w-0 flex-1">
-                            <span className="flex items-center justify-between gap-2"><span className="font-neutra-demi text-sm uppercase tracking-wide">Slide {idx + 1}</span><span className={`size-2 shrink-0 ${item.active !== false ? "bg-[#268477]" : "bg-[#9a9b94]"}`} /></span>
-                            <span className={`mt-1 block truncate text-xs ${selected ? "text-white/65" : "text-[#61625d]"}`}>{item.href || "Sin destino"}</span>
+                            <span className="flex items-center justify-between gap-2">
+                              <span className="font-neutra-demi text-sm uppercase tracking-wide">
+                                Slide {idx + 1}
+                              </span>
+                              <span
+                                className={`size-2 shrink-0 ${item.active !== false ? "bg-[#268477]" : "bg-[#9a9b94]"}`}
+                              />
+                            </span>
+                            <span
+                              className={`mt-1 block truncate text-xs ${selected ? "text-white/65" : "text-[#61625d]"}`}
+                            >
+                              {item.href || "Sin destino"}
+                            </span>
                           </span>
                         </button>
                       );
@@ -1260,42 +1286,256 @@ export default function AdminSlidersList() {
                   </div>
                 </section>
 
-                {dbItems[selectedDbIndex] && (() => {
-                  const item = dbItems[selectedDbIndex];
-                  const idx = selectedDbIndex;
-                  return (
-                    <section className="min-w-0 border border-black/10 bg-white p-5">
-                      <div className="flex flex-wrap items-start justify-between gap-3 border-b border-black/10 pb-4">
-                        <div><p className="text-xs font-semibold uppercase tracking-[0.14em] text-[var(--color-brand-red)]">Configuración del slide</p><h2 className="mt-1 font-neutra-demi text-xl uppercase tracking-wide text-[#20211f]">Slide {idx + 1}</h2></div>
-                        <div className="flex items-center gap-1">
-                          <Button variant="outline" size="sm" className="rounded-none border-black/10" title="Subir slide" aria-label="Subir slide" onClick={() => moveDbItem(idx, -1)} disabled={idx === 0 || dbSaving}><ArrowUp size={15} /></Button>
-                          <Button variant="outline" size="sm" className="rounded-none border-black/10" title="Bajar slide" aria-label="Bajar slide" onClick={() => moveDbItem(idx, 1)} disabled={idx === dbItems.length - 1 || dbSaving}><ArrowDown size={15} /></Button>
-                          <Button variant="outline" size="sm" className="rounded-none border-red-200 text-red-600 hover:bg-red-50 hover:text-red-700" title="Quitar slide" aria-label="Quitar slide" onClick={() => removeDbItem(idx)} disabled={dbSaving}><Trash2 size={15} /></Button>
-                        </div>
-                      </div>
-                      <div className="mt-5 grid gap-5 xl:grid-cols-[200px_minmax(0,1fr)]">
-                        <div className="space-y-3">
-                          <div className="aspect-[16/9] overflow-hidden bg-[#f3f3f1]">
-                            {item.image_url ? <img src={item.image_url} alt={`Vista previa del slide ${idx + 1}`} className="size-full object-cover" /> : <div className="grid size-full place-items-center text-xs text-[#85867f]">Sin imagen</div>}
+                {dbItems[selectedDbIndex] &&
+                  (() => {
+                    const item = dbItems[selectedDbIndex];
+                    const idx = selectedDbIndex;
+                    return (
+                      <section className="min-w-0 border border-black/10 bg-white p-5">
+                        <div className="flex flex-wrap items-start justify-between gap-3 border-b border-black/10 pb-4">
+                          <div>
+                            <p className="text-xs font-semibold uppercase tracking-[0.14em] text-[var(--color-brand-red)]">
+                              Configuración del slide
+                            </p>
+                            <h2 className="mt-1 font-neutra-demi text-xl uppercase tracking-wide text-[#20211f]">
+                              Slide {idx + 1}
+                            </h2>
                           </div>
-                          <div className="flex gap-2"><Button type="button" variant="outline" size="sm" className="rounded-none border-black/10" onClick={() => openPickerFor(idx)} disabled={dbSaving || mediaLoading}>Elegir imagen</Button><Button type="button" variant="outline" size="sm" className="rounded-none border-black/10" onClick={() => reloadMedia({ refresh: true })} disabled={dbSaving || mediaLoading}><RefreshCw className={mediaLoading ? "animate-spin" : ""} size={14} /></Button></div>
+                          <div className="flex items-center gap-1">
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              className="rounded-none border-black/10"
+                              title="Subir slide"
+                              aria-label="Subir slide"
+                              onClick={() => moveDbItem(idx, -1)}
+                              disabled={idx === 0 || dbSaving}
+                            >
+                              <ArrowUp size={15} />
+                            </Button>
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              className="rounded-none border-black/10"
+                              title="Bajar slide"
+                              aria-label="Bajar slide"
+                              onClick={() => moveDbItem(idx, 1)}
+                              disabled={idx === dbItems.length - 1 || dbSaving}
+                            >
+                              <ArrowDown size={15} />
+                            </Button>
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              className="rounded-none border-red-200 text-red-600 hover:bg-red-50 hover:text-red-700"
+                              title="Quitar slide"
+                              aria-label="Quitar slide"
+                              onClick={() => removeDbItem(idx)}
+                              disabled={dbSaving}
+                            >
+                              <Trash2 size={15} />
+                            </Button>
+                          </div>
                         </div>
-                        <div className="grid content-start gap-4 md:grid-cols-2">
-                          <div className="space-y-2 md:col-span-2"><Label>Imagen (URL)</Label><Input value={item.image_url} onChange={(e) => updateDbItem(idx, { image_url: e.target.value })} placeholder="https://..." /><p className="text-xs text-[#61625d]">Pega una URL o selecciona un archivo desde la biblioteca visual.</p></div>
-                          <div className="space-y-2 md:col-span-2">
-                            <Label>Destino</Label>
-                            <div className="relative">
-                              <Input value={item.href || ""} onFocus={() => { if (hrefSuggestBlurTimerRef.current != null) window.clearTimeout(hrefSuggestBlurTimerRef.current); setHrefSuggest((state) => ({ ...state, index: idx, query: String(item.href || "").replace(/^\//, "") })); }} onBlur={() => { hrefSuggestBlurTimerRef.current = window.setTimeout(() => setHrefSuggest((state) => state.index === idx ? { ...state, index: null, items: [], loading: false } : state), 150); }} onChange={(e) => { const value = e.target.value; updateDbItem(idx, { href: value }); setHrefSuggest((state) => ({ ...state, index: idx, query: String(value || "").replace(/^\//, "") })); }} placeholder="/categoria o /mi-post" />
-                              {hrefSuggest.index === idx && (hrefSuggest.loading || hrefSuggest.items.length > 0) ? <div className="absolute z-50 mt-1 w-full border border-black/10 bg-white"><div className="max-h-56 overflow-auto">{hrefSuggest.loading ? <div className="px-3 py-2 text-xs text-muted-foreground">Buscando…</div> : null}{hrefSuggest.items.map((suggestion) => <button key={`${suggestion.kind}:${suggestion.slug}`} type="button" className="w-full border-b border-black/10 px-3 py-2 text-left text-sm last:border-b-0 hover:bg-[#f7f7f4]" onMouseDown={(event) => event.preventDefault()} onClick={() => { updateDbItem(idx, { href: suggestion.href }); setHrefSuggest((state) => ({ ...state, index: null, items: [], loading: false })); }} title={suggestion.href}><span className="flex items-center justify-between gap-2"><span className="truncate font-medium">{suggestion.label}</span><span className="shrink-0 text-[11px] text-muted-foreground">{suggestion.kind === "category" ? "Categoría" : "Post"}</span></span><span className="block truncate text-[11px] text-muted-foreground">{suggestion.href}</span></button>)}</div></div> : null}
+                        <div className="mt-5 grid gap-5 xl:grid-cols-[200px_minmax(0,1fr)]">
+                          <div className="space-y-3">
+                            <div className="aspect-[16/9] overflow-hidden bg-[#f3f3f1]">
+                              {item.image_url ? (
+                                <img
+                                  src={item.image_url}
+                                  alt={`Vista previa del slide ${idx + 1}`}
+                                  className="size-full object-cover"
+                                />
+                              ) : (
+                                <div className="grid size-full place-items-center text-xs text-[#85867f]">
+                                  Sin imagen
+                                </div>
+                              )}
+                            </div>
+                            <div className="flex gap-2">
+                              <Button
+                                type="button"
+                                variant="outline"
+                                size="sm"
+                                className="rounded-none border-black/10"
+                                onClick={() => openPickerFor(idx)}
+                                disabled={dbSaving || mediaLoading}
+                              >
+                                Elegir imagen
+                              </Button>
+                              <Button
+                                type="button"
+                                variant="outline"
+                                size="sm"
+                                className="rounded-none border-black/10"
+                                onClick={() => reloadMedia({ refresh: true })}
+                                disabled={dbSaving || mediaLoading}
+                              >
+                                <RefreshCw
+                                  className={mediaLoading ? "animate-spin" : ""}
+                                  size={14}
+                                />
+                              </Button>
                             </div>
                           </div>
-                          <div className="space-y-2"><Label>Idioma</Label><select className="h-9 w-full rounded-none border border-black/10 bg-[#fafaf8] px-2 text-sm" value={item.lang ?? ""} onChange={(e) => updateDbItem(idx, { lang: e.target.value || null })}><option value="">Sin idioma específico</option><option value="es">Español</option><option value="en">Inglés</option></select></div>
-                          <div className="border border-black/10 bg-[#fafaf8] px-3 py-2.5"><label className="flex cursor-pointer items-center justify-between gap-3 text-sm font-medium">Publicar slide<input type="checkbox" className="size-4 accent-[var(--color-brand-red)]" checked={item.active !== false} onChange={(e) => updateDbItem(idx, { active: e.target.checked })} /></label><p className="mt-1 text-xs text-[#61625d]">Los slides inactivos permanecen guardados, pero no se muestran.</p></div>
+                          <div className="grid content-start gap-4 md:grid-cols-2">
+                            <div className="space-y-2 md:col-span-2">
+                              <Label>Imagen (URL)</Label>
+                              <Input
+                                value={item.image_url}
+                                onChange={(e) =>
+                                  updateDbItem(idx, {
+                                    image_url: e.target.value,
+                                  })
+                                }
+                                placeholder="https://..."
+                              />
+                              <p className="text-xs text-[#61625d]">
+                                Pega una URL o selecciona un archivo desde la
+                                biblioteca visual.
+                              </p>
+                            </div>
+                            <div className="space-y-2 md:col-span-2">
+                              <Label>Destino</Label>
+                              <div className="relative">
+                                <Input
+                                  value={item.href || ""}
+                                  onFocus={() => {
+                                    if (hrefSuggestBlurTimerRef.current != null)
+                                      window.clearTimeout(
+                                        hrefSuggestBlurTimerRef.current,
+                                      );
+                                    setHrefSuggest((state) => ({
+                                      ...state,
+                                      index: idx,
+                                      query: String(item.href || "").replace(
+                                        /^\//,
+                                        "",
+                                      ),
+                                    }));
+                                  }}
+                                  onBlur={() => {
+                                    hrefSuggestBlurTimerRef.current =
+                                      window.setTimeout(
+                                        () =>
+                                          setHrefSuggest((state) =>
+                                            state.index === idx
+                                              ? {
+                                                  ...state,
+                                                  index: null,
+                                                  items: [],
+                                                  loading: false,
+                                                }
+                                              : state,
+                                          ),
+                                        150,
+                                      );
+                                  }}
+                                  onChange={(e) => {
+                                    const value = e.target.value;
+                                    updateDbItem(idx, { href: value });
+                                    setHrefSuggest((state) => ({
+                                      ...state,
+                                      index: idx,
+                                      query: String(value || "").replace(
+                                        /^\//,
+                                        "",
+                                      ),
+                                    }));
+                                  }}
+                                  placeholder="/categoria o /mi-post"
+                                />
+                                {hrefSuggest.index === idx &&
+                                (hrefSuggest.loading ||
+                                  hrefSuggest.items.length > 0) ? (
+                                  <div className="absolute z-50 mt-1 w-full border border-black/10 bg-white">
+                                    <div className="max-h-56 overflow-auto">
+                                      {hrefSuggest.loading ? (
+                                        <div className="px-3 py-2 text-xs text-muted-foreground">
+                                          Buscando…
+                                        </div>
+                                      ) : null}
+                                      {hrefSuggest.items.map((suggestion) => (
+                                        <button
+                                          key={`${suggestion.kind}:${suggestion.slug}`}
+                                          type="button"
+                                          className="w-full border-b border-black/10 px-3 py-2 text-left text-sm last:border-b-0 hover:bg-[#f7f7f4]"
+                                          onMouseDown={(event) =>
+                                            event.preventDefault()
+                                          }
+                                          onClick={() => {
+                                            updateDbItem(idx, {
+                                              href: suggestion.href,
+                                            });
+                                            setHrefSuggest((state) => ({
+                                              ...state,
+                                              index: null,
+                                              items: [],
+                                              loading: false,
+                                            }));
+                                          }}
+                                          title={suggestion.href}
+                                        >
+                                          <span className="flex items-center justify-between gap-2">
+                                            <span className="truncate font-medium">
+                                              {suggestion.label}
+                                            </span>
+                                            <span className="shrink-0 text-[11px] text-muted-foreground">
+                                              {suggestion.kind === "category"
+                                                ? "Categoría"
+                                                : "Post"}
+                                            </span>
+                                          </span>
+                                          <span className="block truncate text-[11px] text-muted-foreground">
+                                            {suggestion.href}
+                                          </span>
+                                        </button>
+                                      ))}
+                                    </div>
+                                  </div>
+                                ) : null}
+                              </div>
+                            </div>
+                            <div className="space-y-2">
+                              <Label>Idioma</Label>
+                              <select
+                                className="h-9 w-full rounded-none border border-black/10 bg-[#fafaf8] px-2 text-sm"
+                                value={item.lang ?? ""}
+                                onChange={(e) =>
+                                  updateDbItem(idx, {
+                                    lang: e.target.value || null,
+                                  })
+                                }
+                              >
+                                <option value="">Sin idioma específico</option>
+                                <option value="es">Español</option>
+                                <option value="en">Inglés</option>
+                              </select>
+                            </div>
+                            <div className="border border-black/10 bg-[#fafaf8] px-3 py-2.5">
+                              <label className="flex cursor-pointer items-center justify-between gap-3 text-sm font-medium">
+                                Publicar slide
+                                <input
+                                  type="checkbox"
+                                  className="size-4 accent-[var(--color-brand-red)]"
+                                  checked={item.active !== false}
+                                  onChange={(e) =>
+                                    updateDbItem(idx, {
+                                      active: e.target.checked,
+                                    })
+                                  }
+                                />
+                              </label>
+                              <p className="mt-1 text-xs text-[#61625d]">
+                                Los slides inactivos permanecen guardados, pero
+                                no se muestran.
+                              </p>
+                            </div>
+                          </div>
                         </div>
-                      </div>
-                    </section>
-                  );
-                })()}
+                      </section>
+                    );
+                  })()}
               </div>
             )}
 

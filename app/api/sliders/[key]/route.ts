@@ -75,7 +75,7 @@ type SliderItem = {
 	lang?: string | null;
 };
 
-export async function GET(req: Request, { params }: { params: { key: string } }) {
+export async function GET(req: Request, { params }: { params: Promise<{ key: string }> }) {
 	try {
 		const siteId = await getCurrentSiteId(req);
 		const ctx = (await (params as any)) as { key?: string };
@@ -131,7 +131,7 @@ export async function GET(req: Request, { params }: { params: { key: string } })
 	}
 }
 
-export async function PUT(req: Request, { params }: { params: { key: string } }) {
+export async function PUT(req: Request, { params }: { params: Promise<{ key: string }> }) {
 	try {
 		const siteId = await getCurrentSiteId(req);
 		const ctx = (await (params as any)) as { key?: string };

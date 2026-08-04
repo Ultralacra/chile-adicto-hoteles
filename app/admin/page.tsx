@@ -1,6 +1,14 @@
 "use client";
 
-import { FileText, TrendingUp } from "lucide-react";
+import {
+  ArrowUpRight,
+  CalendarDays,
+  FilePlus2,
+  FileText,
+  FolderTree,
+  Image,
+  Layers3,
+} from "lucide-react";
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 import { Spinner } from "@/components/ui/spinner";
@@ -60,94 +68,156 @@ export default function AdminDashboard() {
   }, [posts, categories]);
 
   return (
-    <div className="space-y-6">
-      <div>
-        <h1 className="text-3xl font-bold text-gray-900">Dashboard</h1>
-        <p className="text-gray-600 mt-1">
-          Welcome to Chile Adicto Hotels Admin Panel
-        </p>
+    <div className="space-y-8">
+      <div className="flex flex-col justify-between gap-4 border-b border-black/10 pb-6 sm:flex-row sm:items-end">
+        <div>
+          <p className="mb-2 text-xs font-semibold uppercase tracking-[0.14em] text-[var(--color-brand-red)]">
+            Resumen editorial
+          </p>
+          <h1 className="font-neutra-demi text-3xl uppercase tracking-wide text-[#20211f]">
+            Contenido de {currentSite}
+          </h1>
+          <p className="mt-2 text-[#61625d]">
+            Administra publicaciones, campañas visuales y la agenda cultural
+            desde un solo lugar.
+          </p>
+        </div>
+        <Link
+          href="/admin/posts/new"
+          className="inline-flex h-10 items-center justify-center gap-2 bg-[var(--color-brand-red)] px-4 text-sm font-medium text-white transition-colors hover:bg-[#ba1028]"
+        >
+          <FilePlus2 className="size-4" /> Nuevo post
+        </Link>
       </div>
 
       {loading && (
-        <div className="w-full p-6 bg-white rounded-lg shadow flex items-center gap-2 text-gray-600">
+        <div className="flex items-center gap-2 border border-black/10 bg-white px-4 py-3 text-sm text-[#61625d]">
           <Spinner className="size-4" /> Cargando datos…
         </div>
       )}
 
-      {/* Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div className="bg-white rounded-lg shadow p-6">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm text-gray-600 font-medium">Total Posts</p>
-              <p className="text-3xl font-bold text-gray-900 mt-2">
-                {totalPosts}
-              </p>
-            </div>
-            <div className="bg-blue-100 p-3 rounded-lg">
-              <FileText className="text-blue-600" size={24} />
-            </div>
+      <div className="grid gap-px overflow-hidden border border-black/10 bg-black/10 md:grid-cols-3">
+        <div className="flex items-start justify-between bg-white p-5">
+          <div>
+            <p className="text-xs font-semibold uppercase tracking-[0.12em] text-[#61625d]">
+              Posts
+            </p>
+            <p className="mt-2 font-neutra-demi text-4xl text-[#20211f]">
+              {totalPosts}
+            </p>
+            <p className="mt-1 text-sm text-[#61625d]">Entradas disponibles</p>
           </div>
+          <FileText className="size-5 text-[var(--color-brand-red)]" />
         </div>
-
-        <div className="bg-white rounded-lg shadow p-6">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm text-gray-600 font-medium">Categories</p>
-              <p className="text-3xl font-bold text-gray-900 mt-2">
-                {categories.length}
-              </p>
-            </div>
-            <div className="bg-green-100 p-3 rounded-lg">
-              <TrendingUp className="text-green-600" size={24} />
-            </div>
+        <div className="flex items-start justify-between bg-white p-5">
+          <div>
+            <p className="text-xs font-semibold uppercase tracking-[0.12em] text-[#61625d]">
+              Categorías
+            </p>
+            <p className="mt-2 font-neutra-demi text-4xl text-[#20211f]">
+              {categories.length}
+            </p>
+            <p className="mt-1 text-sm text-[#61625d]">
+              Clasificaciones activas
+            </p>
           </div>
+          <FolderTree className="size-5 text-[#268477]" />
+        </div>
+        <div className="flex items-start justify-between bg-white p-5">
+          <div>
+            <p className="text-xs font-semibold uppercase tracking-[0.12em] text-[#61625d]">
+              Estado
+            </p>
+            <p className="mt-2 font-neutra-demi text-2xl text-[#20211f]">
+              Operativo
+            </p>
+            <p className="mt-2 text-sm text-[#61625d]">
+              Sitio seleccionado: {currentSite}
+            </p>
+          </div>
+          <Layers3 className="size-5 text-[#b56c22]" />
         </div>
       </div>
 
-      {/* Posts by Category */}
-      <div className="bg-white rounded-lg shadow">
-        <div className="p-6 border-b border-gray-200">
-          <h2 className="text-xl font-bold text-gray-900">
-            Posts por categoría
-          </h2>
-        </div>
-        <div className="p-6">
-          <div className="space-y-4">
+      <div className="grid gap-6 xl:grid-cols-[minmax(0,1fr)_20rem]">
+        <section className="border border-black/10 bg-white">
+          <div className="flex items-center justify-between border-b border-black/10 px-5 py-4">
+            <div>
+              <h2 className="font-neutra-demi text-xl uppercase tracking-wide">
+                Posts por categoría
+              </h2>
+              <p className="mt-1 text-sm text-[#61625d]">
+                Distribución del contenido publicado.
+              </p>
+            </div>
+            <Link
+              href="/admin/categories"
+              className="text-sm font-medium text-[var(--color-brand-red)] hover:underline"
+            >
+              Gestionar
+            </Link>
+          </div>
+          <div className="divide-y divide-black/10">
             {postsByCategory.map((cat) => (
-              <div key={cat.name} className="flex items-center justify-between">
-                <span className="font-medium text-gray-700">{cat.name}</span>
-                <a
-                  href={`/admin/posts?category=${encodeURIComponent(cat.name)}`}
-                  className="bg-gray-100 px-3 py-1 rounded-full text-sm font-medium text-gray-700 hover:bg-gray-200"
-                >
-                  {cat.count} posts
-                </a>
-              </div>
+              <Link
+                key={cat.name}
+                href={`/admin/posts?category=${encodeURIComponent(cat.name)}`}
+                className="flex items-center justify-between px-5 py-3.5 transition-colors hover:bg-[#f7f7f4]"
+              >
+                <span className="text-sm font-medium text-[#31322f]">
+                  {cat.name}
+                </span>
+                <span className="inline-flex items-center gap-2 text-sm text-[#61625d]">
+                  {cat.count}
+                  <ArrowUpRight className="size-4" />
+                </span>
+              </Link>
             ))}
-          </div>
-        </div>
-      </div>
-
-      {/* Quick Actions */}
-      <div className="bg-white rounded-lg shadow">
-        <div className="p-6 border-b border-gray-200">
-          <h2 className="text-xl font-bold text-gray-900">Quick Actions</h2>
-        </div>
-        <div className="p-6 grid grid-cols-1 md:grid-cols-2 gap-4">
-          <Link
-            href="/admin/posts"
-            className="flex items-center gap-3 p-4 border border-gray-200 rounded-lg hover:border-[var(--color-brand-red)] hover:bg-red-50 transition-colors"
-          >
-            <FileText size={24} className="text-gray-600" />
-            <div>
-              <p className="font-medium text-gray-900">View All Posts</p>
-              <p className="text-sm text-gray-600">
-                Manage existing hotel posts
+            {postsByCategory.length === 0 && !loading && (
+              <p className="px-5 py-8 text-sm text-[#61625d]">
+                Aún no hay categorías disponibles.
               </p>
-            </div>
-          </Link>
-        </div>
+            )}
+          </div>
+        </section>
+
+        <section className="border border-black/10 bg-[#22231f] p-5 text-white">
+          <p className="text-xs font-semibold uppercase tracking-[0.12em] text-white/55">
+            Acciones rápidas
+          </p>
+          <h2 className="mt-2 font-neutra-demi text-2xl uppercase tracking-wide">
+            Publica y organiza
+          </h2>
+          <div className="mt-5 divide-y divide-white/15">
+            <Link
+              href="/admin/posts/new"
+              className="flex items-center justify-between py-3 text-sm transition-colors hover:text-[#ff5a72]"
+            >
+              <span className="flex items-center gap-2">
+                <FilePlus2 className="size-4" /> Crear un post
+              </span>
+              <ArrowUpRight className="size-4" />
+            </Link>
+            <Link
+              href="/admin/agenda-cultural"
+              className="flex items-center justify-between py-3 text-sm transition-colors hover:text-[#ff5a72]"
+            >
+              <span className="flex items-center gap-2">
+                <CalendarDays className="size-4" /> Programar Agenda
+              </span>
+              <ArrowUpRight className="size-4" />
+            </Link>
+            <Link
+              href="/admin/images"
+              className="flex items-center justify-between py-3 text-sm transition-colors hover:text-[#ff5a72]"
+            >
+              <span className="flex items-center gap-2">
+                <Image className="size-4" /> Biblioteca visual
+              </span>
+              <ArrowUpRight className="size-4" />
+            </Link>
+          </div>
+        </section>
       </div>
     </div>
   );

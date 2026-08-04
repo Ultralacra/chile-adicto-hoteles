@@ -21,7 +21,7 @@ import { hasPostPublicationEnded } from "@/lib/post-publication";
 import { BottomHomeBanner } from "@/components/home-promo-banners";
 import { HotelDetail } from "@/components/hotel-detail";
 import { normalizeImageUrl } from "@/lib/utils";
-import { agendaBannerRanges } from "@/lib/agenda-banner-ranges";
+import type { AgendaFeaturedSlot, AgendaPeriod } from "@/lib/agenda-cultural";
 
 // Antes se validaba contra una lista fija, pero ahora el menú y las categorías
 // se administran desde la BD. No hacemos 404 por slug desconocido.
@@ -38,6 +38,7 @@ type ApiCommuneRow = {
 export default function CategoryPage({ params }: { params: any }) {
   const resolvedParams = use(params as any) as ResolvedParams;
   const { slug } = resolvedParams;
+  const isAgendaCultural = slug === "agenda-cultural";
   const { language, t } = useLanguage();
   const { cachedFetchWithSite } = useSiteApi();
   const router = useRouter();
@@ -92,6 +93,11 @@ export default function CategoryPage({ params }: { params: any }) {
 
   const [filteredHotels, setFilteredHotels] = useState<any[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
+  const [agendaConfig, setAgendaConfig] = useState<{
+    periods: AgendaPeriod[];
+    featured: AgendaFeaturedSlot | null;
+  }>({ periods: [], featured: null });
+  const [agendaLoading, setAgendaLoading] = useState(isAgendaCultural);
   useEffect(() => {
     let cancelled = false;
     setLoading(true);
@@ -110,6 +116,34 @@ export default function CategoryPage({ params }: { params: any }) {
       cancelled = true;
     };
   }, [slug, language, cachedFetchWithSite]);
+
+  useEffect(() => {
+    if (!isAgendaCultural) {
+      setAgendaConfig({ periods: [], featured: null });
+      setAgendaLoading(false);
+      return;
+    }
+
+    let cancelled = false;
+    setAgendaLoading(true);
+    cachedFetchWithSite(`/api/agenda-cultural?lang=${language}`)
+      .then((data: any) => {
+        if (cancelled) return;
+        setAgendaConfig({
+          periods: Array.isArray(data?.periods) ? data.periods : [],
+          featured: data?.featured || null,
+        });
+      })
+      .catch(() => {
+        if (!cancelled) setAgendaConfig({ periods: [], featured: null });
+      })
+      .finally(() => {
+        if (!cancelled) setAgendaLoading(false);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [isAgendaCultural, language, cachedFetchWithSite]);
 
   const isRestaurantsPage = slug === "restaurantes";
   const isBarsPage = slug === "bares";
@@ -226,7 +260,9 @@ export default function CategoryPage({ params }: { params: any }) {
             .map((value: unknown) =>
               communeLookup.get(normalizeComuna(String(value || ""))),
             )
-            .filter((value): value is string => Boolean(value))
+            .filter((value: string | undefined): value is string =>
+              Boolean(value),
+            )
         : [];
 
       if (matched.length > 0) {
@@ -823,10 +859,6 @@ export default function CategoryPage({ params }: { params: any }) {
     return `${year}-${month}-${day}`;
   };
 
-  const todayKey = toLocalDateKey(new Date());
-  const activeAgendaBanner = agendaBannerRanges.find(
-    (range) => todayKey >= range.start && todayKey <= range.end,
-  );
   const repeatingAgendaWeeklySlugs = new Set([
     "ciclo-especial-mes-de-la-danza-en-matucana-100",
     "artes-visuales-enter-to-the-exit-de-fabiola-morcillo",
@@ -1082,10 +1114,7 @@ export default function CategoryPage({ params }: { params: any }) {
     };
   }
 
-  // Agrupar posts de agenda cultural por rango de banner
-  const isAgendaCultural = slug === "agenda-cultural";
-  const featuredPostSlug =
-    "edo-caroe-confirma-cinco-shows-de-comedia-en-santiago-en-julio-de-2026";
+  // La API decide períodos y apariciones; la página solo resuelve los posts ya cargados.
   const agendaReturnStorageKey = "agenda-cultural:last-clicked-post";
 
   const handleAgendaCardClick = (
@@ -1105,38 +1134,25 @@ export default function CategoryPage({ params }: { params: any }) {
   };
 
   const agendaGrouped = isAgendaCultural
-    ? agendaBannerRanges
-        .filter((range) => range.end >= todayKey)
-        .map((range) => {
-          const posts = finalOrderedHotels.filter((h) => {
-            const postSlug = String(h?.slug || "")
-              .trim()
-              .toLowerCase();
-            // No repetir el post destacado en los grupos semanales
-            if (postSlug === featuredPostSlug) return false;
-            const isAprilRange = range.end <= "2026-04-30";
-            if (isAprilRange && repeatingAgendaWeeklySlugs.has(postSlug)) {
-              return true;
-            }
-            const matchesRepeatingRange = repeatingSlugDateRanges.some(
-              (r) =>
-                r.slug === postSlug &&
-                range.end >= r.from &&
-                range.start <= r.to,
-            );
-            if (matchesRepeatingRange) return true;
-
-            // Excluir posts cuya publicación ya terminó
-            if (hasPostPublicationEnded(h)) return false;
-            const raw = h.publishStartAt || h.publishEndAt;
-            if (!raw) return false;
-            const postDate = toLocalDateKey(new Date(raw));
-            return postDate >= range.start && postDate <= range.end;
-          });
-          return { ...range, posts };
-        })
-        .filter((g) => g.posts.length > 0)
+    ? agendaConfig.periods
+        .map((period) => ({
+          ...period,
+          posts: period.postSlugs
+            .map((postSlug) =>
+              finalOrderedHotels.find((hotel) => hotel.slug === postSlug),
+            )
+            .filter(
+              (hotel): hotel is any =>
+                !!hotel && !hasPostPublicationEnded(hotel),
+            ),
+        }))
+        .filter((group) => group.posts.length > 0)
     : [];
+  const featuredPost = agendaConfig.featured?.postSlug
+    ? finalOrderedHotels.find(
+        (hotel) => hotel.slug === agendaConfig.featured?.postSlug,
+      )
+    : null;
 
   useEffect(() => {
     if (!isAgendaCultural || loading) return;
@@ -1336,7 +1352,6 @@ export default function CategoryPage({ params }: { params: any }) {
                   // Ver imagen completa sin recortar y mantener el ancho del contenedor
                   autoplay={false}
                   showArrows
-                  showDots={false}
                   autoHeight
                   // keep default desktop height (closer to other sliders)
                   desktopHeight={437}
@@ -1360,45 +1375,46 @@ export default function CategoryPage({ params }: { params: any }) {
                 <Spinner className="size-5" /> Cargando…
               </div>
             </div>
-          ) : isAgendaCultural && agendaGrouped.length > 0 ? (
+          ) : isAgendaCultural &&
+            (agendaGrouped.length > 0 || agendaConfig.featured) ? (
             /* Agenda Cultural: post destacado fijo arriba + banner de cada semana y sus posts */
             <div className="mt-4 space-y-8">
-              {(() => {
-                const featuredPost = finalOrderedHotels.find(
-                  (h: any) => String(h?.slug || "") === featuredPostSlug,
-                );
-                return (
-                  // <section key="featured-post">
-                  //   <div className="w-full mb-4">
-                  //     <BottomHomeBanner
-                  //       href={`/${featuredPostSlug}`}
-                  //       src="/bannersagenda/postdestacado/DESKTOP - EVENTO DESTACADOO.webp"
-                  //       mobileSrc="/bannersagenda/postdestacado/MOVIL - EVENTO DESTACADOO.webp"
-                  //       alt="Evento Destacado"
-                  //     />
-                  //   </div>
-                  //   {featuredPost && (
-                  //     <HotelDetail
-                  //       slug={featuredPostSlug}
-                  //       hotel={buildHotelDetailShape(featuredPost) as any}
-                  //       hideBanners
-                  //       noContainer
-                  //     />
-                  //   )}
-                  // </section>
-                  <></>
-                );
-              })()}
-              {agendaGrouped.map((group, groupIdx) => (
-                <section key={group.start}>
-                  <div className="w-full mb-4">
-                    <BottomHomeBanner
-                      href={group.href}
-                      src={group.src}
-                      mobileSrc={group.mobileSrc}
-                      alt={group.alt}
+              {agendaConfig.featured && (
+                <section key="featured-post">
+                  {agendaConfig.featured.desktopImageUrl && (
+                    <div className="w-full mb-4">
+                      <BottomHomeBanner
+                        href={agendaConfig.featured.href}
+                        src={agendaConfig.featured.desktopImageUrl}
+                        mobileSrc={
+                          agendaConfig.featured.mobileImageUrl || undefined
+                        }
+                        alt={agendaConfig.featured.alt}
+                      />
+                    </div>
+                  )}
+                  {featuredPost && (
+                    <HotelDetail
+                      slug={featuredPost.slug}
+                      hotel={buildHotelDetailShape(featuredPost) as any}
+                      hideBanners
+                      noContainer
                     />
-                  </div>
+                  )}
+                </section>
+              )}
+              {agendaGrouped.map((group, groupIdx) => (
+                <section key={group.id}>
+                  {group.desktopImageUrl && (
+                    <div className="w-full mb-4">
+                      <BottomHomeBanner
+                        href={group.href}
+                        src={group.desktopImageUrl}
+                        mobileSrc={group.mobileImageUrl || undefined}
+                        alt={group.alt}
+                      />
+                    </div>
+                  )}
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
                     {group.posts.map((hotel) => (
                       <HotelCard

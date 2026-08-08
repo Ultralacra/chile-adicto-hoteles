@@ -29,16 +29,19 @@ export function Header() {
                 />
               </div>
 
-              <Link href="/" aria-label={t("Ir al inicio", "Go to home")} className="absolute left-1/2 -translate-x-1/2">
-                <Image
-                  src="/Santiago-adicto-Guia%202.svg"
-                  alt={t("Chile Adicto 50 Best", "Santiago Adicto 50 Best")}
-                  width={260}
-                  height={90}
-                  className="h-20 w-auto"
-                  priority
-                />
-              </Link>
+              <div className="absolute left-1/2 flex -translate-x-1/2 flex-col items-center">
+                <Link href="/" aria-label={t("Ir al inicio", "Go to home")}>
+                  <Image
+                    src="/Santiago-adicto-Guia%202.svg"
+                    alt={t("Chile Adicto 50 Best", "Santiago Adicto 50 Best")}
+                    width={260}
+                    height={90}
+                    className="h-20 w-auto"
+                    priority
+                  />
+                </Link>
+                <p className="text-[12px] leading-none text-black">Página en desarrollo</p>
+              </div>
 
               <div className="flex items-center">
                 <button
@@ -74,7 +77,7 @@ export function Header() {
         <div className="hidden lg:block site-inner py-6 font-neutra text-[16px] leading-[20px] text-black">
           <div className="flex items-center justify-between">
             {/* Desktop: Logo on left */}
-            <div className="flex items-center">
+            <div className="flex flex-col items-start">
               <Link href="/" aria-label={t("Ir al inicio", "Go to home")}>
                 <Image
                   src="/Santiago-adicto-Guia%202.svg"
@@ -85,6 +88,7 @@ export function Header() {
                   priority
                 />
               </Link>
+              <p className="text-[12px] leading-none text-black">Página en desarrollo</p>
             </div>
 
             <div className="flex items-center gap-4">

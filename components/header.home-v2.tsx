@@ -40,7 +40,9 @@ export function Header() {
                     priority
                   />
                 </Link>
-                <p className="text-[12px] leading-none text-black">Página en desarrollo</p>
+                <p className="text-[12px] leading-none text-black">
+                  Página en desarrollo
+                </p>
               </div>
 
               <div className="flex items-center">
@@ -88,7 +90,9 @@ export function Header() {
                   priority
                 />
               </Link>
-              <p className="text-[12px] leading-none text-black">Página en desarrollo</p>
+              <p className="text-[12px] leading-none text-black">
+                Página en desarrollo
+              </p>
             </div>
 
             <div className="flex items-center gap-4">

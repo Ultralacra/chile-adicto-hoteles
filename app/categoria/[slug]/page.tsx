@@ -28,6 +28,17 @@ import type { AgendaFeaturedSlot, AgendaPeriod } from "@/lib/agenda-cultural";
 
 type ResolvedParams = { slug: string };
 
+const topRestaurantsSlugs = [
+  "borago-un-viaje-a-la-esencia-de-chile",
+  "casa-las-cujas-deleite-marino",
+  "yum-cha-comer-y-beber-con-te",
+  "demo-magnolia-honestidad-refrescante",
+  "karai-el-sello-del-mejor-del-mundo",
+  "pulperia-santa-elvira-una-joya-de-matta-sur",
+  "demencia-un-espectaculo-gastronomico",
+  "fukasawa-esencia-japonesa",
+];
+
 type ApiCommuneRow = {
   slug: string;
   label: string | null;
@@ -108,7 +119,19 @@ export default function CategoryPage({ params }: { params: any }) {
       .then((rows) => {
         if (cancelled) return;
         const list = Array.isArray(rows) ? rows : [];
-        setFilteredHotels(list.filter((p) => !isHiddenFrontPost(p)));
+        const visiblePosts = list.filter((p) => !isHiddenFrontPost(p));
+        if (slug === "toprestoranes") {
+          const postsBySlug = new Map(
+            visiblePosts.map((post) => [String(post?.slug || ""), post]),
+          );
+          setFilteredHotels(
+            topRestaurantsSlugs
+              .map((postSlug) => postsBySlug.get(postSlug))
+              .filter(Boolean),
+          );
+          return;
+        }
+        setFilteredHotels(visiblePosts);
       })
       .catch(() => !cancelled && setFilteredHotels([]))
       .finally(() => !cancelled && setLoading(false));
@@ -1279,6 +1302,12 @@ export default function CategoryPage({ params }: { params: any }) {
             </div>
           )}
 
+          {slug === "toprestoranes" && (
+            <div className="mt-2 flex min-h-[180px] items-center justify-center border border-dashed border-black/40 bg-black px-4 text-center text-sm text-white">
+              Banner reservado para Top Restaurantes
+            </div>
+          )}
+
           {/* En Monumentos Nacionales, Cafés, ICONOS, Parques y La Ruta Toyota: banner largo bajo el menú, luego posts */}
           {(slug === "monumentos-nacionales" ||
             slug === "cafes" ||
@@ -1465,19 +1494,28 @@ export default function CategoryPage({ params }: { params: any }) {
             <div className="mt-4 space-y-8">
               {/* Banners de restaurantes y bares */}
               {isRestaurantsPage && !tipoParam && (
-                <div className="space-y-4">
-                  <BottomHomeBanner
-                    href="/categoria/restaurantes?tipo=restaurantes"
-                    src="/bannerRestaurantes/BANER DESKTOP 50 RESTORANES.png"
-                    mobileSrc="/bannerRestaurantes/BANER MOVIL 50 RESTORANES.png"
-                    alt="50 restaurantes de Santiago"
-                  />
-                  <BottomHomeBanner
-                    href="/categoria/bares"
-                    src="/bannerRestaurantes/BANER DESKTOP 50 BARES.png"
-                    mobileSrc="/bannerRestaurantes/BANER MOVIL 50 BARES.png"
-                    alt="50 bares de Santiago"
-                  />
+                <div className="grid grid-cols-1 gap-4 md:grid-cols-[2fr_1fr] md:gap-2">
+                  <div className="flex flex-col gap-4 md:gap-2">
+                    <BottomHomeBanner
+                      href="/categoria/restaurantes?tipo=restaurantes"
+                      src="/bannerRestaurantes/BANER DESKTOP 50 RESTORANES.png"
+                      mobileSrc="/bannerRestaurantes/BANER MOVIL 50 RESTORANES.png"
+                      alt="50 restaurantes de Santiago"
+                    />
+                    <BottomHomeBanner
+                      href="/categoria/bares"
+                      src="/bannerRestaurantes/BANER DESKTOP 50 BARES.png"
+                      mobileSrc="/bannerRestaurantes/BANER MOVIL 50 BARES.png"
+                      alt="50 bares de Santiago"
+                    />
+                  </div>
+                  <Link
+                    href="/categoria/toprestoranes"
+                    aria-label="Ir a Top Restaurantes"
+                    className="flex aspect-square cursor-pointer items-center justify-center border border-dashed border-black/40 bg-black px-4 text-center text-sm text-white transition-opacity hover:opacity-80 md:aspect-auto md:h-full"
+                  >
+                    Banner reservado para Top Restaurantes
+                  </Link>
                 </div>
               )}
               {isRestaurantsPage && tipoParam === "restaurantes" && (

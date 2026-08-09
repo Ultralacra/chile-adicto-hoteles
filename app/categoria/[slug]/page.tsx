@@ -124,10 +124,18 @@ export default function CategoryPage({ params }: { params: any }) {
           const postsBySlug = new Map(
             visiblePosts.map((post) => [String(post?.slug || ""), post]),
           );
+          const featuredPosts = topRestaurantsSlugs
+            .map((postSlug) => postsBySlug.get(postSlug))
+            .filter(Boolean);
+          const featuredSlugs = new Set(
+            featuredPosts.map((post) => String(post?.slug || "")),
+          );
           setFilteredHotels(
-            topRestaurantsSlugs
-              .map((postSlug) => postsBySlug.get(postSlug))
-              .filter(Boolean),
+            featuredPosts.concat(
+              visiblePosts.filter(
+                (post) => !featuredSlugs.has(String(post?.slug || "")),
+              ),
+            ),
           );
           return;
         }

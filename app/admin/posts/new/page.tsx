@@ -304,7 +304,7 @@ export default function NewPostPage() {
     try {
       const form = new FormData();
       for (const f of arr) form.append("files", f);
-      const res = await fetch(`/api/media/upload`, {
+      const res = await fetchWithSite(`/api/media/upload`, {
         method: "POST",
         body: form,
       });

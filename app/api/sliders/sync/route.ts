@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { adminAuthResponse, requireSuperadmin } from "@/lib/server-auth";
 
 function envOrNull(name: string) {
   const v = process.env[name];
@@ -40,6 +41,7 @@ async function serviceRest(path: string, init?: RequestInit) {
 // }
 export async function POST(req: Request) {
   try {
+    await requireSuperadmin(req);
     const body = await req.json();
     const sets = Array.isArray(body?.sets) ? body.sets : [];
     if (sets.length === 0) {
@@ -71,6 +73,8 @@ export async function POST(req: Request) {
 
     return NextResponse.json({ ok: true }, { status: 200 });
   } catch (err: any) {
+    const authResponse = adminAuthResponse(err);
+    if (authResponse) return authResponse;
     console.error("[/api/sliders/sync] error", err);
     return NextResponse.json({ ok: false, error: "internal_error", message: String(err?.message || err) }, { status: 500 });
   }

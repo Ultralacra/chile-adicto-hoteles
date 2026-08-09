@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { invalidateServerDataCache } from "@/lib/server-read-cache";
+import { adminAuthResponse, requireSuperadmin } from "@/lib/server-auth";
 
 export const runtime = "nodejs";
 
@@ -136,6 +137,7 @@ export async function POST(
 ) {
   let step = "start";
   try {
+    await requireSuperadmin(req);
     const ctx = (await (params as any)) as { slug?: string };
     const slug = String(ctx?.slug || "").trim();
     // 1) Resolver post.id
@@ -207,6 +209,8 @@ export async function POST(
 
     return NextResponse.json({ ok: true, urls }, { status: 201 });
   } catch (err: any) {
+    const authResponse = adminAuthResponse(err);
+    if (authResponse) return authResponse;
     const msg = String(err?.message || err);
     console.error("[POST /api/posts/[slug]/images]", { step, msg });
     const status = /bad_request|no_files|no_urls/i.test(msg) ? 400 : 500;

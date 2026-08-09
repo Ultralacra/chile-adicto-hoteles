@@ -464,7 +464,7 @@ export default function AdminSlidersList() {
     try {
       const form = new FormData();
       for (const f of arr) form.append("files", f);
-      const res = await fetch(`/api/media/upload`, {
+      const res = await fetchWithSite(`/api/media/upload`, {
         method: "POST",
         body: form,
       });
@@ -488,7 +488,7 @@ export default function AdminSlidersList() {
   const loadDbSet = async (key: string) => {
     setDbLoading(true);
     try {
-      const res = await fetch(
+      const res = await fetchWithSite(
         `/api/sliders/${encodeURIComponent(key)}?all=1&adminSite=${encodeURIComponent(
           dbSite,
         )}`,
@@ -526,7 +526,7 @@ export default function AdminSlidersList() {
   const loadDbSetsList = async () => {
     setDbSetsLoading(true);
     try {
-      const res = await fetch(
+      const res = await fetchWithSite(
         `/api/sliders?adminSite=${encodeURIComponent(dbSite)}`,
         { cache: "no-store" },
       );
@@ -656,7 +656,7 @@ export default function AdminSlidersList() {
           lang: inferredLang || it.lang || null,
         })),
       };
-      const res = await fetch(
+      const res = await fetchWithSite(
         `/api/sliders/${encodeURIComponent(dbKey)}?adminSite=${encodeURIComponent(
           dbSite,
         )}`,
@@ -929,14 +929,14 @@ export default function AdminSlidersList() {
     try {
       // Home: PUT /api/slider-images
       if (home) {
-        await fetch("/api/slider-images", {
+        await fetchWithSite("/api/slider-images", {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ desktop: home.desktop, mobile: home.mobile }),
         });
       }
       // Rest Desktop: PUT /api/imagenes-slider/manifest
-      await fetch("/api/imagenes-slider/manifest", {
+      await fetchWithSite("/api/imagenes-slider/manifest", {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ es: restDesktopES, en: restDesktopEN }),
@@ -949,20 +949,20 @@ export default function AdminSlidersList() {
         .filter((u) => /-2\./i.test(u))
         .map((u) => u.split("/").pop());
       if (esOrder.length)
-        await fetch("/api/restaurant-slider-mobile", {
+        await fetchWithSite("/api/restaurant-slider-mobile", {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ lang: "es", order: esOrder }),
         });
       if (enOrder.length)
-        await fetch("/api/restaurant-slider-mobile", {
+        await fetchWithSite("/api/restaurant-slider-mobile", {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ lang: "en", order: enOrder }),
         });
 
       // Destinos overrides
-      await fetch("/api/slider-destinations", {
+      await fetchWithSite("/api/slider-destinations", {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(destinations || {}),
@@ -1024,7 +1024,7 @@ export default function AdminSlidersList() {
             })),
           },
         ];
-        await fetch("/api/sliders/sync", {
+        await fetchWithSite("/api/sliders/sync", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ sets: setsPayload }),

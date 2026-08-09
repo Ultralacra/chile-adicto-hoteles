@@ -9,6 +9,9 @@
     "dev:chile": "cross-env NEXT_DIST_DIR=.next-dev NEXT_PUBLIC_LOCAL_SITE=chileadicto next dev --port 3001",
     "lint": "eslint .",
     "start": "next start",
+    "test:e2e": "playwright test",
+    "test:e2e:auth": "playwright test tests/e2e/admin-auth.api.spec.ts tests/e2e/public-api.api.spec.ts",
+    "test:e2e:ui": "playwright test tests/e2e/admin-auth-modal.spec.ts --ui",
     "db:schema:apply": "node scripts/apply-schema.mjs",
     "db:migrate": "node scripts/migrate-supabase.mjs",
     "db:migrate:rest": "node scripts/migrate-supabase-http.mjs",
@@ -75,6 +78,7 @@
     "zod": "3.25.76"
   },
   "devDependencies": {
+    "@playwright/test": "^1.62.1",
     "@tailwindcss/postcss": "^4.1.9",
     "@types/node": "^22",
     "@types/react": "^19",

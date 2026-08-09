@@ -27,25 +27,29 @@ export function RealTimeSearch({ className }: { className?: string }) {
   const router = useRouter();
   const siteId = getClientSiteId();
 
-  const search = useCallback(async (q: string) => {
-    if (q.length < 2) {
-      setResults([]);
-      setIsLoading(false);
-      return;
-    }
+  const search = useCallback(
+    async (q: string) => {
+      if (q.length < 2) {
+        setResults([]);
+        setIsLoading(false);
+        return;
+      }
 
-    setIsLoading(true);
-    try {
-      const siteParam = siteId === 'chileadicto' ? 'chileadicto' : 'santiagoadicto';
-      const res = await fetch(`/api/posts/search?q=${encodeURIComponent(q)}&limit=50&adminSite=${siteParam}`);
-      const data = await res.json();
-      setResults(data.items || []);
-    } catch {
-      setResults([]);
-    } finally {
-      setIsLoading(false);
-    }
-  }, [siteId]);
+      setIsLoading(true);
+      try {
+        const res = await fetch(
+          `/api/posts/search?q=${encodeURIComponent(q)}&limit=50`,
+        );
+        const data = await res.json();
+        setResults(data.items || []);
+      } catch {
+        setResults([]);
+      } finally {
+        setIsLoading(false);
+      }
+    },
+    [siteId],
+  );
 
   useEffect(() => {
     if (debounceRef.current) clearTimeout(debounceRef.current);
@@ -63,8 +67,12 @@ export function RealTimeSearch({ className }: { className?: string }) {
 
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node) &&
-          inputRef.current && !inputRef.current.contains(e.target as Node)) {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(e.target as Node) &&
+        inputRef.current &&
+        !inputRef.current.contains(e.target as Node)
+      ) {
         setIsOpen(false);
       }
     };
@@ -76,10 +84,10 @@ export function RealTimeSearch({ className }: { className?: string }) {
     if (!isOpen || results.length === 0) return;
     if (e.key === "ArrowDown") {
       e.preventDefault();
-      setSelectedIndex(i => Math.min(i + 1, results.length - 1));
+      setSelectedIndex((i) => Math.min(i + 1, results.length - 1));
     } else if (e.key === "ArrowUp") {
       e.preventDefault();
-      setSelectedIndex(i => Math.max(i - 1, -1));
+      setSelectedIndex((i) => Math.max(i - 1, -1));
     } else if (e.key === "Enter" && selectedIndex >= 0) {
       e.preventDefault();
       navigateToResult(results[selectedIndex]);
@@ -114,7 +122,7 @@ export function RealTimeSearch({ className }: { className?: string }) {
           ref={inputRef}
           type="text"
           value={query}
-          onChange={e => {
+          onChange={(e) => {
             setQuery(e.target.value);
             setIsOpen(true);
             setSelectedIndex(-1);
@@ -160,7 +168,7 @@ export function RealTimeSearch({ className }: { className?: string }) {
                     onClick={() => navigateToResult(r)}
                     className={cn(
                       "w-full text-left px-3 py-2 flex items-center gap-3 hover:bg-accent transition-colors",
-                      i === selectedIndex && "bg-accent"
+                      i === selectedIndex && "bg-accent",
                     )}
                     role="option"
                     aria-selected={i === selectedIndex}
@@ -168,7 +176,7 @@ export function RealTimeSearch({ className }: { className?: string }) {
                     {r.featuredImage && (
                       // eslint-disable-next-line @next/next/no-img-element
                       <img
-                          src={getStorageImageUrl(r.featuredImage, 80)}
+                        src={getStorageImageUrl(r.featuredImage, 80)}
                         alt=""
                         className="w-10 h-10 object-cover rounded"
                       />

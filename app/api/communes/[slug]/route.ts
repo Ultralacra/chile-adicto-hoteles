@@ -1,5 +1,8 @@
 import { NextResponse } from "next/server";
 import { ensureLegacyPostShape } from "@/lib/post-response-shape";
+import { isPostCurrentlyPublished } from "@/lib/post-publication";
+import { getCurrentSiteId } from "@/lib/site-utils";
+import { adminAuthResponse, requireSuperadmin } from "@/lib/server-auth";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -53,28 +56,15 @@ async function serviceRest(path: string, init?: RequestInit) {
   return res.json();
 }
 
-function requireAdminKey(req: Request) {
-  const required = envOrNull("ADMIN_API_KEY");
-  if (!required) {
-    if (process.env.NODE_ENV === "production") {
-      throw new Error("unauthorized");
-    }
-    return;
-  }
-  const provided = req.headers.get("x-admin-key");
-  if (!provided || provided !== required) {
-    throw new Error("unauthorized");
-  }
-}
-
 export async function GET(_req: Request, { params }: { params: any }) {
   try {
+    const siteId = await getCurrentSiteId(_req);
     const ctx = (await (params as any)) as { slug?: string };
     const slug = String(ctx?.slug || "").trim();
     if (!slug) return NextResponse.json({ slug: "", commune: null, posts: [] }, { status: 200 });
 
     const communeRows: any[] | null = await anonRest(
-      `/communes?slug=eq.${encodeURIComponent(slug)}&select=slug,label,show_in_menu,menu_order`
+      `/communes?slug=eq.${encodeURIComponent(slug)}&site=eq.${encodeURIComponent(siteId)}&select=slug,label,show_in_menu,menu_order`
     );
     const commune = Array.isArray(communeRows) && communeRows.length > 0 ? communeRows[0] : null;
 
@@ -94,7 +84,7 @@ export async function GET(_req: Request, { params }: { params: any }) {
     const inList = ids.map((id) => `"${id.replace(/\"/g, "")}"`).join(",");
     const posts: any[] =
       (await serviceRest(
-        `/posts?id=in.(${inList})&select=id,slug,site,publication_status,publish_start_at,publish_end_at,featured_image,translations:post_translations(lang,name)`
+        `/posts?id=in.(${inList})&site=eq.${encodeURIComponent(siteId)}&select=id,slug,site,publication_status,publish_start_at,publish_end_at,featured_image,translations:post_translations(lang,name)`
       )) || [];
 
     const mapped = (Array.isArray(posts) ? posts : [])
@@ -135,6 +125,7 @@ export async function GET(_req: Request, { params }: { params: any }) {
         };
       })
       .filter((p: any) => p.slug)
+      .filter((p: any) => isPostCurrentlyPublished(p))
       .sort((a: any, b: any) => a.slug.localeCompare(b.slug));
 
     return NextResponse.json({ slug, commune, posts: mapped }, { status: 200 });
@@ -149,7 +140,7 @@ export async function GET(_req: Request, { params }: { params: any }) {
 // POST /api/communes/[slug]  body: { postSlug: string } -> asigna
 export async function POST(req: Request, { params }: { params: any }) {
   try {
-    requireAdminKey(req);
+    await requireSuperadmin(req);
     const ctx = (await (params as any)) as { slug?: string };
     const communeSlug = String(ctx?.slug || "").trim();
     if (!communeSlug) {
@@ -182,10 +173,9 @@ export async function POST(req: Request, { params }: { params: any }) {
 
     return NextResponse.json({ ok: true }, { status: 200 });
   } catch (err: any) {
+    const authResponse = adminAuthResponse(err);
+    if (authResponse) return authResponse;
     const msg = String(err?.message || err);
-    if (msg === "unauthorized") {
-      return NextResponse.json({ ok: false, message: "unauthorized" }, { status: 401 });
-    }
     return NextResponse.json({ ok: false, message: msg }, { status: 400 });
   }
 }
@@ -193,7 +183,7 @@ export async function POST(req: Request, { params }: { params: any }) {
 // DELETE /api/communes/[slug]?postSlug=... -> quitar
 export async function DELETE(req: Request, { params }: { params: any }) {
   try {
-    requireAdminKey(req);
+    await requireSuperadmin(req);
     const ctx = (await (params as any)) as { slug?: string };
     const communeSlug = String(ctx?.slug || "").trim();
     if (!communeSlug) {
@@ -223,10 +213,9 @@ export async function DELETE(req: Request, { params }: { params: any }) {
 
     return NextResponse.json({ ok: true }, { status: 200 });
   } catch (err: any) {
+    const authResponse = adminAuthResponse(err);
+    if (authResponse) return authResponse;
     const msg = String(err?.message || err);
-    if (msg === "unauthorized") {
-      return NextResponse.json({ ok: false, message: "unauthorized" }, { status: 401 });
-    }
     return NextResponse.json({ ok: false, message: msg }, { status: 400 });
   }
 }

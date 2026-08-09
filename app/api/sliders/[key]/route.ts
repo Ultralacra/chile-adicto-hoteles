@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { adminAuthResponse, requireSuperadmin } from "@/lib/server-auth";
 import { getCurrentSiteId } from "@/lib/site-utils";
 import {
 	getCachedServerData,
@@ -94,6 +95,7 @@ export async function GET(req: Request, { params }: { params: Promise<{ key: str
 
 		const url = new URL(req.url);
 		const all = url.searchParams.get("all") === "1";
+		if (all) await requireSuperadmin(req);
 
 		const payload = await getCachedServerData(
 			`slider:${siteId}:${key}:${all ? "all" : "active"}`,
@@ -124,6 +126,8 @@ export async function GET(req: Request, { params }: { params: Promise<{ key: str
 
 		return NextResponse.json(payload, { status: 200 });
 	} catch (err: any) {
+		const authResponse = adminAuthResponse(err);
+		if (authResponse) return authResponse;
 		return NextResponse.json(
 			{ key: "", items: [], error: "internal_error", message: String(err?.message || err) },
 			{ status: 200 }
@@ -133,6 +137,7 @@ export async function GET(req: Request, { params }: { params: Promise<{ key: str
 
 export async function PUT(req: Request, { params }: { params: Promise<{ key: string }> }) {
 	try {
+		await requireSuperadmin(req);
 		const siteId = await getCurrentSiteId(req);
 		const ctx = (await (params as any)) as { key?: string };
 		const key = String(ctx?.key || "").trim();
@@ -171,6 +176,8 @@ export async function PUT(req: Request, { params }: { params: Promise<{ key: str
 		invalidateServerDataCache(new RegExp(`^slider:${siteId}:${key}:`));
 		return NextResponse.json({ ok: true }, { status: 200 });
 	} catch (err: any) {
+		const authResponse = adminAuthResponse(err);
+		if (authResponse) return authResponse;
 		return NextResponse.json(
 			{ ok: false, error: "internal_error", message: String(err?.message || err) },
 			{ status: 500 }

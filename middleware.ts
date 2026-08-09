@@ -15,7 +15,7 @@ function applyCorsHeaders(response: NextResponse, origin: string | null) {
   response.headers.set('Access-Control-Allow-Methods', 'GET,POST,PUT,PATCH,DELETE,OPTIONS');
   response.headers.set(
     'Access-Control-Allow-Headers',
-    'Content-Type, Authorization, x-admin-key, x-site-id, x-site-name',
+    'Content-Type, Authorization, x-site-id, x-site-name',
   );
   response.headers.set('Access-Control-Max-Age', '86400');
   response.headers.set('Vary', 'Origin');

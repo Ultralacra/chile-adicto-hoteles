@@ -4,6 +4,7 @@ import {
   getCachedServerData,
   invalidateServerDataCache,
 } from "@/lib/server-read-cache";
+import { adminAuthResponse, requireSuperadmin } from "@/lib/server-auth";
 
 const CATEGORIES_CACHE_TTL_MS = 10 * 60 * 1000;
 
@@ -56,22 +57,6 @@ async function serviceRest(path: string, init?: RequestInit) {
   return res.json();
 }
 
-function requireAdminKey(req: Request) {
-  // Protección opcional: si seteas ADMIN_API_KEY en el entorno,
-  // se exigirá header x-admin-key con el mismo valor.
-  const required = envOrNull("ADMIN_API_KEY");
-  if (!required) {
-    if (process.env.NODE_ENV === "production") {
-      throw new Error("unauthorized");
-    }
-    return;
-  }
-  const provided = req.headers.get("x-admin-key");
-  if (!provided || provided !== required) {
-    throw new Error("unauthorized");
-  }
-}
-
 function normalizeSlug(input: string) {
   return String(input || "")
     .normalize("NFD")
@@ -95,6 +80,7 @@ export async function GET(req: Request) {
     const full = url.searchParams.get("full") === "1";
     const nav = url.searchParams.get("nav") === "1";
     const includeHidden = url.searchParams.get("includeHidden") === "1";
+    if (includeHidden) await requireSuperadmin(req);
 
     const payload = await getCachedServerData(
       `categories:${siteId}:${full ? 1 : 0}:${nav ? 1 : 0}:${includeHidden ? 1 : 0}`,
@@ -163,6 +149,8 @@ export async function GET(req: Request) {
     return NextResponse.json(payload, { status: 200 });
   } catch (err: any) {
     console.error("[GET /api/categories] error", err);
+    const authResponse = adminAuthResponse(err);
+    if (authResponse) return authResponse;
     return NextResponse.json({ error: "internal_error" }, { status: 500 });
   }
 }
@@ -173,7 +161,7 @@ export async function GET(req: Request) {
 // - [{...}, {...}] (batch)
 export async function POST(req: Request) {
   try {
-    requireAdminKey(req);
+    await requireSuperadmin(req);
     const siteId = await getCurrentSiteId(req);
     const body = await req.json();
     const input = Array.isArray(body) ? body : [body];
@@ -217,10 +205,9 @@ export async function POST(req: Request) {
 
     return NextResponse.json({ ok: true, rows: created }, { status: 200 });
   } catch (err: any) {
+    const authResponse = adminAuthResponse(err);
+    if (authResponse) return authResponse;
     const msg = String(err?.message || err);
-    if (msg === "unauthorized") {
-      return NextResponse.json({ ok: false, message: "unauthorized" }, { status: 401 });
-    }
     console.error("[POST /api/categories] error", err);
     return NextResponse.json({ ok: false, message: msg }, { status: 400 });
   }
@@ -234,7 +221,7 @@ export async function PUT(req: Request) {
 // DELETE /api/categories?slug=... -> elimina una categoría por slug
 export async function DELETE(req: Request) {
   try {
-    requireAdminKey(req);
+    await requireSuperadmin(req);
     const siteId = await getCurrentSiteId(req);
     const url = new URL(req.url);
     const slug = String(url.searchParams.get("slug") || "").trim();
@@ -256,13 +243,9 @@ export async function DELETE(req: Request) {
 
     return NextResponse.json({ ok: true }, { status: 200 });
   } catch (err: any) {
+    const authResponse = adminAuthResponse(err);
+    if (authResponse) return authResponse;
     const msg = String(err?.message || err);
-    if (msg === "unauthorized") {
-      return NextResponse.json(
-        { ok: false, message: "unauthorized" },
-        { status: 401 }
-      );
-    }
     console.error("[DELETE /api/categories] error", err);
     return NextResponse.json({ ok: false, message: msg }, { status: 400 });
   }

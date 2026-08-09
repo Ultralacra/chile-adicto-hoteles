@@ -5,7 +5,7 @@
 1. Abre el SQL Editor del proyecto de Supabase.
 2. Ejecuta [2026-08-03-upgrade-agenda-cultural.sql](../supabase/2026-08-03-upgrade-agenda-cultural.sql).
 3. Comprueba que se crearon las columnas nuevas en `agenda_banners`, `agenda_assignments` y la tabla `agenda_featured_slots`.
-4. Despliega la aplicación con las variables `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`, `SUPABASE_SERVICE_ROLE_KEY` y `ADMIN_API_KEY` configuradas.
+4. Despliega la aplicación con las variables `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY` y `SUPABASE_SERVICE_ROLE_KEY` configuradas.
 
 La migración no borra filas ni columnas existentes. Además carga como configuración inicial todos los banners semanales y rangos de posts que antes estaban definidos en código. Los banners previos se copian como alternativa en español y los slugs existentes se vinculan con `posts.id` cuando corresponden al sitio.
 

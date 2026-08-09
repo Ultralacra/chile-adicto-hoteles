@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { promises as fs } from "fs";
 import path from "path";
+import { adminAuthResponse, requireSuperadmin } from "@/lib/server-auth";
 
 export const runtime = "nodejs";
 
@@ -18,11 +19,14 @@ export async function GET() {
 
 export async function PUT(req: Request) {
   try {
+    await requireSuperadmin(req);
     const body = await req.json();
     await fs.mkdir(path.dirname(filePath()), { recursive: true });
     await fs.writeFile(filePath(), JSON.stringify(body || {}, null, 2), "utf-8");
     return NextResponse.json({ ok: true });
   } catch (e: any) {
+    const authResponse = adminAuthResponse(e);
+    if (authResponse) return authResponse;
     return NextResponse.json({ ok: false, message: String(e?.message || e) }, { status: 400 });
   }
 }

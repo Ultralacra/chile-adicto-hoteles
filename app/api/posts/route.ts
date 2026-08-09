@@ -9,6 +9,7 @@ import {
   getCachedServerData,
   invalidateServerDataCache,
 } from "@/lib/server-read-cache";
+import { adminAuthResponse, requireSuperadmin } from "@/lib/server-auth";
 
 const POSTS_CACHE_TTL_MS = 60 * 1000;
 
@@ -69,21 +70,6 @@ function sortPostsAlphabetically(posts: any[], language: string) {
 function envOrNull(name: string) {
   const v = process.env[name];
   return v && v.length > 0 ? v : null;
-}
-
-function requireAdminKey(req: Request) {
-  const required = envOrNull("ADMIN_API_KEY");
-  // En producción, si no está configurada la clave bloqueamos todo write
-  if (!required) {
-    if (process.env.NODE_ENV === "production") {
-      throw new Error("unauthorized");
-    }
-    return; // en desarrollo local se permite sin clave
-  }
-  const provided = req.headers.get("x-admin-key");
-  if (!provided || provided !== required) {
-    throw new Error("unauthorized");
-  }
 }
 
 async function fetchFromSupabase(path: string, init?: RequestInit) {
@@ -387,6 +373,7 @@ export async function GET(req: Request) {
       ? Math.max(0, Math.trunc(offsetNumber))
       : 0;
     const isAdminRequest = !!url.searchParams.get("adminSite");
+    if (isAdminRequest) await requireSuperadmin(req);
     const normalizedCategorySlugFromQuery = normalizeCategorySlug(categorySlug);
     const normalizedCategoryLabelFromQuery = normalizeCategorySlug(category);
     const includeExpired =
@@ -544,13 +531,15 @@ export async function GET(req: Request) {
     return NextResponse.json(payload, { status: 200 });
   } catch (err: any) {
     console.error("[GET /api/posts] error", err);
+    const authResponse = adminAuthResponse(err);
+    if (authResponse) return authResponse;
     return NextResponse.json({ error: "internal_error" }, { status: 500 });
   }
 }
 
 export async function POST(req: Request) {
   try {
-    requireAdminKey(req);
+    await requireSuperadmin(req);
     const siteId = await getCurrentSiteId(req);
     const body = await req.json();
     const normalized = normalizePost(body);
@@ -724,9 +713,8 @@ export async function POST(req: Request) {
     return NextResponse.json({ ok: true, slug: normalized.slug }, { status: 201 });
   } catch (err: any) {
     console.error("[POST /api/posts] error", err);
-    if (String(err?.message) === "unauthorized") {
-      return NextResponse.json({ error: "unauthorized" }, { status: 401 });
-    }
+    const authResponse = adminAuthResponse(err);
+    if (authResponse) return authResponse;
     return NextResponse.json({ error: "bad_request" }, { status: 400 });
   }
 }

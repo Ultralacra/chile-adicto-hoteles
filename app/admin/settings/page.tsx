@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import { useAdminApi } from "@/hooks/use-admin-api";
 
 type CategoryRow = {
   slug: string;
@@ -9,6 +10,7 @@ type CategoryRow = {
 };
 
 export default function SettingsPage() {
+  const { fetchWithSite } = useAdminApi();
   const [categories, setCategories] = useState<CategoryRow[]>([]);
   const [loadingCats, setLoadingCats] = useState(false);
   const [catsError, setCatsError] = useState<string | null>(null);
@@ -37,7 +39,9 @@ export default function SettingsPage() {
     setLoadingCats(true);
     setCatsError(null);
     try {
-      const res = await fetch("/api/categories?full=1", { cache: "no-store" });
+      const res = await fetchWithSite("/api/categories?full=1", {
+        cache: "no-store",
+      });
       const json = res.ok ? await res.json() : [];
       setCategories(Array.isArray(json) ? json : []);
     } catch (e: any) {
@@ -67,7 +71,7 @@ export default function SettingsPage() {
         label_es: labelEs.trim() || null,
         label_en: labelEn.trim() || null,
       };
-      const res = await fetch("/api/categories", {
+      const res = await fetchWithSite("/api/categories", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
@@ -103,35 +107,12 @@ export default function SettingsPage() {
 
       <div className="border border-black/10 bg-white p-5">
         <h2 className="mb-4 font-neutra-demi text-xl uppercase tracking-wide text-[#20211f]">
-          Credenciales de administrador
+          Autenticación
         </h2>
-        <div className="space-y-4">
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Usuario
-            </label>
-            <input
-              type="text"
-              value="admin"
-              disabled
-              className="w-full border border-black/10 bg-[#f3f3f1] px-4 py-2"
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Contraseña
-            </label>
-            <input
-              type="password"
-              value="chileadicto2024"
-              disabled
-              className="w-full border border-black/10 bg-[#f3f3f1] px-4 py-2"
-            />
-          </div>
-          <p className="text-sm text-gray-500">
-            Próximamente se habilitará el cambio de contraseña…
-          </p>
-        </div>
+        <p className="text-sm text-gray-600">
+          El acceso administrativo se gestiona con Supabase Auth y permisos de
+          superadmin. Las credenciales no se almacenan en esta aplicación.
+        </p>
       </div>
 
       <div className="border border-black/10 bg-white p-5">

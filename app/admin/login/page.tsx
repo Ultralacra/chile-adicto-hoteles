@@ -5,28 +5,34 @@ import type React from "react";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useLanguage } from "@/contexts/language-context";
+import { supabase } from "@/lib/supabase-client";
 
 export default function AdminLoginPage() {
   const router = useRouter();
   const { language } = useLanguage();
-  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setError("");
 
-    if (username === "admin" && password === "chileadicto2024") {
-      // Store authentication in sessionStorage
-      sessionStorage.setItem("adminAuthenticated", "true");
+    const { error: signInError } = await supabase.auth.signInWithPassword({
+      email: email.trim(),
+      password,
+    });
+
+    if (!signInError) {
       router.push("/admin");
-    } else {
-      setError(
-        language === "es"
-          ? "Usuario o contraseña incorrectos"
-          : "Incorrect username or password",
-      );
+      return;
     }
+
+    setError(
+      language === "es"
+        ? "Usuario o contraseña incorrectos"
+        : "Incorrect username or password",
+    );
   };
 
   return (
@@ -51,21 +57,21 @@ export default function AdminLoginPage() {
           <div className="space-y-4">
             <div>
               <label
-                htmlFor="username"
+                htmlFor="email"
                 className="block text-sm font-medium text-gray-700 mb-2"
               >
-                {language === "es" ? "Usuario" : "Username"}
+                {language === "es" ? "Correo electrónico" : "Email"}
               </label>
               <input
-                id="username"
-                type="text"
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
+                id="email"
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
                 className="w-full border border-black/10 bg-white px-4 py-3 focus:ring-2 focus:ring-[var(--color-brand-red)] focus:border-transparent"
                 placeholder={
                   language === "es"
-                    ? "Ingrese su usuario"
-                    : "Enter your username"
+                    ? "Ingrese su correo electrónico"
+                    : "Enter your email"
                 }
                 required
               />

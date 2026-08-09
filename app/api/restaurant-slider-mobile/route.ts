@@ -5,6 +5,7 @@ import {
   getCachedServerData,
   invalidateServerDataCache,
 } from "@/lib/server-read-cache";
+import { adminAuthResponse, requireSuperadmin } from "@/lib/server-auth";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -67,6 +68,7 @@ export async function GET() {
 
 export async function PUT(req: Request) {
   try {
+    await requireSuperadmin(req);
     const body = await req.json();
     const lang = String(body?.lang || "").toLowerCase();
     const order = Array.isArray(body?.order) ? body.order : [];
@@ -80,6 +82,8 @@ export async function PUT(req: Request) {
     invalidateServerDataCache(/^restaurant-slider-mobile:/);
     return NextResponse.json({ ok: true });
   } catch (e: any) {
+    const authResponse = adminAuthResponse(e);
+    if (authResponse) return authResponse;
     return NextResponse.json({ ok: false, message: String(e?.message || e) }, { status: 400 });
   }
 }

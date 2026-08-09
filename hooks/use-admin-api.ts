@@ -1,5 +1,7 @@
 import { useSiteContext } from "@/contexts/site-context";
 import { useCallback } from "react";
+import { supabase } from "@/lib/supabase-client";
+import { dispatchAdminAuthError } from "@/lib/admin-auth-events";
 
 /**
  * Hook personalizado para hacer peticiones API desde el admin
@@ -14,12 +16,19 @@ export function useAdminApi() {
       const urlObj = new URL(url, window.location.origin);
       urlObj.searchParams.set('adminSite', currentSite);
 
-      // Incluir x-admin-key si está disponible
-      const adminKey = process.env.NEXT_PUBLIC_ADMIN_API_KEY;
       const headers = new Headers((options?.headers as HeadersInit) || {});
-      if (adminKey) headers.set('x-admin-key', adminKey);
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
+      if (session?.access_token) {
+        headers.set("Authorization", `Bearer ${session.access_token}`);
+      }
 
-      return fetch(urlObj.toString(), { ...options, headers });
+      const response = await fetch(urlObj.toString(), { ...options, headers });
+      if (response.status === 401 || response.status === 403) {
+        dispatchAdminAuthError(response.status);
+      }
+      return response;
     },
     [currentSite]
   );

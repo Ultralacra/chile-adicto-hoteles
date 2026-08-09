@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { isPostCurrentlyPublished } from "@/lib/post-publication";
 import { ensureLegacyPostShape } from "@/lib/post-response-shape";
 import { getCurrentSiteId } from "@/lib/site-utils";
+import { adminAuthResponse, requireSuperadmin } from "@/lib/server-auth";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -38,6 +39,16 @@ export async function GET(req: Request) {
   const q = String(url.searchParams.get("q") || "").trim().toLowerCase();
   const limit = Math.min(Math.max(Number(url.searchParams.get("limit") || 50) || 50, 5), 100);
   const adminSite = url.searchParams.get("adminSite");
+
+  if (adminSite) {
+    try {
+      await requireSuperadmin(req);
+    } catch (error) {
+      const authResponse = adminAuthResponse(error);
+      if (authResponse) return authResponse;
+      throw error;
+    }
+  }
 
   let siteId = "santiagoadicto";
   if (adminSite === "chileadicto" || adminSite === "santiagoadicto") {

@@ -10,27 +10,13 @@ import {
   getCachedServerData,
   invalidateServerDataCache,
 } from "@/lib/server-read-cache";
+import { adminAuthResponse, requireSuperadmin } from "@/lib/server-auth";
 
 const POST_DETAIL_CACHE_TTL_MS = 5 * 60 * 1000;
 
 function envOrNull(name: string) {
   const v = process.env[name];
   return v && v.length > 0 ? v : null;
-}
-
-function requireAdminKey(req: Request) {
-  const required = envOrNull("ADMIN_API_KEY");
-  // En producción, si no está configurada la clave bloqueamos todo write
-  if (!required) {
-    if (process.env.NODE_ENV === "production") {
-      throw new Error("unauthorized");
-    }
-    return; // en desarrollo local se permite sin clave
-  }
-  const provided = req.headers.get("x-admin-key");
-  if (!provided || provided !== required) {
-    throw new Error("unauthorized");
-  }
 }
 
 async function fetchFromSupabase(path: string, init?: RequestInit) {
@@ -350,6 +336,7 @@ export async function GET(
   try {
     const url = new URL(_req.url);
     const isAdminRequest = !!url.searchParams.get("adminSite");
+    if (isAdminRequest) await requireSuperadmin(_req);
     const siteId = await getCurrentSiteId(_req);
     const ctx = (await (params as any)) as { slug?: string };
     const slug = String(ctx?.slug || "").trim();
@@ -402,6 +389,8 @@ export async function GET(
     return NextResponse.json(result.body, { status: result.status });
   } catch (err: any) {
     console.error("[GET /api/posts/[slug]] error", err);
+    const authResponse = adminAuthResponse(err);
+    if (authResponse) return authResponse;
     return NextResponse.json({ error: "internal_error" }, { status: 500 });
   }
 }
@@ -413,7 +402,7 @@ export async function PUT(
 ) {
   let step = "start";
   try {
-    requireAdminKey(req);
+    await requireSuperadmin(req);
     const siteId = await getCurrentSiteId(req);
     const ctx = (await (params as any)) as { slug?: string };
     const slugParam = String(ctx?.slug || "").trim();
@@ -730,9 +719,8 @@ export async function PUT(
     return NextResponse.json({ ok: true, slug: normalized.slug || slugParam }, { status: 200 });
   } catch (err: any) {
     console.error("[PUT /api/posts/[slug]] error final", err);
-    if (String(err?.message) === "unauthorized") {
-      return NextResponse.json({ error: "unauthorized" }, { status: 401 });
-    }
+    const authResponse = adminAuthResponse(err);
+    if (authResponse) return authResponse;
     const msg = String(err?.message || "bad_request");
     // Incluir paso si está disponible para depurar
     const payload: any = { error: "internal_error", message: msg, step };
@@ -746,12 +734,12 @@ export async function PUT(
 
 // DELETE /api/posts/[slug]
 export async function DELETE(
-  _req: Request,
+  req: Request,
   { params }: { params: { slug: string } }
 ) {
   try {
-    requireAdminKey(_req);
-    const siteId = await getCurrentSiteId(_req);
+    await requireSuperadmin(req);
+    const siteId = await getCurrentSiteId(req);
     const ctx = (await (params as any)) as { slug?: string };
     const slug = String(ctx?.slug || "").trim();
     console.log("[DELETE POST]", slug, "site:", siteId);
@@ -881,9 +869,8 @@ export async function DELETE(
     return NextResponse.json({ ok: true }, { status: 200 });
   } catch (err: any) {
     console.error("[DELETE /api/posts/[slug]] error", err);
-    if (String(err?.message) === "unauthorized") {
-      return NextResponse.json({ error: "unauthorized" }, { status: 401 });
-    }
+    const authResponse = adminAuthResponse(err);
+    if (authResponse) return authResponse;
     return NextResponse.json({ error: "internal_error" }, { status: 500 });
   }
 }

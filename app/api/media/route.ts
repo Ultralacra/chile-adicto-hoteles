@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { adminAuthResponse, requireSuperadmin } from "@/lib/server-auth";
 
 export const runtime = "nodejs";
 
@@ -195,6 +196,7 @@ export async function GET(req: Request) {
 // Registra URLs en una tabla opcional 'media' (si existe). Si no existe, responde ok igual.
 export async function POST(req: Request) {
   try {
+    await requireSuperadmin(req);
     const body = await req.json();
     const single = body?.url ? [String(body.url).trim()] : [];
     const many = Array.isArray(body?.urls) ? body.urls.map((u: any) => String(u).trim()) : [];
@@ -228,6 +230,8 @@ export async function POST(req: Request) {
 
     return NextResponse.json({ ok: true, urls }, { status: 201 });
   } catch (err: any) {
+    const authResponse = adminAuthResponse(err);
+    if (authResponse) return authResponse;
     console.error("[POST /api/media] error", err);
     return NextResponse.json({ error: "bad_request" }, { status: 400 });
   }

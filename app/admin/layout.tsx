@@ -22,6 +22,8 @@ import {
 import { SiteProvider } from "@/contexts/site-context";
 import { SiteSelector } from "@/components/site-selector";
 import { SiteLoadingOverlay } from "@/components/site-loading-overlay";
+import { AdminAuthErrorModal } from "@/components/admin-auth-error-modal";
+import { supabase } from "@/lib/supabase-client";
 
 export default function AdminLayout({
   children,
@@ -41,15 +43,22 @@ export default function AdminLayout({
       return;
     }
 
-    const auth = sessionStorage.getItem("adminAuthenticated");
-    if (!auth) {
-      setIsAuthenticated(false);
-      setAuthChecked(true);
-      router.push("/admin/login");
-    } else {
-      setIsAuthenticated(true);
-      setAuthChecked(true);
-    }
+    let mounted = true;
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (!mounted) return;
+      if (!session) {
+        setIsAuthenticated(false);
+        setAuthChecked(true);
+        router.push("/admin/login");
+      } else {
+        setIsAuthenticated(true);
+        setAuthChecked(true);
+      }
+    });
+
+    return () => {
+      mounted = false;
+    };
   }, [router, pathname]);
 
   useEffect(() => {
@@ -57,8 +66,8 @@ export default function AdminLayout({
     setIsSidebarOpen(false);
   }, [pathname]);
 
-  const handleLogout = () => {
-    sessionStorage.removeItem("adminAuthenticated");
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
     router.push("/admin/login");
   };
 
@@ -120,6 +129,7 @@ export default function AdminLayout({
   return (
     <SiteProvider>
       <SiteLoadingOverlay />
+      <AdminAuthErrorModal />
       <div className="min-h-screen bg-[#f3f3f1] text-[#20211f] overflow-x-hidden">
         {/* Mobile Header */}
         <div className="lg:hidden sticky top-0 z-[60] border-b border-black/10 bg-[#f3f3f1]/95 px-4 py-3 backdrop-blur flex items-center justify-between">

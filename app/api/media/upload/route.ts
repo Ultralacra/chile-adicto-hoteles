@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { adminAuthResponse, requireSuperadmin } from "@/lib/server-auth";
 
 export const runtime = "nodejs";
 
@@ -108,6 +109,7 @@ async function uploadToSupabaseStorage(file: Blob, fileName: string): Promise<st
 export async function POST(req: Request) {
   let step = "start";
   try {
+    await requireSuperadmin(req);
     const ctype = req.headers.get("content-type") || "";
     if (!ctype.startsWith("multipart/form-data")) {
       return NextResponse.json({ ok: false, error: "expected_multipart" }, { status: 400 });
@@ -129,6 +131,8 @@ export async function POST(req: Request) {
 
     return NextResponse.json({ ok: true, urls }, { status: 201 });
   } catch (err: any) {
+    const authResponse = adminAuthResponse(err);
+    if (authResponse) return authResponse;
     const msg = String(err?.message || err);
     console.error("[/api/media/upload]", { step, msg });
     const status = /no_files|expected_multipart/i.test(msg) ? 400 : 500;

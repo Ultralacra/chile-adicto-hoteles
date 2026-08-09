@@ -9,6 +9,7 @@ import {
   type AgendaLanguage,
 } from "@/lib/agenda-cultural";
 import { getCurrentSiteId } from "@/lib/site-utils";
+import { adminAuthResponse, requireSuperadmin } from "@/lib/server-auth";
 import {
   getCachedServerData,
   invalidateServerDataCache,
@@ -90,15 +91,6 @@ function envOrNull(name: string) {
   return value?.trim() || null;
 }
 
-function requireAdminKey(req: Request) {
-  const required = envOrNull("ADMIN_API_KEY");
-  if (!required) {
-    if (process.env.NODE_ENV === "production") throw new Error("unauthorized");
-    return;
-  }
-  if (req.headers.get("x-admin-key") !== required) throw new Error("unauthorized");
-}
-
 function hasServiceRole() {
   return !!envOrNull("NEXT_PUBLIC_SUPABASE_URL") && !!envOrNull("SUPABASE_SERVICE_ROLE_KEY");
 }
@@ -124,9 +116,11 @@ async function supabaseRest(path: string, init?: RequestInit, mode: "anon" | "se
 }
 
 function adminResponseError(error: unknown) {
+  const authResponse = adminAuthResponse(error);
+  if (authResponse) return authResponse;
   const message = String((error as Error)?.message || error);
-  const status = message === "unauthorized" ? 401 : 500;
-  return NextResponse.json({ ok: false, error: status === 401 ? "unauthorized" : "internal_error", message }, { status });
+  const status = message === "unauthorized" ? 401 : message === "forbidden" ? 403 : 500;
+  return NextResponse.json({ ok: false, error: status === 401 ? "unauthorized" : status === 403 ? "forbidden" : "internal_error", message }, { status });
 }
 
 async function loadRows(siteId: string, mode: "anon" | "service") {
@@ -177,7 +171,7 @@ export async function GET(req: Request) {
     const language: AgendaLanguage = url.searchParams.get("lang") === "en" ? "en" : "es";
     const isAdmin = url.searchParams.has("adminSite") && url.searchParams.get("all") === "1";
     const postSlug = String(url.searchParams.get("postSlug") || "").trim();
-    if (isAdmin) requireAdminKey(req);
+    if (isAdmin) await requireSuperadmin(req);
 
     const date = url.searchParams.get("date") || agendaDateInChile();
     const mode = hasServiceRole() ? "service" : "anon";
@@ -227,13 +221,15 @@ export async function GET(req: Request) {
       featured: featured ? mapAgendaFeaturedSlot(featured, language) : null,
     });
   } catch (error) {
+    const authResponse = adminAuthResponse(error);
+    if (authResponse) return authResponse;
     return NextResponse.json({ date: agendaDateInChile(), periods: [], featured: null, error: String((error as Error)?.message || error) }, { status: 200 });
   }
 }
 
 export async function POST(req: Request) {
   try {
-    requireAdminKey(req);
+    await requireSuperadmin(req);
     if (!hasServiceRole()) throw new Error("SUPABASE_SERVICE_ROLE_KEY no configurado");
     const siteId = await getCurrentSiteId(req);
     const body = await req.json();
@@ -259,7 +255,7 @@ export async function POST(req: Request) {
 
 export async function PUT(req: Request) {
   try {
-    requireAdminKey(req);
+    await requireSuperadmin(req);
     if (!hasServiceRole()) throw new Error("SUPABASE_SERVICE_ROLE_KEY no configurado");
     const siteId = await getCurrentSiteId(req);
     const body = await req.json();
@@ -287,7 +283,7 @@ export async function PUT(req: Request) {
 
 export async function DELETE(req: Request) {
   try {
-    requireAdminKey(req);
+    await requireSuperadmin(req);
     if (!hasServiceRole()) throw new Error("SUPABASE_SERVICE_ROLE_KEY no configurado");
     const siteId = await getCurrentSiteId(req);
     const url = new URL(req.url);

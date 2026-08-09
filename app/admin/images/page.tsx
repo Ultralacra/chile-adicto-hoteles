@@ -307,7 +307,7 @@ export default function AdminImagesPage() {
     try {
       const form = new FormData();
       for (const f of arr) form.append("files", f);
-      const res = await fetch(
+      const res = await fetchWithSite(
         `/api/posts/${encodeURIComponent(selectedSlug)}/images`,
         {
           method: "POST",
@@ -315,7 +315,7 @@ export default function AdminImagesPage() {
         },
       );
       if (!res.ok) throw new Error(await res.text());
-      const fresh = await fetch(
+      const fresh = await fetchWithSite(
         `/api/posts/${encodeURIComponent(selectedSlug)}`,
         { cache: "no-store" },
       ).then((r) => (r.ok ? r.json() : null));
@@ -348,7 +348,7 @@ export default function AdminImagesPage() {
       const featured = images[fi] || "";
       const gallery = images.filter((_, i) => i !== fi);
       const payload = { featuredImage: featured || null, images: gallery };
-      const res = await fetch(
+      const res = await fetchWithSite(
         `/api/posts/${encodeURIComponent(selectedPost.slug)}`,
         {
           method: "PUT",
@@ -357,7 +357,7 @@ export default function AdminImagesPage() {
         },
       );
       if (!res.ok) throw new Error(await res.text());
-      const fresh = await fetch(
+      const fresh = await fetchWithSite(
         `/api/posts/${encodeURIComponent(selectedPost.slug)}`,
         { cache: "no-store" },
       ).then((r) => (r.ok ? r.json() : null));

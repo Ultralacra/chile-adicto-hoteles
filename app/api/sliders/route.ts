@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { getCurrentSiteId } from "@/lib/site-utils";
+import { adminAuthResponse, requireSuperadmin } from "@/lib/server-auth";
 
 function envOrNull(name: string) {
   const v = process.env[name];
@@ -59,6 +60,8 @@ async function supabaseRest(path: string, init?: RequestInit, mode: "anon" | "se
 
 export async function GET(req: Request) {
   try {
+    const url = new URL(req.url);
+    if (url.searchParams.has("adminSite")) await requireSuperadmin(req);
     const siteId = await getCurrentSiteId(req);
 
     if (!canUseAnon() && !canUseService()) {
@@ -87,6 +90,8 @@ export async function GET(req: Request) {
 
     return NextResponse.json({ sets }, { status: 200 });
   } catch (err: any) {
+    const authResponse = adminAuthResponse(err);
+    if (authResponse) return authResponse;
     return NextResponse.json({ sets: [], error: String(err?.message || err) }, { status: 500 });
   }
 }

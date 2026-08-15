@@ -1499,30 +1499,59 @@ export default function CategoryPage({ params }: { params: any }) {
               ))}
             </div>
           ) : isRestaurantOrBarsPage ? (
-            <div className="mt-4 space-y-8">
+            <div className="mt-4 space-y-5">
               {/* Banners de restaurantes y bares */}
               {isRestaurantsPage && !tipoParam && (
-                <div className="grid grid-cols-1 gap-4 md:grid-cols-[2fr_1fr] md:gap-2">
-                  <div className="flex flex-col gap-4 md:gap-2">
-                    <BottomHomeBanner
+                <div className="grid grid-cols-1 gap-5 md:grid-cols-3">
+                  <div className="grid grid-rows-2 gap-5 md:col-span-2">
+                    <Link
                       href="/categoria/restaurantes?tipo=restaurantes"
-                      src="/bannerRestaurantes/BANER DESKTOP 50 RESTORANES.png"
-                      mobileSrc="/bannerRestaurantes/BANER MOVIL 50 RESTORANES.png"
-                      alt="50 restaurantes de Santiago"
-                    />
-                    <BottomHomeBanner
+                      className="block h-full overflow-hidden bg-black"
+                      aria-label="Ir a 50 restaurantes de Santiago"
+                    >
+                      <img
+                        src="/bannerRestaurantes/BANER%20MOVIL%2050%20RESTORANES.png"
+                        alt="50 restaurantes de Santiago"
+                        className="h-full w-full object-contain md:hidden"
+                        loading="lazy"
+                      />
+                      <img
+                        src="/bannerRestaurantes/BANER%20DESKTOP%2050%20RESTORANES.png"
+                        alt="50 restaurantes de Santiago"
+                        className="hidden h-full w-full object-contain md:block"
+                        loading="lazy"
+                      />
+                    </Link>
+                    <Link
                       href="/categoria/bares"
-                      src="/bannerRestaurantes/BANER DESKTOP 50 BARES.png"
-                      mobileSrc="/bannerRestaurantes/BANER MOVIL 50 BARES.png"
-                      alt="50 bares de Santiago"
-                    />
+                      className="block h-full overflow-hidden bg-black"
+                      aria-label="Ir a 50 bares de Santiago"
+                    >
+                      <img
+                        src="/bannerRestaurantes/BANER%20MOVIL%2050%20BARES.png"
+                        alt="50 bares de Santiago"
+                        className="h-full w-full object-contain md:hidden"
+                        loading="lazy"
+                      />
+                      <img
+                        src="/bannerRestaurantes/BANER%20DESKTOP%2050%20BARES.png"
+                        alt="50 bares de Santiago"
+                        className="hidden h-full w-full object-contain md:block"
+                        loading="lazy"
+                      />
+                    </Link>
                   </div>
                   <Link
                     href="/categoria/toprestoranes"
                     aria-label="Ir a Top Restaurantes"
-                    className="flex aspect-square cursor-pointer items-center justify-center border border-dashed border-black/40 bg-black px-4 text-center text-sm text-white transition-opacity hover:opacity-80 md:aspect-auto md:h-full"
+                    className="block aspect-square w-full cursor-pointer overflow-hidden bg-black transition-opacity hover:opacity-80 md:h-full"
                   >
-                    Banner reservado para Top Restaurantes
+                    <img
+                      src="/bannerRestaurantes/LAtin%20amerdicans.png"
+                      alt="Top Restaurantes"
+                      className="h-full w-full object-contain"
+                      loading="lazy"
+                    />
                   </Link>
                 </div>
               )}

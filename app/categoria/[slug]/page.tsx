@@ -1544,7 +1544,7 @@ export default function CategoryPage({ params }: { params: any }) {
                   <Link
                     href="/categoria/toprestoranes"
                     aria-label="Ir a Top Restaurantes"
-                    className="block aspect-square w-full cursor-pointer overflow-hidden bg-black transition-opacity hover:opacity-80 md:h-full"
+                    className="block aspect-square w-full cursor-pointer overflow-hidden bg-black md:h-full"
                   >
                     <img
                       src="/bannerRestaurantes/LAtin%20amerdicans.png"

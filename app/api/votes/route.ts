@@ -163,7 +163,7 @@ export async function GET(req: Request) {
       if (cached && cached.expiresAt > Date.now()) return cached.rows;
 
       const countRes = await fetch(
-        `${SUPABASE_URL}/rest/v1/votes${baseQuery}&select=${select}&limit=1&offset=0`,
+        `${SUPABASE_URL}/rest/v1/votes${baseQuery}&select=${select}&limit=${summaryPageSize}&offset=0`,
         { headers: getReadHeaders() },
       );
       if (!countRes.ok) throw new Error("Error al obtener datos");

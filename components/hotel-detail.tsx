@@ -113,6 +113,10 @@ export function HotelDetail({
   const isRestaurantesPost =
     normalizedCategories.includes("restaurantes") ||
     normalizedCategories.includes("restaurants");
+  const isTopRestaurantsPost =
+    normalizedCategories.includes("toprestoranes") ||
+    normalizedCategories.includes("top-restoranes") ||
+    normalizedCategories.includes("top-restaurantes");
   // Fallback: slugs conocidos de posts de ICONOS (por si la API no devuelve categorías)
   console.log(
     "[HotelDetail] slug:",
@@ -160,7 +164,8 @@ export function HotelDetail({
 
   const showCategoryBanner =
     !hideBanners &&
-    (isMonumentosPost ||
+    (isTopRestaurantsPost ||
+      isMonumentosPost ||
       isCafesPost ||
       isAgendaPost ||
       isToyotaPost ||
@@ -627,7 +632,9 @@ export function HotelDetail({
           <div className="w-full mb-4">
             <BottomHomeBanner
               href={
-                isCafesPost
+                isTopRestaurantsPost
+                  ? "/categoria/toprestoranes"
+                  : isCafesPost
                   ? "/cafes"
                   : isToyotaPost || isIconosFinal || isParquesPost
                     ? "/categoria/la-ruta-toyota"
@@ -636,7 +643,9 @@ export function HotelDetail({
                       : agendaBanner?.href || "/categoria/agenda-cultural"
               }
               src={
-                isCafesPost
+                isTopRestaurantsPost
+                  ? "/bannerRestaurantes/BANER DESKTOP 50 BEST.webp"
+                  : isCafesPost
                   ? "/bannerHome/BANNER DESKTOP 50 CAFES.webp"
                   : isIconosFinal
                     ? "/bannerstoyota/BANNER LA RUTA TOYOTA ICONOS.png"
@@ -649,7 +658,9 @@ export function HotelDetail({
                           : "/bannersagenda/BANER AGENDA HEADER.png"
               }
               mobileSrc={
-                isCafesPost
+                isTopRestaurantsPost
+                  ? "/bannerRestaurantes/BANNER MOVIL 50 BEST.webp"
+                  : isCafesPost
                   ? "/bannerHome/30 CAFES.webp"
                   : isIconosFinal
                     ? "/bannerstoyota/BANNER LA RUTA TOYOTA ICONOS.png"
@@ -662,7 +673,9 @@ export function HotelDetail({
                           : undefined
               }
               alt={
-                isCafesPost
+                isTopRestaurantsPost
+                  ? "Top Restaurantes"
+                  : isCafesPost
                   ? "Cafés"
                   : isIconosFinal
                     ? "Iconos"
@@ -687,7 +700,10 @@ export function HotelDetail({
           </div>
         )}
 
-        {!hideBanners && isRestaurantesPost && !isBaresPost && (
+        {!hideBanners &&
+          isRestaurantesPost &&
+          !isBaresPost &&
+          !isTopRestaurantsPost && (
           <div className="w-full mb-4">
             <BottomHomeBanner
               href="/categoria/restaurantes?tipo=restaurantes"

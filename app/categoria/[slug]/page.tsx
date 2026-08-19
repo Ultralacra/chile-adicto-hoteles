@@ -1311,8 +1311,13 @@ export default function CategoryPage({ params }: { params: any }) {
           )}
 
           {slug === "toprestoranes" && (
-            <div className="mt-2 flex min-h-[180px] items-center justify-center border border-dashed border-black/40 bg-black px-4 text-center text-sm text-white">
-              Banner reservado para Top Restaurantes
+            <div className="w-full mt-2">
+              <BottomHomeBanner
+                href="/categoria/toprestoranes"
+                src="/bannerRestaurantes/BANER DESKTOP 50 BEST.webp"
+                mobileSrc="/bannerRestaurantes/BANNER MOVIL 50 BEST.webp"
+                alt="Top Restaurantes"
+              />
             </div>
           )}
 

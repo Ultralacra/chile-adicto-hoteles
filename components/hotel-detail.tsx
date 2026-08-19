@@ -635,55 +635,55 @@ export function HotelDetail({
                 isTopRestaurantsPost
                   ? "/categoria/toprestoranes"
                   : isCafesPost
-                  ? "/cafes"
-                  : isToyotaPost || isIconosFinal || isParquesPost
-                    ? "/categoria/la-ruta-toyota"
-                    : isMonumentosPost
-                      ? "/monumentos-nacionales"
-                      : agendaBanner?.href || "/categoria/agenda-cultural"
+                    ? "/cafes"
+                    : isToyotaPost || isIconosFinal || isParquesPost
+                      ? "/categoria/la-ruta-toyota"
+                      : isMonumentosPost
+                        ? "/monumentos-nacionales"
+                        : agendaBanner?.href || "/categoria/agenda-cultural"
               }
               src={
                 isTopRestaurantsPost
                   ? "/bannerRestaurantes/BANER DESKTOP 50 BEST.webp"
                   : isCafesPost
-                  ? "/bannerHome/BANNER DESKTOP 50 CAFES.webp"
-                  : isIconosFinal
-                    ? "/bannerstoyota/BANNER LA RUTA TOYOTA ICONOS.png"
-                    : isToyotaPost || isParquesPost
-                      ? "/bannerstoyota/BANNER LA RUTA TOYOTA.webp"
-                      : isMonumentosPost
-                        ? "/bannerHome/BANNER MONUMENTOS.svg"
-                        : isAgendaPost && agendaBanner
-                          ? agendaBanner.src
-                          : "/bannersagenda/BANER AGENDA HEADER.png"
+                    ? "/bannerHome/BANNER DESKTOP 50 CAFES.webp"
+                    : isIconosFinal
+                      ? "/bannerstoyota/BANNER LA RUTA TOYOTA ICONOS.png"
+                      : isToyotaPost || isParquesPost
+                        ? "/bannerstoyota/BANNER LA RUTA TOYOTA.webp"
+                        : isMonumentosPost
+                          ? "/bannerHome/BANNER MONUMENTOS.svg"
+                          : isAgendaPost && agendaBanner
+                            ? agendaBanner.src
+                            : "/bannersagenda/BANER AGENDA HEADER.png"
               }
               mobileSrc={
                 isTopRestaurantsPost
                   ? "/bannerRestaurantes/BANNER MOVIL 50 BEST.webp"
                   : isCafesPost
-                  ? "/bannerHome/30 CAFES.webp"
-                  : isIconosFinal
-                    ? "/bannerstoyota/BANNER LA RUTA TOYOTA ICONOS.png"
-                    : isToyotaPost || isParquesPost
-                      ? "/bannerstoyota/BANNER LA RUTA TOYOTA.webp"
-                      : isMonumentosPost
-                        ? "/bannerHome/monumentos movil.png"
-                        : isAgendaPost && agendaBanner
-                          ? agendaBanner.mobileSrc
-                          : undefined
+                    ? "/bannerHome/30 CAFES.webp"
+                    : isIconosFinal
+                      ? "/bannerstoyota/BANNER LA RUTA TOYOTA ICONOS.png"
+                      : isToyotaPost || isParquesPost
+                        ? "/bannerstoyota/BANNER LA RUTA TOYOTA.webp"
+                        : isMonumentosPost
+                          ? "/bannerHome/monumentos movil.png"
+                          : isAgendaPost && agendaBanner
+                            ? agendaBanner.mobileSrc
+                            : undefined
               }
               alt={
                 isTopRestaurantsPost
                   ? "Top Restaurantes"
                   : isCafesPost
-                  ? "Cafés"
-                  : isIconosFinal
-                    ? "Iconos"
-                    : isToyotaPost || isParquesPost
-                      ? "La Ruta Toyota"
-                      : isMonumentosPost
-                        ? "Monumentos Nacionales"
-                        : agendaBanner?.alt || "Agenda Cultural"
+                    ? "Cafés"
+                    : isIconosFinal
+                      ? "Iconos"
+                      : isToyotaPost || isParquesPost
+                        ? "La Ruta Toyota"
+                        : isMonumentosPost
+                          ? "Monumentos Nacionales"
+                          : agendaBanner?.alt || "Agenda Cultural"
               }
             />
           </div>
@@ -704,15 +704,15 @@ export function HotelDetail({
           isRestaurantesPost &&
           !isBaresPost &&
           !isTopRestaurantsPost && (
-          <div className="w-full mb-4">
-            <BottomHomeBanner
-              href="/categoria/restaurantes?tipo=restaurantes"
-              src="/bannerRestaurantes/BANER DESKTOP 50 RESTORANES.png"
-              mobileSrc="/bannerRestaurantes/BANER MOVIL 50 RESTORANES.png"
-              alt="50 restaurantes de Santiago"
-            />
-          </div>
-        )}
+            <div className="w-full mb-4">
+              <BottomHomeBanner
+                href="/categoria/restaurantes?tipo=restaurantes"
+                src="/bannerRestaurantes/BANER DESKTOP 50 RESTORANES.png"
+                mobileSrc="/bannerRestaurantes/BANER MOVIL 50 RESTORANES.png"
+                alt="50 restaurantes de Santiago"
+              />
+            </div>
+          )}
 
         {allImages.length > 0 && (
           <div className="mb-4 w-full">

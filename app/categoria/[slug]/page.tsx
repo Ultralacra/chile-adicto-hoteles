@@ -1515,13 +1515,13 @@ export default function CategoryPage({ params }: { params: any }) {
                       aria-label="Ir a 50 restaurantes de Santiago"
                     >
                       <img
-                        src="/bannerRestaurantes/BANER%20MOVIL%2050%20RESTORANES.png"
+                        src="/bannerRestaurantes/BANER%20MOVIL%2050%20RESTORANES.webp"
                         alt="50 restaurantes de Santiago"
                         className="h-full w-full object-contain md:hidden"
                         loading="lazy"
                       />
                       <img
-                        src="/bannerRestaurantes/BANER%20DESKTOP%2050%20RESTORANES.png"
+                        src="/bannerRestaurantes/BANER%20DESKTOP%2050%20RESTORANES.webp"
                         alt="50 restaurantes de Santiago"
                         className="hidden h-full w-full object-contain md:block"
                         loading="lazy"
@@ -1533,13 +1533,13 @@ export default function CategoryPage({ params }: { params: any }) {
                       aria-label="Ir a 50 bares de Santiago"
                     >
                       <img
-                        src="/bannerRestaurantes/BANER%20MOVIL%2050%20BARES.png"
+                        src="/bannerRestaurantes/BANER%20MOVIL%2050%20BARES.webp"
                         alt="50 bares de Santiago"
                         className="h-full w-full object-contain md:hidden"
                         loading="lazy"
                       />
                       <img
-                        src="/bannerRestaurantes/BANER%20DESKTOP%2050%20BARES.png"
+                        src="/bannerRestaurantes/BANER%20DESKTOP%2050%20BARES.webp"
                         alt="50 bares de Santiago"
                         className="hidden h-full w-full object-contain md:block"
                         loading="lazy"
@@ -1552,7 +1552,7 @@ export default function CategoryPage({ params }: { params: any }) {
                     className="block aspect-square w-full cursor-pointer overflow-hidden bg-black md:h-full"
                   >
                     <img
-                      src="/bannerRestaurantes/LAtin%20amerdicans.png"
+                      src="/bannerRestaurantes/LAtin%20amerdicans.webp"
                       alt="Top Restaurantes"
                       className="h-full w-full object-contain"
                       loading="lazy"
@@ -1564,8 +1564,8 @@ export default function CategoryPage({ params }: { params: any }) {
                 <div className="space-y-4">
                   <BottomHomeBanner
                     href="/categoria/restaurantes?tipo=restaurantes"
-                    src="/bannerRestaurantes/BANER DESKTOP 50 RESTORANES.png"
-                    mobileSrc="/bannerRestaurantes/BANER MOVIL 50 RESTORANES.png"
+                    src="/bannerRestaurantes/BANER DESKTOP 50 RESTORANES.webp"
+                    mobileSrc="/bannerRestaurantes/BANER MOVIL 50 RESTORANES.webp"
                     alt="50 restaurantes de Santiago"
                   />
                 </div>
@@ -1574,8 +1574,8 @@ export default function CategoryPage({ params }: { params: any }) {
                 <div className="space-y-4">
                   <BottomHomeBanner
                     href="/categoria/bares"
-                    src="/bannerRestaurantes/BANER DESKTOP 50 BARES.png"
-                    mobileSrc="/bannerRestaurantes/BANER MOVIL 50 BARES.png"
+                    src="/bannerRestaurantes/BANER DESKTOP 50 BARES.webp"
+                    mobileSrc="/bannerRestaurantes/BANER MOVIL 50 BARES.webp"
                     alt="50 bares de Santiago"
                   />
                 </div>

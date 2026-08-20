@@ -693,8 +693,8 @@ export function HotelDetail({
           <div className="w-full mb-4">
             <BottomHomeBanner
               href="/categoria/bares"
-              src="/bannerRestaurantes/BANER DESKTOP 50 BARES.png"
-              mobileSrc="/bannerRestaurantes/BANER MOVIL 50 BARES.png"
+              src="/bannerRestaurantes/BANER DESKTOP 50 BARES.webp"
+              mobileSrc="/bannerRestaurantes/BANER MOVIL 50 BARES.webp"
               alt="50 bares de Santiago"
             />
           </div>
@@ -707,8 +707,8 @@ export function HotelDetail({
             <div className="w-full mb-4">
               <BottomHomeBanner
                 href="/categoria/restaurantes?tipo=restaurantes"
-                src="/bannerRestaurantes/BANER DESKTOP 50 RESTORANES.png"
-                mobileSrc="/bannerRestaurantes/BANER MOVIL 50 RESTORANES.png"
+                src="/bannerRestaurantes/BANER DESKTOP 50 RESTORANES.webp"
+                mobileSrc="/bannerRestaurantes/BANER MOVIL 50 RESTORANES.webp"
                 alt="50 restaurantes de Santiago"
               />
             </div>

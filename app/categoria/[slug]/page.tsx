@@ -1564,8 +1564,8 @@ export default function CategoryPage({ params }: { params: any }) {
                 <div className="space-y-4">
                   <BottomHomeBanner
                     href="/categoria/restaurantes?tipo=restaurantes"
-                    src="/bannerRestaurantes/BANER DESKTOP 50 RESTORANES.webp"
-                    mobileSrc="/bannerRestaurantes/BANER MOVIL 50 RESTORANES.webp"
+                    src="/bannerRestaurantes/BANER DESKTOP interior 67 RESTORANES.webp"
+                    mobileSrc="/bannerRestaurantes/BANER MOVIL interior 67 RESTORANES.webp"
                     alt="50 restaurantes de Santiago"
                   />
                 </div>
@@ -1574,8 +1574,8 @@ export default function CategoryPage({ params }: { params: any }) {
                 <div className="space-y-4">
                   <BottomHomeBanner
                     href="/categoria/bares"
-                    src="/bannerRestaurantes/BANER DESKTOP 50 BARES.webp"
-                    mobileSrc="/bannerRestaurantes/BANER MOVIL 50 BARES.webp"
+                    src="/bannerRestaurantes/BANER DESKTOP interior 23 BARES.webp"
+                    mobileSrc="/bannerRestaurantes/BANER MOVIL interior 23 BARES.webp"
                     alt="50 bares de Santiago"
                   />
                 </div>

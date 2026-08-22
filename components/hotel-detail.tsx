@@ -642,6 +642,21 @@ export function HotelDetail({
                         ? "/monumentos-nacionales"
                         : agendaBanner?.href || "/categoria/agenda-cultural"
               }
+              desktopKey={
+                isTopRestaurantsPost
+                  ? "post-top-restaurants"
+                  : isCafesPost
+                    ? "post-cafes"
+                    : isIconosFinal
+                      ? "post-iconos"
+                      : isToyotaPost
+                        ? "post-toyota"
+                        : isParquesPost
+                          ? "post-parques"
+                          : isMonumentosPost
+                            ? "post-monumentos"
+                            : undefined
+              }
               src={
                 isTopRestaurantsPost
                   ? "/bannerRestaurantes/BANER DESKTOP 50 BEST.webp"
@@ -693,6 +708,7 @@ export function HotelDetail({
           <div className="w-full mb-4">
             <BottomHomeBanner
               href="/categoria/bares"
+              desktopKey="post-bars"
               src="/bannerRestaurantes/BANER DESKTOP interior 23 BARES.webp"
               mobileSrc="/bannerRestaurantes/BANER MOVIL interior 23 BARES.webp"
               alt="50 bares de Santiago"
@@ -707,6 +723,7 @@ export function HotelDetail({
             <div className="w-full mb-4">
               <BottomHomeBanner
                 href="/categoria/restaurantes?tipo=restaurantes"
+                desktopKey="post-restaurants"
                 src="/bannerRestaurantes/BANER DESKTOP interior 67 RESTORANES.webp"
                 mobileSrc="/bannerRestaurantes/BANER MOVIL interior 67 RESTORANES.webp"
                 alt="50 restaurantes de Santiago"

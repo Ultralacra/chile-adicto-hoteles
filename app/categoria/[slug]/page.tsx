@@ -19,6 +19,7 @@ import { cachedFetch } from "@/lib/api-cache";
 import { isHiddenFrontPost } from "@/lib/post-visibility";
 import { hasPostPublicationEnded } from "@/lib/post-publication";
 import { BottomHomeBanner } from "@/components/home-promo-banners";
+import { ManagedBanner } from "@/components/managed-banner";
 import { HotelDetail } from "@/components/hotel-detail";
 import { normalizeImageUrl } from "@/lib/utils";
 import type { AgendaFeaturedSlot, AgendaPeriod } from "@/lib/agenda-cultural";
@@ -1314,6 +1315,7 @@ export default function CategoryPage({ params }: { params: any }) {
             <div className="w-full mt-2">
               <BottomHomeBanner
                 href="/categoria/toprestoranes"
+                desktopKey="top-restaurants"
                 src="/bannerRestaurantes/BANER DESKTOP 50 BEST.webp"
                 mobileSrc="/bannerRestaurantes/BANNER MOVIL 50 BEST.webp"
                 alt="Top Restaurantes"
@@ -1335,6 +1337,17 @@ export default function CategoryPage({ params }: { params: any }) {
                     : slug === "monumentos-nacionales"
                       ? "/monumentos-nacionales"
                       : "/categoria/la-ruta-toyota"
+                }
+                desktopKey={
+                  slug === "cafes"
+                    ? "category-cafes"
+                    : slug === "monumentos-nacionales"
+                      ? "category-monumentos"
+                      : slug === "iconos"
+                        ? "category-iconos"
+                        : slug === "parques"
+                          ? "category-parques"
+                          : "category-toyota"
                 }
                 src={
                   slug === "cafes"
@@ -1509,61 +1522,43 @@ export default function CategoryPage({ params }: { params: any }) {
               {isRestaurantsPage && !tipoParam && (
                 <div className="grid grid-cols-1 gap-5 md:grid-cols-3">
                   <div className="grid grid-rows-2 gap-5 md:col-span-2">
-                    <Link
-                      href="/categoria/restaurantes?tipo=restaurantes"
-                      className="block h-full overflow-hidden bg-black"
-                      aria-label="Ir a 50 restaurantes de Santiago"
-                    >
-                      <img
-                        src="/bannerRestaurantes/BANER%20MOVIL%2050%20RESTORANES.webp"
-                        alt="50 restaurantes de Santiago"
-                        className="h-full w-full object-contain md:hidden"
-                        loading="lazy"
-                      />
-                      <img
+                    <div className="block h-full overflow-hidden bg-black">
+                      <ManagedBanner
+                        desktopKey="restaurants-main"
+                        href="/categoria/restaurantes?tipo=restaurantes"
                         src="/bannerRestaurantes/BANER%20DESKTOP%2050%20RESTORANES.webp"
+                        mobileSrc="/bannerRestaurantes/BANER%20MOVIL%2050%20RESTORANES.webp"
                         alt="50 restaurantes de Santiago"
-                        className="hidden h-full w-full object-contain md:block"
-                        loading="lazy"
+                        imageClassName="h-full w-full object-contain"
                       />
-                    </Link>
-                    <Link
-                      href="/categoria/bares"
-                      className="block h-full overflow-hidden bg-black"
-                      aria-label="Ir a 50 bares de Santiago"
-                    >
-                      <img
-                        src="/bannerRestaurantes/BANER%20MOVIL%2050%20BARES.webp"
-                        alt="50 bares de Santiago"
-                        className="h-full w-full object-contain md:hidden"
-                        loading="lazy"
-                      />
-                      <img
+                    </div>
+                    <div className="block h-full overflow-hidden bg-black">
+                      <ManagedBanner
+                        desktopKey="bars-main"
+                        href="/categoria/bares"
                         src="/bannerRestaurantes/BANER%20DESKTOP%2050%20BARES.webp"
+                        mobileSrc="/bannerRestaurantes/BANER%20MOVIL%2050%20BARES.webp"
                         alt="50 bares de Santiago"
-                        className="hidden h-full w-full object-contain md:block"
-                        loading="lazy"
+                        imageClassName="h-full w-full object-contain"
                       />
-                    </Link>
+                    </div>
                   </div>
-                  <Link
-                    href="/categoria/toprestoranes"
-                    aria-label="Ir a Top Restaurantes"
-                    className="block aspect-square w-full cursor-pointer overflow-hidden bg-black md:h-full"
-                  >
-                    <img
+                  <div className="block aspect-square w-full cursor-pointer overflow-hidden bg-black md:h-full">
+                    <ManagedBanner
+                      desktopKey="top-restaurants"
+                      href="/categoria/toprestoranes"
                       src="/bannerRestaurantes/LAtin%20amerdicans.webp"
                       alt="Top Restaurantes"
-                      className="h-full w-full object-contain"
-                      loading="lazy"
+                      imageClassName="h-full w-full object-contain"
                     />
-                  </Link>
+                  </div>
                 </div>
               )}
               {isRestaurantsPage && tipoParam === "restaurantes" && (
                 <div className="space-y-4">
                   <BottomHomeBanner
                     href="/categoria/restaurantes?tipo=restaurantes"
+                    desktopKey="restaurants-interior"
                     src="/bannerRestaurantes/BANER DESKTOP interior 67 RESTORANES.webp"
                     mobileSrc="/bannerRestaurantes/BANER MOVIL interior 67 RESTORANES.webp"
                     alt="50 restaurantes de Santiago"
@@ -1574,6 +1569,7 @@ export default function CategoryPage({ params }: { params: any }) {
                 <div className="space-y-4">
                   <BottomHomeBanner
                     href="/categoria/bares"
+                    desktopKey="bars-interior"
                     src="/bannerRestaurantes/BANER DESKTOP interior 23 BARES.webp"
                     mobileSrc="/bannerRestaurantes/BANER MOVIL interior 23 BARES.webp"
                     alt="50 bares de Santiago"

@@ -1,47 +1,30 @@
 "use client";
 
-import Link from "next/link";
-import Image from "next/image";
+import { ManagedBanner } from "@/components/managed-banner";
 
 export function PromoStackBanners() {
   return (
     <div className="w-full flex flex-col gap-[18px] md:gap-4 overflow-hidden md:h-[520px] lg:h-[437px]">
       <div className="relative overflow-hidden max-w-[435px] mx-auto md:flex-1 md:min-h-0">
-        <Link
+        <ManagedBanner
+          desktopKey="home-promo-toyota"
           href="/iconos"
+          src="/iconos/BANNER RUTA TOYOTA.webp"
+          alt="La Ruta Toyota"
           className="block w-full h-full"
-          aria-label="Ir a La Ruta Toyota"
-        >
-          <Image
-            src="/iconos/BANNER RUTA TOYOTA.webp"
-            alt="La Ruta Toyota"
-            width={5120}
-            height={2240}
-            sizes="(max-width: 767px) 100vw, (max-width: 1279px) 33vw, 435px"
-            className="block w-full h-auto md:h-full object-contain md:object-cover"
-            style={{ objectPosition: "center", maxWidth: "100%" }}
-            priority={false}
-          />
-        </Link>
+          imageClassName="block w-full h-auto md:h-full object-contain md:object-cover"
+        />
       </div>
 
       <div className="relative overflow-hidden max-w-[435px] mx-auto md:flex-1 md:min-h-0">
-        <Link
+        <ManagedBanner
+          desktopKey="home-promo-cafes"
           href="/cafes"
+          src="/bannerHome/30 CAFES.webp"
+          alt="Cafés"
           className="block w-full h-full"
-          aria-label="Ir a cafés"
-        >
-          <Image
-            src="/bannerHome/30 CAFES.webp"
-            alt="Cafés"
-            width={435}
-            height={210}
-            sizes="(max-width: 767px) 100vw, (max-width: 1279px) 33vw, 435px"
-            className="block w-full h-auto md:h-full object-contain md:object-cover"
-            style={{ objectPosition: "center", maxWidth: "100%" }}
-            loading="lazy"
-          />
-        </Link>
+          imageClassName="block w-full h-auto md:h-full object-contain md:object-cover"
+        />
       </div>
     </div>
   );
@@ -52,6 +35,8 @@ type BottomHomeBannerProps = {
   src?: string;
   mobileSrc?: string;
   alt?: string;
+  desktopKey?: string;
+  mobileKey?: string;
 };
 
 export function BottomHomeBanner({
@@ -59,30 +44,21 @@ export function BottomHomeBanner({
   src = "/bannerHome/BANNER MONUMENTOS.svg",
   mobileSrc = "/bannerHome/monumentos movil.png",
   alt = "Monumentos Nacionales",
+  desktopKey = "home-promo-monumentos",
+  mobileKey,
 }: BottomHomeBannerProps) {
   return (
-    <Link href={href} className="block w-full">
-      {mobileSrc ? (
-        <Image
-          src={mobileSrc}
-          alt={alt}
-          width={5120}
-          height={2240}
-          sizes="100vw"
-          className="block md:hidden w-full h-auto"
-          loading="lazy"
-        />
-      ) : null}
-      <Image
+    <>
+      <ManagedBanner
+        desktopKey={desktopKey}
+        mobileKey={mobileKey}
+        href={href}
         src={src}
+        mobileSrc={mobileSrc}
         alt={alt}
-        width={1440}
-        height={360}
-        sizes="100vw"
-        className={`${mobileSrc ? "hidden md:block" : "block"} w-full h-auto`}
-        loading="lazy"
-        unoptimized={String(src).toLowerCase().endsWith(".svg")}
+        className="contents"
+        imageClassName="w-full h-auto"
       />
-    </Link>
+    </>
   );
 }

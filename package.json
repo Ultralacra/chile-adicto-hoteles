@@ -22,7 +22,8 @@
     "db:dump:schema:cli": "node scripts/dump-supabase-schema-cli.mjs --env .env.local",
     "db:seed:communes:restaurantes": "node scripts/seed-communes-restaurantes.mjs",
     "storage:download": "node scripts/download-supabase-storage.mjs",
-    "storage:list": "node scripts/list-supabase-storage.mjs"
+    "storage:list": "node scripts/list-supabase-storage.mjs",
+    "banners:seed": "node scripts/seed-banner-slots.mjs"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.10.0",

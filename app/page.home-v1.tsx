@@ -13,6 +13,7 @@ import { useEffect, useState } from "react";
 import { Spinner } from "@/components/ui/spinner";
 import { useLanguage } from "@/contexts/language-context";
 import { useSiteApi } from "@/hooks/use-site-api";
+import { ManagedBanner } from "@/components/managed-banner";
 
 export default function Page() {
   const { language } = useLanguage();
@@ -132,13 +133,13 @@ export default function Page() {
 
             {/* Banner: separación simétrica arriba y abajo en mobile (mt-6) */}
             <div className="block w-full h-[437px] relative bg-black mt-6 lg:mt-0">
-              <Link href={currentBanner.href} className="block w-full h-full">
-                <img
-                  src={currentBanner.src}
-                  alt={currentBanner.alt}
-                  className="object-contain object-center w-full h-full"
-                />
-              </Link>
+              <ManagedBanner
+                desktopKey="home-promo-restaurantes"
+                href={currentBanner.href}
+                src={currentBanner.src}
+                alt={currentBanner.alt}
+                imageClassName="object-contain object-center w-full h-full"
+              />
             </div>
           </div>
 

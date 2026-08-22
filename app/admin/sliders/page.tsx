@@ -8,6 +8,7 @@ import { Label } from "@/components/ui/label";
 import { Spinner } from "@/components/ui/spinner";
 import { useAdminApi } from "@/hooks/use-admin-api";
 import { useSiteContext } from "@/contexts/site-context";
+import { BANNER_SLOT_DEFINITIONS, getBannerSlot } from "@/lib/banner-slots";
 import {
   Dialog,
   DialogContent,
@@ -69,14 +70,7 @@ export default function AdminSlidersList() {
   const { fetchWithSite, currentSite } = useAdminApi();
   const { isChanging } = useSiteContext();
   const dbKeys = useMemo(
-    () => [
-      "home-desktop",
-      "home-mobile",
-      "restaurants-desktop-es",
-      "restaurants-desktop-en",
-      "restaurants-mobile-es",
-      "restaurants-mobile-en",
-    ],
+    () => BANNER_SLOT_DEFINITIONS.map((slot) => slot.key),
     [],
   );
 
@@ -533,13 +527,24 @@ export default function AdminSlidersList() {
       if (!res.ok) throw new Error(await res.text());
       const j = await res.json();
       const sets = Array.isArray(j?.sets) ? j.sets : [];
-      setDbSetsList(
-        sets.map((s: any) => ({
-          key: String(s.key || ""),
-          count: Number(s.count || 0),
-          sample: s.sample || null,
-        })),
+      const existing = new Map(
+        sets.map((s: any) => [
+          String(s.key || ""),
+          {
+            key: String(s.key || ""),
+            count: Number(s.count || 0),
+            sample: s.sample || null,
+          },
+        ]),
       );
+      const presets = BANNER_SLOT_DEFINITIONS.map(
+        (slot) =>
+          existing.get(slot.key) || { key: slot.key, count: 0, sample: null },
+      );
+      const custom = sets
+        .map((s: any) => existing.get(String(s.key || "")))
+        .filter((s: any) => Boolean(s && !getBannerSlot(s.key)));
+      setDbSetsList([...presets, ...custom]);
     } catch {
       setDbSetsList([]);
     } finally {
@@ -1157,7 +1162,13 @@ export default function AdminSlidersList() {
                       </div>
                       <div className="min-w-0 flex-1">
                         <div className="truncate font-neutra-demi text-sm uppercase tracking-wide text-[#20211f]">
-                          {s.key}
+                          {getBannerSlot(s.key)?.label || s.key}
+                        </div>
+                        <div className="truncate text-[11px] text-[#85867f]">
+                          {getBannerSlot(s.key)?.location || "Personalizado"}
+                          {getBannerSlot(s.key)?.language
+                            ? ` · ${getBannerSlot(s.key)?.language?.toUpperCase()}`
+                            : ""}
                         </div>
                         <div className="text-xs text-muted-foreground">
                           {s.count} {s.count === 1 ? "slide" : "slides"}
@@ -1337,14 +1348,14 @@ export default function AdminSlidersList() {
                             </Button>
                           </div>
                         </div>
-                        <div className="mt-5 grid gap-5 xl:grid-cols-[200px_minmax(0,1fr)]">
+                        <div className="mt-5 grid gap-5 xl:grid-cols-[minmax(260px,0.8fr)_minmax(0,1.2fr)]">
                           <div className="space-y-3">
-                            <div className="aspect-[16/9] overflow-hidden bg-[#f3f3f1]">
+                            <div className="flex min-h-[180px] items-center justify-center overflow-hidden border border-black/10 bg-[#f3f3f1] p-2">
                               {item.image_url ? (
                                 <img
                                   src={item.image_url}
                                   alt={`Vista previa del slide ${idx + 1}`}
-                                  className="size-full object-cover"
+                                  className="max-h-[420px] w-full object-contain"
                                 />
                               ) : (
                                 <div className="grid size-full place-items-center text-xs text-[#85867f]">

@@ -16,6 +16,7 @@ import {
   BottomHomeBanner,
   PromoStackBanners,
 } from "@/components/home-promo-banners.home-v2";
+import { ManagedBanner } from "@/components/managed-banner";
 
 const HOME_PAGE_SIZE = 25;
 const HOME_CACHE_TTL_MS = 1000 * 60 * 5;
@@ -226,33 +227,16 @@ function HomeContent() {
 
             {/* Columna 2: Imagen vertical (placeholder: mismo banner, reemplazar cuando tengas el definitivo) */}
             <div className="w-full mt-4 lg:mt-0">
-              <Link
-                href="/restaurantes"
-                aria-label="Ir a restaurantes"
-                className="block w-full"
-              >
-                <div className="w-full h-[260px] md:h-[520px] lg:h-[437px] bg-black overflow-hidden flex items-center justify-center">
-                  <Image
-                    src="/bannerHome/restaurantes movil.png"
-                    alt="Restaurantes"
-                    width={900}
-                    height={1400}
-                    sizes="100vw"
-                    className="max-w-full max-h-full object-contain p-3 md:hidden"
-                    loading="lazy"
-                  />
-                  <Image
-                    src="/bannerHome/70 RESTAURANTES.webp"
-                    alt="Restaurantes"
-                    width={435}
-                    height={437}
-                    sizes="(max-width: 1279px) 100vw, 435px"
-                    className="hidden md:block max-w-full max-h-full object-contain p-3 md:p-4 lg:p-5"
-                    loading="lazy"
-                    unoptimized
-                  />
-                </div>
-              </Link>
+              <div className="w-full h-[260px] md:h-[520px] lg:h-[437px] bg-black overflow-hidden flex items-center justify-center">
+                <ManagedBanner
+                  desktopKey="home-promo-restaurantes"
+                  href="/restaurantes"
+                  src="/bannerHome/70 RESTAURANTES.webp"
+                  mobileSrc="/bannerHome/restaurantes movil.png"
+                  alt="Restaurantes"
+                  imageClassName="max-w-full max-h-full object-contain p-3 md:p-4 lg:p-5"
+                />
+              </div>
             </div>
 
             {/* Columna 3: 2 banners apilados */}

@@ -31,7 +31,7 @@ export function ManagedBanner({
   className,
   imageClassName = "block w-full h-auto",
 }: ManagedBannerProps) {
-  const { cachedFetchWithSite } = useSiteApi();
+  const { fetchWithSite } = useSiteApi();
   const [desktop, setDesktop] = useState({ src, href });
   const [mobile, setMobile] = useState({ src: mobileSrc || src, href });
 
@@ -40,9 +40,13 @@ export function ManagedBanner({
     const load = async (key: string | undefined) => {
       if (!key) return null;
       try {
-        const data = (await cachedFetchWithSite(
+        const response = await fetchWithSite(
           `/api/sliders/${encodeURIComponent(key)}`,
-        )) as { items?: BannerItem[] } | null;
+          { cache: "no-store" },
+        );
+        const data = (response.ok ? await response.json() : null) as {
+          items?: BannerItem[];
+        } | null;
         const items = (Array.isArray(data?.items) ? data.items : []).filter(
           (entry) => entry?.active !== false && entry?.image_url,
         );
@@ -69,7 +73,7 @@ export function ManagedBanner({
     return () => {
       cancelled = true;
     };
-  }, [cachedFetchWithSite, desktopKey, href, mobileKey, mobileSrc, src]);
+  }, [fetchWithSite, desktopKey, href, mobileKey, mobileSrc, src]);
 
   const resolvedHref = desktop.href || mobile.href;
   return (

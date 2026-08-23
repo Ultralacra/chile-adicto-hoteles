@@ -14,7 +14,9 @@ export function useAdminApi() {
     async (url: string, options?: RequestInit) => {
       // Agregar el parámetro adminSite a la URL
       const urlObj = new URL(url, window.location.origin);
-      urlObj.searchParams.set('adminSite', currentSite);
+      if (!urlObj.searchParams.has('adminSite')) {
+        urlObj.searchParams.set('adminSite', currentSite);
+      }
 
       const headers = new Headers((options?.headers as HeadersInit) || {});
       const {

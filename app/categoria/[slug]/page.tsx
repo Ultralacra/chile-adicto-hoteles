@@ -1522,34 +1522,34 @@ export default function CategoryPage({ params }: { params: any }) {
               {isRestaurantsPage && !tipoParam && (
                 <div className="grid grid-cols-1 gap-5 md:grid-cols-3">
                   <div className="grid grid-rows-2 gap-5 md:col-span-2">
-                    <div className="block h-full overflow-hidden bg-black">
+                    <div className="flex h-full items-center justify-center overflow-hidden bg-black">
                       <ManagedBanner
                         desktopKey="restaurants-main"
                         href="/categoria/restaurantes?tipo=restaurantes"
                         src="/bannerRestaurantes/BANER%20DESKTOP%2050%20RESTORANES.webp"
                         mobileSrc="/bannerRestaurantes/BANER%20MOVIL%2050%20RESTORANES.webp"
                         alt="50 restaurantes de Santiago"
-                        imageClassName="h-full w-full object-contain"
+                        imageClassName="block h-full w-full object-contain object-center"
                       />
                     </div>
-                    <div className="block h-full overflow-hidden bg-black">
+                    <div className="flex h-full items-center justify-center overflow-hidden bg-black">
                       <ManagedBanner
                         desktopKey="bars-main"
                         href="/categoria/bares"
                         src="/bannerRestaurantes/BANER%20DESKTOP%2050%20BARES.webp"
                         mobileSrc="/bannerRestaurantes/BANER%20MOVIL%2050%20BARES.webp"
                         alt="50 bares de Santiago"
-                        imageClassName="h-full w-full object-contain"
+                        imageClassName="block h-full w-full object-contain object-center"
                       />
                     </div>
                   </div>
-                  <div className="block aspect-square w-full cursor-pointer overflow-hidden bg-black md:h-full">
+                  <div className="flex aspect-square w-full cursor-pointer items-center justify-center overflow-hidden bg-black md:h-full">
                     <ManagedBanner
                       desktopKey="top-restaurants"
                       href="/categoria/toprestoranes"
                       src="/bannerRestaurantes/LAtin%20amerdicans.webp"
                       alt="Top Restaurantes"
-                      imageClassName="h-full w-full object-contain"
+                      imageClassName="block h-full w-full object-cover object-center"
                     />
                   </div>
                 </div>

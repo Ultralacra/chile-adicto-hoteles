@@ -8,7 +8,7 @@ import {
 
 export const runtime = "nodejs";
 
-const SLIDER_CACHE_TTL_MS = 5 * 60 * 1000;
+const SLIDER_CACHE_TTL_MS = 0;
 
 function envOrNull(name: string) {
 	const v = process.env[name];

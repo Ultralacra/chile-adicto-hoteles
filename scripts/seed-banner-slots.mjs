@@ -57,8 +57,7 @@ const banners = {
     "/bannerRestaurantes/BANER MOVIL interior 23 BARES.webp",
   ],
   "top-restaurants": [
-    "/bannerRestaurantes/BANER DESKTOP 50 BEST.webp",
-    "/bannerRestaurantes/BANNER MOVIL 50 BEST.webp",
+    "/bannerRestaurantes/LAtin amerdicans.webp",
   ],
   "post-toyota": ["/bannerstoyota/BANNER POST RUTA TOYOTA.webp"],
   "post-cafes": [

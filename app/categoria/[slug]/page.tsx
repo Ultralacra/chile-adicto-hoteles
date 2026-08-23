@@ -1315,7 +1315,7 @@ export default function CategoryPage({ params }: { params: any }) {
             <div className="w-full mt-2">
               <BottomHomeBanner
                 href="/categoria/toprestoranes"
-                desktopKey="top-restaurants"
+                desktopKey="category-top-restaurantes"
                 src="/bannerRestaurantes/BANER DESKTOP 50 BEST.webp"
                 mobileSrc="/bannerRestaurantes/BANNER MOVIL 50 BEST.webp"
                 alt="Top Restaurantes"

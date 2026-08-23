@@ -74,7 +74,7 @@ function HotelCardComponent({
       {/* Image Container */}
       <div className={`relative ${imageContainerClass} overflow-hidden`}>
         <Image
-          src={getStorageImageUrl(image, 400)}
+          src={getStorageImageUrl(image, 800)}
           alt={name}
           fill
           sizes="(max-width: 767px) 100vw, (max-width: 1279px) 50vw, 33vw"

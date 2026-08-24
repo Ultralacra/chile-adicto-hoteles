@@ -654,7 +654,7 @@ export function HotelDetail({
       </div>
 
       <main className={noContainer ? "pt-0 pb-4" : "site-inner pt-0 pb-4"}>
-        {showCategoryBanner && (
+        {showCategoryBanner && (!isAgendaPost || Boolean(agendaBanner)) && (
           <div className="w-full mb-4">
             <BottomHomeBanner
               href={
@@ -696,8 +696,8 @@ export function HotelDetail({
                         ? "/bannerstoyota/BANNER LA RUTA TOYOTA.webp"
                         : isMonumentosPost
                           ? "/bannerHome/BANNER MONUMENTOS.svg"
-                          : isAgendaPost && agendaBanner
-                            ? agendaBanner.src
+                          : isAgendaPost
+                            ? agendaBanner!.src
                             : "/bannersagenda/BANER AGENDA HEADER.png"
               }
               mobileSrc={
@@ -711,8 +711,8 @@ export function HotelDetail({
                         ? "/bannerstoyota/BANNER LA RUTA TOYOTA.webp"
                         : isMonumentosPost
                           ? "/bannerHome/monumentos movil.png"
-                          : isAgendaPost && agendaBanner
-                            ? agendaBanner.mobileSrc
+                          : isAgendaPost
+                            ? agendaBanner?.mobileSrc
                             : undefined
               }
               alt={

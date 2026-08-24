@@ -3,7 +3,7 @@
 import { useState, useEffect, useMemo, useRef } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import Image from "next/image";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import useEmblaCarousel from "embla-carousel-react";
 import { useLanguage } from "@/contexts/language-context";
 import { CategoryNav } from "@/components/category-nav";
@@ -72,6 +72,8 @@ export function HotelDetail({
   const { t, language } = useLanguage();
   const { cachedFetchWithSite } = useSiteApi();
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const agendaPeriodId = searchParams.get("agendaPeriodId") || "";
   const toSlug = (input: string) =>
     String(input || "")
       .normalize("NFD")
@@ -232,6 +234,7 @@ export function HotelDetail({
       if (rawSelectedPeriod) {
         const selectedPeriod = JSON.parse(rawSelectedPeriod) as {
           postSlug?: string;
+          periodId?: number;
           href?: string;
           desktopImageUrl?: string;
           mobileImageUrl?: string | null;
@@ -243,6 +246,15 @@ export function HotelDetail({
             selectedPeriod.desktopImageUrl || "",
           ).trim();
           if (desktopImageUrl) {
+            console.log(
+              "[Agenda Cultural] Banner aplicado desde la selección",
+              {
+                postSlug: slug,
+                periodId: selectedPeriod.periodId ?? null,
+                bannerDesktop: desktopImageUrl,
+                bannerMobile: selectedPeriod.mobileImageUrl || null,
+              },
+            );
             agendaSelectedPeriodAppliedRef.current = slug;
             setAgendaBanner({
               href: String(selectedPeriod.href || "/categoria/agenda-cultural"),
@@ -265,6 +277,7 @@ export function HotelDetail({
       lang: language,
       postSlug: slug,
     });
+    if (agendaPeriodId) query.set("periodId", agendaPeriodId);
 
     cachedFetchWithSite(`/api/agenda-cultural?${query.toString()}`)
       .then((data: any) => {
@@ -274,10 +287,23 @@ export function HotelDetail({
           matchedPeriod?.desktopImageUrl || "",
         ).trim();
         if (!desktopImageUrl) {
+          console.warn("[Agenda Cultural] No se encontró banner para el post", {
+            postSlug: slug,
+            periodId: agendaPeriodId || null,
+            respuesta: matchedPeriod,
+          });
           setAgendaBanner(null);
           return;
         }
 
+        console.log("[Agenda Cultural] Banner aplicado desde la API", {
+          postSlug: slug,
+          periodId: matchedPeriod?.id ?? null,
+          fechaInicio: matchedPeriod?.startDate ?? null,
+          fechaTermino: matchedPeriod?.endDate ?? null,
+          bannerDesktop: desktopImageUrl,
+          bannerMobile: matchedPeriod?.mobileImageUrl || null,
+        });
         setAgendaBanner({
           href: String(matchedPeriod?.href || "/categoria/agenda-cultural"),
           src: desktopImageUrl,
@@ -293,7 +319,7 @@ export function HotelDetail({
     return () => {
       cancelled = true;
     };
-  }, [cachedFetchWithSite, isAgendaPost, language, slug]);
+  }, [agendaPeriodId, cachedFetchWithSite, isAgendaPost, language, slug]);
 
   useEffect(() => {
     const cats = hotel?.categories || [];
@@ -655,7 +681,9 @@ export function HotelDetail({
                           ? "post-parques"
                           : isMonumentosPost
                             ? "post-monumentos"
-                            : undefined
+                            : isAgendaPost
+                              ? ""
+                              : undefined
               }
               src={
                 isTopRestaurantsPost

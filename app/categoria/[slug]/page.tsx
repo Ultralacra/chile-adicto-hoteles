@@ -1156,6 +1156,14 @@ export default function CategoryPage({ params }: { params: any }) {
     cardElement?: HTMLElement,
   ) => {
     if (!isAgendaCultural || !postSlug) return;
+    console.log("[Agenda Cultural] Banner del período seleccionado", {
+      postSlug,
+      periodId: period?.id ?? null,
+      fechaInicio: period?.startDate ?? null,
+      fechaTermino: period?.endDate ?? null,
+      bannerDesktop: period?.desktopImageUrl ?? null,
+      bannerMobile: period?.mobileImageUrl ?? null,
+    });
     sessionStorage.setItem(agendaReturnStorageKey, postSlug);
     if (period?.desktopImageUrl) {
       sessionStorage.setItem(
@@ -1457,6 +1465,7 @@ export default function CategoryPage({ params }: { params: any }) {
                     <div className="w-full mb-4">
                       <BottomHomeBanner
                         href={agendaConfig.featured.href}
+                        desktopKey=""
                         src={agendaConfig.featured.desktopImageUrl}
                         mobileSrc={
                           agendaConfig.featured.mobileImageUrl || undefined
@@ -1481,6 +1490,7 @@ export default function CategoryPage({ params }: { params: any }) {
                     <div className="w-full mb-4">
                       <BottomHomeBanner
                         href={group.href}
+                        desktopKey=""
                         src={group.desktopImageUrl}
                         mobileSrc={group.mobileImageUrl || undefined}
                         alt={group.alt}
@@ -1492,6 +1502,7 @@ export default function CategoryPage({ params }: { params: any }) {
                       <HotelCard
                         key={hotel.slug}
                         slug={hotel.slug}
+                        href={`/${hotel.slug}?agendaPeriodId=${encodeURIComponent(String(group.id))}`}
                         name={hotel[language]?.name || hotel.es?.name}
                         subtitle={
                           hotel[language]?.subtitle || hotel.es?.subtitle
@@ -1666,7 +1677,14 @@ export default function CategoryPage({ params }: { params: any }) {
                         publicationEndsAt={hotel.publicationEndsAt}
                         showPublicationDates={false}
                         onCardClick={
-                          isAgendaCultural ? handleAgendaCardClick : undefined
+                          isAgendaCultural
+                            ? (postSlug, cardElement) =>
+                                handleAgendaCardClick(
+                                  postSlug,
+                                  undefined,
+                                  cardElement,
+                                )
+                            : undefined
                         }
                       />
                     ))}

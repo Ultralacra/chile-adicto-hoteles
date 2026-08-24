@@ -6,6 +6,7 @@ import { getStorageImageUrl } from "@/lib/supabase-storage";
 
 interface HotelCardProps {
   slug: string;
+  href?: string;
   name: string;
   subtitle: string;
   description: string;
@@ -22,6 +23,7 @@ interface HotelCardProps {
 
 function HotelCardComponent({
   slug,
+  href,
   name,
   subtitle,
   description,
@@ -157,7 +159,7 @@ function HotelCardComponent({
 
   return (
     <Link
-      href={`/${slug}`}
+      href={href || `/${slug}`}
       id={`post-card-${slug}`}
       data-post-slug={slug}
       onClick={(event) =>

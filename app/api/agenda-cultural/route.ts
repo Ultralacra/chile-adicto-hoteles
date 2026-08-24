@@ -171,6 +171,7 @@ export async function GET(req: Request) {
     const language: AgendaLanguage = url.searchParams.get("lang") === "en" ? "en" : "es";
     const isAdmin = url.searchParams.has("adminSite") && url.searchParams.get("all") === "1";
     const postSlug = String(url.searchParams.get("postSlug") || "").trim();
+    const periodId = Number(url.searchParams.get("periodId") || 0);
     if (isAdmin) await requireSuperadmin(req);
 
     const date = url.searchParams.get("date") || agendaDateInChile();
@@ -196,7 +197,9 @@ export async function GET(req: Request) {
           .filter(Boolean);
         return mapAgendaPeriod(period, language, Array.from(new Set(postSlugs)));
       });
-    const matchedPeriod = postSlug
+    const matchedPeriod = periodId
+      ? mappedPublishedPeriods.find((period) => period.id === periodId) || null
+      : postSlug
       ? mappedPublishedPeriods.find(
           (period) =>
             period.postSlugs.includes(postSlug) &&

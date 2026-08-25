@@ -1201,10 +1201,47 @@ export default function CategoryPage({ params }: { params: any }) {
             .filter(
               (hotel): hotel is any =>
                 !!hotel && !hasPostPublicationEnded(hotel),
+            )
+            .sort((left: any, right: any) =>
+              String(
+                left.publishStartAt || "9999-12-31T23:59:59.999Z",
+              ).localeCompare(
+                String(right.publishStartAt || "9999-12-31T23:59:59.999Z"),
+              ),
             ),
         }))
         .filter((group) => group.posts.length > 0)
     : [];
+
+  useEffect(() => {
+    if (!isAgendaCultural || loading || agendaLoading) return;
+
+    const bannersWithPosts = agendaGrouped.map((period) => ({
+      periodId: period.id,
+      fechaInicioBanner: period.startDate,
+      fechaTerminoBanner: period.endDate,
+      bannerDesktop: period.desktopImageUrl,
+      bannerMobile: period.mobileImageUrl,
+      posts: [...period.posts]
+        .sort((left: any, right: any) =>
+          String(left.publishStartAt || "9999-12-31T23:59:59.999Z").localeCompare(
+            String(right.publishStartAt || "9999-12-31T23:59:59.999Z"),
+          ),
+        )
+        .map((post: any) => ({
+          postSlug: post.slug,
+          nombre: post[language]?.name || post.es?.name || post.en?.name || "",
+          fechaEvento: post.publishStartAt || null,
+          fechaFinEvento: post.publishEndAt || null,
+        })),
+    }));
+
+    console.log(
+      "[Agenda Cultural] Banners agrupados por fecha con sus posts",
+      bannersWithPosts,
+    );
+  }, [agendaGrouped, agendaLoading, isAgendaCultural, language, loading]);
+
   const featuredPost = agendaConfig.featured?.postSlug
     ? finalOrderedHotels.find(
         (hotel) => hotel.slug === agendaConfig.featured?.postSlug,

@@ -1224,7 +1224,9 @@ export default function CategoryPage({ params }: { params: any }) {
       bannerMobile: period.mobileImageUrl,
       posts: [...period.posts]
         .sort((left: any, right: any) =>
-          String(left.publishStartAt || "9999-12-31T23:59:59.999Z").localeCompare(
+          String(
+            left.publishStartAt || "9999-12-31T23:59:59.999Z",
+          ).localeCompare(
             String(right.publishStartAt || "9999-12-31T23:59:59.999Z"),
           ),
         )

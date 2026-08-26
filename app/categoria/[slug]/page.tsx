@@ -1665,6 +1665,7 @@ export default function CategoryPage({ params }: { params: any }) {
                         <HotelCard
                           key={hotel.slug}
                           slug={hotel.slug}
+                          href={`/${hotel.slug}?categorySource=restaurantes`}
                           name={hotel[language].name}
                           subtitle={hotel[language].subtitle}
                           description={buildCardExcerpt(
@@ -1728,6 +1729,11 @@ export default function CategoryPage({ params }: { params: any }) {
                       <HotelCard
                         key={hotel.slug}
                         slug={hotel.slug}
+                        href={
+                          slug === "cafes"
+                            ? `/${hotel.slug}?categorySource=cafes`
+                            : undefined
+                        }
                         name={hotel[language].name}
                         subtitle={hotel[language].subtitle}
                         description={buildCardExcerpt(

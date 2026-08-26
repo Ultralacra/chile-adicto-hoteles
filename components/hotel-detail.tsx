@@ -74,6 +74,7 @@ export function HotelDetail({
   const router = useRouter();
   const searchParams = useSearchParams();
   const agendaPeriodId = searchParams.get("agendaPeriodId") || "";
+  const categorySource = searchParams.get("categorySource") || "";
   const toSlug = (input: string) =>
     String(input || "")
       .normalize("NFD")
@@ -91,7 +92,8 @@ export function HotelDetail({
     "monumentos-nacionales",
   );
 
-  const isCafesPost = normalizedCategories.includes("cafes");
+  const isCafesPost =
+    normalizedCategories.includes("cafes") && categorySource !== "restaurantes";
 
   const isAgendaPost = normalizedCategories.includes("agenda-cultural");
   const [agendaBanner, setAgendaBanner] = useState<{
@@ -115,6 +117,7 @@ export function HotelDetail({
   const isRestaurantesPost =
     normalizedCategories.includes("restaurantes") ||
     normalizedCategories.includes("restaurants");
+  const isCafesSource = categorySource === "cafes";
   const isTopRestaurantsPost =
     normalizedCategories.includes("toprestoranes") ||
     normalizedCategories.includes("top-restoranes") ||
@@ -167,7 +170,7 @@ export function HotelDetail({
   const showCategoryBanner =
     !hideBanners &&
     !isBaresPost &&
-    (!isRestaurantesPost || isTopRestaurantsPost) &&
+    (!isRestaurantesPost || isTopRestaurantsPost || isCafesSource) &&
     (isTopRestaurantsPost ||
       isMonumentosPost ||
       isCafesPost ||
@@ -749,7 +752,8 @@ export function HotelDetail({
         {!hideBanners &&
           isRestaurantesPost &&
           !isBaresPost &&
-          !isTopRestaurantsPost && (
+          !isTopRestaurantsPost &&
+          !isCafesSource && (
             <div className="w-full mb-4">
               <BottomHomeBanner
                 href="/categoria/restaurantes?tipo=restaurantes"

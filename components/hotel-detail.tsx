@@ -166,6 +166,8 @@ export function HotelDetail({
 
   const showCategoryBanner =
     !hideBanners &&
+    !isBaresPost &&
+    (!isRestaurantesPost || isTopRestaurantsPost) &&
     (isTopRestaurantsPost ||
       isMonumentosPost ||
       isCafesPost ||

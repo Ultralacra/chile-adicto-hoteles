@@ -873,9 +873,37 @@ export default function CategoryPage({ params }: { params: any }) {
   const restaurantOnlyHotels = isRestaurantOrBarsPage
     ? finalOrderedHotels.filter((hotel) => {
         const categorySlugs = getPostCategorySlugs(hotel);
-        return !categorySlugs.has("bares") && !categorySlugs.has("bars");
+        const isTopRestaurant = topRestaurantsSlugs.includes(
+          String(hotel.slug),
+        );
+        return (
+          !categorySlugs.has("bares") &&
+          !categorySlugs.has("bars") &&
+          !(
+            isRestaurantsPage &&
+            tipoParam === "restaurantes" &&
+            isTopRestaurant
+          )
+        );
       })
     : [];
+
+  useEffect(() => {
+    if (!isRestaurantsPage || tipoParam !== "restaurantes" || loading) return;
+
+    const excludedTopRestaurants = finalOrderedHotels
+      .filter((hotel) => topRestaurantsSlugs.includes(String(hotel.slug)))
+      .map((hotel) => ({
+        postSlug: hotel.slug,
+        nombre: hotel[language]?.name || hotel.es?.name || hotel.en?.name || "",
+        motivo: "Pertenece a Top Restaurantes",
+      }));
+
+    console.log(
+      "[Restaurantes] Posts excluidos de ?tipo=restaurantes por estar en Top Restaurantes",
+      excludedTopRestaurants,
+    );
+  }, [finalOrderedHotels, isRestaurantsPage, language, loading, tipoParam]);
 
   const restaurantBarsHotels = isRestaurantOrBarsPage
     ? finalOrderedHotels.filter((hotel) => {

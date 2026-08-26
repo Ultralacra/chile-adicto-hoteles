@@ -148,22 +148,6 @@ async function resolvePostId(siteId: string, postSlug: string, currentPostId?: s
   return postId;
 }
 
-async function assertNoFeaturedConflict(
-  siteId: string,
-  candidate: { id?: number; status?: string; start_date?: string | null; end_date?: string | null },
-) {
-  if (candidate.status !== "published") return;
-  const rows = (await supabaseRest(
-    `/agenda_featured_slots?site=eq.${encodeURIComponent(siteId)}&status=eq.published&select=id,start_date,end_date`,
-    undefined,
-    "service",
-  )) as Array<{ id?: number; start_date?: string | null; end_date?: string | null }>;
-  const conflict = rows.some(
-    (slot) => slot.id !== candidate.id && rangesOverlap(slot.start_date, slot.end_date, candidate.start_date, candidate.end_date),
-  );
-  if (conflict) throw new Error("Ya existe un destacado publicado con un rango de vigencia que se superpone.");
-}
-
 export async function GET(req: Request) {
   try {
     const url = new URL(req.url);
@@ -214,14 +198,24 @@ export async function GET(req: Request) {
         period.endDate >= date,
       );
     const featured = rows.featured
-      .filter((slot: any) => slot.status === "published" && isActiveOnDate(slot.start_date, slot.end_date, date))
-      .sort((left: any, right: any) => Number(left.sort_order || 0) - Number(right.sort_order || 0))[0];
+      .filter(
+        (slot: any) =>
+          slot.status === "published" &&
+          (!slot.end_date || slot.end_date >= date),
+      )
+      .sort(
+        (left: any, right: any) =>
+          String(left.start_date || "9999-12-31").localeCompare(
+            String(right.start_date || "9999-12-31"),
+          ) || Number(left.sort_order || 0) - Number(right.sort_order || 0),
+      )
+      .map((slot: any) => mapAgendaFeaturedSlot(slot, language));
 
     return NextResponse.json({
       date,
       periods,
       matchedPeriod,
-      featured: featured ? mapAgendaFeaturedSlot(featured, language) : null,
+      featured,
     });
   } catch (error) {
     const authResponse = adminAuthResponse(error);
@@ -246,7 +240,6 @@ export async function POST(req: Request) {
       entity === "period"
         ? payload
         : { ...postPayload, post_id: await resolvePostId(siteId, postPayload.post_slug, postPayload.post_id) };
-    if (entity === "featured") await assertNoFeaturedConflict(siteId, withPostId);
     const result = await supabaseRest(`/${table}`, { method: "POST", body: JSON.stringify({ ...withPostId, site: siteId }) }, "service");
     invalidateServerDataCache(new RegExp(`^agenda:${siteId}:`));
     return NextResponse.json({ ok: true, item: Array.isArray(result) ? result[0] : result }, { status: 201 });
@@ -274,7 +267,6 @@ export async function PUT(req: Request) {
       entity === "period"
         ? update
         : { ...postPayload, post_id: await resolvePostId(siteId, postPayload.post_slug, postPayload.post_id) };
-    if (entity === "featured") await assertNoFeaturedConflict(siteId, { ...withPostId, id });
     const result = await supabaseRest(`/${table}?id=eq.${id}&site=eq.${encodeURIComponent(siteId)}`, { method: "PATCH", body: JSON.stringify(withPostId) }, "service");
     invalidateServerDataCache(new RegExp(`^agenda:${siteId}:`));
     return NextResponse.json({ ok: true, item: Array.isArray(result) ? result[0] : result });

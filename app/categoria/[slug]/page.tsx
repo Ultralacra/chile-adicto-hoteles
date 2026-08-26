@@ -107,8 +107,8 @@ export default function CategoryPage({ params }: { params: any }) {
   const [loading, setLoading] = useState<boolean>(true);
   const [agendaConfig, setAgendaConfig] = useState<{
     periods: AgendaPeriod[];
-    featured: AgendaFeaturedSlot | null;
-  }>({ periods: [], featured: null });
+    featured: AgendaFeaturedSlot[];
+  }>({ periods: [], featured: [] });
   const [agendaLoading, setAgendaLoading] = useState(isAgendaCultural);
   useEffect(() => {
     let cancelled = false;
@@ -151,7 +151,7 @@ export default function CategoryPage({ params }: { params: any }) {
 
   useEffect(() => {
     if (!isAgendaCultural) {
-      setAgendaConfig({ periods: [], featured: null });
+      setAgendaConfig({ periods: [], featured: [] });
       setAgendaLoading(false);
       return;
     }
@@ -163,11 +163,11 @@ export default function CategoryPage({ params }: { params: any }) {
         if (cancelled) return;
         setAgendaConfig({
           periods: Array.isArray(data?.periods) ? data.periods : [],
-          featured: data?.featured || null,
+          featured: Array.isArray(data?.featured) ? data.featured : [],
         });
       })
       .catch(() => {
-        if (!cancelled) setAgendaConfig({ periods: [], featured: null });
+        if (!cancelled) setAgendaConfig({ periods: [], featured: [] });
       })
       .finally(() => {
         if (!cancelled) setAgendaLoading(false);
@@ -1272,11 +1272,27 @@ export default function CategoryPage({ params }: { params: any }) {
     );
   }, [agendaGrouped, agendaLoading, isAgendaCultural, language, loading]);
 
-  const featuredPost = agendaConfig.featured?.postSlug
-    ? finalOrderedHotels.find(
-        (hotel) => hotel.slug === agendaConfig.featured?.postSlug,
-      )
-    : null;
+  const featuredPosts = agendaConfig.featured
+    .map((featured) => ({
+      featured,
+      post: filteredHotels.find((hotel) => hotel.slug === featured.postSlug),
+    }))
+    .filter((entry) => entry.post);
+
+  useEffect(() => {
+    if (!isAgendaCultural || agendaLoading || loading) return;
+    console.log("[Agenda Cultural] Eventos destacados renderizados", {
+      cantidad: featuredPosts.length,
+      destacados: featuredPosts.map(({ featured, post }) => ({
+        id: featured.id,
+        postSlug: post?.slug,
+        bannerDesktop: featured.desktopImageUrl,
+        bannerMobile: featured.mobileImageUrl,
+        fechaInicio: featured.startDate,
+        fechaTermino: featured.endDate,
+      })),
+    });
+  }, [agendaLoading, featuredPosts, isAgendaCultural, loading]);
 
   useEffect(() => {
     if (!isAgendaCultural || loading) return;
@@ -1523,34 +1539,39 @@ export default function CategoryPage({ params }: { params: any }) {
               </div>
             </div>
           ) : isAgendaCultural &&
-            (agendaGrouped.length > 0 || agendaConfig.featured) ? (
+            (agendaGrouped.length > 0 || agendaConfig.featured.length > 0) ? (
             /* Agenda Cultural: post destacado fijo arriba + banner de cada semana y sus posts */
             <div className="mt-4 space-y-8">
-              {agendaConfig.featured && (
-                <section key="featured-post">
-                  {agendaConfig.featured.desktopImageUrl && (
+              {featuredPosts.map(({ featured, post }) => (
+                <section key={`featured-post-${featured.id}`}>
+                  {featured.desktopImageUrl && (
                     <div className="w-full mb-4">
                       <BottomHomeBanner
-                        href={agendaConfig.featured.href}
+                        href={featured.href}
                         desktopKey=""
-                        src={agendaConfig.featured.desktopImageUrl}
-                        mobileSrc={
-                          agendaConfig.featured.mobileImageUrl || undefined
-                        }
-                        alt={agendaConfig.featured.alt}
+                        src={featured.desktopImageUrl}
+                        mobileSrc={featured.mobileImageUrl || undefined}
+                        alt={featured.alt}
                       />
                     </div>
                   )}
-                  {featuredPost && (
+                  {post && (
                     <HotelDetail
-                      slug={featuredPost.slug}
-                      hotel={buildHotelDetailShape(featuredPost) as any}
+                      slug={post.slug}
+                      hotel={{
+                        ...(buildHotelDetailShape(post) as any),
+                        featuredImage:
+                          post.featuredImage || post.images?.[0] || "",
+                        galleryImages: Array.isArray(post.images)
+                          ? post.images.filter(Boolean)
+                          : [],
+                      }}
                       hideBanners
                       noContainer
                     />
                   )}
                 </section>
-              )}
+              ))}
               {agendaGrouped.map((group, groupIdx) => (
                 <section key={group.id}>
                   {group.desktopImageUrl && (

@@ -114,10 +114,12 @@ export function mapAgendaFeaturedSlot(
     endDate: stringOrNull(row?.end_date),
     desktopImageUrl:
       stringOrNull(row?.[`desktop_image_url_${language}`]) ||
-      stringOrNull(row?.desktop_image_url_es),
+      stringOrNull(row?.desktop_image_url_es) ||
+      stringOrNull(row?.desktop_image_url),
     mobileImageUrl:
       stringOrNull(row?.[`mobile_image_url_${language}`]) ||
-      stringOrNull(row?.mobile_image_url_es),
+      stringOrNull(row?.mobile_image_url_es) ||
+      stringOrNull(row?.mobile_image_url),
     alt:
       stringOrNull(row?.[`alt_${language}`]) ||
       stringOrNull(row?.alt_es) ||

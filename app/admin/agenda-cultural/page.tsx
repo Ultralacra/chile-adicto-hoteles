@@ -281,6 +281,9 @@ export default function AdminAgendaCulturalPage() {
     <div className="grid max-h-72 grid-cols-1 gap-2 overflow-y-auto border border-black/10 bg-[#fafaf8] p-2 sm:grid-cols-2">
       {posts.map((post) => {
         const selected = post.slug === value;
+        const isFeatured = featured.some(
+          (slot) => slot.post_slug === post.slug,
+        );
         const imageUrl = postImageUrl(post);
 
         return (
@@ -308,6 +311,11 @@ export default function AdminAgendaCulturalPage() {
               <span className="mt-0.5 block truncate text-xs text-[#61625d]">
                 {post.slug}
               </span>
+              {isFeatured && (
+                <span className="mt-1 inline-flex items-center gap-1 bg-[#fff1f3] px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-[var(--color-brand-red)]">
+                  <Sparkles className="size-3" /> Destacado
+                </span>
+              )}
             </span>
           </button>
         );
@@ -850,8 +858,8 @@ export default function AdminAgendaCulturalPage() {
                   : "Nuevo destacado global"}
               </h2>
               <p className="mt-1 text-sm text-[#61625d]">
-                Se muestra antes de los períodos. Solo puede existir uno
-                publicado por cada rango de fechas.
+                Se muestran antes de los períodos. Puedes configurar varios
+                eventos destacados con sus propias fechas y banners.
               </p>
             </div>
             <div className="space-y-2 md:col-span-2">

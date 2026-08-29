@@ -205,7 +205,10 @@ export async function GET(req: Request) {
     const baseQuery = `?${siteFilter.slice(1)}${hotelFilter}`;
 
     // El resumen se calcula en el servidor para no transferir todos los votos al navegador.
-    const summaryRows = await fetchAllPages(baseQuery, "hotel_slug");
+    const summaryRows = await fetchAllPages(
+      baseQuery,
+      "hotel_slug,category,hearts,voter_email",
+    );
     const counts: Record<string, number> = {};
     for (const vote of summaryRows) {
       const slug = canonicalHotelSlug(vote.hotel_slug);
@@ -215,6 +218,32 @@ export async function GET(req: Request) {
       .sort(([, first], [, second]) => second - first)
       .map(([hotelSlug, count]) => ({ hotelSlug, count }));
     const topHotels = hotels.slice(0, 10);
+    const uniqueVoters = new Set(
+      summaryRows
+        .map((vote) => String(vote.voter_email || "").trim().toLowerCase())
+        .filter(Boolean),
+    ).size;
+    const categoryCounts: Record<string, number> = {};
+    const categoryHotels: Record<string, Record<string, number>> = {};
+    for (const vote of summaryRows) {
+      const category = String(vote.category || "Sin categoría").trim();
+      const hearts = Number(vote.hearts) || 0;
+      const categoryKey = `${category}|${hearts}`;
+      categoryCounts[categoryKey] = (categoryCounts[categoryKey] || 0) + 1;
+      categoryHotels[categoryKey] ||= {};
+      const slug = canonicalHotelSlug(vote.hotel_slug);
+      categoryHotels[categoryKey][slug] =
+        (categoryHotels[categoryKey][slug] || 0) + 1;
+    }
+    const categorySummaries = Object.entries(categoryCounts).map(
+      ([key, total]) => {
+        const [category, hearts] = key.split("|");
+        const categoryTopHotels = Object.entries(categoryHotels[key])
+          .sort(([, first], [, second]) => second - first)
+          .map(([hotelSlug, count]) => ({ hotelSlug, count }));
+        return { category, hearts: Number(hearts), total, hotels: categoryTopHotels };
+      },
+    );
 
     if (groupBy === "hotel") {
       return NextResponse.json({
@@ -287,6 +316,8 @@ export async function GET(req: Request) {
       pageSize,
       totalPages,
       totalHotels: Object.keys(counts).length,
+      uniqueVoters,
+      categorySummaries,
       hotels,
       topHotels,
     });

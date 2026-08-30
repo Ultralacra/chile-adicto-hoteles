@@ -16,5 +16,5 @@ export function getStorageImageUrl(
   );
 
   const separator = renderUrl.includes("?") ? "&" : "?";
-  return `${renderUrl}${separator}width=${width}&resize=contain&quality=90`;
+  return `${renderUrl}${separator}width=${width}&resize=contain&quality=78`;
 }

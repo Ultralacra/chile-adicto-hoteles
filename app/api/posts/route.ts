@@ -13,6 +13,12 @@ import { adminAuthResponse, requireSuperadmin } from "@/lib/server-auth";
 
 const POSTS_CACHE_TTL_MS = 60 * 1000;
 
+function getStableSearchParams(url: URL): string {
+  const params = new URLSearchParams(url.searchParams);
+  params.sort();
+  return params.toString();
+}
+
 const HOME_FEED_EXCLUDED = new Set<string>([
   "restaurantes",
   "restaurante",
@@ -385,7 +391,7 @@ export async function GET(req: Request) {
       normalizedCategoryLabelFromQuery === "agenda-cultural";
 
     const payload = await getCachedServerData(
-      `posts:${siteId}:${url.searchParams.toString()}`,
+      `posts:${siteId}:${getStableSearchParams(url)}`,
       POSTS_CACHE_TTL_MS,
       async () => {
         console.log("[API /posts] cache miss", {
@@ -396,8 +402,11 @@ export async function GET(req: Request) {
           includeExpired,
         });
 
-        const select =
+        const fullSelect =
           "slug,publication_status,publish_start_at,publish_end_at,featured_image,website,website_public,instagram,website_display,instagram_display,email,phone,photos_credit,address,hours,reservation_link,reservation_policy,interesting_fact,site,images:post_images(url,position),locations:post_locations(*),translations:post_translations(*),useful:post_useful_info(*),category_links:post_category_map(featured_image,category:categories(slug,label_es,label_en)),communes_links:post_communes(commune_slug,commune:communes(slug,label))";
+        const homeSelect =
+          "slug,publication_status,publish_start_at,publish_end_at,featured_image,translations:post_translations(lang,name,subtitle,description,category),category_links:post_category_map(category:categories(slug,label_es,label_en))";
+        const select = homeFeed ? homeSelect : fullSelect;
 
         const hasFilters = !!(q || category || categorySlug);
         let dbQuery = `/posts?select=${encodeURIComponent(select)}&site=eq.${siteId}`;

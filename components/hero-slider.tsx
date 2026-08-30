@@ -350,16 +350,24 @@ export function HeroSlider({
         >
           {desktopHref ? (
             <Link href={desktopHref} className="block h-full w-full relative">
-              <img
+              <Image
                 src={firstDesktop}
                 alt="Slide 1"
+                fill
+                sizes="(max-width: 1279px) 100vw, 50vw"
+                priority
+                loading="eager"
                 className={imageClassName(desktopImageClassName)}
               />
             </Link>
           ) : (
-            <img
+            <Image
               src={firstDesktop}
               alt="Slide 1"
+              fill
+              sizes="(max-width: 1279px) 100vw, 50vw"
+              priority
+              loading="eager"
               className={imageClassName(desktopImageClassName)}
             />
           )}
@@ -529,15 +537,26 @@ export function HeroSlider({
                       }`}
                     >
                       {autoHeight ? (
-                        <img
+                        <Image
                           src={image}
                           alt={`Slide ${index + 1}`}
+                          width={1920}
+                          height={1080}
+                          sizes="(max-width: 1279px) 100vw, 50vw"
+                          priority={index === 0}
+                          loading={index === 0 ? "eager" : "lazy"}
+                          fetchPriority={index === 0 ? "high" : "auto"}
                           className={imageClassName(desktopImageClassName)}
                         />
                       ) : (
-                        <img
+                        <Image
                           src={image}
                           alt={`Slide ${index + 1}`}
+                          fill
+                          sizes="(max-width: 1279px) 100vw, 50vw"
+                          priority={index === 0}
+                          loading={index === 0 ? "eager" : "lazy"}
+                          fetchPriority={index === 0 ? "high" : "auto"}
                           className={imageClassName(desktopImageClassName)}
                         />
                       )}
@@ -545,15 +564,26 @@ export function HeroSlider({
                   ) : (
                     <>
                       {autoHeight ? (
-                        <img
+                        <Image
                           src={image}
                           alt={`Slide ${index + 1}`}
+                          width={1920}
+                          height={1080}
+                          sizes="(max-width: 1279px) 100vw, 50vw"
+                          priority={index === 0}
+                          loading={index === 0 ? "eager" : "lazy"}
+                          fetchPriority={index === 0 ? "high" : "auto"}
                           className={imageClassName(desktopImageClassName)}
                         />
                       ) : (
-                        <img
+                        <Image
                           src={image}
                           alt={`Slide ${index + 1}`}
+                          fill
+                          sizes="(max-width: 1279px) 100vw, 50vw"
+                          priority={index === 0}
+                          loading={index === 0 ? "eager" : "lazy"}
+                          fetchPriority={index === 0 ? "high" : "auto"}
                           className={imageClassName(desktopImageClassName)}
                         />
                       )}

@@ -55,6 +55,7 @@ test.describe("superficie pública sin autenticación", () => {
     expect(firstPage.length).toBeLessThanOrEqual(2);
     expect(secondPage.length).toBeLessThanOrEqual(1);
     expect(reorderedParamsPage).toEqual(firstPage);
+    expect(firstPage.every((post: { slug?: string }) => post.slug !== "w-santiago")).toBe(true);
 
     if (firstPage.length > 1) {
       expect(secondPage[0]?.slug).toBe(firstPage[1]?.slug);

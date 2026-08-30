@@ -13,8 +13,9 @@ import { adminAuthResponse, requireSuperadmin } from "@/lib/server-auth";
 
 const POSTS_CACHE_TTL_MS = 60 * 1000;
 
-function getStableSearchParams(url: URL): string {
+function getStableSearchParams(url: URL, omittedKeys: string[] = []): string {
   const params = new URLSearchParams(url.searchParams);
+  for (const key of omittedKeys) params.delete(key);
   params.sort();
   return params.toString();
 }
@@ -389,9 +390,13 @@ export async function GET(req: Request) {
       includeExpired ||
       normalizedCategorySlugFromQuery === "agenda-cultural" ||
       normalizedCategoryLabelFromQuery === "agenda-cultural";
+    const cacheAllHomePages = homeFeed && limit !== null && !isAdminRequest;
+    const cacheParams = cacheAllHomePages
+      ? getStableSearchParams(url, ["limit", "offset"])
+      : getStableSearchParams(url);
 
-    const payload = await getCachedServerData(
-      `posts:${siteId}:${getStableSearchParams(url)}`,
+    const cachedPayload = await getCachedServerData(
+      `posts:${siteId}:${cacheParams}`,
       POSTS_CACHE_TTL_MS,
       async () => {
         console.log("[API /posts] cache miss", {
@@ -410,6 +415,7 @@ export async function GET(req: Request) {
 
         const hasFilters = !!(q || category || categorySlug);
         let dbQuery = `/posts?select=${encodeURIComponent(select)}&site=eq.${siteId}`;
+        if (homeFeed) dbQuery += "&slug=neq.w-santiago";
 
         if (hasFilters) {
           dbQuery += `&limit=5000&order=slug.asc`;
@@ -532,10 +538,14 @@ export async function GET(req: Request) {
         const paged =
           limit !== null ? ordered.slice(offset, offset + limit) : ordered;
 
-        console.log(`[API /posts] retornando ${paged.length} posts para ${siteId}`);
-        return paged;
+        const result = cacheAllHomePages ? ordered : paged;
+        console.log(`[API /posts] retornando ${result.length} posts para ${siteId}`);
+        return result;
       },
     );
+    const payload = cacheAllHomePages
+      ? (cachedPayload as any[]).slice(offset, offset + limit!)
+      : cachedPayload;
 
     return NextResponse.json(payload, { status: 200 });
   } catch (err: any) {

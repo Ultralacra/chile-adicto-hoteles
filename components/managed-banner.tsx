@@ -3,7 +3,6 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { useSiteApi } from "@/hooks/use-site-api";
-import { getStorageImageUrl } from "@/lib/supabase-storage";
 
 type ManagedBannerProps = {
   desktopKey?: string;
@@ -77,24 +76,26 @@ export function ManagedBanner({
   }, [fetchWithSite, desktopKey, href, mobileKey, mobileSrc, src]);
 
   const resolvedHref = desktop.href || mobile.href;
-  const desktopImage = getStorageImageUrl(desktop.src, 960);
-  const mobileImage = getStorageImageUrl(mobile.src, 768);
-
   return (
     <Link href={resolvedHref} className={className || "block w-full"}>
       {mobileSrc || mobileKey ? (
-        <picture>
-          <source media="(max-width: 767px)" srcSet={mobileImage} />
+        <>
           <img
-            src={desktopImage}
+            src={mobile.src}
             alt={alt}
-            className={imageClassName}
+            className={`${imageClassName} md:hidden`}
             loading="lazy"
           />
-        </picture>
+          <img
+            src={desktop.src}
+            alt={alt}
+            className={`${imageClassName} hidden md:block`}
+            loading="lazy"
+          />
+        </>
       ) : (
         <img
-          src={desktopImage}
+          src={desktop.src}
           alt={alt}
           className={imageClassName}
           loading="lazy"

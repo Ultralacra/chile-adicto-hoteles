@@ -724,6 +724,7 @@ export function HotelDetail({
                               ? "/sliderHome/PARQUES.png"
                               : undefined
               }
+                hideFallbackWhileLoading={isParquesPost}
               alt={
                 isTopRestaurantsPost
                   ? "Top Restaurantes"

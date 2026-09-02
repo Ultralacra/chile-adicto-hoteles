@@ -1462,6 +1462,7 @@ export default function CategoryPage({ params }: { params: any }) {
                           ? "/sliderHome/PARQUES.png"
                           : "/bannerstoyota/BANNER LA RUTA TOYOTA.webp"
                 }
+                hideFallbackWhileLoading={slug === "parques"}
                 alt={
                   slug === "cafes"
                     ? "Cafés"

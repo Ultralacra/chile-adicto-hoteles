@@ -13,6 +13,7 @@ type ManagedBannerProps = {
   alt: string;
   className?: string;
   imageClassName?: string;
+  hideFallbackWhileLoading?: boolean;
 };
 
 type BannerItem = {
@@ -30,10 +31,14 @@ export function ManagedBanner({
   alt,
   className,
   imageClassName = "block w-full h-auto",
+  hideFallbackWhileLoading = false,
 }: ManagedBannerProps) {
   const { fetchWithSite } = useSiteApi();
   const [desktop, setDesktop] = useState({ src, href });
   const [mobile, setMobile] = useState({ src: mobileSrc || src, href });
+  const [isLoading, setIsLoading] = useState(
+    hideFallbackWhileLoading && Boolean(desktopKey || mobileKey),
+  );
 
   useEffect(() => {
     let cancelled = false;
@@ -67,6 +72,7 @@ export function ManagedBanner({
         const mobileItem = mobileValue?.[0] || desktopValue?.[1] || desktopItem;
         if (desktopItem) setDesktop(desktopItem);
         if (mobileItem) setMobile(mobileItem);
+        setIsLoading(false);
       },
     );
 
@@ -74,6 +80,8 @@ export function ManagedBanner({
       cancelled = true;
     };
   }, [fetchWithSite, desktopKey, href, mobileKey, mobileSrc, src]);
+
+  if (isLoading) return null;
 
   const resolvedHref = desktop.href || mobile.href;
   return (

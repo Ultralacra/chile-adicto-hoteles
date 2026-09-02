@@ -680,10 +680,10 @@ export function HotelDetail({
                     ? "post-cafes"
                     : isIconosFinal
                       ? "post-iconos"
-                      : isToyotaPost
-                        ? "post-toyota"
-                        : isParquesPost
-                          ? "post-parques"
+                      : isParquesPost
+                        ? "category-parques"
+                        : isToyotaPost
+                          ? "post-toyota"
                           : isMonumentosPost
                             ? "post-monumentos"
                             : isAgendaPost
@@ -703,7 +703,9 @@ export function HotelDetail({
                           ? "/bannerHome/BANNER MONUMENTOS.svg"
                           : isAgendaPost
                             ? agendaBanner!.src
-                            : "/bannersagenda/BANER AGENDA HEADER.png"
+                            : isParquesPost
+                              ? "/sliderHome/PARQUES.png"
+                              : "/bannersagenda/BANER AGENDA HEADER.png"
               }
               mobileSrc={
                 isTopRestaurantsPost
@@ -718,7 +720,9 @@ export function HotelDetail({
                           ? "/bannerHome/monumentos movil.png"
                           : isAgendaPost
                             ? agendaBanner?.mobileSrc
-                            : undefined
+                            : isParquesPost
+                              ? "/sliderHome/PARQUES.png"
+                              : undefined
               }
               alt={
                 isTopRestaurantsPost

@@ -1447,7 +1447,9 @@ export default function CategoryPage({ params }: { params: any }) {
                       ? "/bannerHome/BANNER MONUMENTOS.svg"
                       : slug === "iconos"
                         ? "/bannerstoyota/BANNER LA RUTA TOYOTA ICONOS.png"
-                        : "/bannerstoyota/BANNER LA RUTA TOYOTA.webp"
+                        : slug === "parques"
+                          ? "/sliderHome/PARQUES.png"
+                          : "/bannerstoyota/BANNER LA RUTA TOYOTA.webp"
                 }
                 mobileSrc={
                   slug === "cafes"
@@ -1456,7 +1458,9 @@ export default function CategoryPage({ params }: { params: any }) {
                       ? undefined
                       : slug === "iconos"
                         ? "/bannerstoyota/BANNER LA RUTA TOYOTA ICONOS.png"
-                        : "/bannerstoyota/BANNER LA RUTA TOYOTA.webp"
+                        : slug === "parques"
+                          ? "/sliderHome/PARQUES.png"
+                          : "/bannerstoyota/BANNER LA RUTA TOYOTA.webp"
                 }
                 alt={
                   slug === "cafes"

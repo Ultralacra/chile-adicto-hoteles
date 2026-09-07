@@ -1414,11 +1414,12 @@ export default function CategoryPage({ params }: { params: any }) {
             </div>
           )}
 
-          {/* En Monumentos Nacionales, Cafés, ICONOS, Parques y La Ruta Toyota: banner largo bajo el menú, luego posts */}
+          {/* En Monumentos Nacionales, Cafés, ICONOS, Parques, Cultura y La Ruta Toyota: banner largo bajo el menú, luego posts */}
           {(slug === "monumentos-nacionales" ||
             slug === "cafes" ||
             slug === "iconos" ||
             slug === "parques" ||
+            slug === "museos" ||
             slug === "la-ruta-toyota") && (
             <div className="w-full mt-2">
               <BottomHomeBanner
@@ -1438,7 +1439,9 @@ export default function CategoryPage({ params }: { params: any }) {
                         ? "category-iconos"
                         : slug === "parques"
                           ? "category-parques"
-                          : "category-toyota"
+                          : slug === "museos"
+                            ? "category-cultura"
+                            : "category-toyota"
                 }
                 src={
                   slug === "cafes"
@@ -1449,7 +1452,9 @@ export default function CategoryPage({ params }: { params: any }) {
                         ? "/bannerstoyota/BANNER LA RUTA TOYOTA ICONOS.png"
                         : slug === "parques"
                           ? "/sliderHome/PARQUES.png"
-                          : "/bannerstoyota/BANNER LA RUTA TOYOTA.webp"
+                          : slug === "museos"
+                            ? "/bannercultura/BANNER LA RUTA DE LA CULTURA.webp"
+                            : "/bannerstoyota/BANNER LA RUTA TOYOTA.webp"
                 }
                 mobileSrc={
                   slug === "cafes"
@@ -1460,9 +1465,13 @@ export default function CategoryPage({ params }: { params: any }) {
                         ? "/bannerstoyota/BANNER LA RUTA TOYOTA ICONOS.png"
                         : slug === "parques"
                           ? "/sliderHome/PARQUES.png"
-                          : "/bannerstoyota/BANNER LA RUTA TOYOTA.webp"
+                          : slug === "museos"
+                            ? "/bannercultura/BANNER LA RUTA DE LA CULTURA.webp"
+                            : "/bannerstoyota/BANNER LA RUTA TOYOTA.webp"
                 }
-                hideFallbackWhileLoading={slug === "parques"}
+                hideFallbackWhileLoading={
+                  slug === "parques" || slug === "museos"
+                }
                 alt={
                   slug === "cafes"
                     ? "Cafés"
@@ -1470,7 +1479,9 @@ export default function CategoryPage({ params }: { params: any }) {
                       ? "Monumentos Nacionales"
                       : slug === "iconos"
                         ? "Iconos"
-                        : "La Ruta Toyota"
+                        : slug === "museos"
+                          ? "La Ruta de la Cultura"
+                          : "La Ruta Toyota"
                 }
               />
             </div>

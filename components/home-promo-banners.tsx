@@ -15,6 +15,7 @@ export function PromoStackBanners() {
           href="/categoria/iconos"
           src="/iconos/BANNER RUTA TOYOTA.webp"
           alt="La Ruta Toyota"
+          hideFallbackWhileLoading
           className="block w-full h-full"
           imageClassName="w-full h-full object-contain md:object-cover"
         />

@@ -113,6 +113,9 @@ export function HotelDetail({
 
   const isIconosPost = normalizedCategories.includes("iconos");
   const isParquesPost = normalizedCategories.includes("parques");
+  const isCulturaPost =
+    normalizedCategories.includes("museos") ||
+    normalizedCategories.includes("cultura");
   const isBaresPost = normalizedCategories.includes("bares");
   const isRestaurantesPost =
     normalizedCategories.includes("restaurantes") ||
@@ -163,9 +166,11 @@ export function HotelDetail({
       isAgendaPost ||
       isToyotaPost ||
       isIconosFinal ||
-      isParquesPost,
+      isParquesPost ||
+      isCulturaPost,
   );
-  const showToyotaCards = isToyotaPost || isIconosFinal || isParquesPost;
+  const showToyotaCards =
+    isToyotaPost || isIconosFinal || isParquesPost || isCulturaPost;
 
   const showCategoryBanner =
     !hideBanners &&
@@ -177,7 +182,8 @@ export function HotelDetail({
       isAgendaPost ||
       isToyotaPost ||
       isIconosFinal ||
-      isParquesPost);
+      isParquesPost ||
+      isCulturaPost);
   // La galería NO debe incluir la imagen de portada. Si hay imágenes de galería, usamos solo esas.
   // Si NO hay imágenes de galería, mostramos la portada como único slide.
   const allImages =
@@ -667,11 +673,13 @@ export function HotelDetail({
                   ? "/categoria/toprestoranes"
                   : isCafesPost
                     ? "/cafes"
-                    : isToyotaPost || isIconosFinal || isParquesPost
-                      ? "/categoria/la-ruta-toyota"
-                      : isMonumentosPost
-                        ? "/monumentos-nacionales"
-                        : agendaBanner?.href || "/categoria/agenda-cultural"
+                    : isCulturaPost
+                      ? "/museos"
+                      : isToyotaPost || isIconosFinal || isParquesPost
+                        ? "/categoria/la-ruta-toyota"
+                        : isMonumentosPost
+                          ? "/monumentos-nacionales"
+                          : agendaBanner?.href || "/categoria/agenda-cultural"
               }
               desktopKey={
                 isTopRestaurantsPost
@@ -682,13 +690,15 @@ export function HotelDetail({
                       ? "post-iconos"
                       : isParquesPost
                         ? "category-parques"
-                        : isToyotaPost
-                          ? "post-toyota"
-                          : isMonumentosPost
-                            ? "post-monumentos"
-                            : isAgendaPost
-                              ? ""
-                              : undefined
+                        : isCulturaPost
+                          ? "post-cultura"
+                          : isToyotaPost
+                            ? "post-toyota"
+                            : isMonumentosPost
+                              ? "post-monumentos"
+                              : isAgendaPost
+                                ? ""
+                                : undefined
               }
               src={
                 isTopRestaurantsPost
@@ -699,13 +709,15 @@ export function HotelDetail({
                       ? "/bannerstoyota/BANNER LA RUTA TOYOTA ICONOS.png"
                       : isToyotaPost || isParquesPost
                         ? "/bannerstoyota/BANNER LA RUTA TOYOTA.webp"
-                        : isMonumentosPost
-                          ? "/bannerHome/BANNER MONUMENTOS.svg"
-                          : isAgendaPost
-                            ? agendaBanner!.src
-                            : isParquesPost
-                              ? "/sliderHome/PARQUES.png"
-                              : "/bannersagenda/BANER AGENDA HEADER.png"
+                        : isCulturaPost
+                          ? "/bannercultura/BANNER LA RUTA DE LA CULTURA.webp"
+                          : isMonumentosPost
+                            ? "/bannerHome/BANNER MONUMENTOS.svg"
+                            : isAgendaPost
+                              ? agendaBanner!.src
+                              : isParquesPost
+                                ? "/sliderHome/PARQUES.png"
+                                : "/bannersagenda/BANER AGENDA HEADER.png"
               }
               mobileSrc={
                 isTopRestaurantsPost
@@ -716,15 +728,17 @@ export function HotelDetail({
                       ? "/bannerstoyota/BANNER LA RUTA TOYOTA ICONOS.png"
                       : isToyotaPost || isParquesPost
                         ? "/bannerstoyota/BANNER LA RUTA TOYOTA.webp"
-                        : isMonumentosPost
-                          ? "/bannerHome/monumentos movil.png"
-                          : isAgendaPost
-                            ? agendaBanner?.mobileSrc
-                            : isParquesPost
-                              ? "/sliderHome/PARQUES.png"
-                              : undefined
+                        : isCulturaPost
+                          ? "/bannercultura/BANNER LA RUTA DE LA CULTURA.webp"
+                          : isMonumentosPost
+                            ? "/bannerHome/monumentos movil.png"
+                            : isAgendaPost
+                              ? agendaBanner?.mobileSrc
+                              : isParquesPost
+                                ? "/sliderHome/PARQUES.png"
+                                : undefined
               }
-              hideFallbackWhileLoading={isParquesPost}
+              hideFallbackWhileLoading={isParquesPost || isCulturaPost}
               alt={
                 isTopRestaurantsPost
                   ? "Top Restaurantes"
@@ -732,11 +746,13 @@ export function HotelDetail({
                     ? "Cafés"
                     : isIconosFinal
                       ? "Iconos"
-                      : isToyotaPost || isParquesPost
-                        ? "La Ruta Toyota"
-                        : isMonumentosPost
-                          ? "Monumentos Nacionales"
-                          : agendaBanner?.alt || "Agenda Cultural"
+                      : isCulturaPost
+                        ? "La Ruta de la Cultura"
+                        : isToyotaPost || isParquesPost
+                          ? "La Ruta Toyota"
+                          : isMonumentosPost
+                            ? "Monumentos Nacionales"
+                            : agendaBanner?.alt || "Agenda Cultural"
               }
             />
           </div>

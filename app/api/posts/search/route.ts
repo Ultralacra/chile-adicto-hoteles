@@ -13,6 +13,13 @@ function envOrNull(name: string) {
   return v && v.length > 0 ? v : null;
 }
 
+function textMatchesQuery(text: string, q: string): boolean {
+  if (!text) return false;
+  if (text.startsWith(q)) return true;
+  const words = text.split(/[^a-z0-9áéíóúüñ]+/i).filter(Boolean);
+  return words.some((word) => word.startsWith(q));
+}
+
 async function anonRest(path: string) {
   const base = envOrNull("NEXT_PUBLIC_SUPABASE_URL");
   const anon = envOrNull("NEXT_PUBLIC_SUPABASE_ANON_KEY");
@@ -116,12 +123,27 @@ export async function GET(req: Request) {
 
   if (q && q.length >= 1) {
     const qLower = q.toLowerCase();
-    const filtered = mapped.filter((p: any) => {
-      const nameEs = (p.name_es || "").toLowerCase();
-      const nameEn = (p.name_en || "").toLowerCase();
-      const slug = (p.slug || "").toLowerCase();
-      return nameEs.startsWith(qLower) || nameEn.startsWith(qLower) || slug.startsWith(qLower);
-    });
+    const filtered = mapped
+      .filter((p: any) => {
+        const nameEs = (p.name_es || "").toLowerCase();
+        const nameEn = (p.name_en || "").toLowerCase();
+        const slug = (p.slug || "").toLowerCase();
+        return (
+          textMatchesQuery(nameEs, qLower) ||
+          textMatchesQuery(nameEn, qLower) ||
+          textMatchesQuery(slug, qLower)
+        );
+      })
+      .sort((a: any, b: any) => {
+        const aStarts =
+          (a.name_es || "").toLowerCase().startsWith(qLower) ||
+          (a.name_en || "").toLowerCase().startsWith(qLower);
+        const bStarts =
+          (b.name_es || "").toLowerCase().startsWith(qLower) ||
+          (b.name_en || "").toLowerCase().startsWith(qLower);
+        if (aStarts !== bStarts) return aStarts ? -1 : 1;
+        return 0;
+      });
     return NextResponse.json({ items: filtered.slice(0, 50) }, { status: 200 });
   }
 

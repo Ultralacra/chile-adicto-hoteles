@@ -7,6 +7,7 @@ import { useSiteApi } from "@/hooks/use-site-api";
 type ManagedBannerProps = {
   desktopKey?: string;
   mobileKey?: string;
+  itemIndex?: number;
   href?: string;
   src: string;
   mobileSrc?: string;
@@ -14,6 +15,7 @@ type ManagedBannerProps = {
   className?: string;
   imageClassName?: string;
   hideFallbackWhileLoading?: boolean;
+  openInNewTab?: boolean;
 };
 
 type BannerItem = {
@@ -25,6 +27,7 @@ type BannerItem = {
 export function ManagedBanner({
   desktopKey,
   mobileKey,
+  itemIndex = 0,
   href = "#",
   src,
   mobileSrc,
@@ -32,6 +35,7 @@ export function ManagedBanner({
   className,
   imageClassName = "block w-full h-auto",
   hideFallbackWhileLoading = false,
+  openInNewTab = false,
 }: ManagedBannerProps) {
   const { fetchWithSite } = useSiteApi();
   const [desktop, setDesktop] = useState({ src, href });
@@ -39,6 +43,7 @@ export function ManagedBanner({
   const [isLoading, setIsLoading] = useState(
     hideFallbackWhileLoading && Boolean(desktopKey || mobileKey),
   );
+  const [missing, setMissing] = useState(false);
 
   useEffect(() => {
     let cancelled = false;
@@ -68,10 +73,21 @@ export function ManagedBanner({
     Promise.all([load(desktopKey), load(mobileKey)]).then(
       ([desktopValue, mobileValue]) => {
         if (cancelled) return;
-        const desktopItem = desktopValue?.[0];
-        const mobileItem = mobileValue?.[0] || desktopValue?.[1] || desktopItem;
+        const desktopItem = desktopValue?.[itemIndex];
+        const mobileItem =
+          mobileValue?.[itemIndex] ||
+          desktopValue?.[itemIndex] ||
+          (itemIndex === 0 ? desktopValue?.[0] : undefined);
         if (desktopItem) setDesktop(desktopItem);
         if (mobileItem) setMobile(mobileItem);
+        if (
+          hideFallbackWhileLoading &&
+          itemIndex > 0 &&
+          !desktopItem &&
+          !mobileItem
+        ) {
+          setMissing(true);
+        }
         setIsLoading(false);
       },
     );
@@ -79,36 +95,61 @@ export function ManagedBanner({
     return () => {
       cancelled = true;
     };
-  }, [fetchWithSite, desktopKey, href, mobileKey, mobileSrc, src]);
+  }, [
+    fetchWithSite,
+    desktopKey,
+    href,
+    mobileKey,
+    mobileSrc,
+    src,
+    itemIndex,
+    hideFallbackWhileLoading,
+  ]);
 
-  if (isLoading) return null;
+  if (isLoading || missing) return null;
 
   const resolvedHref = desktop.href || mobile.href;
-  return (
-    <Link href={resolvedHref} className={className || "block w-full"}>
-      {mobileSrc || mobileKey ? (
-        <>
-          <img
-            src={mobile.src}
-            alt={alt}
-            className={`${imageClassName} md:hidden`}
-            loading="lazy"
-          />
-          <img
-            src={desktop.src}
-            alt={alt}
-            className={`${imageClassName} hidden md:block`}
-            loading="lazy"
-          />
-        </>
-      ) : (
+  const images =
+    mobileSrc || mobileKey ? (
+      <>
+        <img
+          src={mobile.src}
+          alt={alt}
+          className={`${imageClassName} md:hidden`}
+          loading="lazy"
+        />
         <img
           src={desktop.src}
           alt={alt}
-          className={imageClassName}
+          className={`${imageClassName} hidden md:block`}
           loading="lazy"
         />
-      )}
+      </>
+    ) : (
+      <img
+        src={desktop.src}
+        alt={alt}
+        className={imageClassName}
+        loading="lazy"
+      />
+    );
+
+  if (openInNewTab) {
+    return (
+      <a
+        href={resolvedHref}
+        target="_blank"
+        rel="noopener noreferrer"
+        className={className || "block w-full"}
+      >
+        {images}
+      </a>
+    );
+  }
+
+  return (
+    <Link href={resolvedHref} className={className || "block w-full"}>
+      {images}
     </Link>
   );
 }

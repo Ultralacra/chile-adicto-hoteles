@@ -12,6 +12,7 @@ export const BANNER_SLOT_DEFINITIONS: BannerSlotDefinition[] = [
   { key: "home-promo-toyota", label: "Home - promoción Toyota", location: "Home", device: "responsive" },
   { key: "home-promo-cafes", label: "Home - promoción cafés", location: "Home", device: "responsive" },
   { key: "home-promo-restaurantes", label: "Home - promoción restaurantes", location: "Home", device: "responsive" },
+  { key: "home-promo-hoteles", label: "Home - promoción hoteles", location: "Home", device: "responsive" },
   { key: "home-promo-monumentos", label: "Home - promoción monumentos", location: "Home", device: "responsive" },
   { key: "category-cafes", label: "Categoría - cafés", location: "Categorías", device: "responsive" },
   { key: "category-monumentos", label: "Categoría - monumentos", location: "Categorías", device: "responsive" },

@@ -15,8 +15,8 @@ import { useSiteApi } from "@/hooks/use-site-api";
 import {
   BottomHomeBanner,
   PromoStackBanners,
+  RestaurantsStackBanners,
 } from "@/components/home-promo-banners.home-v2";
-import { ManagedBanner } from "@/components/managed-banner";
 
 const HOME_PAGE_SIZE = 25;
 const HOME_CACHE_TTL_MS = 1000 * 60 * 5;
@@ -225,18 +225,9 @@ function HomeContent() {
               </div>
             </div>
 
-            {/* Columna 2: Imagen vertical (placeholder: mismo banner, reemplazar cuando tengas el definitivo) */}
-            <div className="w-full mt-4 lg:mt-0">
-              <div className="w-full h-[260px] md:h-[520px] lg:h-[437px] bg-black overflow-hidden flex items-center justify-center">
-                <ManagedBanner
-                  desktopKey="home-promo-restaurantes"
-                  href="/restaurantes"
-                  src="/bannerHome/70 RESTAURANTES.webp"
-                  mobileSrc="/bannerHome/restaurantes movil.png"
-                  alt="Restaurantes"
-                  imageClassName="max-w-full max-h-full object-contain p-3 md:p-4 lg:p-5"
-                />
-              </div>
+            {/* Columna 2: 2 banners apilados (mismo layout que Toyota + Cafés) */}
+            <div className="w-full mt-[18px] lg:mt-0">
+              <RestaurantsStackBanners />
             </div>
 
             {/* Columna 3: 2 banners apilados */}

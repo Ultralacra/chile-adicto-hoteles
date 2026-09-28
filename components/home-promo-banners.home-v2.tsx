@@ -13,33 +13,34 @@ function StackSlot({ children }: { children: React.ReactNode }) {
 const stackImageClassName =
   "block w-full h-auto md:h-full object-contain md:object-cover";
 
-/** Columna media del home: restaurantes arriba (como antes), hoteles abajo sin marco. */
+/** Columna media del home: mismas proporciones que Toyota + Cafés. */
 export function RestaurantsStackBanners() {
   return (
     <div className="w-full flex flex-col gap-[18px] md:gap-4 overflow-hidden md:h-[520px] lg:h-[437px]">
-      <div className="relative flex-1 min-h-0 bg-black overflow-hidden flex items-center justify-center p-3 md:p-4 lg:p-5">
+      <div className="relative w-full md:flex-1 md:min-h-0 bg-black overflow-hidden flex items-center justify-center">
         <ManagedBanner
           desktopKey="home-promo-restaurantes"
           href="/restaurantes"
           src="/bannerHome/70 RESTAURANTES.webp"
-          mobileSrc="/bannerHome/restaurantes movil.png"
           alt="Restaurantes"
+          hideFallbackWhileLoading
           className="block w-full h-full flex items-center justify-center"
           imageClassName="max-w-full max-h-full object-contain"
         />
       </div>
 
-      <StackSlot>
+      <div className="relative w-full md:flex-1 md:min-h-0 overflow-hidden">
         <ManagedBanner
           desktopKey="home-promo-hoteles"
           href="https://www.chileadictohoteles.cl/"
           openInNewTab
           src="/bannerHome/BANNER HOTELES.webp"
           alt="Chile Adicto Hoteles"
+          hideFallbackWhileLoading
           className="block w-full h-full"
           imageClassName={stackImageClassName}
         />
-      </StackSlot>
+      </div>
     </div>
   );
 }

@@ -80,11 +80,12 @@ export function ManagedBanner({
           (itemIndex === 0 ? desktopValue?.[0] : undefined);
         if (desktopItem) setDesktop(desktopItem);
         if (mobileItem) setMobile(mobileItem);
+        // Si el slider del back no trae items, mantener el fallback local
         if (
           hideFallbackWhileLoading &&
-          itemIndex > 0 &&
           !desktopItem &&
-          !mobileItem
+          !mobileItem &&
+          itemIndex > 0
         ) {
           setMissing(true);
         }

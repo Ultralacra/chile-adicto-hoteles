@@ -13,7 +13,7 @@ function StackSlot({ children }: { children: React.ReactNode }) {
 const stackImageClassName =
   "block w-full h-auto md:h-full object-contain md:object-cover";
 
-/** Columna media del home: mismas proporciones que Toyota + Cafés. */
+/** Columna media: mismo alto que antes; imagen completa y resto en negro. */
 export function RestaurantsStackBanners() {
   return (
     <div className="w-full flex flex-col gap-[18px] md:gap-4 overflow-hidden md:h-[520px] lg:h-[437px]">
@@ -25,7 +25,7 @@ export function RestaurantsStackBanners() {
           alt="Restaurantes"
           hideFallbackWhileLoading
           className="block w-full h-full flex items-center justify-center"
-          imageClassName="max-w-full max-h-full object-contain"
+          imageClassName="max-w-full max-h-full w-auto h-auto object-contain"
         />
       </div>
 

@@ -51,7 +51,7 @@ type BottomHomeBannerProps = {
 export function BottomHomeBanner({
   href = "/monumentos-nacionales",
   src = "/bannerHome/BANNER MONUMENTOS.svg",
-  mobileSrc,
+  mobileSrc = "/bannerHome/monumentos movil.png",
   alt = "Monumentos Nacionales",
   desktopKey = "home-promo-monumentos",
   mobileKey,
@@ -63,7 +63,7 @@ export function BottomHomeBanner({
       mobileKey={mobileKey}
       href={href}
       src={encodeURI(src)}
-      mobileSrc={mobileSrc ? encodeURI(mobileSrc) : undefined}
+      mobileSrc={encodeURI(mobileSrc)}
       alt={alt}
       hideFallbackWhileLoading={hideFallbackWhileLoading}
     />

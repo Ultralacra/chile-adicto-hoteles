@@ -74,17 +74,27 @@ export function ManagedBanner({
       ([desktopValue, mobileValue]) => {
         if (cancelled) return;
         const desktopItem = desktopValue?.[itemIndex];
-        const mobileItem =
-          mobileValue?.[itemIndex] ||
-          desktopValue?.[itemIndex] ||
-          (itemIndex === 0 ? desktopValue?.[0] : undefined);
+        const mobileFromKey = mobileKey
+          ? mobileValue?.[itemIndex]
+          : undefined;
+
         if (desktopItem) setDesktop(desktopItem);
-        if (mobileItem) setMobile(mobileItem);
-        // Si el slider del back no trae items, mantener el fallback local
+
+        if (mobileFromKey) {
+          setMobile(mobileFromKey);
+        } else if (mobileSrc) {
+          // Mantener la imagen móvil local; solo sincronizar href del back
+          if (desktopItem?.href) {
+            setMobile((prev) => ({ ...prev, href: desktopItem.href }));
+          }
+        } else if (desktopItem) {
+          setMobile(desktopItem);
+        }
+
         if (
           hideFallbackWhileLoading &&
           !desktopItem &&
-          !mobileItem &&
+          !mobileFromKey &&
           itemIndex > 0
         ) {
           setMissing(true);

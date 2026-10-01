@@ -16,8 +16,9 @@ type ManagedBannerProps = {
   imageClassName?: string;
   hideFallbackWhileLoading?: boolean;
   openInNewTab?: boolean;
-  /** Priorizar carga (home above-the-fold). */
   priority?: boolean;
+  waitForApi?: boolean;
+  skeletonClassName?: string;
 };
 
 type BannerItem = {
@@ -36,20 +37,35 @@ export function ManagedBanner({
   alt,
   className,
   imageClassName = "block w-full h-auto",
-  hideFallbackWhileLoading = false,
   openInNewTab = false,
   priority = false,
 }: ManagedBannerProps) {
   const { fetchWithSite } = useSiteApi();
-  const [desktop, setDesktop] = useState({ src, href });
-  const [mobile, setMobile] = useState({ src: mobileSrc || src, href });
-  const [isLoading, setIsLoading] = useState(
-    hideFallbackWhileLoading && Boolean(desktopKey || mobileKey),
+  const hasApiKey = Boolean(desktopKey || mobileKey);
+
+  const [desktop, setDesktop] = useState<{ src: string; href: string } | null>(
+    hasApiKey ? null : { src, href },
   );
-  const [missing, setMissing] = useState(false);
+  const [mobile, setMobile] = useState<{ src: string; href: string } | null>(
+    hasApiKey ? null : { src: mobileSrc || src, href },
+  );
+  const [ready, setReady] = useState(!hasApiKey);
 
   useEffect(() => {
     let cancelled = false;
+
+    if (!hasApiKey) {
+      setDesktop({ src, href });
+      setMobile({ src: mobileSrc || src, href });
+      setReady(true);
+      return;
+    }
+
+    // Reset: no mostrar nada hasta la respuesta del API
+    setReady(false);
+    setDesktop(null);
+    setMobile(null);
+
     const load = async (key: string | undefined) => {
       if (!key) return null;
       try {
@@ -76,32 +92,29 @@ export function ManagedBanner({
     Promise.all([load(desktopKey), load(mobileKey)]).then(
       ([desktopValue, mobileValue]) => {
         if (cancelled) return;
-        const desktopItem = desktopValue?.[itemIndex];
-        const mobileFromKey = mobileKey
-          ? mobileValue?.[itemIndex]
-          : undefined;
 
-        if (desktopItem) setDesktop(desktopItem);
+        const desktopItem = desktopValue?.[itemIndex] || null;
+        const mobileFromKey = mobileKey
+          ? mobileValue?.[itemIndex] || null
+          : null;
+
+        if (desktopItem) {
+          setDesktop(desktopItem);
+        }
 
         if (mobileFromKey) {
           setMobile(mobileFromKey);
         } else if (mobileSrc) {
-          if (desktopItem?.href) {
-            setMobile((prev) => ({ ...prev, href: desktopItem.href }));
-          }
+          // Imagen móvil fija local (ej. monumentos), href del API si existe
+          setMobile({
+            src: mobileSrc,
+            href: desktopItem?.href || href,
+          });
         } else if (desktopItem) {
           setMobile(desktopItem);
         }
 
-        if (
-          hideFallbackWhileLoading &&
-          !desktopItem &&
-          !mobileFromKey &&
-          itemIndex > 0
-        ) {
-          setMissing(true);
-        }
-        setIsLoading(false);
+        setReady(true);
       },
     );
 
@@ -116,47 +129,50 @@ export function ManagedBanner({
     mobileSrc,
     src,
     itemIndex,
-    hideFallbackWhileLoading,
+    hasApiKey,
   ]);
 
-  if (isLoading || missing) return null;
+  // Sin imagen del API todavía → no renderizar (evita flash de imagen incorrecta)
+  if (!ready || !desktop) return null;
 
-  const resolvedHref = desktop.href || mobile.href;
+  const resolvedHref = desktop.href || mobile?.href || href;
   const imgLoading = priority ? "eager" : "lazy";
   const imgFetchPriority = priority ? "high" : undefined;
-  const images =
-    mobileSrc || mobileKey ? (
-      <>
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
-          src={mobile.src}
-          alt={alt}
-          className={`${imageClassName} md:hidden`}
-          loading={imgLoading}
-          decoding="async"
-          fetchPriority={imgFetchPriority}
-        />
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
-          src={desktop.src}
-          alt={alt}
-          className={`${imageClassName} hidden md:block`}
-          loading={imgLoading}
-          decoding="async"
-          fetchPriority={imgFetchPriority}
-        />
-      </>
-    ) : (
-      // eslint-disable-next-line @next/next/no-img-element
+  const showMobileSplit = Boolean(mobileSrc || mobileKey);
+  const mobileSrcFinal = mobile?.src || desktop.src;
+
+  const images = showMobileSplit ? (
+    <>
+      {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
-        src={desktop.src}
+        src={mobileSrcFinal}
         alt={alt}
-        className={imageClassName}
+        className={`${imageClassName} md:hidden`}
         loading={imgLoading}
         decoding="async"
         fetchPriority={imgFetchPriority}
       />
-    );
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img
+        src={desktop.src}
+        alt={alt}
+        className={`${imageClassName} hidden md:block`}
+        loading={imgLoading}
+        decoding="async"
+        fetchPriority={imgFetchPriority}
+      />
+    </>
+  ) : (
+    // eslint-disable-next-line @next/next/no-img-element
+    <img
+      src={desktop.src}
+      alt={alt}
+      className={imageClassName}
+      loading={imgLoading}
+      decoding="async"
+      fetchPriority={imgFetchPriority}
+    />
+  );
 
   if (openInNewTab) {
     return (

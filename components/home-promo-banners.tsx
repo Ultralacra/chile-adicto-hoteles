@@ -18,6 +18,11 @@ export function PromoStackBanners() {
           hideFallbackWhileLoading
           className="block w-full h-full"
           imageClassName="w-full h-full object-contain md:object-cover"
+          optimizeWidth={960}
+          optimizeQuality={70}
+          sizes="(max-width: 768px) 100vw, 435px"
+          width={960}
+          height={422}
         />
       </div>
 

@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { useSiteApi } from "@/hooks/use-site-api";
+import { getResizedBannerSrc } from "@/lib/banner-image";
 
 type ManagedBannerProps = {
   desktopKey?: string;
@@ -19,6 +20,12 @@ type ManagedBannerProps = {
   priority?: boolean;
   waitForApi?: boolean;
   skeletonClassName?: string;
+  /** Si se define, sirve la imagen vía /api/media/resize (WebP más liviano). */
+  optimizeWidth?: number;
+  optimizeQuality?: number;
+  sizes?: string;
+  width?: number;
+  height?: number;
 };
 
 type BannerItem = {
@@ -39,6 +46,11 @@ export function ManagedBanner({
   imageClassName = "block w-full h-auto",
   openInNewTab = false,
   priority = false,
+  optimizeWidth,
+  optimizeQuality = 72,
+  sizes,
+  width,
+  height,
 }: ManagedBannerProps) {
   const { fetchWithSite } = useSiteApi();
   const hasApiKey = Boolean(desktopKey || mobileKey);
@@ -141,36 +153,60 @@ export function ManagedBanner({
   const showMobileSplit = Boolean(mobileSrc || mobileKey);
   const mobileSrcFinal = mobile?.src || desktop.src;
 
+  const resolveSrc = (raw: string, targetWidth?: number) => {
+    if (!optimizeWidth) return raw;
+    return getResizedBannerSrc(raw, {
+      width: targetWidth || optimizeWidth,
+      quality: optimizeQuality,
+    });
+  };
+
+  const desktopSrc = resolveSrc(desktop.src, optimizeWidth);
+  const mobileResolved = resolveSrc(
+    mobileSrcFinal,
+    optimizeWidth ? Math.min(optimizeWidth, 720) : undefined,
+  );
+
+  const desktopSrcSet =
+    optimizeWidth && optimizeWidth >= 960
+      ? `${resolveSrc(desktop.src, Math.round(optimizeWidth / 2))} ${Math.round(
+          optimizeWidth / 2,
+        )}w, ${desktopSrc} ${optimizeWidth}w`
+      : undefined;
+
+  const commonImgProps = {
+    alt,
+    loading: imgLoading as "eager" | "lazy",
+    decoding: "async" as const,
+    fetchPriority: imgFetchPriority as "high" | undefined,
+    sizes,
+    width,
+    height,
+  };
+
   const images = showMobileSplit ? (
     <>
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
-        src={mobileSrcFinal}
-        alt={alt}
+        src={mobileResolved}
         className={`${imageClassName} md:hidden`}
-        loading={imgLoading}
-        decoding="async"
-        fetchPriority={imgFetchPriority}
+        {...commonImgProps}
       />
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
-        src={desktop.src}
-        alt={alt}
+        src={desktopSrc}
+        srcSet={desktopSrcSet}
         className={`${imageClassName} hidden md:block`}
-        loading={imgLoading}
-        decoding="async"
-        fetchPriority={imgFetchPriority}
+        {...commonImgProps}
       />
     </>
   ) : (
     // eslint-disable-next-line @next/next/no-img-element
     <img
-      src={desktop.src}
-      alt={alt}
+      src={desktopSrc}
+      srcSet={desktopSrcSet}
       className={imageClassName}
-      loading={imgLoading}
-      decoding="async"
-      fetchPriority={imgFetchPriority}
+      {...commonImgProps}
     />
   );
 

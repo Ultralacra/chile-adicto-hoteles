@@ -57,6 +57,11 @@ export function PromoStackBanners() {
           priority
           className="block w-full h-full"
           imageClassName={stackImageClassName}
+          optimizeWidth={960}
+          optimizeQuality={70}
+          sizes="(max-width: 768px) 100vw, 435px"
+          width={960}
+          height={422}
         />
       </StackSlot>
 

@@ -8,13 +8,32 @@ import { Label } from "@/components/ui/label";
 import { Spinner } from "@/components/ui/spinner";
 import { useAdminApi } from "@/hooks/use-admin-api";
 import { useSiteContext } from "@/contexts/site-context";
-import { BANNER_SLOT_DEFINITIONS, getBannerSlot } from "@/lib/banner-slots";
+import {
+  buildSlotGroupsForSite,
+  getBannerSlot,
+  getBannerSlotsForSite,
+  inferBannerSlotDevice,
+  inferBannerSlotKind,
+  slotBelongsToSite,
+} from "@/lib/banner-slots";
+import type { BannerSlotKind } from "@/lib/banner-slots";
+import type { SiteId } from "@/lib/sites-config";
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 import {
   Carousel,
   CarouselContent,
@@ -26,10 +45,12 @@ import {
   ArrowDown,
   ArrowLeft,
   ArrowUp,
+  Monitor,
   Pencil,
   Plus,
   RefreshCw,
   Save,
+  Smartphone,
   Trash2,
 } from "lucide-react";
 
@@ -38,6 +59,54 @@ type CategorySuggestion = {
   label_es?: string | null;
   label_en?: string | null;
 };
+
+function languageFlagMeta(lang?: string | null): {
+  code: "es" | "en";
+  src: string;
+  label: string;
+} | null {
+  const normalized = String(lang || "")
+    .trim()
+    .toLowerCase();
+  if (normalized === "es") {
+    return { code: "es", src: "/flags/cl.svg", label: "Español" };
+  }
+  if (normalized === "en") {
+    return { code: "en", src: "/flags/us.svg", label: "Inglés" };
+  }
+  return null;
+}
+
+function LanguageFlagBadge({
+  lang,
+  selected = false,
+  className = "",
+}: {
+  lang?: string | null;
+  selected?: boolean;
+  className?: string;
+}) {
+  const meta = languageFlagMeta(lang);
+  if (!meta) return null;
+  return (
+    <span
+      className={`inline-flex items-center gap-1 border px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide ${
+        selected
+          ? "border-white/25 bg-white/10 text-white"
+          : "border-black/15 bg-white text-[#61625d]"
+      } ${className}`}
+      title={meta.label}
+    >
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img
+        src={meta.src}
+        alt={meta.label}
+        className="h-2.5 w-[15px] object-cover"
+      />
+      {meta.code}
+    </span>
+  );
+}
 
 type HrefSuggestionItem = {
   kind: "category" | "post";
@@ -64,18 +133,31 @@ type MediaListResp = {
   limit?: number;
   offset?: number;
   nextOffset?: number | null;
+  site?: string;
+};
+
+type MediaUsageItem = {
+  url: string;
+  posts: Array<{ slug: string; name?: string | null }>;
+  sliders: Array<{ set_key: string; lang?: string | null }>;
 };
 
 export default function AdminSlidersList() {
   const { fetchWithSite, currentSite } = useAdminApi();
   const { isChanging } = useSiteContext();
-  const dbKeys = useMemo(
-    () => BANNER_SLOT_DEFINITIONS.map((slot) => slot.key),
-    [],
+  const activeSite = (currentSite || "santiagoadicto") as SiteId;
+  const siteSlots = useMemo(
+    () => getBannerSlotsForSite(activeSite),
+    [activeSite],
   );
+  const dbKeys = useMemo(() => siteSlots.map((slot) => slot.key), [siteSlots]);
 
   const [dbKey, setDbKey] = useState<string>(dbKeys[0] || "home-desktop");
-  const [dbSite, setDbSite] = useState<string>(currentSite || "santiagoadicto");
+  const [dbSite, setDbSite] = useState<string>(activeSite);
+  const [slotKindFilter, setSlotKindFilter] = useState<"all" | BannerSlotKind>(
+    "all",
+  );
+  const [newKeyKind, setNewKeyKind] = useState<BannerSlotKind>("slider");
   const [newKeyInput, setNewKeyInput] = useState<string>("");
   const [dbView, setDbView] = useState<"list" | "edit">("list");
   const [dbItems, setDbItems] = useState<DbSliderItem[]>([]);
@@ -91,6 +173,11 @@ export default function AdminSlidersList() {
   const [mediaQuery, setMediaQuery] = useState("");
   const [pickerOpen, setPickerOpen] = useState(false);
   const [pickerForIndex, setPickerForIndex] = useState<number | null>(null);
+  const [selectedMediaUrls, setSelectedMediaUrls] = useState<string[]>([]);
+  const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
+  const [deleteUsage, setDeleteUsage] = useState<MediaUsageItem[]>([]);
+  const [deleteLoading, setDeleteLoading] = useState(false);
+  const [deleteChecking, setDeleteChecking] = useState(false);
   const mediaFileRef = useRef<HTMLInputElement | null>(null);
   const mediaScrollRef = useRef<HTMLDivElement | null>(null);
   const mediaReqIdRef = useRef(0);
@@ -237,7 +324,7 @@ export default function AdminSlidersList() {
     let cancelled = false;
     const loadCategories = async () => {
       try {
-        const res = await fetch("/api/categories?full=1", {
+        const res = await fetchWithSite("/api/categories?full=1", {
           cache: "no-store",
         });
         const rows = res.ok ? await res.json() : [];
@@ -257,7 +344,7 @@ export default function AdminSlidersList() {
     return () => {
       cancelled = true;
     };
-  }, []);
+  }, [fetchWithSite, currentSite]);
 
   useEffect(() => {
     const idx = hrefSuggest.index;
@@ -311,25 +398,29 @@ export default function AdminSlidersList() {
 
     const handle = window.setTimeout(async () => {
       try {
-        // Mostramos categorías al tiro; luego completamos con posts
+        // Mostramos categorías al tiro; luego completamos con posts del sitio actual
         setHrefSuggest((s) => ({
           ...s,
           loading: true,
           items: categoryMatches,
         }));
-        const res = await fetch(`/api/posts?q=${encodeURIComponent(q)}`, {
-          cache: "no-store",
-          signal: controller.signal,
-        });
-        const rows = res.ok ? await res.json() : [];
-        const postMatches: HrefSuggestionItem[] = (
-          Array.isArray(rows) ? rows : []
-        )
+        const res = await fetchWithSite(
+          `/api/posts/search?q=${encodeURIComponent(q)}&limit=30`,
+          {
+            cache: "no-store",
+            signal: controller.signal,
+          },
+        );
+        const json = res.ok ? await res.json() : null;
+        const rows = Array.isArray(json?.items) ? json.items : [];
+        const postMatches: HrefSuggestionItem[] = rows
           .map((r: any) => {
             const slug = String(r?.slug || "").trim();
             const label =
               (r?.es?.name ? String(r.es.name) : "") ||
+              (r?.name_es ? String(r.name_es) : "") ||
               (r?.en?.name ? String(r.en.name) : "") ||
+              (r?.name_en ? String(r.name_en) : "") ||
               slug;
             return {
               kind: "post",
@@ -362,7 +453,7 @@ export default function AdminSlidersList() {
       controller.abort();
       window.clearTimeout(handle);
     };
-  }, [hrefSuggest.index, hrefSuggest.query]);
+  }, [hrefSuggest.index, hrefSuggest.query, categories, fetchWithSite, currentSite]);
 
   const MEDIA_PAGE_SIZE = 25;
 
@@ -388,7 +479,7 @@ export default function AdminSlidersList() {
       const q = mediaQuery.trim();
       if (q) qs.set("q", q);
       if (refresh) qs.set("refresh", "1");
-      const r = await fetch(`/api/media?${qs.toString()}`, {
+      const r = await fetchWithSite(`/api/media?${qs.toString()}`, {
         cache: "no-store",
       });
       const j = (r.ok ? await r.json() : null) as MediaListResp | null;
@@ -404,9 +495,15 @@ export default function AdminSlidersList() {
 
       if (append) {
         setMediaUrls((prev) => {
-          const set = new Set<string>(prev);
-          for (const u of clean) set.add(u);
-          return Array.from(set).sort((a, b) => a.localeCompare(b));
+          const seen = new Set(prev);
+          const next = [...prev];
+          for (const u of clean) {
+            if (!seen.has(u)) {
+              seen.add(u);
+              next.push(u);
+            }
+          }
+          return next;
         });
       } else {
         setMediaUrls(clean);
@@ -440,13 +537,77 @@ export default function AdminSlidersList() {
     await fetchMediaPage({ offset: next, append: true });
   };
 
-  // Cargar la primera página solo cuando se abre el picker
+  const toggleMediaSelected = (url: string) => {
+    setSelectedMediaUrls((prev) =>
+      prev.includes(url) ? prev.filter((u) => u !== url) : [...prev, url],
+    );
+  };
+
+  const openDeleteConfirm = async () => {
+    if (selectedMediaUrls.length === 0) return;
+    setDeleteChecking(true);
+    try {
+      const res = await fetchWithSite(`/api/media`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ action: "usage", urls: selectedMediaUrls }),
+      });
+      const data = await res.json().catch(() => null);
+      const items = Array.isArray(data?.items) ? (data.items as MediaUsageItem[]) : [];
+      setDeleteUsage(items);
+      setDeleteConfirmOpen(true);
+    } catch {
+      setDeleteUsage(
+        selectedMediaUrls.map((url) => ({ url, posts: [], sliders: [] })),
+      );
+      setDeleteConfirmOpen(true);
+    } finally {
+      setDeleteChecking(false);
+    }
+  };
+
+  const confirmDeleteSelected = async () => {
+    if (selectedMediaUrls.length === 0) return;
+    setDeleteLoading(true);
+    try {
+      const res = await fetchWithSite(`/api/media`, {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ urls: selectedMediaUrls }),
+      });
+      const data = await res.json().catch(() => null);
+      if (!res.ok || data?.ok === false) {
+        throw new Error(data?.message || data?.error || "No se pudo eliminar");
+      }
+      const deleted: string[] = Array.isArray(data?.deleted)
+        ? data.deleted.map(String)
+        : selectedMediaUrls;
+      const deletedSet = new Set(deleted);
+      setMediaUrls((prev) => prev.filter((u) => !deletedSet.has(u)));
+      setMediaTotal((prev) =>
+        typeof prev === "number"
+          ? Math.max(0, prev - deleted.length)
+          : prev,
+      );
+      setSelectedMediaUrls([]);
+      setDeleteConfirmOpen(false);
+      setDeleteUsage([]);
+    } catch (e: any) {
+      alert("No se pudo eliminar: " + String(e?.message || e));
+    } finally {
+      setDeleteLoading(false);
+    }
+  };
+
+  // Cargar la primera página al abrir el picker (siempre fresca, más recientes primero)
   useEffect(() => {
     if (!pickerOpen) return;
-    if (mediaUrls.length > 0) return;
-    reloadMedia();
+    setSelectedMediaUrls([]);
+    setMediaUrls([]);
+    setMediaTotal(null);
+    reloadMedia({ refresh: true });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [pickerOpen]);
+  }, [pickerOpen, currentSite]);
 
   // Nota: se quitó el scroll infinito para mejorar performance.
   // Ahora se usa botón "Cargar más".
@@ -466,11 +627,15 @@ export default function AdminSlidersList() {
       const data = await res.json();
       const urls: string[] = Array.isArray(data?.urls) ? data.urls : [];
       if (urls.length) {
-        setMediaUrls((prev) => {
-          const set = new Set<string>(prev);
-          for (const u of urls) if (u) set.add(String(u));
-          return Array.from(set).sort((a, b) => a.localeCompare(b));
-        });
+        const uploaded = urls.map(String).filter(Boolean);
+        const uploadedSet = new Set(uploaded);
+        setMediaUrls((prev) => [
+          ...uploaded,
+          ...prev.filter((u) => !uploadedSet.has(u)),
+        ]);
+        setMediaTotal((prev) =>
+          typeof prev === "number" ? prev + uploaded.length : prev,
+        );
       }
     } catch (e: any) {
       alert("No se pudo subir: " + String(e?.message || e));
@@ -537,13 +702,17 @@ export default function AdminSlidersList() {
           },
         ]),
       );
-      const presets = BANNER_SLOT_DEFINITIONS.map(
+      const presets = getBannerSlotsForSite(dbSite as SiteId).map(
         (slot) =>
           existing.get(slot.key) || { key: slot.key, count: 0, sample: null },
       );
       const custom = sets
         .map((s: any) => existing.get(String(s.key || "")))
-        .filter((s: any) => Boolean(s && !getBannerSlot(s.key)));
+        .filter(
+          (s: any) =>
+            Boolean(s && !getBannerSlot(s.key)) &&
+            slotBelongsToSite(String(s.key), dbSite as SiteId),
+        );
       setDbSetsList([...presets, ...custom]);
     } catch {
       setDbSetsList([]);
@@ -556,6 +725,67 @@ export default function AdminSlidersList() {
     loadDbSetsList();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dbSite]);
+
+  // Usar el selector general de sitio del admin (no uno local distinto)
+  useEffect(() => {
+    if (!currentSite) return;
+    setDbSite(currentSite);
+    setSlotKindFilter("all");
+    const firstKey = getBannerSlotsForSite(currentSite as SiteId)[0]?.key;
+    if (firstKey) setDbKey(firstKey);
+    if (dbView === "edit") {
+      setDbView("list");
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentSite]);
+
+  const filteredSlotGroups = useMemo(() => {
+    const groups = buildSlotGroupsForSite(dbSite as SiteId);
+    const byKey = new Map(dbSetsList.map((s) => [s.key, s]));
+
+    return groups
+      .filter((g) => {
+        if (slotKindFilter !== "all" && g.kind !== slotKindFilter) return false;
+        return true;
+      })
+      .map((g) => ({
+        group: g,
+        desktopMeta: g.desktop ? byKey.get(g.desktop.key) : null,
+        mobileMeta: g.mobile ? byKey.get(g.mobile.key) : null,
+        responsiveMeta: g.responsive ? byKey.get(g.responsive.key) : null,
+      }));
+  }, [dbSite, dbSetsList, slotKindFilter]);
+
+  // Keys personalizadas del sitio (no están en el catálogo)
+  const customSets = useMemo(() => {
+    return dbSetsList.filter((s) => {
+      if (getBannerSlot(s.key)) return false;
+      if (!slotBelongsToSite(s.key, dbSite as SiteId)) return false;
+      if (slotKindFilter !== "all" && inferBannerSlotKind(s.key) !== slotKindFilter) {
+        return false;
+      }
+      return true;
+    });
+  }, [dbSetsList, dbSite, slotKindFilter]);
+
+  const sliderCount = useMemo(
+    () =>
+      buildSlotGroupsForSite(dbSite as SiteId).filter((g) => g.kind === "slider")
+        .length,
+    [dbSite],
+  );
+  const bannerCount = useMemo(
+    () =>
+      buildSlotGroupsForSite(dbSite as SiteId).filter((g) => g.kind === "banner")
+        .length,
+    [dbSite],
+  );
+
+  const openGroupKey = (key: string) => {
+    setDbKey(key);
+    setDbView("edit");
+    loadDbSet(key);
+  };
 
   const updateDbItem = (idx: number, patch: Partial<DbSliderItem>) => {
     setDbItems((prev) =>
@@ -1052,10 +1282,12 @@ export default function AdminSlidersList() {
           Recursos editoriales
         </p>
         <h1 className="font-neutra-demi text-3xl uppercase tracking-wide text-[#20211f]">
-          Sliders
+          Sliders y Banners
         </h1>
         <p className="mt-2 text-[#61625d]">
-          Administra campañas visuales y sus destinos por sitio.
+          Administra carruseles y banners del sitio seleccionado arriba (
+          <span className="font-mono text-sm text-[#20211f]">{currentSite}</span>
+          ).
         </p>
       </div>
 
@@ -1065,31 +1297,79 @@ export default function AdminSlidersList() {
             <div className="flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
               <div className="space-y-2">
                 <div className="font-neutra-demi text-sm uppercase tracking-wide text-[#20211f]">
-                  Sliders (Base de Datos)
+                  Biblioteca visual
                 </div>
                 <div className="text-xs text-[#85867f]">
-                  Haz click en un slider para ir a su vista de edición.
+                  Sitio activo:{" "}
+                  <span className="font-mono text-[#20211f]">{dbSite}</span>.
+                  Cambia el sitio con el selector general del admin.
                 </div>
-                <div className="space-y-1">
-                  <Label htmlFor="sliderSite">Sitio</Label>
-                  <select
-                    id="sliderSite"
-                    className="h-9 w-full rounded-none border border-black/10 bg-[#fafaf8] px-2 text-sm md:w-[200px]"
-                    value={dbSite}
-                    onChange={(e) => setDbSite(e.target.value)}
-                  >
-                    <option value="santiagoadicto">santiagoadicto</option>
-                    <option value="chileadicto">chileadicto</option>
-                  </select>
+                <div className="flex flex-wrap items-center gap-3 text-[11px] text-[#61625d]">
+                  <span className="inline-flex items-center gap-1.5">
+                    <span className="h-2 w-2 rounded-full bg-emerald-500" />
+                    En uso en el front
+                  </span>
+                  <span className="inline-flex items-center gap-1.5">
+                    <span className="h-2 w-2 rounded-full bg-amber-500" />
+                    En BD, no referenciado en el front
+                  </span>
                 </div>
 
-                <div className="flex flex-wrap items-center gap-2">
-                  <Input
-                    value={newKeyInput}
-                    onChange={(e) => setNewKeyInput(e.target.value)}
-                    placeholder="Crear nuevo slider (set_key)"
-                    className="h-9 md:w-[260px]"
-                  />
+                <div className="flex flex-wrap gap-2">
+                  {(
+                    [
+                      {
+                        id: "all",
+                        label: `Todos (${buildSlotGroupsForSite(dbSite as SiteId).length})`,
+                      },
+                      { id: "slider", label: `Sliders (${sliderCount})` },
+                      { id: "banner", label: `Banners (${bannerCount})` },
+                    ] as const
+                  ).map((tab) => (
+                    <button
+                      key={tab.id}
+                      type="button"
+                      onClick={() => setSlotKindFilter(tab.id)}
+                      className={`h-9 px-3 text-sm border transition-colors ${
+                        slotKindFilter === tab.id
+                          ? "border-[#20211f] bg-[#20211f] text-white"
+                          : "border-black/10 bg-white text-[#20211f] hover:bg-[#f7f7f4]"
+                      }`}
+                    >
+                      {tab.label}
+                    </button>
+                  ))}
+                </div>
+
+                <div className="flex flex-wrap items-end gap-2 pt-1">
+                  <div className="space-y-1">
+                    <Label htmlFor="newSlotKind">Tipo</Label>
+                    <select
+                      id="newSlotKind"
+                      className="h-9 rounded-none border border-black/10 bg-[#fafaf8] px-2 text-sm"
+                      value={newKeyKind}
+                      onChange={(e) =>
+                        setNewKeyKind(e.target.value as BannerSlotKind)
+                      }
+                    >
+                      <option value="slider">Slider</option>
+                      <option value="banner">Banner</option>
+                    </select>
+                  </div>
+                  <div className="space-y-1">
+                    <Label htmlFor="newSlotKey">Nueva key</Label>
+                    <Input
+                      id="newSlotKey"
+                      value={newKeyInput}
+                      onChange={(e) => setNewKeyInput(e.target.value)}
+                      placeholder={
+                        newKeyKind === "banner"
+                          ? "ej. home-promo-verano"
+                          : "ej. home-desktop-v2"
+                      }
+                      className="h-9 md:w-[260px]"
+                    />
+                  </div>
                   <Button
                     type="button"
                     variant="outline"
@@ -1127,57 +1407,200 @@ export default function AdminSlidersList() {
 
             {dbSetsLoading ? (
               <div className="text-sm text-muted-foreground">Cargando…</div>
-            ) : dbSetsList.length === 0 ? (
+            ) : filteredSlotGroups.length === 0 && customSets.length === 0 ? (
               <div className="text-sm text-muted-foreground">
-                No hay sliders en la BD para este sitio.
+                No hay{" "}
+                {slotKindFilter === "banner"
+                  ? "banners"
+                  : slotKindFilter === "slider"
+                    ? "sliders"
+                    : "items"}{" "}
+                para <span className="font-mono">{dbSite}</span>.
               </div>
             ) : (
-              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
-                {dbSetsList.map((s) => (
-                  <button
-                    key={s.key}
-                    type="button"
-                    className="group border border-black/10 bg-white p-3 text-left transition-colors hover:bg-[#f7f7f4]"
-                    onClick={() => {
-                      setDbKey(s.key);
-                      setDbView("edit");
-                      loadDbSet(s.key);
-                    }}
-                    aria-label={`Editar slider ${s.key}`}
-                  >
-                    <div className="flex items-center gap-2">
-                      <div className="h-14 w-20 shrink-0 overflow-hidden bg-[#f3f3f1]">
-                        {s.sample ? (
-                          // eslint-disable-next-line @next/next/no-img-element
-                          <img
-                            src={s.sample}
-                            alt={s.key}
-                            className="w-full h-full object-cover"
-                          />
-                        ) : (
-                          <div className="w-full h-full flex items-center justify-center text-xs text-muted-foreground">
-                            Sin imagen
+              <div className="space-y-4">
+                <div className="grid grid-cols-1 gap-3 lg:grid-cols-2">
+                  {filteredSlotGroups.map(
+                    ({ group, desktopMeta, mobileMeta, responsiveMeta }) => {
+                      const sample =
+                        desktopMeta?.sample ||
+                        mobileMeta?.sample ||
+                        responsiveMeta?.sample ||
+                        null;
+                      return (
+                        <div
+                          key={group.id}
+                          className="border border-black/10 bg-white p-3"
+                        >
+                          <div className="mb-3 flex items-start gap-3">
+                            <div className="h-14 w-20 shrink-0 overflow-hidden bg-[#f3f3f1]">
+                              {sample ? (
+                                // eslint-disable-next-line @next/next/no-img-element
+                                <img
+                                  src={sample}
+                                  alt={group.label}
+                                  className="h-full w-full object-cover"
+                                />
+                              ) : (
+                                <div className="grid h-full w-full place-items-center text-[10px] text-muted-foreground">
+                                  Sin imagen
+                                </div>
+                              )}
+                            </div>
+                            <div className="min-w-0 flex-1">
+                              <div className="mb-1 flex flex-wrap gap-1.5">
+                                <span
+                                  className={`inline-flex px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide ${
+                                    group.kind === "slider"
+                                      ? "bg-[#20211f] text-white"
+                                      : "bg-[var(--color-brand-red)] text-white"
+                                  }`}
+                                >
+                                  {group.kind === "slider" ? "Slider" : "Banner"}
+                                </span>
+                                <LanguageFlagBadge lang={group.language} />
+                              </div>
+                              <div className="font-neutra-demi text-sm uppercase tracking-wide text-[#20211f]">
+                                {group.label}
+                              </div>
+                              <div className="mt-1 flex items-center gap-1.5 text-[11px] text-emerald-700">
+                                <span className="h-2 w-2 shrink-0 rounded-full bg-emerald-500" />
+                                <span>
+                                  En uso · {group.location}
+                                  {group.language
+                                    ? ` · ${languageFlagMeta(group.language)?.label || group.language.toUpperCase()}`
+                                    : ""}
+                                </span>
+                              </div>
+                            </div>
                           </div>
-                        )}
-                      </div>
-                      <div className="min-w-0 flex-1">
-                        <div className="truncate font-neutra-demi text-sm uppercase tracking-wide text-[#20211f]">
-                          {getBannerSlot(s.key)?.label || s.key}
+
+                          {group.responsive ? (
+                            <button
+                              type="button"
+                              onClick={() => openGroupKey(group.responsive!.key)}
+                              className="flex w-full items-center justify-between border border-black/10 bg-[#fafaf8] px-3 py-2 text-left text-sm hover:bg-[#f3f3f1]"
+                              title={`Escritorio + Móvil · ${group.responsive.key}`}
+                            >
+                              <span className="flex min-w-0 items-center gap-2">
+                                <span className="inline-flex items-center gap-1 text-[#20211f]">
+                                  <Monitor className="size-4 shrink-0" />
+                                  <Smartphone className="size-4 shrink-0" />
+                                </span>
+                                <span className="truncate font-mono text-[11px] text-[#85867f]">
+                                  {group.responsive.key}
+                                </span>
+                              </span>
+                              <span className="text-xs text-muted-foreground">
+                                {responsiveMeta?.count || 0}
+                              </span>
+                            </button>
+                          ) : (
+                            <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
+                              <button
+                                type="button"
+                                disabled={!group.desktop}
+                                onClick={() =>
+                                  group.desktop &&
+                                  openGroupKey(group.desktop.key)
+                                }
+                                className="flex items-center justify-between border border-black/10 bg-[#fafaf8] px-3 py-2 text-left text-sm hover:bg-[#f3f3f1] disabled:cursor-not-allowed disabled:opacity-40"
+                                title={
+                                  group.desktop
+                                    ? `Escritorio · ${group.desktop.key}`
+                                    : "Sin versión escritorio"
+                                }
+                              >
+                                <span className="flex min-w-0 items-center gap-2">
+                                  <Monitor className="size-4 shrink-0 text-[#20211f]" />
+                                  {group.desktop ? (
+                                    <span className="truncate font-mono text-[10px] text-[#85867f]">
+                                      {group.desktop.key}
+                                    </span>
+                                  ) : null}
+                                </span>
+                                <span className="text-xs text-muted-foreground">
+                                  {desktopMeta?.count || 0}
+                                </span>
+                              </button>
+                              <button
+                                type="button"
+                                disabled={!group.mobile}
+                                onClick={() =>
+                                  group.mobile && openGroupKey(group.mobile.key)
+                                }
+                                className="flex items-center justify-between border border-black/10 bg-[#fafaf8] px-3 py-2 text-left text-sm hover:bg-[#f3f3f1] disabled:cursor-not-allowed disabled:opacity-40"
+                                title={
+                                  group.mobile
+                                    ? `Móvil · ${group.mobile.key}`
+                                    : "Sin versión móvil"
+                                }
+                              >
+                                <span className="flex min-w-0 items-center gap-2">
+                                  <Smartphone className="size-4 shrink-0 text-[#20211f]" />
+                                  {group.mobile ? (
+                                    <span className="truncate font-mono text-[10px] text-[#85867f]">
+                                      {group.mobile.key}
+                                    </span>
+                                  ) : null}
+                                </span>
+                                <span className="text-xs text-muted-foreground">
+                                  {mobileMeta?.count || 0}
+                                </span>
+                              </button>
+                            </div>
+                          )}
                         </div>
-                        <div className="truncate text-[11px] text-[#85867f]">
-                          {getBannerSlot(s.key)?.location || "Personalizado"}
-                          {getBannerSlot(s.key)?.language
-                            ? ` · ${getBannerSlot(s.key)?.language?.toUpperCase()}`
-                            : ""}
-                        </div>
-                        <div className="text-xs text-muted-foreground">
-                          {s.count} {s.count === 1 ? "slide" : "slides"}
-                        </div>
-                      </div>
-                      <Pencil className="size-4 shrink-0 text-[#85867f] transition-colors group-hover:text-[var(--color-brand-red)]" />
+                      );
+                    },
+                  )}
+                </div>
+
+                {customSets.length > 0 ? (
+                  <div className="space-y-2">
+                    <div className="flex flex-wrap items-center gap-2 text-xs font-semibold uppercase tracking-wide text-amber-700">
+                      <span className="h-2 w-2 rounded-full bg-amber-500" />
+                      Sin uso en el front ({customSets.length})
                     </div>
-                  </button>
-                ))}
+                    <p className="text-[11px] text-[#85867f]">
+                      Están en la base de datos de este sitio, pero no aparecen
+                      referenciados en el código del front. Revisa si son basura.
+                    </p>
+                    <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-3">
+                      {customSets.map((s) => (
+                        <button
+                          key={s.key}
+                          type="button"
+                          onClick={() => openGroupKey(s.key)}
+                          className="border border-dashed border-amber-300 bg-amber-50/40 p-3 text-left hover:bg-amber-50"
+                        >
+                          <div className="mb-1 flex items-center gap-1.5">
+                            <span className="h-2 w-2 rounded-full bg-amber-500" />
+                            <span className="text-[10px] font-semibold uppercase text-amber-800">
+                              No usado
+                            </span>
+                          </div>
+                          <div className="truncate font-mono text-xs text-[#20211f]">
+                            {s.key}
+                          </div>
+                          <div className="text-xs text-muted-foreground flex items-center gap-1.5">
+                            {s.count} items
+                            {inferBannerSlotDevice(s.key) === "mobile" ? (
+                              <Smartphone className="size-3.5" />
+                            ) : inferBannerSlotDevice(s.key) === "desktop" ? (
+                              <Monitor className="size-3.5" />
+                            ) : (
+                              <span className="inline-flex items-center gap-0.5">
+                                <Monitor className="size-3.5" />
+                                <Smartphone className="size-3.5" />
+                              </span>
+                            )}
+                          </div>
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                ) : null}
               </div>
             )}
           </>
@@ -1186,11 +1609,15 @@ export default function AdminSlidersList() {
             <div className="flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
               <div className="space-y-1">
                 <div className="font-neutra-demi text-sm uppercase tracking-wide text-[#20211f]">
-                  Editar slider
+                  Editar{" "}
+                  {inferBannerSlotKind(dbKey) === "banner" ? "banner" : "slider"}
                 </div>
                 <div className="text-xs text-muted-foreground">
-                  Sitio: <span className="font-mono">{dbSite}</span> · Key:{" "}
-                  <span className="font-mono">{dbKey}</span>
+                  Sitio: <span className="font-mono">{dbSite}</span> · Tipo:{" "}
+                  <span className="font-mono">
+                    {inferBannerSlotKind(dbKey)}
+                  </span>{" "}
+                  · Key: <span className="font-mono">{dbKey}</span>
                 </div>
               </div>
               <div className="flex gap-2">
@@ -1260,6 +1687,13 @@ export default function AdminSlidersList() {
                   <div className="max-h-[62vh] overflow-y-auto">
                     {dbItems.map((item, idx) => {
                       const selected = selectedDbIndex === idx;
+                      const slideLang =
+                        item.lang ||
+                        (dbKey.endsWith("-es")
+                          ? "es"
+                          : dbKey.endsWith("-en")
+                            ? "en"
+                            : null);
                       return (
                         <button
                           key={`${dbKey}-${idx}`}
@@ -1278,8 +1712,14 @@ export default function AdminSlidersList() {
                           </div>
                           <span className="min-w-0 flex-1">
                             <span className="flex items-center justify-between gap-2">
-                              <span className="font-neutra-demi text-sm uppercase tracking-wide">
-                                Slide {idx + 1}
+                              <span className="flex min-w-0 items-center gap-1.5">
+                                <span className="font-neutra-demi text-sm uppercase tracking-wide">
+                                  Slide {idx + 1}
+                                </span>
+                                <LanguageFlagBadge
+                                  lang={slideLang}
+                                  selected={selected}
+                                />
                               </span>
                               <span
                                 className={`size-2 shrink-0 ${item.active !== false ? "bg-[#268477]" : "bg-[#9a9b94]"}`}
@@ -1308,8 +1748,18 @@ export default function AdminSlidersList() {
                             <p className="text-xs font-semibold uppercase tracking-[0.14em] text-[var(--color-brand-red)]">
                               Configuración del slide
                             </p>
-                            <h2 className="mt-1 font-neutra-demi text-xl uppercase tracking-wide text-[#20211f]">
+                            <h2 className="mt-1 flex items-center gap-2 font-neutra-demi text-xl uppercase tracking-wide text-[#20211f]">
                               Slide {idx + 1}
+                              <LanguageFlagBadge
+                                lang={
+                                  item.lang ||
+                                  (dbKey.endsWith("-es")
+                                    ? "es"
+                                    : dbKey.endsWith("-en")
+                                      ? "en"
+                                      : null)
+                                }
+                              />
                             </h2>
                           </div>
                           <div className="flex items-center gap-1">
@@ -1509,19 +1959,22 @@ export default function AdminSlidersList() {
                             </div>
                             <div className="space-y-2">
                               <Label>Idioma</Label>
-                              <select
-                                className="h-9 w-full rounded-none border border-black/10 bg-[#fafaf8] px-2 text-sm"
-                                value={item.lang ?? ""}
-                                onChange={(e) =>
-                                  updateDbItem(idx, {
-                                    lang: e.target.value || null,
-                                  })
-                                }
-                              >
-                                <option value="">Sin idioma específico</option>
-                                <option value="es">Español</option>
-                                <option value="en">Inglés</option>
-                              </select>
+                              <div className="flex items-center gap-2">
+                                <select
+                                  className="h-9 w-full rounded-none border border-black/10 bg-[#fafaf8] px-2 text-sm"
+                                  value={item.lang ?? ""}
+                                  onChange={(e) =>
+                                    updateDbItem(idx, {
+                                      lang: e.target.value || null,
+                                    })
+                                  }
+                                >
+                                  <option value="">Sin idioma específico</option>
+                                  <option value="es">Español</option>
+                                  <option value="en">Inglés</option>
+                                </select>
+                                <LanguageFlagBadge lang={item.lang} />
+                              </div>
                             </div>
                             <div className="border border-black/10 bg-[#fafaf8] px-3 py-2.5">
                               <label className="flex cursor-pointer items-center justify-between gap-3 text-sm font-medium">
@@ -1556,12 +2009,20 @@ export default function AdminSlidersList() {
                 setPickerOpen(open);
                 if (!open) {
                   setPickerForIndex(null);
+                  setSelectedMediaUrls([]);
+                  setDeleteConfirmOpen(false);
+                  setDeleteUsage([]);
                 }
               }}
             >
               <DialogContent className="sm:max-w-6xl max-h-[85vh] overflow-hidden">
                 <DialogHeader>
-                  <DialogTitle>Seleccionar imagen</DialogTitle>
+                  <DialogTitle>
+                    Seleccionar imagen
+                    <span className="ml-2 text-xs font-normal text-muted-foreground">
+                      ({currentSite})
+                    </span>
+                  </DialogTitle>
                 </DialogHeader>
 
                 <div className="flex flex-wrap items-center gap-2">
@@ -1596,6 +2057,22 @@ export default function AdminSlidersList() {
                   >
                     {mediaLoading ? "Cargando…" : "Recargar lista"}
                   </Button>
+                  <Button
+                    type="button"
+                    variant="destructive"
+                    onClick={() => openDeleteConfirm()}
+                    disabled={
+                      selectedMediaUrls.length === 0 ||
+                      deleteChecking ||
+                      deleteLoading ||
+                      mediaUploading
+                    }
+                  >
+                    <Trash2 className="size-4" />
+                    {deleteChecking
+                      ? "Revisando…"
+                      : `Eliminar${selectedMediaUrls.length ? ` (${selectedMediaUrls.length})` : ""}`}
+                  </Button>
 
                   <Input
                     value={mediaQuery}
@@ -1611,6 +2088,15 @@ export default function AdminSlidersList() {
                   >
                     Limpiar
                   </Button>
+                  {selectedMediaUrls.length > 0 ? (
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      onClick={() => setSelectedMediaUrls([])}
+                    >
+                      Quitar selección
+                    </Button>
+                  ) : null}
                   <div className="text-xs text-muted-foreground">
                     Mostrando {filteredMediaUrls.length}
                     {typeof mediaTotal === "number" ? ` de ${mediaTotal}` : ""}
@@ -1622,7 +2108,7 @@ export default function AdminSlidersList() {
                   <div className="text-sm text-muted-foreground">Cargando…</div>
                 ) : mediaUrls.length === 0 ? (
                   <div className="text-sm text-muted-foreground">
-                    No hay imágenes disponibles.
+                    No hay imágenes disponibles para este sitio.
                   </div>
                 ) : (
                   <div
@@ -1639,37 +2125,56 @@ export default function AdminSlidersList() {
                       </div>
                     ) : null}
                     <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-2">
-                      {filteredMediaUrls.map((u) => (
-                        <button
-                          type="button"
-                          key={u}
-                          onClick={() => {
-                            if (pickerForIndex == null) return;
-                            updateDbItem(pickerForIndex, { image_url: u });
-                            setPickerOpen(false);
-                            setPickerForIndex(null);
-                          }}
-                          title={u}
-                          className={`overflow-hidden border border-black/10 text-left hover:bg-[#f7f7f4] ${
-                            u === pickerSelectedUrl
-                              ? "ring-2 ring-[var(--color-brand-red)]"
-                              : ""
-                          }`}
-                        >
-                          <div className="w-full aspect-[4/3] overflow-hidden bg-[#f3f3f1]">
-                            {/* eslint-disable-next-line @next/next/no-img-element */}
-                            <img
-                              src={u}
-                              alt="media"
-                              className="w-full h-full object-cover"
-                              loading="lazy"
-                            />
+                      {filteredMediaUrls.map((u) => {
+                        const checked = selectedMediaUrls.includes(u);
+                        return (
+                          <div
+                            key={u}
+                            className={`relative overflow-hidden border border-black/10 text-left ${
+                              u === pickerSelectedUrl
+                                ? "ring-2 ring-[var(--color-brand-red)]"
+                                : ""
+                            } ${checked ? "ring-2 ring-black/40" : ""}`}
+                          >
+                            <label
+                              className="absolute left-1.5 top-1.5 z-10 flex h-5 w-5 cursor-pointer items-center justify-center bg-white/90 border border-black/20"
+                              onClick={(e) => e.stopPropagation()}
+                            >
+                              <input
+                                type="checkbox"
+                                checked={checked}
+                                onChange={() => toggleMediaSelected(u)}
+                                className="h-3.5 w-3.5 accent-[var(--color-brand-red)]"
+                                aria-label={`Seleccionar ${getMediaName(u)}`}
+                              />
+                            </label>
+                            <button
+                              type="button"
+                              onClick={() => {
+                                if (pickerForIndex == null) return;
+                                updateDbItem(pickerForIndex, { image_url: u });
+                                setPickerOpen(false);
+                                setPickerForIndex(null);
+                              }}
+                              title={u}
+                              className="w-full text-left hover:bg-[#f7f7f4]"
+                            >
+                              <div className="w-full aspect-[4/3] overflow-hidden bg-[#f3f3f1]">
+                                {/* eslint-disable-next-line @next/next/no-img-element */}
+                                <img
+                                  src={u}
+                                  alt="media"
+                                  className="w-full h-full object-cover"
+                                  loading="lazy"
+                                />
+                              </div>
+                              <div className="px-2 py-1 text-[10px] text-muted-foreground truncate">
+                                {getMediaName(u)}
+                              </div>
+                            </button>
                           </div>
-                          <div className="px-2 py-1 text-[10px] text-muted-foreground truncate">
-                            {getMediaName(u)}
-                          </div>
-                        </button>
-                      ))}
+                        );
+                      })}
                     </div>
 
                     <div className="py-3 flex items-center justify-center">
@@ -1692,6 +2197,98 @@ export default function AdminSlidersList() {
                 )}
               </DialogContent>
             </Dialog>
+
+            <AlertDialog
+              open={deleteConfirmOpen}
+              onOpenChange={(open) => {
+                if (deleteLoading) return;
+                setDeleteConfirmOpen(open);
+                if (!open) setDeleteUsage([]);
+              }}
+            >
+              <AlertDialogContent className="sm:max-w-lg max-h-[85vh] overflow-auto">
+                <AlertDialogHeader>
+                  <AlertDialogTitle>
+                    ¿Eliminar {selectedMediaUrls.length} imagen
+                    {selectedMediaUrls.length === 1 ? "" : "es"}?
+                  </AlertDialogTitle>
+                  <AlertDialogDescription asChild>
+                    <div className="space-y-3 text-sm text-muted-foreground">
+                      <p>
+                        Esta acción borrará las imágenes del sitio{" "}
+                        <strong>{currentSite}</strong> (storage y referencias
+                        locales). No se puede deshacer.
+                      </p>
+                      {(() => {
+                        const linked = deleteUsage.filter(
+                          (item) =>
+                            item.posts.length > 0 || item.sliders.length > 0,
+                        );
+                        if (linked.length === 0) {
+                          return (
+                            <p>
+                              No hay posts ni sliders asociados a estas
+                              imágenes en este sitio.
+                            </p>
+                          );
+                        }
+                        return (
+                          <div className="space-y-2 rounded-md border border-amber-300 bg-amber-50 p-3 text-amber-950">
+                            <p className="font-medium">
+                              Advertencia: hay imágenes asociadas a contenido.
+                            </p>
+                            <ul className="max-h-48 space-y-2 overflow-auto text-xs">
+                              {linked.map((item) => (
+                                <li key={item.url}>
+                                  <div className="font-medium truncate">
+                                    {getMediaName(item.url)}
+                                  </div>
+                                  {item.posts.length > 0 ? (
+                                    <div>
+                                      Posts:{" "}
+                                      {item.posts
+                                        .map((p) => p.name || p.slug)
+                                        .join(", ")}
+                                    </div>
+                                  ) : null}
+                                  {item.sliders.length > 0 ? (
+                                    <div>
+                                      Sliders:{" "}
+                                      {item.sliders
+                                        .map((s) => s.set_key)
+                                        .join(", ")}
+                                    </div>
+                                  ) : null}
+                                </li>
+                              ))}
+                            </ul>
+                            <p>
+                              Si continúas, también se quitarán esas
+                              referencias.
+                            </p>
+                          </div>
+                        );
+                      })()}
+                    </div>
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel disabled={deleteLoading}>
+                    Cancelar
+                  </AlertDialogCancel>
+                  <AlertDialogAction
+                    disabled={deleteLoading}
+                    className="bg-red-600 hover:bg-red-700"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      confirmDeleteSelected();
+                    }}
+                  >
+                    {deleteLoading ? "Eliminando…" : "Sí, eliminar"}
+                  </AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
           </>
         )}
       </Card>

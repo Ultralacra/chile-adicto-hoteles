@@ -13,11 +13,25 @@ function envOrNull(name: string) {
   return v && v.length > 0 ? v : null;
 }
 
+function normalizeSearchText(value: string): string {
+  return String(value || "")
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "");
+}
+
 function textMatchesQuery(text: string, q: string): boolean {
-  if (!text) return false;
-  if (text.startsWith(q)) return true;
-  const words = text.split(/[^a-z0-9áéíóúüñ]+/i).filter(Boolean);
-  return words.some((word) => word.startsWith(q));
+  if (!text || !q) return false;
+  const normalizedText = normalizeSearchText(text);
+  const normalizedQuery = normalizeSearchText(q);
+  if (!normalizedQuery) return false;
+  if (normalizedText.includes(normalizedQuery)) return true;
+  const queryTokens = normalizedQuery.split(/[^a-z0-9]+/).filter(Boolean);
+  if (queryTokens.length === 0) return false;
+  const words = normalizedText.split(/[^a-z0-9]+/).filter(Boolean);
+  return queryTokens.every((token) =>
+    words.some((word) => word.startsWith(token) || word.includes(token)),
+  );
 }
 
 async function anonRest(path: string) {
@@ -68,7 +82,8 @@ export async function GET(req: Request) {
 
   const select = "slug,featured_image,publication_status,publish_start_at,publish_end_at,site,translations:post_translations(lang,name)";
 
-  let basePath = `/posts?select=${encodeURIComponent(select)}&site=eq.${siteId}&order=slug.asc&limit=500`;
+  const fetchLimit = adminSite ? 5000 : 500;
+  let basePath = `/posts?select=${encodeURIComponent(select)}&site=eq.${siteId}&order=slug.asc&limit=${fetchLimit}`;
 
   const result = await anonRest(basePath);
   if (!result) return NextResponse.json({ items: [] }, { status: 200 });
@@ -125,9 +140,9 @@ export async function GET(req: Request) {
     const qLower = q.toLowerCase();
     const filtered = mapped
       .filter((p: any) => {
-        const nameEs = (p.name_es || "").toLowerCase();
-        const nameEn = (p.name_en || "").toLowerCase();
-        const slug = (p.slug || "").toLowerCase();
+        const nameEs = p.name_es || "";
+        const nameEn = p.name_en || "";
+        const slug = p.slug || "";
         return (
           textMatchesQuery(nameEs, qLower) ||
           textMatchesQuery(nameEn, qLower) ||
@@ -135,14 +150,13 @@ export async function GET(req: Request) {
         );
       })
       .sort((a: any, b: any) => {
-        const aStarts =
-          (a.name_es || "").toLowerCase().startsWith(qLower) ||
-          (a.name_en || "").toLowerCase().startsWith(qLower);
-        const bStarts =
-          (b.name_es || "").toLowerCase().startsWith(qLower) ||
-          (b.name_en || "").toLowerCase().startsWith(qLower);
+        const aName = normalizeSearchText(a.name_es || a.name_en || "");
+        const bName = normalizeSearchText(b.name_es || b.name_en || "");
+        const qn = normalizeSearchText(qLower);
+        const aStarts = aName.startsWith(qn);
+        const bStarts = bName.startsWith(qn);
         if (aStarts !== bStarts) return aStarts ? -1 : 1;
-        return 0;
+        return aName.localeCompare(bName, "es");
       });
     return NextResponse.json({ items: filtered.slice(0, 50) }, { status: 200 });
   }

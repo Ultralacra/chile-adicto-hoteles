@@ -119,7 +119,7 @@ export default function AdminLayout({
     {
       label: "Recursos",
       items: [
-        { href: "/admin/sliders", icon: Sliders, label: "Sliders" },
+        { href: "/admin/sliders", icon: Sliders, label: "Sliders y Banners" },
         { href: "/admin/images", icon: ImagesIcon, label: "Biblioteca" },
         { href: "/admin/settings", icon: Settings, label: "Configuración" },
       ],
@@ -238,7 +238,7 @@ export default function AdminLayout({
               Gestiona contenido y publicación del sitio
             </p>
           </div>
-          <div className="mx-auto w-full max-w-[1440px] px-4 py-6 sm:px-6 lg:px-7 lg:py-8">
+          <div className="mx-auto w-full max-w-[1200px] px-4 py-6 sm:px-6 lg:px-7 lg:py-8">
             {children}
           </div>
         </main>

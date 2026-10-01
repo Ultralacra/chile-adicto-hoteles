@@ -108,7 +108,7 @@ export function HeroSlider({
       ? desktopImages
       : desktopFromApi && desktopFromApi.length
         ? desktopFromApi
-        : awaitingDesktopApi
+        : awaitingDesktopApi || sliderKeyDesktop
           ? []
           : desktopImagesDefault;
   const mobile =
@@ -116,7 +116,7 @@ export function HeroSlider({
       ? mobileImages
       : mobileFromApi && mobileFromApi.length
         ? mobileFromApi
-        : awaitingMobileApi
+        : awaitingMobileApi || sliderKeyMobile
           ? []
           : mobileImagesDefault;
 
@@ -204,8 +204,14 @@ export function HeroSlider({
         const didLoadFromDb = async () => {
           let used = false;
           if (needDesktop && sliderKeyDesktop) {
+            console.log("[HeroSlider] fetch desktop key:", sliderKeyDesktop);
             const { images, hrefs } = await loadSet(sliderKeyDesktop);
             if (cancelled) return true;
+            console.log("[HeroSlider] desktop result:", {
+              key: sliderKeyDesktop,
+              count: images.length,
+              sample: images.slice(0, 3),
+            });
             if (images.length) {
               setDesktopFromApi(images);
               setDesktopHrefsFromApi(hrefs);
@@ -215,13 +221,23 @@ export function HeroSlider({
             setDesktopFetchDone(true);
           }
           if (needMobile && sliderKeyMobile) {
+            console.log("[HeroSlider] fetch mobile key:", sliderKeyMobile);
             const { images, hrefs } = await loadSet(sliderKeyMobile);
             if (cancelled) return true;
+            console.log("[HeroSlider] mobile result:", {
+              key: sliderKeyMobile,
+              count: images.length,
+              sample: images.slice(0, 3),
+            });
             if (images.length) {
               setMobileFromApi(images);
               setMobileHrefsFromApi(hrefs);
               setMobileLoadedFromDb(true);
               used = true;
+            } else {
+              setMobileFromApi([]);
+              setMobileHrefsFromApi([]);
+              setMobileLoadedFromDb(false);
             }
             setMobileFetchDone(true);
           }
@@ -229,7 +245,8 @@ export function HeroSlider({
         };
 
         const usedDb = await didLoadFromDb();
-        if (usedDb) return;
+        // Si hay keys explícitas de BD, no caer al fallback legacy (evita slider incorrecto)
+        if (usedDb || sliderKeyDesktop || sliderKeyMobile) return;
 
         // 2) Fallback legacy: /api/slider-images (carpetas públicas)
         const json = (await cachedFetchWithSite("/api/slider-images")) as {
@@ -327,6 +344,26 @@ export function HeroSlider({
   const awaitingActiveApi = (isMobile ?? false)
     ? awaitingMobileApi
     : awaitingDesktopApi;
+  const waitingBreakpoint = isMobile === null;
+
+  useEffect(() => {
+    if (waitingBreakpoint || awaitingActiveApi) return;
+    console.log("[HeroSlider] render source:", {
+      isMobile,
+      sliderKeyDesktop: sliderKeyDesktop || null,
+      sliderKeyMobile: sliderKeyMobile || null,
+      using: isMobile ? "mobile" : "desktop",
+      count: activeSlides.length,
+      sample: activeSlides.slice(0, 3),
+    });
+  }, [
+    waitingBreakpoint,
+    awaitingActiveApi,
+    isMobile,
+    sliderKeyDesktop,
+    sliderKeyMobile,
+    activeSlides,
+  ]);
 
   const imageClassName = (extraClass?: string) => {
     const baseClass = autoHeight
@@ -347,8 +384,8 @@ export function HeroSlider({
     return `${baseClass} ${extraClass || ""}`.trim();
   };
 
-  // Mientras llega el API, reservamos espacio sin mostrar defaults viejos
-  if (awaitingActiveApi || activeSlides.length === 0) {
+  // Esperar breakpoint o API para no pintar desktop en móvil (ni defaults viejos)
+  if (waitingBreakpoint || awaitingActiveApi || activeSlides.length === 0) {
     const h = (isMobile ?? false) ? mobileHeight : desktopHeight;
     return (
       <div
@@ -356,71 +393,6 @@ export function HeroSlider({
         style={autoHeight ? { minHeight: 120 } : { height: `${h}px` }}
         aria-hidden
       />
-    );
-  }
-
-  if (isMobile === null && !autoHeight) {
-    const firstDesktop = desktopTr[0];
-    const firstMobile = mobileTr[0];
-    const desktopHref = hrefForIndex(0, "desktop");
-    const mobileHref = hrefForIndex(0, "mobile");
-
-    return (
-      <div className="relative w-full overflow-hidden bg-black">
-        <div
-          className="md:hidden relative bg-black"
-          style={{ height: `${mobileHeight}px` }}
-        >
-          {mobileHref ? (
-            <Link href={mobileHref} className="block h-full w-full relative">
-              <Image
-                src={firstMobile}
-                alt="Slide 1"
-                fill
-                sizes="100vw"
-                priority
-                loading="eager"
-                fetchPriority="high"
-                className={imageClassName(mobileImageClassName)}
-              />
-            </Link>
-          ) : (
-            <Image
-              src={firstMobile}
-              alt="Slide 1"
-              fill
-              sizes="100vw"
-              priority
-              loading="eager"
-              fetchPriority="high"
-              className={imageClassName(mobileImageClassName)}
-            />
-          )}
-        </div>
-
-        <div
-          className="hidden md:block relative bg-black"
-          style={{ height: `${desktopHeight}px` }}
-        >
-          {desktopHref ? (
-            <Link href={desktopHref} className="block h-full w-full relative">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src={firstDesktop}
-                alt="Slide 1"
-                className={imageClassName(desktopImageClassName)}
-              />
-            </Link>
-          ) : (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img
-              src={firstDesktop}
-              alt="Slide 1"
-              className={imageClassName(desktopImageClassName)}
-            />
-          )}
-        </div>
-      </div>
     );
   }
 

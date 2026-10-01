@@ -42,6 +42,10 @@ import {
 } from "@/components/ui/alert-dialog";
 import { normalizePost, validatePost } from "@/lib/post-service";
 import { Spinner } from "@/components/ui/spinner";
+import {
+  formatPostDeleteSummaryLines,
+  getPostDeleteSummary,
+} from "@/lib/post-delete-summary";
 
 export default function EditPostPage({
   params,
@@ -1023,10 +1027,40 @@ export default function EditPostPage({
               <AlertDialogContent>
                 <AlertDialogHeader>
                   <AlertDialogTitle>¿Eliminar este post?</AlertDialogTitle>
-                  <AlertDialogDescription>
-                    Esta acción eliminará solo este post y todos sus datos
-                    relacionados (imágenes, traducciones, categorías, comunas,
-                    sucursales). No se puede deshacer.
+                  <AlertDialogDescription asChild>
+                    <div className="space-y-3 text-sm text-muted-foreground">
+                      <p>
+                        Vas a eliminar{" "}
+                        <span className="font-semibold text-foreground">
+                          {hotel?.es?.name ||
+                            hotel?.en?.name ||
+                            hotel?.slug ||
+                            slug}
+                        </span>
+                        .
+                      </p>
+                      <ul className="list-disc space-y-1 pl-5 text-foreground/80">
+                        {formatPostDeleteSummaryLines(
+                          getPostDeleteSummary({
+                            featuredImage:
+                              featuredImage || images[featuredIndex] || "",
+                            images,
+                            categories,
+                            communes,
+                            locations,
+                            es: hotel?.es,
+                            en: hotel?.en,
+                          }),
+                        ).map((line) => (
+                          <li key={line}>{line}</li>
+                        ))}
+                      </ul>
+                      <p>
+                        Los archivos en almacenamiento se borran solo si no
+                        están en uso en otro post o slider. Esta acción no se
+                        puede deshacer.
+                      </p>
+                    </div>
                   </AlertDialogDescription>
                 </AlertDialogHeader>
                 <AlertDialogFooter>

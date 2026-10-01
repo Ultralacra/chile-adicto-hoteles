@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
   CalendarDays,
   CalendarRange,
@@ -10,6 +10,7 @@ import {
   Pencil,
   Plus,
   Save,
+  Search,
   Sparkles,
   Trash2,
 } from "lucide-react";
@@ -19,6 +20,9 @@ import { Label } from "@/components/ui/label";
 import { useAdminApi } from "@/hooks/use-admin-api";
 
 type Tab = "periods" | "assignments" | "featured";
+
+const ASSIGNMENTS_PAGE_SIZE = 8;
+const POST_PICKER_PAGE_SIZE = 24;
 
 const emptyPeriod = {
   label: "",
@@ -94,6 +98,26 @@ function normalizePayload(value: Record<string, unknown>) {
   );
 }
 
+function normalizeSearchText(value: string): string {
+  return String(value || "")
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "");
+}
+
+function textMatchesQuery(text: string, query: string): boolean {
+  const normalizedText = normalizeSearchText(text);
+  const normalizedQuery = normalizeSearchText(query).trim();
+  if (!normalizedQuery) return true;
+  if (normalizedText.includes(normalizedQuery)) return true;
+  const tokens = normalizedQuery.split(/[^a-z0-9]+/).filter(Boolean);
+  if (tokens.length === 0) return true;
+  const words = normalizedText.split(/[^a-z0-9]+/).filter(Boolean);
+  return tokens.every((token) =>
+    words.some((word) => word.startsWith(token) || word.includes(token)),
+  );
+}
+
 export default function AdminAgendaCulturalPage() {
   const { fetchWithSite, currentSite } = useAdminApi();
   const [tab, setTab] = useState<Tab>("periods");
@@ -108,6 +132,140 @@ export default function AdminAgendaCulturalPage() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState("");
+  const [postSearch, setPostSearch] = useState("");
+  const [postPickerPage, setPostPickerPage] = useState(1);
+  const [assignmentsSearch, setAssignmentsSearch] = useState("");
+  const [assignmentsPage, setAssignmentsPage] = useState(1);
+  const [featuredSearch, setFeaturedSearch] = useState("");
+  const [featuredPage, setFeaturedPage] = useState(1);
+
+  const scheduledPostSlugs = useMemo(
+    () =>
+      new Set(
+        assignments
+          .map((assignment) => String(assignment.post_slug || "").trim())
+          .filter(Boolean),
+      ),
+    [assignments],
+  );
+
+  const featuredPostSlugs = useMemo(
+    () =>
+      new Set(
+        featured
+          .map((slot) => String(slot.post_slug || "").trim())
+          .filter(Boolean),
+      ),
+    [featured],
+  );
+
+  const filteredPosts = useMemo(() => {
+    const q = postSearch.trim();
+    const list = !q
+      ? posts
+      : posts.filter((post) => {
+          const title = post?.es?.name || post?.en?.name || "";
+          const slug = post?.slug || "";
+          return textMatchesQuery(title, q) || textMatchesQuery(slug, q);
+        });
+
+    // Todos los posts (agenda-cultural), ordenados por nombre.
+    // Los programados se marcan con badge, no se filtran.
+    return [...list].sort((a, b) => {
+      const aName = String(a?.es?.name || a?.slug || "");
+      const bName = String(b?.es?.name || b?.slug || "");
+      return aName.localeCompare(bName, "es");
+    });
+  }, [posts, postSearch]);
+
+  const filteredAssignments = useMemo(() => {
+    const q = assignmentsSearch.trim();
+    if (!q) return assignments;
+    return assignments.filter((assignment) => {
+      const post = posts.find((item) => item.slug === assignment.post_slug);
+      const title = post?.es?.name || post?.en?.name || "";
+      const slug = String(assignment.post_slug || "");
+      const range = `${assignment.start_date || ""} ${assignment.end_date || ""}`;
+      return (
+        textMatchesQuery(title, q) ||
+        textMatchesQuery(slug, q) ||
+        textMatchesQuery(range, q)
+      );
+    });
+  }, [assignments, assignmentsSearch, posts]);
+
+  const filteredFeatured = useMemo(() => {
+    const q = featuredSearch.trim();
+    if (!q) return featured;
+    return featured.filter((slot) => {
+      const post = posts.find((item) => item.slug === slot.post_slug);
+      const title = post?.es?.name || post?.en?.name || "";
+      const slug = String(slot.post_slug || "");
+      const range = `${slot.start_date || ""} ${slot.end_date || ""}`;
+      return (
+        textMatchesQuery(title, q) ||
+        textMatchesQuery(slug, q) ||
+        textMatchesQuery(range, q)
+      );
+    });
+  }, [featured, featuredSearch, posts]);
+
+  const postPickerTotalPages = Math.max(
+    1,
+    Math.ceil(filteredPosts.length / POST_PICKER_PAGE_SIZE),
+  );
+  const pagedPosts = filteredPosts.slice(
+    (postPickerPage - 1) * POST_PICKER_PAGE_SIZE,
+    postPickerPage * POST_PICKER_PAGE_SIZE,
+  );
+
+  const assignmentsTotalPages = Math.max(
+    1,
+    Math.ceil(filteredAssignments.length / ASSIGNMENTS_PAGE_SIZE),
+  );
+  const pagedAssignments = filteredAssignments.slice(
+    (assignmentsPage - 1) * ASSIGNMENTS_PAGE_SIZE,
+    assignmentsPage * ASSIGNMENTS_PAGE_SIZE,
+  );
+
+  const featuredTotalPages = Math.max(
+    1,
+    Math.ceil(filteredFeatured.length / ASSIGNMENTS_PAGE_SIZE),
+  );
+  const pagedFeatured = filteredFeatured.slice(
+    (featuredPage - 1) * ASSIGNMENTS_PAGE_SIZE,
+    featuredPage * ASSIGNMENTS_PAGE_SIZE,
+  );
+
+  useEffect(() => {
+    setPostPickerPage(1);
+  }, [postSearch, tab]);
+
+  useEffect(() => {
+    setAssignmentsPage(1);
+  }, [assignmentsSearch]);
+
+  useEffect(() => {
+    setFeaturedPage(1);
+  }, [featuredSearch]);
+
+  useEffect(() => {
+    if (postPickerPage > postPickerTotalPages) {
+      setPostPickerPage(postPickerTotalPages);
+    }
+  }, [postPickerPage, postPickerTotalPages]);
+
+  useEffect(() => {
+    if (assignmentsPage > assignmentsTotalPages) {
+      setAssignmentsPage(assignmentsTotalPages);
+    }
+  }, [assignmentsPage, assignmentsTotalPages]);
+
+  useEffect(() => {
+    if (featuredPage > featuredTotalPages) {
+      setFeaturedPage(featuredTotalPages);
+    }
+  }, [featuredPage, featuredTotalPages]);
 
   const load = async () => {
     setLoading(true);
@@ -277,53 +435,186 @@ export default function AdminAgendaCulturalPage() {
   const postImageUrl = (post: any) =>
     post?.featuredImage || post?.images?.[0] || null;
 
-  const postPicker = (value: string, onChange: (slug: string) => void) => (
-    <div className="grid max-h-72 grid-cols-1 gap-2 overflow-y-auto border border-black/10 bg-[#fafaf8] p-2 sm:grid-cols-2">
-      {posts.map((post) => {
-        const selected = post.slug === value;
-        const isFeatured = featured.some(
-          (slot) => slot.post_slug === post.slug,
-        );
-        const imageUrl = postImageUrl(post);
+  const selectAssignmentPost = (post_slug: string) => {
+    const existing = assignments.find(
+      (assignment) => String(assignment.post_slug) === post_slug,
+    );
+    if (existing) {
+      setAssignmentForm({ ...existing });
+      setMessage(
+        `Programación de “${postTitle(
+          posts.find((p) => p.slug === post_slug) || { slug: post_slug },
+        )}” cargada para editar.`,
+      );
+      return;
+    }
+    setAssignmentForm({ ...emptyAssignment, post_slug });
+  };
 
-        return (
+  const selectFeaturedPost = (post_slug: string) => {
+    const existing = featured.find(
+      (slot) => String(slot.post_slug) === post_slug,
+    );
+    if (existing) {
+      setFeaturedForm({ ...existing });
+      setMessage(
+        `Destacado de “${postTitle(
+          posts.find((p) => p.slug === post_slug) || { slug: post_slug },
+        )}” cargado para editar.`,
+      );
+      return;
+    }
+    setFeaturedForm({ ...emptyFeatured, post_slug });
+  };
+
+  const paginationControls = (
+    page: number,
+    totalPages: number,
+    totalItems: number,
+    onChange: (page: number) => void,
+    label: string,
+  ) => {
+    if (totalItems <= 0) return null;
+    return (
+      <div className="flex flex-wrap items-center justify-between gap-2 border-t border-black/10 px-3 py-2.5 text-sm text-[#61625d]">
+        <span>
+          {totalItems} {label}
+          {totalPages > 1 ? ` · página ${page} de ${totalPages}` : ""}
+        </span>
+        {totalPages > 1 ? (
+          <div className="flex items-center gap-2">
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              disabled={page <= 1}
+              onClick={() => onChange(Math.max(1, page - 1))}
+            >
+              Anterior
+            </Button>
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              disabled={page >= totalPages}
+              onClick={() => onChange(Math.min(totalPages, page + 1))}
+            >
+              Siguiente
+            </Button>
+          </div>
+        ) : null}
+      </div>
+    );
+  };
+
+  const postPicker = (
+    value: string,
+    onChange: (slug: string) => void,
+    mode: "assignment" | "featured",
+  ) => (
+    <div className="space-y-2">
+      <div className="relative">
+        <Search className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-[#85867f]" />
+        <Input
+          value={postSearch}
+          onChange={(event) => setPostSearch(event.target.value)}
+          placeholder="Buscar por nombre o slug…"
+          className="pl-9"
+        />
+      </div>
+      <div className="flex flex-wrap items-center gap-2 text-xs text-[#61625d]">
+        <span>
+          {filteredPosts.length} de {posts.length} posts
+          {scheduledPostSlugs.size > 0
+            ? ` · ${
+                filteredPosts.filter((post) =>
+                  scheduledPostSlugs.has(String(post.slug || "")),
+                ).length
+              } programados`
+            : ""}
+        </span>
+        {postSearch.trim() ? (
           <button
-            className={`flex min-h-16 items-center gap-3 border p-2 text-left transition-colors ${selected ? "border-[var(--color-brand-red)] bg-[#fff1f3]" : "border-black/10 bg-white hover:border-black/30 hover:bg-[#f7f7f4]"}`}
-            key={post.slug}
-            onClick={() => onChange(post.slug)}
             type="button"
+            className="text-[var(--color-brand-red)] underline-offset-2 hover:underline"
+            onClick={() => setPostSearch("")}
           >
-            {imageUrl ? (
-              <img
-                alt=""
-                className="size-12 shrink-0 bg-[#ecece8] object-cover"
-                src={imageUrl}
-              />
-            ) : (
-              <div className="grid size-12 shrink-0 place-items-center bg-[#ecece8] text-[10px] font-semibold uppercase text-[#61625d]">
-                Sin foto
-              </div>
-            )}
-            <span className="min-w-0">
-              <span className="block truncate text-sm font-semibold">
-                {postTitle(post)}
-              </span>
-              <span className="mt-0.5 block truncate text-xs text-[#61625d]">
-                {post.slug}
-              </span>
-              {isFeatured && (
-                <span className="mt-1 inline-flex items-center gap-1 bg-[#fff1f3] px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-[var(--color-brand-red)]">
-                  <Sparkles className="size-3" /> Destacado
-                </span>
-              )}
-            </span>
+            Limpiar búsqueda
           </button>
-        );
-      })}
-      {posts.length === 0 && (
-        <p className="p-3 text-sm text-[#61625d]">
-          No hay posts de Agenda Cultural disponibles.
-        </p>
+        ) : null}
+      </div>
+      <div className="grid max-h-72 grid-cols-1 gap-2 overflow-y-auto border border-black/10 bg-[#fafaf8] p-2 sm:grid-cols-2">
+        {pagedPosts.map((post) => {
+          const selected = post.slug === value;
+          const isFeatured = featuredPostSlugs.has(String(post.slug || ""));
+          const isScheduled = scheduledPostSlugs.has(String(post.slug || ""));
+          const imageUrl = postImageUrl(post);
+
+          return (
+            <button
+              className={`flex min-h-16 items-center gap-3 border p-2 text-left transition-colors ${selected ? "border-[var(--color-brand-red)] bg-[#fff1f3]" : "border-black/10 bg-white hover:border-black/30 hover:bg-[#f7f7f4]"}`}
+              key={post.slug}
+              onClick={() => onChange(post.slug)}
+              type="button"
+            >
+              {imageUrl ? (
+                <img
+                  alt=""
+                  className="size-12 shrink-0 bg-[#ecece8] object-cover"
+                  src={imageUrl}
+                />
+              ) : (
+                <div className="grid size-12 shrink-0 place-items-center bg-[#ecece8] text-[10px] font-semibold uppercase text-[#61625d]">
+                  Sin foto
+                </div>
+              )}
+              <span className="min-w-0">
+                <span className="block truncate text-sm font-semibold">
+                  {postTitle(post)}
+                </span>
+                <span className="mt-0.5 block truncate text-xs text-[#61625d]">
+                  {post.slug}
+                </span>
+                <span className="mt-1 flex flex-wrap gap-1">
+                  {isScheduled && (
+                    <span className="inline-flex items-center gap-1 bg-[#e8f5ef] px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-[#276c61]">
+                      <CalendarDays className="size-3" /> Programado
+                    </span>
+                  )}
+                  {isFeatured && (
+                    <span className="inline-flex items-center gap-1 bg-[#fff1f3] px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-[var(--color-brand-red)]">
+                      <Sparkles className="size-3" /> Destacado
+                    </span>
+                  )}
+                  {mode === "assignment" && isScheduled && selected ? (
+                    <span className="inline-flex items-center gap-1 bg-[#20211f] px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-white">
+                      Editando
+                    </span>
+                  ) : null}
+                  {mode === "featured" && isFeatured && selected ? (
+                    <span className="inline-flex items-center gap-1 bg-[#20211f] px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-white">
+                      Editando
+                    </span>
+                  ) : null}
+                </span>
+              </span>
+            </button>
+          );
+        })}
+        {filteredPosts.length === 0 && (
+          <p className="p-3 text-sm text-[#61625d] sm:col-span-2">
+            {posts.length === 0
+              ? "No hay posts de Agenda Cultural disponibles."
+              : "Ningún post coincide con la búsqueda."}
+          </p>
+        )}
+      </div>
+      {paginationControls(
+        postPickerPage,
+        postPickerTotalPages,
+        filteredPosts.length,
+        setPostPickerPage,
+        "posts",
       )}
     </div>
   );
@@ -720,8 +1011,10 @@ export default function AdminAgendaCulturalPage() {
             </div>
             <div className="space-y-2 md:col-span-2">
               <Label>Post</Label>
-              {postPicker(assignmentForm.post_slug || "", (post_slug) =>
-                setAssignmentForm({ ...assignmentForm, post_slug }),
+              {postPicker(
+                assignmentForm.post_slug || "",
+                selectAssignmentPost,
+                "assignment",
               )}
             </div>
             <div className="space-y-2">
@@ -778,8 +1071,17 @@ export default function AdminAgendaCulturalPage() {
             </label>
             <div className="flex gap-2 md:col-span-2">
               <Button disabled={saving} type="submit">
-                <Plus className="mr-2 size-4" />
-                Guardar programación
+                {assignmentForm.id ? (
+                  <>
+                    <Save className="mr-2 size-4" />
+                    Actualizar programación
+                  </>
+                ) : (
+                  <>
+                    <Plus className="mr-2 size-4" />
+                    Guardar programación
+                  </>
+                )}
               </Button>
               {assignmentForm.id && (
                 <Button
@@ -793,7 +1095,18 @@ export default function AdminAgendaCulturalPage() {
             </div>
           </form>
           <div className="border border-black/10 bg-white">
-            {assignments.map((assignment) => (
+            <div className="border-b border-black/10 p-3">
+              <div className="relative">
+                <Search className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-[#85867f]" />
+                <Input
+                  value={assignmentsSearch}
+                  onChange={(event) => setAssignmentsSearch(event.target.value)}
+                  placeholder="Buscar programación por nombre, slug o fechas…"
+                  className="pl-9"
+                />
+              </div>
+            </div>
+            {pagedAssignments.map((assignment) => (
               <div
                 className="flex flex-wrap items-center justify-between gap-3 border-b border-black/10 p-4 last:border-b-0"
                 key={assignment.id}
@@ -817,7 +1130,17 @@ export default function AdminAgendaCulturalPage() {
                   <Button
                     variant="outline"
                     size="icon"
-                    onClick={() => setAssignmentForm(assignment)}
+                    onClick={() => {
+                      setAssignmentForm(assignment);
+                      const idx = filteredAssignments.findIndex(
+                        (item) => item.id === assignment.id,
+                      );
+                      if (idx >= 0) {
+                        setAssignmentsPage(
+                          Math.floor(idx / ASSIGNMENTS_PAGE_SIZE) + 1,
+                        );
+                      }
+                    }}
                     title="Editar programación"
                   >
                     <Pencil className="size-4" />
@@ -837,6 +1160,18 @@ export default function AdminAgendaCulturalPage() {
               <p className="p-5 text-sm text-[#61625d]">
                 Aún no hay posts programados.
               </p>
+            )}
+            {assignments.length > 0 && filteredAssignments.length === 0 && (
+              <p className="p-5 text-sm text-[#61625d]">
+                Ninguna programación coincide con “{assignmentsSearch}”.
+              </p>
+            )}
+            {paginationControls(
+              assignmentsPage,
+              assignmentsTotalPages,
+              filteredAssignments.length,
+              setAssignmentsPage,
+              "programaciones",
             )}
           </div>
         </section>
@@ -864,8 +1199,10 @@ export default function AdminAgendaCulturalPage() {
             </div>
             <div className="space-y-2 md:col-span-2">
               <Label>Post destacado</Label>
-              {postPicker(featuredForm.post_slug || "", (post_slug) =>
-                setFeaturedForm({ ...featuredForm, post_slug }),
+              {postPicker(
+                featuredForm.post_slug || "",
+                selectFeaturedPost,
+                "featured",
               )}
             </div>
             <div className="space-y-2">
@@ -988,7 +1325,18 @@ export default function AdminAgendaCulturalPage() {
             </div>
           </form>
           <div className="border border-black/10 bg-white">
-            {featured.map((slot) => (
+            <div className="border-b border-black/10 p-3">
+              <div className="relative">
+                <Search className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-[#85867f]" />
+                <Input
+                  value={featuredSearch}
+                  onChange={(event) => setFeaturedSearch(event.target.value)}
+                  placeholder="Buscar destacado por nombre, slug o fechas…"
+                  className="pl-9"
+                />
+              </div>
+            </div>
+            {pagedFeatured.map((slot) => (
               <div
                 className="flex flex-wrap items-center justify-between gap-3 border-b border-black/10 p-4 last:border-b-0"
                 key={slot.id}
@@ -1037,6 +1385,18 @@ export default function AdminAgendaCulturalPage() {
               <p className="p-5 text-sm text-[#61625d]">
                 No hay destacado global programado.
               </p>
+            )}
+            {featured.length > 0 && filteredFeatured.length === 0 && (
+              <p className="p-5 text-sm text-[#61625d]">
+                Ningún destacado coincide con “{featuredSearch}”.
+              </p>
+            )}
+            {paginationControls(
+              featuredPage,
+              featuredTotalPages,
+              filteredFeatured.length,
+              setFeaturedPage,
+              "destacados",
             )}
           </div>
         </section>

@@ -445,17 +445,6 @@ export default function CategoryPage({ params }: { params: any }) {
   const [restaurantSlideHrefs, setRestaurantSlideHrefs] = useState<string[]>(
     [],
   );
-  const [restaurantDesktopLoadedFromDb, setRestaurantDesktopLoadedFromDb] =
-    useState(false);
-  // Imágenes móviles específicas (EN primera, ES segunda) para restaurantes
-  const [restaurantMobileImages, setRestaurantMobileImages] = useState<
-    string[]
-  >([]);
-  const [restaurantMobileHrefs, setRestaurantMobileHrefs] = useState<string[]>(
-    [],
-  );
-  const [restaurantMobileLoadedFromDb, setRestaurantMobileLoadedFromDb] =
-    useState(false);
   useEffect(() => {
     if (!isRestaurantsPage) return;
     let cancelled = false;
@@ -478,12 +467,10 @@ export default function CategoryPage({ params }: { params: any }) {
         if (imagesFromDb.length > 0) {
           setRestaurantSliderImages(imagesFromDb);
           setRestaurantSlideHrefs(hrefsFromDb);
-          setRestaurantDesktopLoadedFromDb(true);
           return;
         }
 
         // 2) Fallback: manifest.json (comportamiento actual)
-        setRestaurantDesktopLoadedFromDb(false);
         return fetch("/imagenes-slider/manifest.json")
           .then((r) => (r.ok ? r.json() : []))
           .then((payload) => {
@@ -606,111 +593,26 @@ export default function CategoryPage({ params }: { params: any }) {
       .catch(() => {
         setRestaurantSliderImages([]);
         setRestaurantSlideHrefs([]);
-        setRestaurantDesktopLoadedFromDb(false);
       });
     return () => {
       cancelled = true;
     };
   }, [isRestaurantsPage, language, cachedFetchWithSite]);
 
-  // Cargar carpeta específica móvil de restaurantes (sin afectar desktop)
   useEffect(() => {
-    if (!isRestaurantsPage) return;
-    let cancelled = false;
-
+    if (!isRestaurantsPage || tipoParam) return;
     const mobileKey =
       language === "en" ? "restaurants-mobile-en" : "restaurants-mobile-es";
-
-    // 1) Intentar BD primero (si existe)
-    cachedFetchWithSite(`/api/sliders/${encodeURIComponent(mobileKey)}`)
-      .then((db: any) => {
-        if (cancelled) return;
-        const items = Array.isArray(db?.items) ? db.items : [];
-        const activeItems = items.filter((it: any) => it?.active !== false);
-        const imagesFromDb = activeItems
-          .map((it: any) => String(it?.image_url || "").trim())
-          .filter(Boolean);
-        const hrefsFromDb = activeItems.map((it: any) =>
-          it?.href ? String(it.href) : "",
-        );
-
-        if (imagesFromDb.length > 0) {
-          setRestaurantMobileImages(imagesFromDb);
-          setRestaurantMobileHrefs(hrefsFromDb);
-          setRestaurantMobileLoadedFromDb(true);
-          return;
-        }
-
-        // 2) Fallback: carpeta pública vía API actual
-        setRestaurantMobileLoadedFromDb(false);
-        return cachedFetchWithSite("/api/restaurant-slider-mobile").then(
-          (json: any) => {
-            if (cancelled) return;
-            const imgs: string[] = Array.isArray(json?.images)
-              ? json.images
-              : [];
-            setRestaurantMobileImages(imgs);
-            // Derivar href por filename intentando matchear slug real igual que manifest
-            const normKey = (str: string) =>
-              String(str || "")
-                .normalize("NFD")
-                .replace(/[\u0300-\u036f]/g, "")
-                .toLowerCase()
-                .replace(/[^a-z0-9]/g, "");
-            const restaurantIndex = (filteredHotels as any[]).map((h) => {
-              const slug = String(h.slug || "");
-              const esName = String(h.es?.name || "");
-              const enName = String(h.en?.name || "");
-              return {
-                slug,
-                keys: [normKey(slug), normKey(esName), normKey(enName)].filter(
-                  Boolean,
-                ),
-              };
-            });
-            const hrefs = imgs.map((full) => {
-              const fname = full.split("/").pop() || full;
-              const base = fname
-                .replace(/\.[^.]+$/, "")
-                .replace(/-(1|2)$/i, "");
-              const cleanedBase = base.replace(/^(sld|slm|sl)[ _-]+/i, "");
-              const key = normKey(cleanedBase);
-              let matchSlug: string | null = null;
-              for (const row of restaurantIndex) {
-                if (
-                  row.keys.some(
-                    (k: string) => k.startsWith(key) || key.startsWith(k),
-                  )
-                ) {
-                  matchSlug = row.slug;
-                  break;
-                }
-              }
-              if (!matchSlug) {
-                matchSlug = cleanedBase
-                  .normalize("NFD")
-                  .replace(/[\u0300-\u036f]/g, "")
-                  .toLowerCase()
-                  .replace(/[^a-z0-9]+/g, "-")
-                  .replace(/(^-|-$)/g, "");
-              }
-              return `/${matchSlug}`;
-            });
-            setRestaurantMobileHrefs(hrefs);
-          },
-        );
-      })
-      .catch(() => {
-        if (!cancelled) {
-          setRestaurantMobileImages([]);
-          setRestaurantMobileHrefs([]);
-          setRestaurantMobileLoadedFromDb(false);
-        }
-      });
-    return () => {
-      cancelled = true;
-    };
-  }, [isRestaurantsPage, filteredHotels, language, cachedFetchWithSite]);
+    console.log("[Restaurantes] slider móvil key:", mobileKey, {
+      language,
+      desktopCount: restaurantSliderImages.length,
+    });
+  }, [
+    isRestaurantsPage,
+    tipoParam,
+    language,
+    restaurantSliderImages.length,
+  ]);
 
   // Override de descripciones ES/EN para slugs específicos (p. ej., PRIMA BAR)
   const enrichedHotels = (filteredHotels || []).map((h) => {
@@ -1493,41 +1395,12 @@ export default function CategoryPage({ params }: { params: any }) {
               <div className="w-full overflow-hidden mb-0">
                 <HeroSlider
                   desktopImages={restaurantSliderImages}
-                  mobileImages={
-                    // Si vienen desde BD (key ya es -es/-en), NO filtrar por sufijo.
-                    restaurantMobileLoadedFromDb
-                      ? restaurantMobileImages
-                      : restaurantMobileImages.length > 0
-                        ? language === "es"
-                          ? restaurantMobileImages.filter((img) =>
-                              /-1\./i.test(img),
-                            )
-                          : restaurantMobileImages.filter((img) =>
-                              /-2\./i.test(img),
-                            )
-                        : restaurantDesktopLoadedFromDb
-                          ? restaurantSliderImages
-                          : language === "es"
-                            ? restaurantSliderImages.filter((img) =>
-                                /-1\./i.test(img),
-                              )
-                            : restaurantSliderImages.filter((img) =>
-                                /-2\./i.test(img),
-                              )
+                  sliderKeyMobile={
+                    language === "en"
+                      ? "restaurants-mobile-en"
+                      : "restaurants-mobile-es"
                   }
-                  slideHrefsMobile={
-                    restaurantMobileLoadedFromDb
-                      ? restaurantMobileHrefs
-                      : restaurantMobileHrefs.length > 0
-                        ? language === "es"
-                          ? restaurantMobileHrefs.filter((_, i) =>
-                              /-1\./i.test(restaurantMobileImages[i] || ""),
-                            )
-                          : restaurantMobileHrefs.filter((_, i) =>
-                              /-2\./i.test(restaurantMobileImages[i] || ""),
-                            )
-                        : undefined
-                  }
+                  preferApiHrefs
                   // Ver imagen completa sin recortar y mantener el ancho del contenedor
                   autoplay={false}
                   showArrows

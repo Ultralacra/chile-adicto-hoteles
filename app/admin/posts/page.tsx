@@ -16,11 +16,26 @@ import {
   PaginationPrevious,
 } from "@/components/ui/pagination";
 import { Spinner } from "@/components/ui/spinner";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 import { useAdminApi } from "@/hooks/use-admin-api";
 import {
   getPostPublicationBadge,
   hasPostPublicationEnded,
 } from "@/lib/post-publication";
+import {
+  formatPostDeleteSummaryLines,
+  getPostDeleteSummary,
+  type PostDeleteSummary,
+} from "@/lib/post-delete-summary";
 
 export default function PostsListPage() {
   const router = useRouter();
@@ -51,6 +66,13 @@ export default function PostsListPage() {
   const [hotelsData, setHotelsData] = useState<any[]>([]);
   const [categoriesApi, setCategoriesApi] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [postToDelete, setPostToDelete] = useState<{
+    slug: string;
+    name: string;
+    summary: PostDeleteSummary;
+  } | null>(null);
+  const [deleting, setDeleting] = useState(false);
   const pageSize = 12;
 
   // Comunas dinámicas para restaurantes (derivadas de direcciones/locations y overrides)
@@ -278,6 +300,50 @@ export default function PostsListPage() {
   const start = (page - 1) * pageSize;
   const pageItems = filtered.slice(start, start + pageSize);
   const goTo = (p: number) => setPage(Math.min(totalPages, Math.max(1, p)));
+
+  useEffect(() => {
+    if (page > totalPages) setPage(totalPages);
+  }, [page, totalPages]);
+
+  const openDeleteDialog = (hotel: any) => {
+    setPostToDelete({
+      slug: String(hotel?.slug || ""),
+      name: hotel?.es?.name || hotel?.en?.name || hotel?.slug || "",
+      summary: getPostDeleteSummary(hotel),
+    });
+    setDeleteDialogOpen(true);
+  };
+
+  const closeDeleteDialog = () => {
+    if (deleting) return;
+    setDeleteDialogOpen(false);
+    setPostToDelete(null);
+  };
+
+  const confirmDeletePost = async () => {
+    if (!postToDelete?.slug) return;
+    setDeleting(true);
+    try {
+      const res = await fetchWithSite(
+        `/api/posts/${encodeURIComponent(postToDelete.slug)}`,
+        { method: "DELETE" },
+      );
+      if (!res.ok) {
+        const msg = await res.text();
+        throw new Error(msg || `Error ${res.status}`);
+      }
+      setHotelsData((prev) =>
+        prev.filter((h) => String(h.slug) !== postToDelete.slug),
+      );
+      setDeleteDialogOpen(false);
+      setPostToDelete(null);
+    } catch (e: any) {
+      console.error("[Admin Posts] delete failed", e);
+      alert("No se pudo eliminar: " + String(e?.message || e));
+    } finally {
+      setDeleting(false);
+    }
+  };
 
   return (
     <div className="space-y-7">
@@ -580,12 +646,12 @@ export default function PostsListPage() {
                     </Button>
                   </Link>
                   <Button
+                    type="button"
                     variant="outline"
                     size="sm"
                     className="text-red-600 hover:text-red-700 hover:bg-red-50 bg-transparent"
-                    onClick={() =>
-                      alert("Funcionalidad de eliminar próximamente")
-                    }
+                    aria-label={`Eliminar ${hotel.es?.name || hotel.slug}`}
+                    onClick={() => openDeleteDialog(hotel)}
                   >
                     <Trash2 size={16} />
                   </Button>
@@ -603,6 +669,67 @@ export default function PostsListPage() {
       )}
 
       {/* Paginación */}
+      <AlertDialog
+        open={deleteDialogOpen}
+        onOpenChange={(open) => {
+          if (!open) closeDeleteDialog();
+          else setDeleteDialogOpen(true);
+        }}
+      >
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>¿Eliminar este post?</AlertDialogTitle>
+            <AlertDialogDescription asChild>
+              <div className="space-y-3 text-sm text-muted-foreground">
+                <p>
+                  Vas a eliminar{" "}
+                  <span className="font-semibold text-foreground">
+                    {postToDelete?.name || postToDelete?.slug}
+                  </span>
+                  {postToDelete?.slug ? (
+                    <>
+                      {" "}
+                      (
+                      <span className="font-mono text-xs">
+                        /{postToDelete.slug}
+                      </span>
+                      )
+                    </>
+                  ) : null}
+                  .
+                </p>
+                {postToDelete?.summary ? (
+                  <ul className="list-disc space-y-1 pl-5 text-foreground/80">
+                    {formatPostDeleteSummaryLines(postToDelete.summary).map(
+                      (line) => (
+                        <li key={line}>{line}</li>
+                      ),
+                    )}
+                  </ul>
+                ) : null}
+                <p>
+                  Los archivos en almacenamiento se borran solo si no están en
+                  uso en otro post o slider. Esta acción no se puede deshacer.
+                </p>
+              </div>
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel disabled={deleting}>Cancelar</AlertDialogCancel>
+            <AlertDialogAction
+              className="bg-red-600 hover:bg-red-700"
+              disabled={deleting}
+              onClick={(e) => {
+                e.preventDefault();
+                void confirmDeletePost();
+              }}
+            >
+              {deleting ? "Eliminando…" : "Sí, eliminar"}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
       {!loading && filtered.length > pageSize && (
         <Pagination className="mt-4">
           <PaginationContent>

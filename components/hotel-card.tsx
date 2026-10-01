@@ -80,6 +80,7 @@ function HotelCardComponent({
           alt={name}
           fill
           sizes="(max-width: 767px) 100vw, (max-width: 1279px) 50vw, 33vw"
+          unoptimized
           priority={imagePriority}
           className={`object-cover transition-transform duration-300 group-hover:scale-105 ${
             isExpired ? "grayscale" : ""

@@ -350,6 +350,7 @@ export function HeroSlider({
         >
           {desktopHref ? (
             <Link href={desktopHref} className="block h-full w-full relative">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src={firstDesktop}
                 alt="Slide 1"
@@ -357,6 +358,7 @@ export function HeroSlider({
               />
             </Link>
           ) : (
+            // eslint-disable-next-line @next/next/no-img-element
             <img
               src={firstDesktop}
               alt="Slide 1"
@@ -529,12 +531,14 @@ export function HeroSlider({
                       }`}
                     >
                       {autoHeight ? (
+                        // eslint-disable-next-line @next/next/no-img-element
                         <img
                           src={image}
                           alt={`Slide ${index + 1}`}
                           className={imageClassName(desktopImageClassName)}
                         />
                       ) : (
+                        // eslint-disable-next-line @next/next/no-img-element
                         <img
                           src={image}
                           alt={`Slide ${index + 1}`}
@@ -545,12 +549,14 @@ export function HeroSlider({
                   ) : (
                     <>
                       {autoHeight ? (
+                        // eslint-disable-next-line @next/next/no-img-element
                         <img
                           src={image}
                           alt={`Slide ${index + 1}`}
                           className={imageClassName(desktopImageClassName)}
                         />
                       ) : (
+                        // eslint-disable-next-line @next/next/no-img-element
                         <img
                           src={image}
                           alt={`Slide ${index + 1}`}

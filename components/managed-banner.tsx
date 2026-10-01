@@ -83,7 +83,6 @@ export function ManagedBanner({
         if (mobileFromKey) {
           setMobile(mobileFromKey);
         } else if (mobileSrc) {
-          // Mantener la imagen móvil local; solo sincronizar href del back
           if (desktopItem?.href) {
             setMobile((prev) => ({ ...prev, href: desktopItem.href }));
           }
@@ -123,25 +122,31 @@ export function ManagedBanner({
   const images =
     mobileSrc || mobileKey ? (
       <>
+        {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           src={mobile.src}
           alt={alt}
           className={`${imageClassName} md:hidden`}
           loading="lazy"
+          decoding="async"
         />
+        {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           src={desktop.src}
           alt={alt}
           className={`${imageClassName} hidden md:block`}
           loading="lazy"
+          decoding="async"
         />
       </>
     ) : (
+      // eslint-disable-next-line @next/next/no-img-element
       <img
         src={desktop.src}
         alt={alt}
         className={imageClassName}
         loading="lazy"
+        decoding="async"
       />
     );
 

@@ -16,6 +16,8 @@ type ManagedBannerProps = {
   imageClassName?: string;
   hideFallbackWhileLoading?: boolean;
   openInNewTab?: boolean;
+  /** Priorizar carga (home above-the-fold). */
+  priority?: boolean;
 };
 
 type BannerItem = {
@@ -36,6 +38,7 @@ export function ManagedBanner({
   imageClassName = "block w-full h-auto",
   hideFallbackWhileLoading = false,
   openInNewTab = false,
+  priority = false,
 }: ManagedBannerProps) {
   const { fetchWithSite } = useSiteApi();
   const [desktop, setDesktop] = useState({ src, href });
@@ -119,6 +122,8 @@ export function ManagedBanner({
   if (isLoading || missing) return null;
 
   const resolvedHref = desktop.href || mobile.href;
+  const imgLoading = priority ? "eager" : "lazy";
+  const imgFetchPriority = priority ? "high" : undefined;
   const images =
     mobileSrc || mobileKey ? (
       <>
@@ -127,16 +132,18 @@ export function ManagedBanner({
           src={mobile.src}
           alt={alt}
           className={`${imageClassName} md:hidden`}
-          loading="lazy"
+          loading={imgLoading}
           decoding="async"
+          fetchPriority={imgFetchPriority}
         />
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           src={desktop.src}
           alt={alt}
           className={`${imageClassName} hidden md:block`}
-          loading="lazy"
+          loading={imgLoading}
           decoding="async"
+          fetchPriority={imgFetchPriority}
         />
       </>
     ) : (
@@ -145,8 +152,9 @@ export function ManagedBanner({
         src={desktop.src}
         alt={alt}
         className={imageClassName}
-        loading="lazy"
+        loading={imgLoading}
         decoding="async"
+        fetchPriority={imgFetchPriority}
       />
     );
 

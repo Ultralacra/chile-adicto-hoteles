@@ -23,7 +23,7 @@ export function RestaurantsStackBanners() {
           href="/restaurantes"
           src="/bannerHome/70 RESTAURANTES.webp"
           alt="Restaurantes"
-          hideFallbackWhileLoading
+          priority
           className="block w-full h-full flex items-center justify-center"
           imageClassName="max-w-full max-h-full w-auto h-auto object-contain"
         />
@@ -36,7 +36,7 @@ export function RestaurantsStackBanners() {
           openInNewTab
           src="/bannerHome/BANNER HOTELES.webp"
           alt="Chile Adicto Hoteles"
-          hideFallbackWhileLoading
+          priority
           className="block w-full h-full"
           imageClassName={stackImageClassName}
         />
@@ -54,7 +54,7 @@ export function PromoStackBanners() {
           href="/iconos"
           src="/iconos/BANNER RUTA TOYOTA.webp"
           alt="La Ruta Toyota"
-          hideFallbackWhileLoading
+          priority
           className="block w-full h-full"
           imageClassName={stackImageClassName}
         />
@@ -66,6 +66,7 @@ export function PromoStackBanners() {
           href="/cafes"
           src="/bannerHome/30 CAFES.webp"
           alt="Cafés"
+          priority
           className="block w-full h-full"
           imageClassName={stackImageClassName}
         />

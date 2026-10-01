@@ -14,12 +14,10 @@ export function getResizedBannerSrc(
   const clean = String(src || "").trim();
   if (!clean) return clean;
   if (clean.startsWith("/api/media/resize")) return clean;
-  if (clean.startsWith("data:")) return clean;
-  if (/\.svg(\?|#|$)/i.test(clean)) return clean;
 
   const params = new URLSearchParams({
     url: clean,
-    w: String(Math.max(80, Math.min(1920, Math.trunc(width) || 960))),
+    w: String(Math.max(120, Math.min(1600, Math.trunc(width) || 960))),
     q: String(Math.max(40, Math.min(90, Math.trunc(quality) || 72))),
   });
   return `/api/media/resize?${params.toString()}`;

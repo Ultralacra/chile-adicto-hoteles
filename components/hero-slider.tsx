@@ -121,11 +121,11 @@ export function HeroSlider({
           : mobileImagesDefault;
 
   const desktopTr = useMemo(
-    () => desktop.map((url) => getStorageImageUrl(url, 1400)),
+    () => desktop.map((url) => getStorageImageUrl(url, 1920)),
     [desktop],
   );
   const mobileTr = useMemo(
-    () => mobile.map((url) => getStorageImageUrl(url, 800)),
+    () => mobile.map((url) => getStorageImageUrl(url, 900)),
     [mobile],
   );
 

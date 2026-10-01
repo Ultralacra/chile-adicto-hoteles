@@ -822,7 +822,7 @@ export function HotelDetail({
                       className="relative min-w-full h-full flex-shrink-0 bg-black"
                     >
                       <Image
-                        src={getStorageImageUrl(src, 1600)}
+                        src={getStorageImageUrl(src, 2400)}
                         alt={`${hotel.name} ${idx + 1}`}
                         fill
                         priority={idx === 0}
@@ -883,7 +883,7 @@ export function HotelDetail({
                       className="relative min-w-full h-full flex-shrink-0"
                     >
                       <Image
-                        src={getStorageImageUrl(src, 1600)}
+                        src={getStorageImageUrl(src, 2400)}
                         alt={`Imagen ${idx + 1}`}
                         fill
                         draggable={false}

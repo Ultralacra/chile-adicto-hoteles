@@ -1,8 +1,7 @@
-import { getResizedBannerSrc } from "@/lib/banner-image";
-
 /**
- * Normaliza URLs de imagen y, si se pide un ancho, las pasa por
- * /api/media/resize (sharp propio). No usa el Image Optimization de Next.
+ * Normaliza URLs de imagen.
+ * El resize real lo hace next/image (ver next.config images.unoptimized).
+ * El parámetro width se conserva por compatibilidad con callers existentes.
  */
 export function getStorageImageUrl(
   url: string | null | undefined,
@@ -11,11 +10,6 @@ export function getStorageImageUrl(
   if (!url) return "/placeholder.svg";
   const trimmed = String(url).trim();
   if (!trimmed) return "/placeholder.svg";
-  if (trimmed.startsWith("data:")) return trimmed;
-  if (/\.svg(\?|#|$)/i.test(trimmed)) return trimmed;
-  if (!width || !Number.isFinite(width) || width <= 0) return trimmed;
-  return getResizedBannerSrc(trimmed, {
-    width: Math.trunc(width),
-    quality: 70,
-  });
+  void width;
+  return trimmed;
 }

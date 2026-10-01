@@ -7,7 +7,6 @@ import { MobileMenu } from "./mobile-menu";
 import { LanguageSwitcher } from "./language-switcher";
 import { RealTimeSearch } from "./real-time-search";
 import { useLanguage } from "@/contexts/language-context";
-import { getResizedBannerSrc } from "@/lib/banner-image";
 
 export function Header() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -99,16 +98,12 @@ export function Header() {
               </div>
               <Link href="/agenda-cultural" aria-label="Ir a Agenda Cultural">
                 <Image
-                  src={getResizedBannerSrc(
-                    "/bannersagenda/BANER AGENDA HEADER.webp",
-                    { width: 1300, quality: 72 },
-                  )}
+                  src="/bannersagenda/BANER AGENDA HEADER.webp"
                   alt="Agenda Cultural"
-                  width={652}
+                  width={460}
                   height={120}
                   className="h-[120px] w-auto"
                   priority
-                  unoptimized
                 />
               </Link>
             </div>

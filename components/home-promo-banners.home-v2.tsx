@@ -26,11 +26,6 @@ export function RestaurantsStackBanners() {
           priority
           className="block w-full h-full flex items-center justify-center"
           imageClassName="max-w-full max-h-full w-auto h-auto object-contain"
-          optimizeWidth={720}
-          optimizeQuality={70}
-          sizes="(max-width: 768px) 100vw, 320px"
-          width={720}
-          height={570}
         />
       </div>
 
@@ -44,11 +39,6 @@ export function RestaurantsStackBanners() {
           priority
           className="block w-full h-full"
           imageClassName={stackImageClassName}
-          optimizeWidth={720}
-          optimizeQuality={70}
-          sizes="(max-width: 768px) 100vw, 320px"
-          width={720}
-          height={570}
         />
       </div>
     </div>
@@ -84,11 +74,6 @@ export function PromoStackBanners() {
           priority
           className="block w-full h-full"
           imageClassName={stackImageClassName}
-          optimizeWidth={960}
-          optimizeQuality={70}
-          sizes="(max-width: 768px) 100vw, 435px"
-          width={960}
-          height={422}
         />
       </StackSlot>
     </div>
@@ -123,9 +108,6 @@ export function BottomHomeBanner({
         alt={alt}
         className="contents"
         imageClassName="w-full h-auto"
-        optimizeWidth={1400}
-        optimizeQuality={72}
-        sizes="100vw"
       />
     </>
   );

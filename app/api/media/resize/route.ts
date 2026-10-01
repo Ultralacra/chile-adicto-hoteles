@@ -7,6 +7,7 @@ export const revalidate = 0;
 
 const ALLOWED_HOSTS = new Set([
   "xtctddbjwmmeirjltatm.supabase.co",
+  "azure-seal-918691.hostingersite.com",
   "localhost",
   "127.0.0.1",
 ]);
@@ -29,6 +30,8 @@ function isAllowedUrl(raw: string, req: Request): boolean {
     const supabaseHost = envHost();
     if (supabaseHost) ALLOWED_HOSTS.add(supabaseHost);
     if (ALLOWED_HOSTS.has(url.hostname)) return true;
+    // Hostinger / WP legacy
+    if (url.hostname.endsWith(".hostingersite.com")) return true;
     // Same host as this app
     const reqHost = new URL(req.url).hostname;
     return url.hostname === reqHost;
@@ -60,8 +63,8 @@ export async function GET(req: Request) {
     }
 
     const width = Math.max(
-      120,
-      Math.min(1600, Number.isFinite(widthParam) ? Math.trunc(widthParam) : 960),
+      80,
+      Math.min(1920, Number.isFinite(widthParam) ? Math.trunc(widthParam) : 960),
     );
     const quality = Math.max(
       40,

@@ -196,18 +196,26 @@ export default function AdminAgendaCulturalPage() {
 
   const filteredFeatured = useMemo(() => {
     const q = featuredSearch.trim();
-    if (!q) return featured;
-    return featured.filter((slot) => {
-      const post = posts.find((item) => item.slug === slot.post_slug);
-      const title = post?.es?.name || post?.en?.name || "";
-      const slug = String(slot.post_slug || "");
-      const range = `${slot.start_date || ""} ${slot.end_date || ""}`;
-      return (
-        textMatchesQuery(title, q) ||
-        textMatchesQuery(slug, q) ||
-        textMatchesQuery(range, q)
+    const list = !q
+      ? featured
+      : featured.filter((slot) => {
+          const post = posts.find((item) => item.slug === slot.post_slug);
+          const title = post?.es?.name || post?.en?.name || "";
+          const slug = String(slot.post_slug || "");
+          const range = `${slot.start_date || ""} ${slot.end_date || ""}`;
+          return (
+            textMatchesQuery(title, q) ||
+            textMatchesQuery(slug, q) ||
+            textMatchesQuery(range, q)
+          );
+        });
+    return list
+      .slice()
+      .sort(
+        (left, right) =>
+          Number(left.sort_order || 0) - Number(right.sort_order || 0) ||
+          Number(left.id || 0) - Number(right.id || 0),
       );
-    });
   }, [featured, featuredSearch, posts]);
 
   const postPickerTotalPages = Math.max(
@@ -1248,10 +1256,11 @@ export default function AdminAgendaCulturalPage() {
               </select>
             </div>
             <div className="space-y-2">
-              <Label>Prioridad</Label>
+              <Label>Orden (1 = primero arriba)</Label>
               <Input
                 type="number"
-                value={featuredForm.sort_order || 0}
+                min={0}
+                value={featuredForm.sort_order ?? 0}
                 onChange={(event) =>
                   setFeaturedForm({
                     ...featuredForm,
@@ -1259,6 +1268,9 @@ export default function AdminAgendaCulturalPage() {
                   })
                 }
               />
+              <p className="text-xs text-[#61625d]">
+                Menor número aparece más arriba en la agenda pública.
+              </p>
             </div>
             {imageField(
               "Banner desktop ES",
@@ -1343,7 +1355,9 @@ export default function AdminAgendaCulturalPage() {
               >
                 <div className="flex items-center gap-3">
                   <div className="grid size-9 place-items-center bg-[#fff1f3] text-[var(--color-brand-red)]">
-                    <Sparkles className="size-4" />
+                    <span className="text-xs font-bold">
+                      #{Number(slot.sort_order || 0)}
+                    </span>
                   </div>
                   <div>
                     <strong className="text-sm">
@@ -1351,6 +1365,7 @@ export default function AdminAgendaCulturalPage() {
                         ?.name || slot.post_slug}
                     </strong>
                     <p className="mt-0.5 text-sm text-[#61625d]">
+                      Orden {Number(slot.sort_order || 0)} ·{" "}
                       {slot.start_date || "Sin inicio"} a{" "}
                       {slot.end_date || "Sin término"}
                     </p>

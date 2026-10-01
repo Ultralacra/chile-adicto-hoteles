@@ -1188,6 +1188,7 @@ export default function CategoryPage({ params }: { params: any }) {
       destacados: featuredPosts.map(({ featured, post }) => ({
         id: featured.id,
         postSlug: post?.slug,
+        sortOrder: featured.sortOrder,
         bannerDesktop: featured.desktopImageUrl,
         bannerMobile: featured.mobileImageUrl,
         fechaInicio: featured.startDate,

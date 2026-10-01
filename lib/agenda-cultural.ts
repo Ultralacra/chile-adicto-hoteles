@@ -23,6 +23,7 @@ export type AgendaFeaturedSlot = {
   mobileImageUrl: string | null;
   alt: string;
   href: string;
+  sortOrder: number;
 };
 
 function stringOrNull(value: unknown): string | null {
@@ -125,5 +126,6 @@ export function mapAgendaFeaturedSlot(
       stringOrNull(row?.alt_es) ||
       "Evento destacado",
     href,
+    sortOrder: Number(row?.sort_order || 0),
   };
 }

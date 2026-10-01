@@ -205,9 +205,11 @@ export async function GET(req: Request) {
       )
       .sort(
         (left: any, right: any) =>
+          Number(left.sort_order || 0) - Number(right.sort_order || 0) ||
           String(left.start_date || "9999-12-31").localeCompare(
             String(right.start_date || "9999-12-31"),
-          ) || Number(left.sort_order || 0) - Number(right.sort_order || 0),
+          ) ||
+          Number(left.id || 0) - Number(right.id || 0),
       )
       .map((slot: any) => mapAgendaFeaturedSlot(slot, language));
 

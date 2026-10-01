@@ -8,6 +8,7 @@ export type BannerSlotDefinition = {
 
 export const BANNER_SLOT_DEFINITIONS: BannerSlotDefinition[] = [
   { key: "home-desktop", label: "Home - carrusel desktop", location: "Home", device: "desktop" },
+  { key: "home-desktop-webp", label: "Home - carrusel desktop WebP", location: "Home", device: "desktop" },
   { key: "home-mobile", label: "Home - carrusel móvil", location: "Home", device: "mobile" },
   { key: "home-promo-toyota", label: "Home - promoción Toyota", location: "Home", device: "responsive" },
   { key: "home-promo-cafes", label: "Home - promoción cafés", location: "Home", device: "responsive" },

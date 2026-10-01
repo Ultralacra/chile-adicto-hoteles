@@ -167,18 +167,7 @@ function HomeContent() {
             <div className="w-full">
               <div className="w-full md:h-[520px] lg:h-[437px] overflow-visible">
                 <HeroSlider
-                  desktopImages={[
-                    "/sliderHome/ICONOS.png",
-                    "/sliderHome/ARQ.png",
-                    "/sliderHome/BARRIOS.png",
-                    "/sliderHome/MERCADOS.png",
-                    "/sliderHome/MIRADORES.png",
-                    "/sliderHome/CULTURA.png",
-                    "/sliderHome/PALACIOS.png",
-                    "/sliderHome/PARQUES.png",
-                    "/sliderHome/FUERA DE STGO.png",
-                    "/sliderHome/PATRIMONIO.png",
-                  ]}
+                  sliderKeyDesktop="home-desktop-webp"
                   sliderKeyMobile="home-mobile"
                   objectPosition="left"
                   slideHrefs={[
@@ -204,6 +193,7 @@ function HomeContent() {
                     "/paseos-fuera-de-santiago",
                     "/arquitectura",
                   ]}
+                  preferApiHrefs
                   dotBottom={24}
                 />
               </div>

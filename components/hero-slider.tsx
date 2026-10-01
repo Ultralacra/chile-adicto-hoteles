@@ -87,19 +87,38 @@ export function HeroSlider({
   );
   const [desktopLoadedFromDb, setDesktopLoadedFromDb] = useState(false);
   const [mobileLoadedFromDb, setMobileLoadedFromDb] = useState(false);
+  const [desktopFetchDone, setDesktopFetchDone] = useState(
+    desktopImages !== undefined || !sliderKeyDesktop,
+  );
+  const [mobileFetchDone, setMobileFetchDone] = useState(
+    mobileImages !== undefined || !sliderKeyMobile,
+  );
 
   // Elegir fuentes en orden de prioridad: props -> API -> defaults
+  // Si hay key de API, no mostramos defaults mientras carga (evita flash).
+  const awaitingDesktopApi =
+    Boolean(sliderKeyDesktop) &&
+    desktopImages === undefined &&
+    !desktopFetchDone;
+  const awaitingMobileApi =
+    Boolean(sliderKeyMobile) && mobileImages === undefined && !mobileFetchDone;
+
   const desktop =
     desktopImages !== undefined
       ? desktopImages
-      : ((desktopFromApi && desktopFromApi.length
-          ? desktopFromApi
-          : undefined) ?? desktopImagesDefault);
+      : desktopFromApi && desktopFromApi.length
+        ? desktopFromApi
+        : awaitingDesktopApi
+          ? []
+          : desktopImagesDefault;
   const mobile =
     mobileImages !== undefined
       ? mobileImages
-      : ((mobileFromApi && mobileFromApi.length ? mobileFromApi : undefined) ??
-        mobileImagesDefault);
+      : mobileFromApi && mobileFromApi.length
+        ? mobileFromApi
+        : awaitingMobileApi
+          ? []
+          : mobileImagesDefault;
 
   const desktopTr = useMemo(
     () => desktop.map((url) => getStorageImageUrl(url, 1920)),
@@ -146,6 +165,12 @@ export function HeroSlider({
         // Reset del origen en cada carga (para no dejar flags antiguos)
         setDesktopLoadedFromDb(false);
         setMobileLoadedFromDb(false);
+        if (desktopImages === undefined && sliderKeyDesktop) {
+          setDesktopFetchDone(false);
+        }
+        if (mobileImages === undefined && sliderKeyMobile) {
+          setMobileFetchDone(false);
+        }
 
         // Si ya nos pasaron props, no hacemos fetch innecesario
         const needDesktop = desktopImages === undefined;
@@ -187,6 +212,7 @@ export function HeroSlider({
               setDesktopLoadedFromDb(true);
               used = true;
             }
+            setDesktopFetchDone(true);
           }
           if (needMobile && sliderKeyMobile) {
             const { images, hrefs } = await loadSet(sliderKeyMobile);
@@ -197,6 +223,7 @@ export function HeroSlider({
               setMobileLoadedFromDb(true);
               used = true;
             }
+            setMobileFetchDone(true);
           }
           return used;
         };
@@ -209,7 +236,11 @@ export function HeroSlider({
           desktop: string[];
           mobile: string[];
         } | null;
-        if (!json) return;
+        if (!json) {
+          if (needDesktop && sliderKeyDesktop) setDesktopFetchDone(true);
+          if (needMobile && sliderKeyMobile) setMobileFetchDone(true);
+          return;
+        }
         if (cancelled) return;
         if (needDesktop && Array.isArray(json.desktop)) {
           setDesktopFromApi(json.desktop);
@@ -217,8 +248,16 @@ export function HeroSlider({
         if (needMobile && Array.isArray(json.mobile)) {
           setMobileFromApi(json.mobile);
         }
+        if (needDesktop && sliderKeyDesktop) setDesktopFetchDone(true);
+        if (needMobile && sliderKeyMobile) setMobileFetchDone(true);
       } catch (e) {
         // Silencioso: mantenemos defaults
+        if (desktopImages === undefined && sliderKeyDesktop) {
+          setDesktopFetchDone(true);
+        }
+        if (mobileImages === undefined && sliderKeyMobile) {
+          setMobileFetchDone(true);
+        }
       }
     }
     loadFromApi();
@@ -285,6 +324,9 @@ export function HeroSlider({
   const activeSlides = (isMobile ?? false) ? mobile : desktop;
   const shouldUseMobileStatic = Boolean(isMobile && mobileStaticFirst);
   const canShowArrows = showArrows && activeSlides.length > 1;
+  const awaitingActiveApi = (isMobile ?? false)
+    ? awaitingMobileApi
+    : awaitingDesktopApi;
 
   const imageClassName = (extraClass?: string) => {
     const baseClass = autoHeight
@@ -304,6 +346,18 @@ export function HeroSlider({
         }`;
     return `${baseClass} ${extraClass || ""}`.trim();
   };
+
+  // Mientras llega el API, reservamos espacio sin mostrar defaults viejos
+  if (awaitingActiveApi || activeSlides.length === 0) {
+    const h = (isMobile ?? false) ? mobileHeight : desktopHeight;
+    return (
+      <div
+        className="relative w-full overflow-hidden bg-black"
+        style={autoHeight ? { minHeight: 120 } : { height: `${h}px` }}
+        aria-hidden
+      />
+    );
+  }
 
   if (isMobile === null && !autoHeight) {
     const firstDesktop = desktopTr[0];

@@ -717,7 +717,7 @@ export function HotelDetail({
                               ? agendaBanner!.src
                               : isParquesPost
                                 ? "/sliderHome/PARQUES.png"
-                                : "/bannersagenda/BANER AGENDA HEADER.png"
+                                : "/bannersagenda/BANER AGENDA HEADER.webp"
               }
               mobileSrc={
                 isTopRestaurantsPost

@@ -15,7 +15,7 @@ export function AgendaCulturalBanner() {
         className="block"
       >
         <Image
-          src="/bannersagenda/BANER%20AGENDA%20HEADER.png"
+          src="/bannersagenda/BANER%20AGENDA%20HEADER.webp"
           alt="Agenda Cultural"
           width={708}
           height={136}

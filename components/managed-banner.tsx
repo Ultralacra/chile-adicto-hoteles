@@ -9,6 +9,7 @@ type ManagedBannerProps = {
   desktopKey?: string;
   mobileKey?: string;
   itemIndex?: number;
+  mobileItemIndex?: number;
   href?: string;
   src: string;
   mobileSrc?: string;
@@ -38,6 +39,7 @@ export function ManagedBanner({
   desktopKey,
   mobileKey,
   itemIndex = 0,
+  mobileItemIndex = itemIndex,
   href = "#",
   src,
   mobileSrc,
@@ -107,7 +109,7 @@ export function ManagedBanner({
 
         const desktopItem = desktopValue?.[itemIndex] || null;
         const mobileFromKey = mobileKey
-          ? mobileValue?.[itemIndex] || null
+          ? mobileValue?.[mobileItemIndex] || null
           : null;
 
         if (desktopItem) {
@@ -141,6 +143,7 @@ export function ManagedBanner({
     mobileSrc,
     src,
     itemIndex,
+    mobileItemIndex,
     hasApiKey,
   ]);
 

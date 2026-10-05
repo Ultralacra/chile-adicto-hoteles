@@ -50,6 +50,7 @@ type BottomHomeBannerProps = {
   alt?: string;
   desktopKey?: string;
   mobileKey?: string;
+  mobileItemIndex?: number;
   hideFallbackWhileLoading?: boolean;
 };
 
@@ -60,12 +61,14 @@ export function BottomHomeBanner({
   alt = "Monumentos Nacionales",
   desktopKey = "home-promo-monumentos",
   mobileKey,
+  mobileItemIndex,
   hideFallbackWhileLoading = false,
 }: BottomHomeBannerProps) {
   return (
     <ManagedBanner
       desktopKey={desktopKey}
       mobileKey={mobileKey}
+      mobileItemIndex={mobileItemIndex}
       href={href}
       src={encodeURI(src)}
       mobileSrc={encodeURI(mobileSrc)}

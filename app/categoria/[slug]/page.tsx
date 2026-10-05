@@ -1513,7 +1513,9 @@ export default function CategoryPage({ params }: { params: any }) {
                   <div className="grid grid-rows-2 gap-5 md:col-span-2">
                     <div className="flex h-full items-center justify-center overflow-hidden bg-black">
                       <ManagedBanner
-                        desktopKey=""
+                        desktopKey="restaurants-main"
+                        mobileKey="restaurants-main"
+                        mobileItemIndex={1}
                         href="/categoria/restaurantes?tipo=restaurantes"
                         src="https://xtctddbjwmmeirjltatm.supabase.co/storage/v1/object/public/public/banners/santiagoadicto/bannerRestaurantes/BANER%20DESKTOP%2050%20RESTORANES.webp"
                         mobileSrc="https://xtctddbjwmmeirjltatm.supabase.co/storage/v1/object/public/public/banners/santiagoadicto/bannerRestaurantes/BANER%20MOVIL%2050%20RESTORANES.webp"
@@ -1523,7 +1525,9 @@ export default function CategoryPage({ params }: { params: any }) {
                     </div>
                     <div className="flex h-full items-center justify-center overflow-hidden bg-black">
                       <ManagedBanner
-                        desktopKey=""
+                        desktopKey="bars-main"
+                        mobileKey="bars-main"
+                        mobileItemIndex={1}
                         href="/categoria/bares"
                         src="https://xtctddbjwmmeirjltatm.supabase.co/storage/v1/object/public/public/banners/santiagoadicto/bannerRestaurantes/BANER%20DESKTOP%2050%20BARES.webp"
                         mobileSrc="https://xtctddbjwmmeirjltatm.supabase.co/storage/v1/object/public/public/banners/santiagoadicto/bannerRestaurantes/BANER%20MOVIL%2050%20BARES.webp"
@@ -1535,8 +1539,11 @@ export default function CategoryPage({ params }: { params: any }) {
                   <div className="flex aspect-square w-full cursor-pointer items-center justify-center overflow-hidden bg-black md:h-full">
                     <ManagedBanner
                       desktopKey="top-restaurants"
+                      mobileKey="top-restaurants"
+                      mobileItemIndex={1}
                       href="/categoria/toprestoranes"
-                      src="/bannerRestaurantes/LAtin%20amerdicans.webp"
+                      src="https://xtctddbjwmmeirjltatm.supabase.co/storage/v1/object/public/public/banners/santiagoadicto/bannerRestaurantes/BANER%20DESKTOP%2050%20BEST.webp"
+                      mobileSrc="https://xtctddbjwmmeirjltatm.supabase.co/storage/v1/object/public/public/banners/santiagoadicto/bannerRestaurantes/BANNER%20MOVIL%2050%20BEST.webp"
                       alt="Top Restaurantes"
                       imageClassName="block h-full w-full object-cover object-center"
                     />
@@ -1548,8 +1555,10 @@ export default function CategoryPage({ params }: { params: any }) {
                   <BottomHomeBanner
                     href="/categoria/restaurantes?tipo=restaurantes"
                     desktopKey="restaurants-interior"
-                    src="/bannerRestaurantes/BANER DESKTOP interior 67 RESTORANES.webp"
-                    mobileSrc="/bannerRestaurantes/BANER MOVIL interior 67 RESTORANES.webp"
+                    mobileKey="restaurants-interior"
+                    mobileItemIndex={1}
+                    src="https://xtctddbjwmmeirjltatm.supabase.co/storage/v1/object/public/public/banners/santiagoadicto/bannerRestaurantes/BANER%20DESKTOP%20interior%2067%20RESTORANES.webp"
+                    mobileSrc="/baners%20restos/67%20RESTORANES%20MOVIL.webp"
                     alt="50 restaurantes de Santiago"
                   />
                 </div>
@@ -1559,8 +1568,10 @@ export default function CategoryPage({ params }: { params: any }) {
                   <BottomHomeBanner
                     href="/categoria/bares"
                     desktopKey="bars-interior"
-                    src="/bannerRestaurantes/BANER DESKTOP interior 23 BARES.webp"
-                    mobileSrc="/bannerRestaurantes/BANER MOVIL interior 23 BARES.webp"
+                    mobileKey="bars-interior"
+                    mobileItemIndex={1}
+                    src="https://xtctddbjwmmeirjltatm.supabase.co/storage/v1/object/public/public/banners/santiagoadicto/bannerRestaurantes/BANER%20DESKTOP%20interior%2023%20BARES.webp"
+                    mobileSrc="/baners%20restos/23%20BARES%20MOVIL.webp"
                     alt="50 bares de Santiago"
                   />
                 </div>

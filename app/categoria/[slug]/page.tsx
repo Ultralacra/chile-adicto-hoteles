@@ -1515,8 +1515,8 @@ export default function CategoryPage({ params }: { params: any }) {
                       <ManagedBanner
                         desktopKey=""
                         href="/categoria/restaurantes?tipo=restaurantes"
-                        src="/bannerRestaurantes/BANER%20DESKTOP%2050%20RESTORANES.webp"
-                        mobileSrc="/bannerRestaurantes/BANER%20MOVIL%2050%20RESTORANES.webp"
+                        src="https://xtctddbjwmmeirjltatm.supabase.co/storage/v1/object/public/public/banners/santiagoadicto/bannerRestaurantes/BANER%20DESKTOP%2050%20RESTORANES.webp"
+                        mobileSrc="https://xtctddbjwmmeirjltatm.supabase.co/storage/v1/object/public/public/banners/santiagoadicto/bannerRestaurantes/BANER%20MOVIL%2050%20RESTORANES.webp"
                         alt="50 restaurantes de Santiago"
                         imageClassName="block h-auto w-full object-contain object-center md:h-full"
                       />
@@ -1525,8 +1525,8 @@ export default function CategoryPage({ params }: { params: any }) {
                       <ManagedBanner
                         desktopKey=""
                         href="/categoria/bares"
-                        src="/bannerRestaurantes/BANER%20DESKTOP%2050%20BARES.webp"
-                        mobileSrc="/bannerRestaurantes/BANER%20MOVIL%2050%20BARES.webp"
+                        src="https://xtctddbjwmmeirjltatm.supabase.co/storage/v1/object/public/public/banners/santiagoadicto/bannerRestaurantes/BANER%20DESKTOP%2050%20BARES.webp"
+                        mobileSrc="https://xtctddbjwmmeirjltatm.supabase.co/storage/v1/object/public/public/banners/santiagoadicto/bannerRestaurantes/BANER%20MOVIL%2050%20BARES.webp"
                         alt="50 bares de Santiago"
                         imageClassName="block h-auto w-full object-contain object-center md:h-full"
                       />

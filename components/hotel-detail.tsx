@@ -700,6 +700,10 @@ export function HotelDetail({
                                 ? ""
                                 : undefined
               }
+              mobileKey={
+                isTopRestaurantsPost ? "post-top-restaurants" : undefined
+              }
+              mobileItemIndex={isTopRestaurantsPost ? 1 : undefined}
               src={
                 isTopRestaurantsPost
                   ? "/bannerRestaurantes/BANER DESKTOP 50 BEST.webp"
@@ -720,9 +724,7 @@ export function HotelDetail({
                                 : "/bannersagenda/BANER AGENDA HEADER.webp"
               }
               mobileSrc={
-                isTopRestaurantsPost
-                  ? "/bannerRestaurantes/BANNER MOVIL 50 BEST.webp"
-                  : isCafesPost
+                isCafesPost
                     ? "/bannerHome/30 CAFES.webp"
                     : isIconosFinal
                       ? "/bannerstoyota/BANNER LA RUTA TOYOTA ICONOS.png"
@@ -779,8 +781,9 @@ export function HotelDetail({
               <BottomHomeBanner
                 href="/categoria/restaurantes?tipo=restaurantes"
                 desktopKey="post-restaurants"
+                mobileKey="post-restaurants"
+                mobileItemIndex={1}
                 src="/bannerRestaurantes/BANER DESKTOP interior 67 RESTORANES.webp"
-                mobileSrc="/bannerRestaurantes/BANER MOVIL interior 67 RESTORANES.webp"
                 alt="50 restaurantes de Santiago"
               />
             </div>

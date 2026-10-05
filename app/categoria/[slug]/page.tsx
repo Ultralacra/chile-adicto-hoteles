@@ -1513,22 +1513,22 @@ export default function CategoryPage({ params }: { params: any }) {
                   <div className="grid grid-rows-2 gap-5 md:col-span-2">
                     <div className="flex h-full items-center justify-center overflow-hidden bg-black">
                       <ManagedBanner
-                        desktopKey="restaurants-main"
+                        desktopKey=""
                         href="/categoria/restaurantes?tipo=restaurantes"
                         src="/bannerRestaurantes/BANER%20DESKTOP%2050%20RESTORANES.webp"
                         mobileSrc="/bannerRestaurantes/BANER%20MOVIL%2050%20RESTORANES.webp"
                         alt="50 restaurantes de Santiago"
-                        imageClassName="block h-full w-full object-contain object-center"
+                        imageClassName="block h-auto w-full object-contain object-center md:h-full"
                       />
                     </div>
                     <div className="flex h-full items-center justify-center overflow-hidden bg-black">
                       <ManagedBanner
-                        desktopKey="bars-main"
+                        desktopKey=""
                         href="/categoria/bares"
                         src="/bannerRestaurantes/BANER%20DESKTOP%2050%20BARES.webp"
                         mobileSrc="/bannerRestaurantes/BANER%20MOVIL%2050%20BARES.webp"
                         alt="50 bares de Santiago"
-                        imageClassName="block h-full w-full object-contain object-center"
+                        imageClassName="block h-auto w-full object-contain object-center md:h-full"
                       />
                     </div>
                   </div>

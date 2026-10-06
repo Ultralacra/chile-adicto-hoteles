@@ -54,6 +54,20 @@ type BottomHomeBannerProps = {
   hideFallbackWhileLoading?: boolean;
 };
 
+function encodeUrl(url: string): string {
+  // Only encode raw special chars (esp. spaces) without re-encoding existing %XX sequences
+  const parts = url.split(/(%[0-9A-Fa-f]{2})/g);
+  return parts
+    .map((part, i) =>
+      i % 2 === 1
+        ? part
+        : part.replace(/[^A-Za-z0-9\-._~:/?#@!$&'()*+,;=]/g, (c) =>
+            "%" + c.charCodeAt(0).toString(16).toUpperCase().padStart(2, "0"),
+          ),
+    )
+    .join("");
+}
+
 export function BottomHomeBanner({
   href = "/monumentos-nacionales",
   src = "/bannerHome/BANNER MONUMENTOS.svg",
@@ -70,8 +84,8 @@ export function BottomHomeBanner({
       mobileKey={mobileKey}
       mobileItemIndex={mobileItemIndex}
       href={href}
-      src={encodeURI(src)}
-      mobileSrc={encodeURI(mobileSrc)}
+      src={encodeUrl(src)}
+      mobileSrc={encodeUrl(mobileSrc)}
       alt={alt}
       hideFallbackWhileLoading={hideFallbackWhileLoading}
     />

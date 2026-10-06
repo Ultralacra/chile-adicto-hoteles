@@ -1310,8 +1310,10 @@ export default function CategoryPage({ params }: { params: any }) {
               <BottomHomeBanner
                 href="/categoria/toprestoranes"
                 desktopKey="category-top-restaurantes"
-                src="/bannerRestaurantes/BANER DESKTOP 50 BEST.webp"
-                mobileSrc="/bannerRestaurantes/BANNER MOVIL 50 BEST.webp"
+                mobileKey="category-top-restaurantes"
+                mobileItemIndex={1}
+                src="https://xtctddbjwmmeirjltatm.supabase.co/storage/v1/object/public/public/banners/santiagoadicto/bannerRestaurantes/BANER DESKTOP 50 BEST.webp"
+                mobileSrc="https://xtctddbjwmmeirjltatm.supabase.co/storage/v1/object/public/public/banners/santiagoadicto/bannerRestaurantes/BANNER MOVIL 50 BEST.webp"
                 alt="Top Restaurantes"
               />
             </div>

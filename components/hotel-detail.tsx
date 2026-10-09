@@ -701,9 +701,15 @@ export function HotelDetail({
                                 : undefined
               }
               mobileKey={
-                isTopRestaurantsPost ? "post-top-restaurants" : undefined
+                isTopRestaurantsPost
+                  ? "post-top-restaurants"
+                  : isCafesPost
+                    ? "post-cafes"
+                    : undefined
               }
-              mobileItemIndex={isTopRestaurantsPost ? 1 : undefined}
+              mobileItemIndex={
+                isTopRestaurantsPost || isCafesPost ? 1 : undefined
+              }
               src={
                 isTopRestaurantsPost
                   ? "/bannerRestaurantes/BANER DESKTOP 50 BEST.webp"
@@ -724,21 +730,19 @@ export function HotelDetail({
                                 : "/bannersagenda/BANER AGENDA HEADER.webp"
               }
               mobileSrc={
-                isCafesPost
-                    ? "/bannerHome/30 CAFES.webp"
-                    : isIconosFinal
-                      ? "/bannerstoyota/BANNER LA RUTA TOYOTA ICONOS.png"
-                      : isToyotaPost || isParquesPost
-                        ? "/bannerstoyota/BANNER LA RUTA TOYOTA.webp"
-                        : isCulturaPost
-                          ? "/bannercultura/BANNER LA RUTA DE LA CULTURA.webp"
-                          : isMonumentosPost
-                            ? "/bannerHome/monumentos movil.png"
-                            : isAgendaPost
-                              ? agendaBanner?.mobileSrc
-                              : isParquesPost
-                                ? "/sliderHome/PARQUES.png"
-                                : undefined
+                isIconosFinal
+                  ? "/bannerstoyota/BANNER LA RUTA TOYOTA ICONOS.png"
+                  : isToyotaPost || isParquesPost
+                    ? "/bannerstoyota/BANNER LA RUTA TOYOTA.webp"
+                    : isCulturaPost
+                      ? "/bannercultura/BANNER LA RUTA DE LA CULTURA.webp"
+                      : isMonumentosPost
+                        ? "/bannerHome/monumentos movil.png"
+                        : isAgendaPost
+                          ? agendaBanner?.mobileSrc
+                          : isParquesPost
+                            ? "/sliderHome/PARQUES.png"
+                            : undefined
               }
               hideFallbackWhileLoading={isParquesPost || isCulturaPost}
               alt={

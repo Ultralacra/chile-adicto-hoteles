@@ -1348,6 +1348,8 @@ export default function CategoryPage({ params }: { params: any }) {
                             ? "category-cultura"
                             : "category-toyota"
                 }
+                mobileKey={slug === "cafes" ? "category-cafes" : undefined}
+                mobileItemIndex={slug === "cafes" ? 1 : undefined}
                 src={
                   slug === "cafes"
                     ? "/bannerHome/BANNER DESKTOP 50 CAFES.webp"
@@ -1362,17 +1364,15 @@ export default function CategoryPage({ params }: { params: any }) {
                             : "/bannerstoyota/BANNER LA RUTA TOYOTA.webp"
                 }
                 mobileSrc={
-                  slug === "cafes"
-                    ? "/bannerHome/30 CAFES.webp"
-                    : slug === "monumentos-nacionales"
-                      ? undefined
-                      : slug === "iconos"
-                        ? "/bannerstoyota/BANNER LA RUTA TOYOTA ICONOS.png"
-                        : slug === "parques"
-                          ? "/sliderHome/PARQUES.png"
-                          : slug === "museos"
-                            ? "/bannercultura/BANNER LA RUTA DE LA CULTURA.webp"
-                            : "/bannerstoyota/BANNER LA RUTA TOYOTA.webp"
+                  slug === "monumentos-nacionales"
+                    ? undefined
+                    : slug === "iconos"
+                      ? "/bannerstoyota/BANNER LA RUTA TOYOTA ICONOS.png"
+                      : slug === "parques"
+                        ? "/sliderHome/PARQUES.png"
+                        : slug === "museos"
+                          ? "/bannercultura/BANNER LA RUTA DE LA CULTURA.webp"
+                          : "/bannerstoyota/BANNER LA RUTA TOYOTA.webp"
                 }
                 hideFallbackWhileLoading={
                   slug === "parques" || slug === "museos"

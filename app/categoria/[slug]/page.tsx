@@ -1538,7 +1538,7 @@ export default function CategoryPage({ params }: { params: any }) {
                       />
                     </div>
                   </div>
-                  <div className="flex aspect-square w-full cursor-pointer items-center justify-center overflow-hidden bg-black md:h-full">
+                  <div className="flex w-full cursor-pointer items-center justify-center overflow-hidden bg-black md:aspect-square md:h-full">
                     <ManagedBanner
                       desktopKey="top-restaurants"
                       mobileKey="top-restaurants"
@@ -1547,7 +1547,7 @@ export default function CategoryPage({ params }: { params: any }) {
                       src="https://xtctddbjwmmeirjltatm.supabase.co/storage/v1/object/public/public/banners/santiagoadicto/bannerRestaurantes/BANER%20DESKTOP%2050%20BEST.webp"
                       mobileSrc="https://xtctddbjwmmeirjltatm.supabase.co/storage/v1/object/public/public/banners/santiagoadicto/bannerRestaurantes/BANNER%20MOVIL%2050%20BEST.webp"
                       alt="Top Restaurantes"
-                      imageClassName="block h-full w-full object-cover object-center"
+                      imageClassName="block h-auto w-full object-contain object-center md:h-full md:object-cover"
                     />
                   </div>
                 </div>

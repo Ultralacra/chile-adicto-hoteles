@@ -21,9 +21,17 @@ import type { SiteId } from "@/lib/sites-config";
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
+  DialogFooter,
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { DestinationCombobox } from "@/components/admin/destination-combobox";
+import { PRETTY_CATEGORY_SLUGS } from "@/lib/pretty-category-slugs";
+import {
+  isSupportedImageFile,
+  optimizeImageForUpload,
+} from "@/lib/image-optimize";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -42,9 +50,12 @@ import {
   CarouselPrevious,
 } from "@/components/ui/carousel";
 import {
+  AlertCircle,
   ArrowDown,
   ArrowLeft,
   ArrowUp,
+  Check,
+  ImageUp,
   Monitor,
   Pencil,
   Plus,
@@ -115,6 +126,72 @@ type HrefSuggestionItem = {
   href: string;
 };
 
+const BULK_UPLOAD_MAX_FILES = 60;
+const BULK_UPLOAD_MAX_ORIGINAL_BYTES = 25 * 1024 * 1024;
+
+type BulkSlideRow = {
+  id: string;
+  file: File;
+  previewUrl: string;
+  href: string;
+  lang: string;
+  active: boolean;
+  status: "pending" | "uploading" | "done" | "error";
+  error?: string;
+  imageUrl?: string;
+  optimizedSize?: number;
+};
+
+function normalizeHrefSlug(value: string) {
+  return String(value || "")
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "");
+}
+
+function slugFromImageFileName(fileName: string) {
+  const base = String(fileName || "").split("/").pop() || "";
+  const withoutExt = base.replace(/\.[^.]+$/, "");
+  const withoutTimestamp = withoutExt.replace(/^\d{10,}[-_ ]?/, "");
+  const withoutCounter = withoutTimestamp.replace(/[-_ ](1|2)$/, "");
+  return normalizeHrefSlug(withoutCounter);
+}
+
+function guessHrefFromFileName(
+  fileName: string,
+  categories: CategorySuggestion[],
+): string {
+  const slug = slugFromImageFileName(fileName);
+  if (!slug) return "";
+  for (const category of categories || []) {
+    const categorySlug = String(category.slug || "").trim();
+    if (!categorySlug) continue;
+    const candidates = [
+      categorySlug,
+      category.label_es,
+      category.label_en,
+    ]
+      .map((value) => normalizeHrefSlug(String(value || "")))
+      .filter(Boolean);
+    if (candidates.includes(slug)) {
+      return PRETTY_CATEGORY_SLUGS.has(categorySlug)
+        ? `/${categorySlug}`
+        : `/categoria/${categorySlug}`;
+    }
+  }
+  return `/${slug}`;
+}
+
+function formatFileSize(bytes: number) {
+  if (!Number.isFinite(bytes) || bytes <= 0) return "0 KB";
+  if (bytes < 1024 * 1024) {
+    return `${Math.max(1, Math.round(bytes / 1024))} KB`;
+  }
+  return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
+}
+
 type HomeResp = { desktop: string[]; mobile: string[] };
 
 type DbSliderItem = {
@@ -178,6 +255,22 @@ export default function AdminSlidersList() {
   const [deleteUsage, setDeleteUsage] = useState<MediaUsageItem[]>([]);
   const [deleteLoading, setDeleteLoading] = useState(false);
   const [deleteChecking, setDeleteChecking] = useState(false);
+  const [selectedSlideIndices, setSelectedSlideIndices] = useState<Set<number>>(
+    () => new Set(),
+  );
+  const [bulkDeleteOpen, setBulkDeleteOpen] = useState(false);
+  const [bulkDeleteUsage, setBulkDeleteUsage] = useState<MediaUsageItem[]>([]);
+  const [bulkDeleteChecking, setBulkDeleteChecking] = useState(false);
+  const [bulkDeleteDeleting, setBulkDeleteDeleting] = useState(false);
+  const [bulkDeleteImages, setBulkDeleteImages] = useState(true);
+  const [bulkUploadOpen, setBulkUploadOpen] = useState(false);
+  const [bulkRows, setBulkRows] = useState<BulkSlideRow[]>([]);
+  const [bulkUploading, setBulkUploading] = useState(false);
+  const [bulkProgress, setBulkProgress] = useState({ done: 0, total: 0 });
+  const [bulkDragOver, setBulkDragOver] = useState(false);
+  const selectAllSlidesRef = useRef<HTMLInputElement | null>(null);
+  const bulkFileRef = useRef<HTMLInputElement | null>(null);
+  const bulkRowsRef = useRef<BulkSlideRow[]>([]);
   const mediaFileRef = useRef<HTMLInputElement | null>(null);
   const mediaScrollRef = useRef<HTMLDivElement | null>(null);
   const mediaReqIdRef = useRef(0);
@@ -358,19 +451,6 @@ export default function AdminSlidersList() {
     }
 
     const qn = q.toLowerCase();
-    const prettyCategorySlugs = new Set<string>([
-      "iconos",
-      "ninos",
-      "arquitectura",
-      "barrios",
-      "mercados",
-      "miradores",
-      "museos",
-      "palacios",
-      "parques",
-      "paseos-fuera-de-santiago",
-      "restaurantes",
-    ]);
 
     const categoryMatches: HrefSuggestionItem[] = (categories || [])
       .filter((c) => {
@@ -386,7 +466,7 @@ export default function AdminSlidersList() {
           String(c.label_es || "").trim() ||
           String(c.label_en || "").trim() ||
           slug;
-        const href = prettyCategorySlugs.has(slug)
+        const href = PRETTY_CATEGORY_SLUGS.has(slug)
           ? `/${slug}`
           : `/categoria/${slug}`;
         return { kind: "category", slug, label, href };
@@ -646,6 +726,7 @@ export default function AdminSlidersList() {
 
   const loadDbSet = async (key: string) => {
     setDbLoading(true);
+    setSelectedSlideIndices(new Set());
     try {
       const res = await fetchWithSite(
         `/api/sliders/${encodeURIComponent(key)}?all=1&adminSite=${encodeURIComponent(
@@ -844,6 +925,7 @@ export default function AdminSlidersList() {
   const moveDbItem = (idx: number, dir: -1 | 1) => {
     const j = idx + dir;
     if (j < 0 || j >= dbItems.length) return;
+    setSelectedSlideIndices(new Set());
     setDbItems((prev) => {
       const copy = prev.slice();
       const tmp = copy[idx];
@@ -857,6 +939,7 @@ export default function AdminSlidersList() {
   };
 
   const removeDbItem = (idx: number) => {
+    setSelectedSlideIndices(new Set());
     setDbItems((prev) => prev.filter((_, i) => i !== idx));
     setSelectedDbIndex((current) => {
       if (current > idx) return current - 1;
@@ -874,23 +957,482 @@ export default function AdminSlidersList() {
     setSelectedDbIndex(dbItems.length);
   };
 
+  const defaultBulkLang = useMemo(() => {
+    if (dbKey.endsWith("-es")) return "es";
+    if (dbKey.endsWith("-en")) return "en";
+    return String(dbItems[selectedDbIndex]?.lang || "");
+  }, [dbKey, dbItems, selectedDbIndex]);
+
+  useEffect(() => {
+    bulkRowsRef.current = bulkRows;
+  }, [bulkRows]);
+
+  useEffect(
+    () => () => {
+      for (const row of bulkRowsRef.current) {
+        URL.revokeObjectURL(row.previewUrl);
+      }
+    },
+    [],
+  );
+
+  const updateBulkRow = (id: string, patch: Partial<BulkSlideRow>) => {
+    setBulkRows((prev) =>
+      prev.map((row) => (row.id === id ? { ...row, ...patch } : row)),
+    );
+  };
+
+  const addBulkFiles = (files: FileList | File[]) => {
+    const arr = Array.from(files || []);
+    if (arr.length === 0) return;
+
+    const problems: string[] = [];
+    const accepted: File[] = [];
+    for (const file of arr) {
+      if (!isSupportedImageFile(file)) {
+        problems.push(`${file.name}: formato no soportado`);
+        continue;
+      }
+      if (file.size > BULK_UPLOAD_MAX_ORIGINAL_BYTES) {
+        problems.push(`${file.name}: supera 25 MB`);
+        continue;
+      }
+      accepted.push(file);
+    }
+    if (accepted.length === 0) {
+      if (problems.length > 0) alert(problems.join("\n"));
+      return;
+    }
+
+    const available = Math.max(0, BULK_UPLOAD_MAX_FILES - bulkRows.length);
+    if (available === 0) {
+      alert(`Máximo ${BULK_UPLOAD_MAX_FILES} imágenes por lote.`);
+      return;
+    }
+    const toAdd = accepted.slice(0, available);
+    if (accepted.length > available) {
+      problems.push(
+        `Solo se agregaron ${available} de ${accepted.length}; el máximo por lote es ${BULK_UPLOAD_MAX_FILES}.`,
+      );
+    }
+
+    const newRows: BulkSlideRow[] = toAdd.map((file) => ({
+      id: `${Date.now()}-${Math.random().toString(36).slice(2)}`,
+      file,
+      previewUrl: URL.createObjectURL(file),
+      href: guessHrefFromFileName(file.name, categories),
+      lang: defaultBulkLang,
+      active: true,
+      status: "pending",
+    }));
+    setBulkRows((prev) => [...prev, ...newRows]);
+
+    if (problems.length > 0) alert(problems.join("\n"));
+  };
+
+  const removeBulkRow = (id: string) => {
+    const row = bulkRows.find((item) => item.id === id);
+    if (row) URL.revokeObjectURL(row.previewUrl);
+    setBulkRows((prev) => prev.filter((item) => item.id !== id));
+  };
+
+  const clearBulkRows = () => {
+    for (const row of bulkRows) URL.revokeObjectURL(row.previewUrl);
+    setBulkRows([]);
+  };
+
+  const detectBulkDestinations = () => {
+    setBulkRows((prev) =>
+      prev.map((row) =>
+        row.href.trim()
+          ? row
+          : { ...row, href: guessHrefFromFileName(row.file.name, categories) },
+      ),
+    );
+  };
+
+  const applyDefaultLangToAll = () => {
+    setBulkRows((prev) =>
+      prev.map((row) => ({ ...row, lang: defaultBulkLang })),
+    );
+  };
+
+  const markAllBulkActive = () => {
+    setBulkRows((prev) => prev.map((row) => ({ ...row, active: true })));
+  };
+
+  const openBulkUpload = () => {
+    if (dbLoading || dbSaving || bulkDeleteDeleting) return;
+    setBulkProgress({ done: 0, total: 0 });
+    setBulkUploadOpen(true);
+  };
+
+  const handleBulkUploadOpenChange = (open: boolean) => {
+    if (bulkUploading) return;
+    if (!open) {
+      for (const row of bulkRows) URL.revokeObjectURL(row.previewUrl);
+      setBulkRows([]);
+      setBulkProgress({ done: 0, total: 0 });
+      setBulkDragOver(false);
+    }
+    setBulkUploadOpen(open);
+  };
+
+  const uploadBulkSlides = async () => {
+    const rowsToUpload = bulkRows.filter(
+      (row) => row.status !== "done" && row.status !== "uploading",
+    );
+    if (rowsToUpload.length === 0) return;
+
+    setBulkUploading(true);
+    setBulkProgress({ done: 0, total: rowsToUpload.length });
+
+    const results = new Map<
+      string,
+      {
+        status: "done" | "error";
+        imageUrl?: string;
+        error?: string;
+        optimizedSize?: number;
+      }
+    >();
+    let completed = 0;
+
+    const uploadOne = async (row: BulkSlideRow) => {
+      updateBulkRow(row.id, { status: "uploading", error: undefined });
+      try {
+        const optimized = await optimizeImageForUpload(row.file);
+        const form = new FormData();
+        form.append("files", optimized);
+        const res = await fetchWithSite("/api/media/upload", {
+          method: "POST",
+          body: form,
+        });
+        const text = await res.text().catch(() => "");
+        let data: any = null;
+        try {
+          data = text ? JSON.parse(text) : null;
+        } catch {
+          data = null;
+        }
+        if (!res.ok) {
+          throw new Error(
+            String(
+              data?.message ||
+                data?.error ||
+                text ||
+                "No se pudo subir la imagen",
+            ),
+          );
+        }
+        const url = Array.isArray(data?.urls)
+          ? String(data.urls[0] || "")
+          : "";
+        if (!url) {
+          throw new Error("El servidor no devolvió la URL de la imagen");
+        }
+        results.set(row.id, {
+          status: "done",
+          imageUrl: url,
+          optimizedSize: optimized.size,
+        });
+        updateBulkRow(row.id, {
+          status: "done",
+          imageUrl: url,
+          optimizedSize: optimized.size,
+          error: undefined,
+        });
+      } catch (error: any) {
+        const message = String(error?.message || error);
+        results.set(row.id, { status: "error", error: message });
+        updateBulkRow(row.id, { status: "error", error: message });
+      } finally {
+        completed += 1;
+        setBulkProgress({ done: completed, total: rowsToUpload.length });
+      }
+    };
+
+    const queue = [...rowsToUpload];
+    const workerCount = Math.min(2, queue.length);
+    await Promise.all(
+      Array.from({ length: workerCount }, async () => {
+        while (queue.length > 0) {
+          const row = queue.shift();
+          if (!row) break;
+          await uploadOne(row);
+        }
+      }),
+    );
+
+    const successRows: Array<{
+      row: BulkSlideRow;
+      imageUrl: string;
+      optimizedSize?: number;
+    }> = [];
+    for (const row of rowsToUpload) {
+      const result = results.get(row.id);
+      if (result?.status === "done" && result.imageUrl) {
+        successRows.push({
+          row,
+          imageUrl: result.imageUrl,
+          optimizedSize: result.optimizedSize,
+        });
+      }
+    }
+    const failedCount = rowsToUpload.filter(
+      (row) => results.get(row.id)?.status === "error",
+    ).length;
+
+    if (successRows.length > 0) {
+      const startIndex = dbItems.length;
+      const newItems: DbSliderItem[] = successRows.map(
+        ({ row, imageUrl }) => ({
+          image_url: imageUrl,
+          href: row.href.trim() || "",
+          active: row.active,
+          lang: row.lang || null,
+        }),
+      );
+      setDbItems((prev) => [...prev, ...newItems]);
+      setSelectedDbIndex(startIndex);
+
+      const uploadedUrls = successRows.map((entry) => entry.imageUrl);
+      const uploadedSet = new Set(uploadedUrls);
+      setMediaUrls((prev) => [
+        ...uploadedUrls,
+        ...prev.filter((url) => !uploadedSet.has(url)),
+      ]);
+      setMediaTotal((prev) =>
+        typeof prev === "number" ? prev + uploadedUrls.length : prev,
+      );
+
+      const successIds = new Set(successRows.map((entry) => entry.row.id));
+      for (const entry of successRows) {
+        URL.revokeObjectURL(entry.row.previewUrl);
+      }
+      setBulkRows((prev) =>
+        prev.filter((row) => !successIds.has(row.id)),
+      );
+    }
+
+    setBulkUploading(false);
+
+    if (failedCount === 0) {
+      setBulkUploadOpen(false);
+      setBulkProgress({ done: 0, total: 0 });
+      alert(
+        `${successRows.length} slide(s) agregados. Revisa destinos, orden y pulsa Guardar.`,
+      );
+    } else {
+      alert(
+        `Se agregaron ${successRows.length} slide(s). ${failedCount} imagen(es) fallaron; puedes reintentar las que quedan en el diálogo.`,
+      );
+    }
+  };
+
+  const toggleSlideSelected = (idx: number) => {
+    setSelectedSlideIndices((prev) => {
+      const next = new Set(prev);
+      if (next.has(idx)) next.delete(idx);
+      else next.add(idx);
+      return next;
+    });
+  };
+
+  const toggleAllSlidesSelected = () => {
+    setSelectedSlideIndices((prev) => {
+      if (dbItems.length > 0 && prev.size === dbItems.length) return new Set();
+      return new Set(dbItems.map((_, i) => i));
+    });
+  };
+
+  const selectedSlideIndexList = useMemo(
+    () => Array.from(selectedSlideIndices).sort((a, b) => a - b),
+    [selectedSlideIndices],
+  );
+  const selectedSlideItems = useMemo(
+    () =>
+      selectedSlideIndexList
+        .map((idx) => dbItems[idx])
+        .filter((item): item is DbSliderItem => Boolean(item)),
+    [selectedSlideIndexList, dbItems],
+  );
+  const remainingDbItems = useMemo(() => {
+    if (selectedSlideIndices.size === 0) return dbItems;
+    return dbItems.filter((_, idx) => !selectedSlideIndices.has(idx));
+  }, [dbItems, selectedSlideIndices]);
+  const selectedImageUrls = useMemo(() => {
+    const seen = new Set<string>();
+    for (const item of selectedSlideItems) {
+      const url = String(item?.image_url || "").trim();
+      if (url) seen.add(url);
+    }
+    return Array.from(seen);
+  }, [selectedSlideItems]);
+  const remainingImageUrls = useMemo(() => {
+    const seen = new Set<string>();
+    for (const item of remainingDbItems) {
+      const url = String(item?.image_url || "").trim();
+      if (url) seen.add(url);
+    }
+    return seen;
+  }, [remainingDbItems]);
+  const imagesToDelete = useMemo(
+    () => selectedImageUrls.filter((url) => !remainingImageUrls.has(url)),
+    [selectedImageUrls, remainingImageUrls],
+  );
+  const imagesKeptInSlider = useMemo(
+    () => selectedImageUrls.filter((url) => remainingImageUrls.has(url)),
+    [selectedImageUrls, remainingImageUrls],
+  );
+  const allSlidesSelected =
+    dbItems.length > 0 && selectedSlideIndices.size === dbItems.length;
+  const someSlidesSelected =
+    selectedSlideIndices.size > 0 && !allSlidesSelected;
+
+  useEffect(() => {
+    if (selectAllSlidesRef.current) {
+      selectAllSlidesRef.current.indeterminate = someSlidesSelected;
+    }
+  }, [someSlidesSelected]);
+
+  const buildSliderPayload = (items: DbSliderItem[]) => {
+    const inferredLang = dbKey.endsWith("-es")
+      ? "es"
+      : dbKey.endsWith("-en")
+        ? "en"
+        : null;
+    return {
+      items: items.map((it, idx) => ({
+        image_url: String(it.image_url || "").trim(),
+        href: it.href ? String(it.href).trim() : null,
+        active: it.active !== false,
+        position: idx,
+        lang: inferredLang || it.lang || null,
+      })),
+    };
+  };
+
+  const openBulkDeleteConfirm = async () => {
+    if (selectedSlideIndices.size === 0) return;
+    const urls = imagesToDelete;
+    setBulkDeleteImages(true);
+    setBulkDeleteOpen(true);
+    setBulkDeleteUsage([]);
+    if (urls.length === 0) return;
+    setBulkDeleteChecking(true);
+    try {
+      const res = await fetchWithSite(`/api/media`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ action: "usage", urls }),
+      });
+      const data = await res.json().catch(() => null);
+      const items = Array.isArray(data?.items)
+        ? (data.items as MediaUsageItem[])
+        : [];
+      setBulkDeleteUsage(items);
+    } catch {
+      setBulkDeleteUsage(
+        urls.map((url) => ({ url, posts: [], sliders: [] })),
+      );
+    } finally {
+      setBulkDeleteChecking(false);
+    }
+  };
+
+  const confirmBulkDeleteSelected = async () => {
+    if (selectedSlideIndices.size === 0) return;
+    setBulkDeleteDeleting(true);
+    try {
+      const payload = buildSliderPayload(remainingDbItems);
+      const res = await fetchWithSite(
+        `/api/sliders/${encodeURIComponent(dbKey)}?adminSite=${encodeURIComponent(
+          dbSite,
+        )}`,
+        {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload),
+        },
+      );
+      if (!res.ok) throw new Error(await res.text());
+
+      const deletedCount = dbItems.length - remainingDbItems.length;
+      const urlsToDelete = bulkDeleteImages ? imagesToDelete : [];
+      const imageErrors: Array<{ url: string; message?: string }> = [];
+
+      if (urlsToDelete.length > 0) {
+        try {
+          const mediaRes = await fetchWithSite(`/api/media`, {
+            method: "DELETE",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ urls: urlsToDelete }),
+          });
+          const mediaData = await mediaRes.json().catch(() => null);
+          if (Array.isArray(mediaData?.errors)) {
+            imageErrors.push(...mediaData.errors);
+          }
+          const deleted: string[] = Array.isArray(mediaData?.deleted)
+            ? mediaData.deleted.map(String)
+            : mediaRes.ok
+              ? urlsToDelete
+              : [];
+          if (deleted.length > 0) {
+            const deletedSet = new Set(deleted);
+            setMediaUrls((prev) => prev.filter((u) => !deletedSet.has(u)));
+            setMediaTotal((prev) =>
+              typeof prev === "number"
+                ? Math.max(0, prev - deleted.length)
+                : prev,
+            );
+          }
+          if (!mediaRes.ok && imageErrors.length === 0) {
+            imageErrors.push({
+              url: urlsToDelete[0],
+              message: "No se pudo eliminar el lote de imágenes",
+            });
+          }
+        } catch (e: any) {
+          imageErrors.push(
+            ...urlsToDelete.map((url) => ({
+              url,
+              message: String(e?.message || e),
+            })),
+          );
+        }
+      }
+
+      setBulkDeleteOpen(false);
+      setBulkDeleteUsage([]);
+      setSelectedSlideIndices(new Set());
+      setSelectedDbIndex(0);
+      await loadDbSet(dbKey);
+      await loadDbSetsList();
+
+      if (imageErrors.length > 0) {
+        alert(
+          `Se eliminaron ${deletedCount} slide(s), pero algunas imágenes no se pudieron borrar:\n` +
+            imageErrors
+              .slice(0, 8)
+              .map(
+                (err) =>
+                  `${getMediaName(err.url)}: ${err.message || "error"}`,
+              )
+              .join("\n"),
+        );
+      }
+    } catch (e: any) {
+      alert("No se pudo eliminar: " + String(e?.message || e));
+    } finally {
+      setBulkDeleteDeleting(false);
+    }
+  };
+
   const saveDbSet = async () => {
     setDbSaving(true);
     try {
-      const inferredLang = dbKey.endsWith("-es")
-        ? "es"
-        : dbKey.endsWith("-en")
-          ? "en"
-          : null;
-      const payload = {
-        items: dbItems.map((it, idx) => ({
-          image_url: String(it.image_url || "").trim(),
-          href: it.href ? String(it.href).trim() : null,
-          active: it.active !== false,
-          position: idx,
-          lang: inferredLang || it.lang || null,
-        })),
-      };
+      const payload = buildSliderPayload(dbItems);
       const res = await fetchWithSite(
         `/api/sliders/${encodeURIComponent(dbKey)}?adminSite=${encodeURIComponent(
           dbSite,
@@ -1620,7 +2162,7 @@ export default function AdminSlidersList() {
                   · Key: <span className="font-mono">{dbKey}</span>
                 </div>
               </div>
-              <div className="flex gap-2">
+              <div className="flex flex-wrap gap-2">
                 <Button
                   variant="outline"
                   className="rounded-none border-black/10"
@@ -1628,7 +2170,7 @@ export default function AdminSlidersList() {
                     setDbView("list");
                     loadDbSetsList();
                   }}
-                  disabled={dbSaving}
+                  disabled={dbSaving || bulkDeleteDeleting}
                 >
                   <ArrowLeft size={15} />
                   Volver
@@ -1637,7 +2179,7 @@ export default function AdminSlidersList() {
                   variant="outline"
                   className="rounded-none border-black/10"
                   onClick={() => loadDbSet(dbKey)}
-                  disabled={dbLoading || dbSaving}
+                  disabled={dbLoading || dbSaving || bulkDeleteDeleting}
                 >
                   <RefreshCw size={15} />
                   Recargar
@@ -1646,15 +2188,24 @@ export default function AdminSlidersList() {
                   variant="outline"
                   className="rounded-none border-black/10"
                   onClick={addDbItem}
-                  disabled={dbLoading || dbSaving}
+                  disabled={dbLoading || dbSaving || bulkDeleteDeleting}
                 >
                   <Plus size={15} />
                   Agregar slide
                 </Button>
                 <Button
+                  variant="outline"
+                  className="rounded-none border-black/10"
+                  onClick={openBulkUpload}
+                  disabled={dbLoading || dbSaving || bulkDeleteDeleting}
+                >
+                  <ImageUp size={15} />
+                  Carga masiva
+                </Button>
+                <Button
                   className="rounded-none bg-[var(--color-brand-red)] hover:bg-[#b72d24]"
                   onClick={saveDbSet}
-                  disabled={dbSaving || dbLoading}
+                  disabled={dbSaving || dbLoading || bulkDeleteDeleting}
                 >
                   <Save size={15} />
                   {dbSaving ? "Guardando…" : "Guardar"}
@@ -1683,10 +2234,53 @@ export default function AdminSlidersList() {
                     <p className="mt-0.5 text-xs text-[#61625d]">
                       {dbItems.length} slides en este slider
                     </p>
+                    <div className="mt-2 flex flex-wrap items-center justify-between gap-2">
+                      <label className="inline-flex cursor-pointer items-center gap-2 text-xs font-medium text-[#20211f]">
+                        <input
+                          ref={selectAllSlidesRef}
+                          type="checkbox"
+                          className="size-4 accent-[var(--color-brand-red)]"
+                          checked={allSlidesSelected}
+                          onChange={toggleAllSlidesSelected}
+                          disabled={dbSaving || bulkDeleteDeleting}
+                        />
+                        Seleccionar todos
+                      </label>
+                      <Button
+                        type="button"
+                        variant="outline"
+                        size="sm"
+                        className="rounded-none border-red-200 text-red-600 hover:bg-red-50 hover:text-red-700"
+                        onClick={openBulkDeleteConfirm}
+                        disabled={
+                          selectedSlideIndices.size === 0 ||
+                          dbLoading ||
+                          dbSaving ||
+                          bulkDeleteChecking ||
+                          bulkDeleteDeleting
+                        }
+                      >
+                        <Trash2 size={14} />
+                        {bulkDeleteChecking
+                          ? "Revisando…"
+                          : `Eliminar${
+                              selectedSlideIndices.size > 0
+                                ? ` (${selectedSlideIndices.size})`
+                                : ""
+                            }`}
+                      </Button>
+                    </div>
+                    {selectedSlideIndices.size > 0 ? (
+                      <p className="mt-1 text-[11px] text-[#61625d]">
+                        {selectedSlideIndices.size} de {dbItems.length}{" "}
+                        seleccionados
+                      </p>
+                    ) : null}
                   </div>
                   <div className="max-h-[62vh] overflow-y-auto">
                     {dbItems.map((item, idx) => {
                       const selected = selectedDbIndex === idx;
+                      const checkedSlide = selectedSlideIndices.has(idx);
                       const slideLang =
                         item.lang ||
                         (dbKey.endsWith("-es")
@@ -1695,43 +2289,74 @@ export default function AdminSlidersList() {
                             ? "en"
                             : null);
                       return (
-                        <button
+                        <div
                           key={`${dbKey}-${idx}`}
-                          type="button"
-                          onClick={() => setSelectedDbIndex(idx)}
-                          className={`flex w-full gap-3 border-b border-black/10 p-3 text-left transition-colors last:border-b-0 ${selected ? "bg-[#22231f] text-white" : "bg-white text-[#20211f] hover:bg-[#f3f3f1]"}`}
+                          className={`flex w-full border-b border-black/10 last:border-b-0 ${
+                            selected
+                              ? "bg-[#22231f] text-white"
+                              : checkedSlide
+                                ? "bg-red-50/70 text-[#20211f]"
+                                : "bg-white text-[#20211f]"
+                          }`}
                         >
-                          <div className="aspect-[16/9] w-20 shrink-0 overflow-hidden bg-[#e8e8e4]">
-                            {item.image_url ? (
-                              <img
-                                src={item.image_url}
-                                alt=""
-                                className="size-full object-cover"
-                              />
-                            ) : null}
-                          </div>
-                          <span className="min-w-0 flex-1">
-                            <span className="flex items-center justify-between gap-2">
-                              <span className="flex min-w-0 items-center gap-1.5">
-                                <span className="font-neutra-demi text-sm uppercase tracking-wide">
-                                  Slide {idx + 1}
+                          <label
+                            className={`flex w-9 shrink-0 cursor-pointer items-center justify-center border-r ${
+                              selected ? "border-white/15" : "border-black/10"
+                            }`}
+                            title="Seleccionar para eliminar"
+                          >
+                            <input
+                              type="checkbox"
+                              checked={checkedSlide}
+                              onChange={() => toggleSlideSelected(idx)}
+                              className="size-4 accent-[var(--color-brand-red)]"
+                              aria-label={`Seleccionar slide ${idx + 1}`}
+                              disabled={bulkDeleteDeleting}
+                            />
+                          </label>
+                          <button
+                            type="button"
+                            onClick={() => setSelectedDbIndex(idx)}
+                            className={`flex min-w-0 flex-1 gap-3 p-3 text-left transition-colors ${
+                              selected
+                                ? "text-white"
+                                : checkedSlide
+                                  ? "hover:bg-red-50"
+                                  : "hover:bg-[#f3f3f1]"
+                            }`}
+                          >
+                            <div className="aspect-[16/9] w-20 shrink-0 overflow-hidden bg-[#e8e8e4]">
+                              {item.image_url ? (
+                                <img
+                                  src={item.image_url}
+                                  alt=""
+                                  className="size-full object-cover"
+                                />
+                              ) : null}
+                            </div>
+                            <span className="min-w-0 flex-1">
+                              <span className="flex items-center justify-between gap-2">
+                                <span className="flex min-w-0 items-center gap-1.5">
+                                  <span className="font-neutra-demi text-sm uppercase tracking-wide">
+                                    Slide {idx + 1}
+                                  </span>
+                                  <LanguageFlagBadge
+                                    lang={slideLang}
+                                    selected={selected}
+                                  />
                                 </span>
-                                <LanguageFlagBadge
-                                  lang={slideLang}
-                                  selected={selected}
+                                <span
+                                  className={`size-2 shrink-0 ${item.active !== false ? "bg-[#268477]" : "bg-[#9a9b94]"}`}
                                 />
                               </span>
                               <span
-                                className={`size-2 shrink-0 ${item.active !== false ? "bg-[#268477]" : "bg-[#9a9b94]"}`}
-                              />
+                                className={`mt-1 block truncate text-xs ${selected ? "text-white/65" : "text-[#61625d]"}`}
+                              >
+                                {item.href || "Sin destino"}
+                              </span>
                             </span>
-                            <span
-                              className={`mt-1 block truncate text-xs ${selected ? "text-white/65" : "text-[#61625d]"}`}
-                            >
-                              {item.href || "Sin destino"}
-                            </span>
-                          </span>
-                        </button>
+                          </button>
+                        </div>
                       );
                     })}
                   </div>
@@ -1770,7 +2395,7 @@ export default function AdminSlidersList() {
                               title="Subir slide"
                               aria-label="Subir slide"
                               onClick={() => moveDbItem(idx, -1)}
-                              disabled={idx === 0 || dbSaving}
+                              disabled={idx === 0 || dbSaving || bulkDeleteDeleting}
                             >
                               <ArrowUp size={15} />
                             </Button>
@@ -1781,7 +2406,11 @@ export default function AdminSlidersList() {
                               title="Bajar slide"
                               aria-label="Bajar slide"
                               onClick={() => moveDbItem(idx, 1)}
-                              disabled={idx === dbItems.length - 1 || dbSaving}
+                              disabled={
+                                idx === dbItems.length - 1 ||
+                                dbSaving ||
+                                bulkDeleteDeleting
+                              }
                             >
                               <ArrowDown size={15} />
                             </Button>
@@ -1792,7 +2421,7 @@ export default function AdminSlidersList() {
                               title="Quitar slide"
                               aria-label="Quitar slide"
                               onClick={() => removeDbItem(idx)}
-                              disabled={dbSaving}
+                              disabled={dbSaving || bulkDeleteDeleting}
                             >
                               <Trash2 size={15} />
                             </Button>
@@ -2289,6 +2918,426 @@ export default function AdminSlidersList() {
                 </AlertDialogFooter>
               </AlertDialogContent>
             </AlertDialog>
+
+            <AlertDialog
+              open={bulkDeleteOpen}
+              onOpenChange={(open) => {
+                if (bulkDeleteDeleting) return;
+                setBulkDeleteOpen(open);
+                if (!open) setBulkDeleteUsage([]);
+              }}
+            >
+              <AlertDialogContent className="sm:max-w-lg max-h-[85vh] overflow-auto">
+                <AlertDialogHeader>
+                  <AlertDialogTitle>
+                    ¿Eliminar {selectedSlideIndices.size} slide
+                    {selectedSlideIndices.size === 1 ? "" : "s"}?
+                  </AlertDialogTitle>
+                  <AlertDialogDescription asChild>
+                    <div className="space-y-3 text-sm text-muted-foreground">
+                      <p>
+                        Se quitarán de inmediato del slider{" "}
+                        <strong className="font-mono">{dbKey}</strong> del sitio{" "}
+                        <strong>{dbSite}</strong>. También se guardarán los
+                        cambios pendientes del slider. Esta acción no se puede
+                        deshacer.
+                      </p>
+
+                      <label className="flex cursor-pointer items-start gap-2 border border-black/10 bg-[#fafaf8] px-3 py-2.5 text-left text-[#20211f]">
+                        <input
+                          type="checkbox"
+                          className="mt-0.5 size-4 accent-[var(--color-brand-red)]"
+                          checked={bulkDeleteImages}
+                          onChange={(e) =>
+                            setBulkDeleteImages(e.target.checked)
+                          }
+                          disabled={
+                            bulkDeleteDeleting || imagesToDelete.length === 0
+                          }
+                        />
+                        <span>
+                          <span className="block text-sm font-medium">
+                            Eliminar también las imágenes relacionadas (
+                            {imagesToDelete.length})
+                          </span>
+                          <span className="mt-0.5 block text-xs text-[#61625d]">
+                            Se borran del storage y se quitan las referencias en
+                            posts y otros sliders.
+                          </span>
+                        </span>
+                      </label>
+
+                      {imagesKeptInSlider.length > 0 ? (
+                        <p className="text-xs text-[#61625d]">
+                          {imagesKeptInSlider.length} imagen
+                          {imagesKeptInSlider.length === 1 ? "" : "es"} se
+                          conservará
+                          {imagesKeptInSlider.length === 1 ? "" : "n"} porque
+                          sigue
+                          {imagesKeptInSlider.length === 1 ? "" : "n"} en uso en
+                          otro slide de este slider.
+                        </p>
+                      ) : null}
+
+                      {bulkDeleteChecking ? (
+                        <p className="flex items-center gap-2 text-xs">
+                          <Spinner className="size-3.5" /> Revisando
+                          asociaciones…
+                        </p>
+                      ) : (
+                        (() => {
+                          if (
+                            !bulkDeleteImages ||
+                            imagesToDelete.length === 0
+                          ) {
+                            return null;
+                          }
+                          const linked = bulkDeleteUsage
+                            .map((item) => ({
+                              ...item,
+                              sliders: item.sliders.filter(
+                                (s) => s.set_key !== dbKey,
+                              ),
+                            }))
+                            .filter(
+                              (item) =>
+                                item.posts.length > 0 ||
+                                item.sliders.length > 0,
+                            );
+                          if (linked.length === 0) {
+                            return (
+                              <p className="text-xs">
+                                No hay posts ni otros sliders asociados a estas
+                                imágenes.
+                              </p>
+                            );
+                          }
+                          return (
+                            <div className="space-y-2 border border-amber-300 bg-amber-50 p-3 text-amber-950">
+                              <p className="text-sm font-medium">
+                                Advertencia: hay imágenes asociadas a otro
+                                contenido.
+                              </p>
+                              <ul className="max-h-48 space-y-2 overflow-auto text-xs">
+                                {linked.map((item) => (
+                                  <li key={item.url}>
+                                    <div className="truncate font-medium">
+                                      {getMediaName(item.url)}
+                                    </div>
+                                    {item.posts.length > 0 ? (
+                                      <div>
+                                        Posts:{" "}
+                                        {item.posts
+                                          .map((p) => p.name || p.slug)
+                                          .join(", ")}
+                                      </div>
+                                    ) : null}
+                                    {item.sliders.length > 0 ? (
+                                      <div>
+                                        Sliders:{" "}
+                                        {item.sliders
+                                          .map((s) => s.set_key)
+                                          .join(", ")}
+                                      </div>
+                                    ) : null}
+                                  </li>
+                                ))}
+                              </ul>
+                              <p>
+                                Si continúas, también se quitarán esas
+                                referencias y las imágenes de los posts que las
+                                usen.
+                              </p>
+                            </div>
+                          );
+                        })()
+                      )}
+                    </div>
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel disabled={bulkDeleteDeleting}>
+                    Cancelar
+                  </AlertDialogCancel>
+                  <AlertDialogAction
+                    disabled={
+                      bulkDeleteDeleting ||
+                      bulkDeleteChecking ||
+                      selectedSlideIndices.size === 0
+                    }
+                    className="bg-red-600 hover:bg-red-700"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      confirmBulkDeleteSelected();
+                    }}
+                  >
+                    {bulkDeleteDeleting
+                      ? "Eliminando…"
+                      : `Sí, eliminar ${selectedSlideIndices.size} slide${
+                          selectedSlideIndices.size === 1 ? "" : "s"
+                        }`}
+                  </AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
+
+            <Dialog
+              open={bulkUploadOpen}
+              onOpenChange={handleBulkUploadOpenChange}
+            >
+              <DialogContent className="flex max-h-[88vh] flex-col sm:max-w-5xl">
+                <DialogHeader>
+                  <DialogTitle>Carga masiva de slides</DialogTitle>
+                  <DialogDescription>
+                    {dbSite} · {dbKey} · Las imágenes se optimizan y se agregan
+                    al final de la lista; revisa destinos y pulsa Guardar.
+                  </DialogDescription>
+                </DialogHeader>
+
+                <div className="min-h-0 flex-1 space-y-3 overflow-y-auto pr-1">
+                  <div
+                    onDragOver={(event) => {
+                      event.preventDefault();
+                      if (!bulkUploading) setBulkDragOver(true);
+                    }}
+                    onDragLeave={() => setBulkDragOver(false)}
+                    onDrop={(event) => {
+                      event.preventDefault();
+                      setBulkDragOver(false);
+                      if (!bulkUploading) {
+                        addBulkFiles(event.dataTransfer.files);
+                      }
+                    }}
+                    className={`border border-dashed p-4 text-center transition-colors ${
+                      bulkDragOver
+                        ? "border-[var(--color-brand-red)] bg-red-50/60"
+                        : "border-black/20 bg-[#fafaf8]"
+                    }`}
+                  >
+                    <label
+                      htmlFor="bulk-upload-input"
+                      className={`block cursor-pointer ${
+                        bulkUploading ? "pointer-events-none opacity-60" : ""
+                      }`}
+                    >
+                      <ImageUp className="mx-auto mb-1 size-5 text-[#61625d]" />
+                      <p className="text-sm font-medium text-[#20211f]">
+                        Arrastra imágenes o haz clic para seleccionar
+                      </p>
+                      <p className="mt-0.5 text-xs text-[#61625d]">
+                        JPG, PNG, WebP o AVIF · máximo{" "}
+                        {BULK_UPLOAD_MAX_FILES} por lote · se optimizan a WebP
+                      </p>
+                    </label>
+                    <input
+                      id="bulk-upload-input"
+                      ref={bulkFileRef}
+                      type="file"
+                      accept="image/jpeg,image/png,image/webp,image/avif"
+                      multiple
+                      className="hidden"
+                      disabled={bulkUploading}
+                      onChange={(event) => {
+                        const files = event.target.files;
+                        if (files) addBulkFiles(files);
+                        event.target.value = "";
+                      }}
+                    />
+                  </div>
+
+                  {bulkRows.length > 0 ? (
+                    <div className="space-y-3">
+                      <div className="flex flex-wrap items-center justify-between gap-2">
+                        <p className="text-xs text-[#61625d]">
+                          {bulkRows.length} imagen(es) ·{" "}
+                          {bulkRows.filter((row) => !row.href.trim()).length}{" "}
+                          sin destino · idioma por defecto:{" "}
+                          {defaultBulkLang || "sin idioma"}
+                        </p>
+                        <div className="flex flex-wrap gap-2">
+                          <Button
+                            type="button"
+                            variant="outline"
+                            size="sm"
+                            className="rounded-none border-black/10"
+                            onClick={applyDefaultLangToAll}
+                            disabled={bulkUploading}
+                          >
+                            Idioma a todos
+                          </Button>
+                          <Button
+                            type="button"
+                            variant="outline"
+                            size="sm"
+                            className="rounded-none border-black/10"
+                            onClick={detectBulkDestinations}
+                            disabled={bulkUploading}
+                          >
+                            Detectar faltantes
+                          </Button>
+                          <Button
+                            type="button"
+                            variant="outline"
+                            size="sm"
+                            className="rounded-none border-black/10"
+                            onClick={markAllBulkActive}
+                            disabled={bulkUploading}
+                          >
+                            Publicar todos
+                          </Button>
+                          <Button
+                            type="button"
+                            variant="outline"
+                            size="sm"
+                            className="rounded-none border-black/10"
+                            onClick={clearBulkRows}
+                            disabled={bulkUploading}
+                          >
+                            Quitar todo
+                          </Button>
+                        </div>
+                      </div>
+
+                      <div className="border border-black/10">
+                        <div className="hidden grid-cols-[80px_minmax(0,1fr)_150px_90px_70px] gap-2 border-b border-black/10 bg-[#fafaf8] px-2 py-1.5 text-[10px] font-semibold uppercase tracking-wide text-[#85867f] md:grid">
+                          <div>Imagen</div>
+                          <div>Destino</div>
+                          <div>Idioma</div>
+                          <div>Publicar</div>
+                          <div />
+                        </div>
+                        {bulkRows.map((row) => (
+                          <div
+                            key={row.id}
+                            className="grid gap-2 border-b border-black/10 p-2 last:border-b-0 md:grid-cols-[80px_minmax(0,1fr)_150px_90px_70px] md:items-start"
+                          >
+                            <div className="aspect-[16/9] w-20 overflow-hidden bg-[#f3f3f1]">
+                              {/* eslint-disable-next-line @next/next/no-img-element */}
+                              <img
+                                src={row.previewUrl}
+                                alt=""
+                                className="size-full object-cover"
+                              />
+                            </div>
+                            <div className="min-w-0 space-y-1">
+                              <p className="truncate text-xs font-medium text-[#20211f]">
+                                {row.file.name}
+                              </p>
+                              <p className="text-[11px] text-[#85867f]">
+                                {formatFileSize(row.file.size)}
+                              </p>
+                              <DestinationCombobox
+                                value={row.href}
+                                onChange={(value) =>
+                                  updateBulkRow(row.id, { href: value })
+                                }
+                                categories={categories}
+                                fetchWithSite={fetchWithSite}
+                                currentSite={currentSite}
+                                disabled={bulkUploading}
+                                className="h-8 text-xs"
+                              />
+                              {row.error ? (
+                                <p className="text-[11px] text-red-600">
+                                  {row.error}
+                                </p>
+                              ) : null}
+                            </div>
+                            <select
+                              value={row.lang}
+                              onChange={(event) =>
+                                updateBulkRow(row.id, {
+                                  lang: event.target.value,
+                                })
+                              }
+                              disabled={bulkUploading}
+                              className="h-8 w-full rounded-none border border-black/10 bg-[#fafaf8] px-2 text-xs"
+                            >
+                              <option value="">Sin idioma</option>
+                              <option value="es">Español</option>
+                              <option value="en">Inglés</option>
+                            </select>
+                            <label className="flex items-center gap-1.5 pt-1 text-xs font-medium text-[#20211f]">
+                              <input
+                                type="checkbox"
+                                className="size-4 accent-[var(--color-brand-red)]"
+                                checked={row.active}
+                                onChange={(event) =>
+                                  updateBulkRow(row.id, {
+                                    active: event.target.checked,
+                                  })
+                                }
+                                disabled={bulkUploading}
+                              />
+                              Publicar
+                            </label>
+                            <div className="flex items-center justify-end gap-1 pt-1">
+                              {row.status === "uploading" ? (
+                                <Spinner className="size-4" />
+                              ) : row.status === "done" ? (
+                                <Check className="size-4 text-emerald-600" />
+                              ) : row.status === "error" ? (
+                                <AlertCircle className="size-4 text-red-600" />
+                              ) : null}
+                              <Button
+                                type="button"
+                                variant="outline"
+                                size="sm"
+                                className="rounded-none border-red-200 text-red-600 hover:bg-red-50 hover:text-red-700"
+                                onClick={() => removeBulkRow(row.id)}
+                                disabled={bulkUploading}
+                                title="Quitar imagen"
+                                aria-label="Quitar imagen"
+                              >
+                                <Trash2 size={14} />
+                              </Button>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  ) : (
+                    <p className="text-xs text-muted-foreground">
+                      Aún no hay imágenes seleccionadas.
+                    </p>
+                  )}
+                </div>
+
+                <DialogFooter className="gap-2 border-t border-black/10 pt-3">
+                  <div className="mr-auto text-xs text-muted-foreground">
+                    {bulkUploading
+                      ? `Subiendo ${bulkProgress.done}/${bulkProgress.total}…`
+                      : `${bulkRows.length} imagen(es) listas para procesar`}
+                  </div>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    className="rounded-none border-black/10"
+                    onClick={() => handleBulkUploadOpenChange(false)}
+                    disabled={bulkUploading}
+                  >
+                    Cancelar
+                  </Button>
+                  <Button
+                    type="button"
+                    className="rounded-none bg-[var(--color-brand-red)] hover:bg-[#b72d24]"
+                    onClick={uploadBulkSlides}
+                    disabled={bulkUploading || bulkRows.length === 0}
+                  >
+                    {bulkUploading ? (
+                      <>
+                        <Spinner className="size-4" /> Subiendo…
+                      </>
+                    ) : (
+                      <>
+                        <ImageUp size={15} />
+                        Subir y agregar ({bulkRows.length})
+                      </>
+                    )}
+                  </Button>
+                </DialogFooter>
+              </DialogContent>
+            </Dialog>
           </>
         )}
       </Card>

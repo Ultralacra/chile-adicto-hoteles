@@ -1,0 +1,16 @@
+export const PRETTY_CATEGORY_SLUGS = new Set<string>([
+  "iconos",
+  "ninos",
+  "arquitectura",
+  "barrios",
+  "mercados",
+  "miradores",
+  "museos",
+  "palacios",
+  "parques",
+  "paseos-fuera-de-santiago",
+  "restaurantes",
+  "monumentos-nacionales",
+  "cafes",
+  "agenda-cultural",
+]);

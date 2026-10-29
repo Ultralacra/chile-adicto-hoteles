@@ -87,6 +87,7 @@ type BottomHomeBannerProps = {
   alt?: string;
   desktopKey?: string;
   mobileKey?: string;
+  mobileItemIndex?: number;
 };
 
 export function BottomHomeBanner({
@@ -96,12 +97,14 @@ export function BottomHomeBanner({
   alt = "Monumentos Nacionales",
   desktopKey = "home-promo-monumentos",
   mobileKey,
+  mobileItemIndex = 1,
 }: BottomHomeBannerProps) {
   return (
     <>
       <ManagedBanner
         desktopKey={desktopKey}
-        mobileKey={mobileKey}
+        mobileKey={mobileKey ?? desktopKey}
+        mobileItemIndex={mobileItemIndex}
         href={href}
         src={src}
         mobileSrc={mobileSrc}

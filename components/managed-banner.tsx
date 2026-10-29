@@ -103,13 +103,19 @@ export function ManagedBanner({
       }
     };
 
-    Promise.all([load(desktopKey), load(mobileKey)]).then(
+    // Si ambos dispositivos comparten key, evitamos pedir el mismo slider dos veces.
+    const mobileLoadKey =
+      mobileKey && mobileKey !== desktopKey ? mobileKey : undefined;
+
+    Promise.all([load(desktopKey), load(mobileLoadKey)]).then(
       ([desktopValue, mobileValue]) => {
         if (cancelled) return;
 
         const desktopItem = desktopValue?.[itemIndex] || null;
+        const mobileItems =
+          mobileKey && mobileKey === desktopKey ? desktopValue : mobileValue;
         const mobileFromKey = mobileKey
-          ? mobileValue?.[mobileItemIndex] || null
+          ? mobileItems?.[mobileItemIndex] || null
           : null;
 
         if (desktopItem) {
